@@ -1,0 +1,19 @@
+{
+  "compilerOptions": {
+    "baseUrl": "./src",
+    "paths": {
+      "@": ["./"],
+      "@/*": ["./*"],
+      "@pages/*": ["./pages/*"],
+      "@atoms/*": ["./atoms/*"],
+      "@components": ["./components"],
+      "@components/*": ["./components/*"],
+      "@assets/*": ["./assets/*"],
+      "@utils": ["./utils"],
+      "@utils/*": ["./utils/*"],
+      "@abis/*": ["./abis/*"],
+      "@apis/*": ["./apis/*"],
+      "@hooks/*": ["./hooks/*"]
+    }
+  }
+}

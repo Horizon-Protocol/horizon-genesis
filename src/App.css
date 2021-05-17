@@ -1,0 +1,10 @@
+.App {
+  position: relative;
+  background-color: #120c1c;
+  background: radial-gradient(circle, #0d2130 0%, #120c1c 100%);
+  background-position-y: -50vh;
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+  color: white;
+}

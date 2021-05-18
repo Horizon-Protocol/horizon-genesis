@@ -1,11 +1,4 @@
-import {
-  Box,
-  BoxProps,
-  List,
-  ListItem,
-  ListItemIcon,
-  ListItemText,
-} from "@material-ui/core";
+import { List, ListItem, ListItemIcon, ListItemText } from "@material-ui/core";
 import { withStyles } from "@material-ui/core/styles";
 
 interface Data {
@@ -14,9 +7,16 @@ interface Data {
   color?: string;
 }
 
+const Item = withStyles({
+  root: {
+    padding: 0,
+  },
+})(ListItem);
+
 const Label = withStyles({
   root: {
     color: "#5897C1",
+    fontSize: 14,
   },
 })(ListItemIcon);
 
@@ -37,10 +37,10 @@ export default function Balance({ data }: Props) {
   return (
     <List dense disablePadding>
       {data.map(({ label, value, color }) => (
-        <ListItem key={label} disableGutters>
+        <Item key={label} disableGutters>
           <Label>{label}</Label>
           <Value primary={value} style={{ color }} />
-        </ListItem>
+        </Item>
       ))}
     </List>
   );

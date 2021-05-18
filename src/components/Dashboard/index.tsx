@@ -5,6 +5,7 @@ import { COLOR } from "@/utils/theme/constants";
 import CRatioRange from "./CRatioRange";
 import StakingApy from "./StakingApy";
 import Balance from "./Balance";
+import ClaimCountDown from "./ClaimCountDown";
 
 const useStyles = makeStyles(({ palette }) => ({
   container: {
@@ -56,18 +57,28 @@ const mockBalance = [
   },
 ];
 
+const mockClaimDate = new Date("2021-06-18T21:22:19Z");
+
 export default function Dashboard({ className, ...props }: BoxProps) {
   const classes = useStyles();
 
   return (
     <Box className={clsx(classes.container, className)} {...props}>
       <CRatioRange px={2} ratio={777} />
-      <Box mt={4} p={2} pt={0} textAlign='center' className={classes.stats}>
+      <Box
+        mt={4}
+        p={2}
+        pt={0}
+        pb={3}
+        textAlign='center'
+        className={classes.stats}
+      >
         <StakingApy percent={105.34} className={classes.apy} />
         <Box p={1} className={classes.balance}>
           <Balance data={mockBalance} />
         </Box>
       </Box>
+      <ClaimCountDown p={2} date={mockClaimDate} />
     </Box>
   );
 }

@@ -1,4 +1,16 @@
 import { createMuiTheme } from "@material-ui/core/styles";
+import Rawline from "@assets/fonts/rawline-400.woff";
+
+const rawline = {
+  fontFamily: "Rawline",
+  fontStyle: "normal",
+  fontWeight: 400,
+  src: `
+    local('Rawline'),
+    local('Rawline-Regular'),
+    url(${Rawline}) format('woff')
+  `,
+};
 
 const theme = createMuiTheme({
   palette: {
@@ -18,6 +30,13 @@ const theme = createMuiTheme({
       paper: "#131D34",
     },
     divider: "#1E4267",
+  },
+  overrides: {
+    MuiCssBaseline: {
+      "@global": {
+        "@font-face": [rawline],
+      },
+    },
   },
 });
 

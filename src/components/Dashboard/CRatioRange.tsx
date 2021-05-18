@@ -4,25 +4,20 @@ import {
   Typography,
   LinearProgress,
   LinearProgressProps,
+  BoxProps,
 } from "@material-ui/core";
 import { makeStyles, withStyles } from "@material-ui/core/styles";
 import { HelpOutline } from "@material-ui/icons";
-
-const Color = {
-  border: "#1E4267",
-  danger: "#ff3366",
-  warning: "#FFA539",
-  safe: "#2AD4B7",
-};
+import { COLOR } from "@utils/theme/constants";
 
 const getColorByRatio = (ratio: number) => {
   if (ratio < 200) {
-    return Color.danger;
+    return COLOR.danger;
   }
   if (ratio < 700) {
-    return Color.warning;
+    return COLOR.warning;
   }
-  return Color.safe;
+  return COLOR.safe;
 };
 
 const getPercentByRatio = (ratio: number) => {
@@ -42,7 +37,6 @@ const getPercentByRatio = (ratio: number) => {
 };
 
 const useStyles = makeStyles(() => ({
-  container: {},
   number: {
     fontSize: 22,
     letterSpacing: "0.92px",
@@ -65,7 +59,7 @@ const useStyles = makeStyles(() => ({
   tickLine: {
     display: "block",
     height: 24,
-    borderLeft: `1px solid ${Color.border}`,
+    borderLeft: `1px solid ${COLOR.border}`,
   },
 }));
 
@@ -73,7 +67,7 @@ const BorderedProgress = withStyles(({ palette }) => ({
   root: {
     height: 24,
     borderRadius: 4,
-    border: `1px solid ${Color.border}`,
+    border: `1px solid ${COLOR.border}`,
   },
   colorPrimary: {
     backgroundColor: "transparent",
@@ -118,11 +112,11 @@ const Tick = ({
   );
 };
 
-interface Props {
+interface Props extends BoxProps {
   ratio: number;
 }
 
-export default function CRatioRange({ ratio = 700 }: Props) {
+export default function CRatioRange({ ratio = 700, ...props }: Props) {
   const { percent, color } = useMemo(
     () => ({
       color: getColorByRatio(ratio),
@@ -134,12 +128,7 @@ export default function CRatioRange({ ratio = 700 }: Props) {
   const classes = useStyles();
 
   return (
-    <Box
-      paddingY={3}
-      paddingX={2}
-      textAlign='center'
-      className={classes.container}
-    >
+    <Box py={3} textAlign='center' {...props}>
       <Typography
         variant='h6'
         classes={{ root: classes.number }}
@@ -161,9 +150,9 @@ export default function CRatioRange({ ratio = 700 }: Props) {
           percent={200}
           left='25%'
           label='Liquidation'
-          color={Color.danger}
+          color={COLOR.danger}
         />
-        <Tick percent={700} left='75%' label='Target' color={Color.safe} />
+        <Tick percent={700} left='75%' label='Target' color={COLOR.safe} />
       </Box>
     </Box>
   );

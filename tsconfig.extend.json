@@ -6,7 +6,6 @@
       "@/*": ["./*"],
       "@pages/*": ["./pages/*"],
       "@atoms/*": ["./atoms/*"],
-      "@components": ["./components"],
       "@components/*": ["./components/*"],
       "@assets/*": ["./assets/*"],
       "@utils": ["./utils"],

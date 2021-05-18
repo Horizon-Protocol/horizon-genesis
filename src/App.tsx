@@ -1,17 +1,14 @@
-import { BrowserRouter as Router, Switch, Route, Link } from "react-router-dom";
+import { BrowserRouter as Router, Switch, Route } from "react-router-dom";
 import Mint from "@pages/mint";
 import Burn from "@pages/burn";
 import Claim from "@pages/claim";
 import Earn from "@pages/earn";
-import "./App.css";
-import NavTabs from "./components/NavTabs";
+import Header from "@components/Header";
 
 function App() {
   return (
     <Router>
-      <div>
-        <NavTabs />
-      </div>
+      <Header />
 
       <Switch>
         <Route path='/burn'>

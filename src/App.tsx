@@ -4,11 +4,13 @@ import Burn from "@pages/burn";
 import Claim from "@pages/claim";
 import Earn from "@pages/earn";
 import Header from "@components/Header";
+import Dashboard from "@components/Dashboard";
 
 function App() {
   return (
     <Router>
       <Header />
+      <Dashboard />
 
       <Switch>
         <Route path='/burn'>

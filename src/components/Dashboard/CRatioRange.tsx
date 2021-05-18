@@ -40,21 +40,6 @@ const getPercentByRatio = (ratio: number) => {
 
   return percent;
 };
-const getRatioByPercent = (ratio: number) => {
-  let percent = 0;
-  if (ratio < 0) {
-    percent = 0;
-  } else if (ratio < 200) {
-    percent = (ratio / 200) * 25;
-  } else if (ratio < 700) {
-    percent = 25 + ((ratio - 200) / 500) * 50;
-  } else {
-    // ratio >= 700
-    percent = 75 + ((ratio - 700) / 300) * 25;
-  }
-
-  return percent;
-};
 
 const useStyles = makeStyles(() => ({
   container: {},

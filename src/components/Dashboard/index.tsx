@@ -16,7 +16,7 @@ export default function Dashboard() {
 
   return (
     <Box className={classes.container}>
-      <CRatioRange />
+      <CRatioRange ratio={777} />
     </Box>
   );
 }

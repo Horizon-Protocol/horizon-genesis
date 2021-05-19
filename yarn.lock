@@ -700,15 +700,10 @@
     "@ethersproject/properties" "^5.1.0"
     "@ethersproject/strings" "^5.1.0"
 
-"@fontsource/roboto-condensed@^4.3.0":
+"@fontsource/raleway@^4.3.0":
   version "4.3.0"
-  resolved "https://registry.yarnpkg.com/@fontsource/roboto-condensed/-/roboto-condensed-4.3.0.tgz#b6524edc8498b7106331d775b92a19335a16ee46"
-  integrity sha512-5d1byBryprAy4SZrhMqe1kqySBkP+o/u3Bf+eRzi5gx7VcPT93ceiJnsrlTUMNUmr1iqOwht7J3NzW+OqH53uw==
-
-"@fontsource/roboto@^4.3.0":
-  version "4.3.0"
-  resolved "https://registry.yarnpkg.com/@fontsource/roboto/-/roboto-4.3.0.tgz#00f1cceca43eff85bb0e1d424311751ee41f6aa6"
-  integrity sha512-WeFWCWYutLWyEtRmBhn+bLbW4/km0l+HhTpR8wWDxJLiGiMOhVLO/Z0q5w6l20ZOkWnf6Z1rN3o3W2HjvYN6Rg==
+  resolved "https://registry.yarnpkg.com/@fontsource/raleway/-/raleway-4.3.0.tgz#8ca67d6f521f07c6e1fa611adea6a2e1cf1b23af"
+  integrity sha512-uXY9PH241WKop5jOXvG7azKc/cTuyEKM+TIlV6Xos+lUGfPqBNmiR5J0IX4sJkyOq59UJjYcYCvEU/rOqfh/Tw==
 
 "@json-rpc-tools/types@^1.6.1":
   version "1.7.5"

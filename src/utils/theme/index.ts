@@ -31,6 +31,20 @@ const theme = createMuiTheme({
     },
     divider: "#1E4267",
   },
+  typography: {
+    fontFamily: [
+      "Raleway",
+      "-apple-system",
+      "BlinkMacSystemFont",
+      '"Segoe UI"',
+      '"Helvetica Neue"',
+      "Arial",
+      "sans-serif",
+      '"Apple Color Emoji"',
+      '"Segoe UI Emoji"',
+      '"Segoe UI Symbol"',
+    ].join(","),
+  },
   overrides: {
     MuiCssBaseline: {
       "@global": {

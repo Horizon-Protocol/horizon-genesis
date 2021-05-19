@@ -11,8 +11,7 @@
   "dependencies": {
     "@ahooksjs/use-request": "^2.8.6",
     "@binance-chain/bsc-use-wallet": "^0.8.1",
-    "@fontsource/roboto": "^4.3.0",
-    "@fontsource/roboto-condensed": "^4.3.0",
+    "@fontsource/raleway": "^4.3.0",
     "@material-ui/core": "^4.11.4",
     "@material-ui/icons": "^4.11.2",
     "@types/node": "^15.3.0",

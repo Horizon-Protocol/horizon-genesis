@@ -22,7 +22,8 @@ function App() {
   return (
     <Router>
       <Header />
-      <Dashboard hidden className={classes.dashboard} />
+      {/* TODO: use floating button to expand and collapse */}
+      <Dashboard hidden className={classes.dashboard} zIndex={1} />
       <Box mt={3}>
         <Switch>
           <Route path='/burn'>

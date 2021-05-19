@@ -11,6 +11,7 @@ const useStyles = makeStyles(({ palette }) => ({
   container: {
     width: "100%",
     maxWidth: 320,
+    background: "#0C111D",
   },
   stats: {
     background: "rgba(16,38,55,0.3)",

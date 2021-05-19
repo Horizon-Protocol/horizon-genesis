@@ -50,7 +50,7 @@ export default function ClaimCountDown({ date, ...props }: Props) {
         NEXT REWARD CLAIM
       </Typography>
       <Typography variant='h5' className={classes.value}>
-        {d}d {h}h {m}m
+        {d}d {h}h {m}m {m === 0 ? `${s}s` : ``}
       </Typography>
     </Box>
   );

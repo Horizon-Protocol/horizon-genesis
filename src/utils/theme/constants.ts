@@ -9,3 +9,10 @@ export const COLOR = {
   warning: "#FFA539",
   safe: "#2AD4B7",
 };
+
+export const PAGE_COLOR = {
+  mint: "#2AD4B7",
+  burn: "#FFA539",
+  claim: "#92B2FF",
+  earn: "#FFF",
+};

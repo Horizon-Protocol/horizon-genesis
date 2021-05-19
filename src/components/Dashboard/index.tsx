@@ -11,8 +11,6 @@ const useStyles = makeStyles(({ palette }) => ({
   container: {
     width: "100%",
     maxWidth: 320,
-    border: `1px solid ${palette.divider}`,
-    borderRadius: 10,
   },
   stats: {
     background: "rgba(16,38,55,0.3)",
@@ -63,7 +61,13 @@ export default function Dashboard({ className, ...props }: BoxProps) {
   const classes = useStyles();
 
   return (
-    <Box className={clsx(classes.container, className)} {...props}>
+    <Box
+      border={1}
+      borderRadius={10}
+      borderColor='#11233C'
+      className={clsx(classes.container, className)}
+      {...props}
+    >
       <CRatioRange px={2} ratio={777} />
       <Box
         mt={4}

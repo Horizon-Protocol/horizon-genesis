@@ -1,6 +1,11 @@
-import { Box, ButtonBase, ButtonBaseProps } from "@material-ui/core/";
+import { Box, ButtonBase, ButtonBaseProps } from "@material-ui/core";
 import { makeStyles, createStyles } from "@material-ui/core/styles";
 import { fade } from "@material-ui/core/styles/colorManipulator";
+
+interface StyleProps {
+  color: string;
+  active: boolean;
+}
 
 const useStyles = makeStyles(({ palette }) =>
   createStyles({
@@ -8,41 +13,75 @@ const useStyles = makeStyles(({ palette }) =>
       width: 150,
       borderRadius: 4,
       flexDirection: "column",
-      border: `1px solid transparent`,
+      alignItems: "stretch",
       background: "#0A1624",
       overflow: "hidden",
     },
-    focusVisible: {},
     title: {
-      width: "100%",
       lineHeight: "24px",
-      background: fade(palette.divider, 0.5),
+      background: ({ active, color }: StyleProps) =>
+        active ? color : fade(palette.divider, 0.5),
+      color: ({ active, color }: StyleProps) =>
+        active ? "#0A1624" : "#62B5DB",
       textTransform: "uppercase",
+      fontWeight: 700,
+      letterSpacing: "0.43px",
     },
-    percent: {},
-    suffix: {},
+    percent: {
+      color: ({ active, color }: StyleProps) => (active ? color : "#6E89A6"),
+      fontFamily: "Rawline",
+      fontSize: 22,
+      letterSpacing: "0.92px",
+      lineHeight: "30px",
+    },
+    suffix: {
+      marginLeft: 8,
+      color: ({ active, color }: StyleProps) => (active ? color : "#6E89A6"),
+      fontSize: 12,
+      letterSpacing: "0.5px",
+      lineHeight: "14px",
+      whiteSpace: "nowrap",
+    },
   })
 );
 
-interface Props extends ButtonBaseProps {
-  color: string;
-  title: string;
-  percent: number;
+declare global {
+  interface TargetCRatioOption {
+    color: string;
+    title: string;
+    percent: number;
+  }
 }
 
-export default function TargetCRatioOption({ color, title, percent }: Props) {
-  const classes = useStyles({ color });
+interface Props
+  extends TargetCRatioOption,
+    Omit<ButtonBaseProps, keyof TargetCRatioOption> {
+  active: boolean;
+}
+
+export default function TargetCRatioOption({
+  color,
+  title,
+  percent,
+  active,
+  ...props
+}: Props) {
+  const classes = useStyles({ color, active });
 
   return (
-    <ButtonBase
-      focusRipple
-      disableRipple
-      className={classes.button}
-      focusVisibleClassName={classes.focusVisible}
-    >
-      <div className={classes.title}>{title}</div>
-      <Box display='flex'>
-        <span className={classes.percent}>{percent}</span>
+    <ButtonBase disableRipple className={classes.button} {...props}>
+      <span className={classes.title}>{title}</span>
+      <Box
+        display='flex'
+        flexGrow={1}
+        py={1}
+        border={1}
+        borderTop='none'
+        borderRadius='0 0 4px 4px'
+        borderColor={active ? color : "transparent"}
+        justifyContent='center'
+      >
+        <span className={classes.percent}>{percent}%</span>
         <span className={classes.suffix}>
           Target <br /> C-Ratio
         </span>

@@ -1,11 +1,32 @@
 import { PAGE_COLOR } from "@/utils/theme/constants";
 import bgMint from "@assets/images/mint.png";
 import PageCard from "@components/PageCard";
-import TargetCRatioOption from "@components/TargetCRatioOption";
+import TargetCRatioOptions from "@components/TargetCRatioOptions";
+import { useCallback, useState } from "react";
 
 const THEME_COLOR = PAGE_COLOR.mint;
 
+const targetCratioOptions: TargetCRatioOption[] = [
+  {
+    title: "CONSERVATIVE",
+    percent: 1000,
+    color: THEME_COLOR,
+  },
+  {
+    title: "NEUTRAL",
+    percent: 850,
+    color: THEME_COLOR,
+  },
+  {
+    title: "AGGRESSIVE",
+    percent: 700,
+    color: THEME_COLOR,
+  },
+];
+
 export default function Earn() {
+  const [targetCRatio, setTargetCRatio] = useState<number>();
+
   return (
     <PageCard
       mx='auto'
@@ -20,7 +41,11 @@ export default function Earn() {
         </>
       }
     >
-      <TargetCRatioOption color={THEME_COLOR} title='test' percent={1000} />
+      <TargetCRatioOptions
+        value={targetCRatio}
+        options={targetCratioOptions}
+        onChange={setTargetCRatio}
+      />
     </PageCard>
   );
 }

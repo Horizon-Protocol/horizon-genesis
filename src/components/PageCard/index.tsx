@@ -14,17 +14,14 @@ declare global {
 
 const useStyles = makeStyles(({ palette }) => ({
   container: {
-    width: 640,
-    borderRadius: 10,
     overflow: "hidden",
     backgroundColor: "rgba(16,38,55,0.3)",
-    border: `1px solid #11233C`,
   },
   headerWrap: {
     backgroundColor: "#0C111D",
     backgroundRepeat: "no-repeat",
     backgroundSize: "auto 180px",
-    backgroundPosition: "top -24px left -24px",
+    backgroundPosition: "top -18px left -18px",
     backgroundImage: ({ bg }: { bg?: string }) => `url(${bg})`,
   },
   contentWrap: {
@@ -44,7 +41,14 @@ export default function PageCard({
   const classes = useStyles({ bg: headerBg });
 
   return (
-    <Box className={clsx(classes.container, className)} {...props}>
+    <Box
+      width={640}
+      border={1}
+      borderRadius={10}
+      borderColor='#11233C'
+      className={clsx(classes.container, className)}
+      {...props}
+    >
       <Box
         display='flex'
         justifyContent='center'

@@ -1,4 +1,10 @@
-import { List, ListItem, ListItemIcon, ListItemText } from "@material-ui/core";
+import {
+  List,
+  ListItem,
+  ListItemIcon,
+  ListItemText,
+  makeStyles,
+} from "@material-ui/core";
 import { withStyles } from "@material-ui/core/styles";
 
 interface Data {
@@ -6,12 +12,6 @@ interface Data {
   value?: string;
   color?: string;
 }
-
-const Item = withStyles({
-  root: {
-    padding: 0,
-  },
-})(ListItem);
 
 const Label = withStyles({
   root: {
@@ -33,14 +33,25 @@ interface Props {
   data: Data[];
 }
 
+const useStyles = makeStyles({
+  listItem: {
+    padding: 0,
+  },
+});
+
 export default function Balance({ data }: Props) {
+  const classes = useStyles();
   return (
     <List dense disablePadding>
       {data.map(({ label, value, color }) => (
-        <Item key={label} disableGutters>
+        <ListItem
+          key={label}
+          disableGutters
+          classes={{ root: classes.listItem }}
+        >
           <Label>{label}</Label>
           <Value primary={value} style={{ color }} />
-        </Item>
+        </ListItem>
       ))}
     </List>
   );

@@ -1,4 +1,5 @@
 import { BrowserRouter as Router, Switch, Route } from "react-router-dom";
+import { Box } from "@material-ui/core";
 import { makeStyles } from "@material-ui/core/styles";
 import Mint from "@pages/mint";
 import Burn from "@pages/burn";
@@ -21,22 +22,23 @@ function App() {
   return (
     <Router>
       <Header />
-      <Dashboard className={classes.dashboard} />
-
-      <Switch>
-        <Route path='/burn'>
-          <Burn />
-        </Route>
-        <Route path='/claim'>
-          <Claim />
-        </Route>
-        <Route path='/earn'>
-          <Earn />
-        </Route>
-        <Route path='/'>
-          <Mint />
-        </Route>
-      </Switch>
+      <Dashboard hidden className={classes.dashboard} />
+      <Box mt={3}>
+        <Switch>
+          <Route path='/burn'>
+            <Burn />
+          </Route>
+          <Route path='/claim'>
+            <Claim />
+          </Route>
+          <Route path='/earn'>
+            <Earn />
+          </Route>
+          <Route path='/'>
+            <Mint />
+          </Route>
+        </Switch>
+      </Box>
     </Router>
   );
 }

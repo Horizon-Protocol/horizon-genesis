@@ -73,6 +73,7 @@ export default function Earn() {
         mt={3}
         fromToken={fromToken}
         toToken={toToken}
+        targetCRatio={targetCRatio}
         arrowImg={arrowImg}
       />
     </PageCard>

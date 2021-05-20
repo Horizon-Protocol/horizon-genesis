@@ -1,4 +1,5 @@
 import { useCallback, useRef, SyntheticEvent } from "react";
+import { formatEther } from "@ethersproject/units";
 import { Box, Link, InputBase, Typography, LinkProps } from "@material-ui/core";
 import { makeStyles } from "@material-ui/core/styles";
 import NumberFormat from "react-number-format";
@@ -7,7 +8,6 @@ import { Token, TokenName } from "@utils/constants";
 import { formatBigNumber } from "@utils/formatters";
 import { BORDER_COLOR } from "@utils/theme/constants";
 import hznLogo from "@assets/tokens/hzn.png";
-import { formatEther } from "@ethersproject/units";
 
 declare global {
   interface TokenInputProps {
@@ -66,7 +66,8 @@ const useStyles = makeStyles(({ palette }) => ({
   input: {},
   innerInput: {
     // fontFamily: "Rawline",
-    color: "#B4E0FF",
+    color: ({ invalidInput = false }: { invalidInput: boolean }) =>
+      invalidInput ? "red" : "#B4E0FF",
     fontSize: 24,
     fontWeight: 700,
     lineHeight: " 29px",
@@ -76,6 +77,9 @@ const useStyles = makeStyles(({ palette }) => ({
     fontSize: 12,
     fontWeight: 700,
     color: "#6E89A6",
+  },
+  balanceLabelError: {
+    color: "red",
   },
   maxButton: {
     padding: "0 0 0 4px",
@@ -98,7 +102,9 @@ export default function TokenInput({
   color,
   bgColor,
 }: TokenInputProps) {
-  const classes = useStyles();
+  const classes = useStyles({
+    invalidInput: BigNumber.isBigNumber(max) && amount.gt(max),
+  });
 
   const maxRef = useRef<boolean>();
 
@@ -190,10 +196,11 @@ export default function TokenInput({
         />
         <Box display='flex' justifyContent='flex-end'>
           <Typography
-            color={
-              BigNumber.isBigNumber(max) && amount.gt(max) ? "error" : "primary"
-            }
-            className={classes.balanceLabel}
+            classes={{
+              root: classes.balanceLabel,
+              colorError: classes.balanceLabelError,
+            }}
+            // className={classes.balanceLabel}
           >
             {balanceLabel}
             {BigNumber.isBigNumber(max)

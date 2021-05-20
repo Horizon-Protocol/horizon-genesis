@@ -8,11 +8,13 @@ export type TokenProps = Omit<TokenInputProps, "input" | "onInput">;
 export interface TokenPairProps {
   fromToken: TokenProps;
   toToken: TokenProps;
+  arrowImg?: string;
   onChange?(): void;
 }
 export default function TokenPair({
   fromToken,
   toToken,
+  arrowImg,
   ...props
 }: TokenPairProps & BoxProps) {
   const [fromInput, setFromInput] = useState<string>("");
@@ -25,7 +27,7 @@ export default function TokenPair({
   return (
     <Box {...props}>
       <TokenInput {...fromToken} input={fromInput} onInput={onInput} />
-      <InputGap />
+      <InputGap img={arrowImg} />
       <TokenInput {...toToken} input={toInput} onInput={onInput} />
     </Box>
   );

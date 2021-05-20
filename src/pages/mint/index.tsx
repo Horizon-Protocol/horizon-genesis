@@ -1,6 +1,7 @@
 import { useState } from "react";
 import { PAGE_COLOR } from "@utils/theme/constants";
 import bgMint from "@assets/images/mint.png";
+import arrowImg from "@assets/images/arrow-mint.png";
 import PageCard from "@components/PageCard";
 import TargetCRatioOptions from "@components/TargetCRatioOptions";
 import TokenPair, { TokenProps } from "@components/TokenPair";
@@ -64,7 +65,12 @@ export default function Earn() {
         options={targetCratioOptions}
         onChange={setTargetCRatio}
       />
-      <TokenPair mt={3} fromToken={fromToken} toToken={toToken} />
+      <TokenPair
+        mt={3}
+        fromToken={fromToken}
+        toToken={toToken}
+        arrowImg={arrowImg}
+      />
     </PageCard>
   );
 }

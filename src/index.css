@@ -2,6 +2,7 @@ body {
   font-family: "Raleway", -apple-system, BlinkMacSystemFont, "Segoe UI",
     "Oxygen", "Ubuntu", "Cantarell", "Fira Sans", "Droid Sans", "Helvetica Neue",
     sans-serif;
+  font-feature-settings: "lnum";
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
   margin: 0;

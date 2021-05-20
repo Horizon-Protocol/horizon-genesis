@@ -29,7 +29,7 @@ const useStyles = makeStyles(({ palette }) =>
     },
     percent: {
       color: ({ active, color }: StyleProps) => (active ? color : "#6E89A6"),
-      fontFamily: "Rawline",
+      // fontFamily: "Rawline",
       fontSize: 22,
       letterSpacing: "0.92px",
       lineHeight: "30px",

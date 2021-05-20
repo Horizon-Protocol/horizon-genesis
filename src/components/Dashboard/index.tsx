@@ -1,7 +1,7 @@
 import { Box, BoxProps } from "@material-ui/core";
 import { makeStyles } from "@material-ui/core/styles";
 import clsx from "clsx";
-import { COLOR } from "@/utils/theme/constants";
+import { BORDER_COLOR, COLOR } from "@utils/theme/constants";
 import CRatioRange from "./CRatioRange";
 import StakingApy from "./StakingApy";
 import Balance from "./Balance";
@@ -65,7 +65,7 @@ export default function Dashboard({ className, ...props }: BoxProps) {
     <Box
       border={1}
       borderRadius={10}
-      borderColor='#11233C'
+      borderColor={BORDER_COLOR}
       className={clsx(classes.container, className)}
       {...props}
     >

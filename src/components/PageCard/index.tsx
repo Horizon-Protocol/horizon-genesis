@@ -1,3 +1,4 @@
+import { BORDER_COLOR } from "@utils/theme/constants";
 import { Box, BoxProps } from "@material-ui/core";
 import { makeStyles } from "@material-ui/core/styles";
 import clsx from "clsx";
@@ -45,7 +46,7 @@ export default function PageCard({
       width={640}
       border={1}
       borderRadius={10}
-      borderColor='#11233C'
+      borderColor={BORDER_COLOR}
       className={clsx(classes.container, className)}
       {...props}
     >
@@ -65,6 +66,8 @@ export default function PageCard({
       <Box
         display='flex'
         justifyContent='center'
+        alignItems='stretch'
+        flexDirection='column'
         className={classes.contentWrap}
       >
         {children}

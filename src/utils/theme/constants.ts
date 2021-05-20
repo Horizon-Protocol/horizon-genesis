@@ -16,3 +16,5 @@ export const PAGE_COLOR = {
   claim: "#92B2FF",
   earn: "#FFF",
 };
+
+export const BORDER_COLOR = "#11233C";

@@ -1,8 +1,8 @@
 import { useCallback, useState } from "react";
 import { BigNumber, constants, utils } from "ethers";
 import { useUpdateAtom } from "jotai/utils";
-import { fetchPrice } from "@/apis/coingecko";
-import { fetchTotalLiquidity } from "@/apis/pancakeswap";
+import { fetchPrice } from "@apis/coingecko";
+import { fetchTotalLiquidity } from "@apis/pancakeswap";
 import { tokenPriceAtomFamily } from "@atoms/price";
 import erc20Abi from "@abis/erc20.json";
 import { Erc20 } from "@abis/types";

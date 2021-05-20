@@ -13,7 +13,6 @@ const useStyles = makeStyles({
   value: {
     marginTop: 8,
     color: "#B4E0FF",
-    fontFamily: "Rawline",
     fontSize: "24px",
     fontWeight: 700,
     letterSpacing: "0.86px",

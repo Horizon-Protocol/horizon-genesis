@@ -38,12 +38,12 @@ const tabs: LinkTabProps[] = [
   },
 ];
 
-const StyledTabs = withStyles(({ palette }) => ({
+const StyledTabs = withStyles({
   root: {
     minHeight: 32,
     padding: 1,
     borderRadius: 4,
-    border: `1px solid ${palette.divider}`,
+    border: `1px solid rgba(55,133,185,0.25)`,
   },
   indicator: {
     top: 0,
@@ -52,7 +52,7 @@ const StyledTabs = withStyles(({ palette }) => ({
     borderRadius: 4,
     backgroundColor: "#1A2E47",
   },
-}))(Tabs);
+})(Tabs);
 
 const getStyledTab: (color: string) => any = (color) =>
   withStyles(({ typography }) => ({

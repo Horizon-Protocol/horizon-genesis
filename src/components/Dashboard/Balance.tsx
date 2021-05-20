@@ -24,9 +24,6 @@ const Value = withStyles(() => ({
   root: {
     textAlign: "right",
   },
-  primary: {
-    fontFamily: "Rawline",
-  },
 }))(ListItemText);
 
 interface Props {

@@ -12,9 +12,7 @@ const useStyles = makeStyles(({ palette }) => ({
   percent: {
     fontWeight: 700,
   },
-  percentValue: {
-    fontFamily: "Rawline",
-  },
+  percentValue: {},
 }));
 
 interface Props extends BoxProps {

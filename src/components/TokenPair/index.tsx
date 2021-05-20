@@ -1,7 +1,9 @@
 import { useCallback, useState } from "react";
+import { useSetState } from "ahooks";
 import { Box, BoxProps } from "@material-ui/core";
 import TokenInput from "./TokenInput";
 import InputGap from "./InputGap";
+import { BigNumber } from "@ethersproject/bignumber";
 
 export type TokenProps = Omit<TokenInputProps, "input" | "onInput">;
 
@@ -17,18 +19,36 @@ export default function TokenPair({
   arrowImg,
   ...props
 }: TokenPairProps & BoxProps) {
-  const [fromInput, setFromInput] = useState<string>("");
-  const [toInput, setToInput] = useState<string>("");
+  const [state, setState] = useSetState({
+    fromInput: "",
+    toInput: "",
+  });
 
-  const onInput = useCallback<TokenInputProps["onInput"]>(() => {
-    console.log("input");
-  }, []);
+  const setFromInput = useCallback<TokenInputProps["onInput"]>(
+    (input) => {
+      console.log("input", input);
+      setState({ fromInput: input });
+    },
+    [setState]
+  );
+
+  const setToInput = useCallback<TokenInputProps["onInput"]>(
+    (input) => {
+      console.log("input", input);
+      setState({ toInput: input });
+    },
+    [setState]
+  );
 
   return (
     <Box {...props}>
-      <TokenInput {...fromToken} input={fromInput} onInput={onInput} />
+      <TokenInput
+        {...fromToken}
+        input={state.fromInput}
+        onInput={setFromInput}
+      />
       <InputGap img={arrowImg} />
-      <TokenInput {...toToken} input={toInput} onInput={onInput} />
+      <TokenInput {...toToken} input={state.toInput} onInput={setToInput} />
     </Box>
   );
 }

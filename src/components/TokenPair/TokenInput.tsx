@@ -1,25 +1,27 @@
-import { useCallback, useRef } from "react";
-import { Box, Button, InputBase, Typography } from "@material-ui/core";
+import { useCallback, useRef, SyntheticEvent } from "react";
+import { Box, Link, InputBase, Typography, LinkProps } from "@material-ui/core";
 import { makeStyles } from "@material-ui/core/styles";
 import NumberFormat from "react-number-format";
 import { BigNumber, constants } from "ethers";
 import { Token, TokenName } from "@utils/constants";
-import { getFullDisplayBalance } from "@utils/formatters";
+import { formatBigNumber } from "@utils/formatters";
 import { BORDER_COLOR } from "@utils/theme/constants";
 import hznLogo from "@assets/tokens/hzn.png";
+import { formatEther } from "@ethersproject/units";
 
 declare global {
   interface TokenInputProps {
     token: Token.HZN | zAssetsEnum;
     label: string;
-    showMax?: boolean;
+    balanceLabel?: JSX.Element | string;
+    maxButtonLabel?: JSX.Element | string;
+    max?: BigNumber;
     color?: string;
     bgColor?: string;
     logo?: string;
     input: string;
     onInput(v: string, max?: boolean): void;
     amount: BigNumber; // ehter BN format of input
-    max?: BigNumber;
   }
 }
 
@@ -70,12 +72,13 @@ const useStyles = makeStyles(({ palette }) => ({
     lineHeight: " 29px",
     textAlign: "right",
   },
-  maxLabel: {
+  balanceLabel: {
     fontSize: 12,
     fontWeight: 700,
+    color: "#6E89A6",
   },
   maxButton: {
-    padding: "0 0 0 8px",
+    padding: "0 0 0 4px",
     fontSize: 12,
     fontWeight: 700,
     textTransform: "none",
@@ -88,7 +91,9 @@ export default function TokenInput({
   input,
   onInput,
   amount,
-  max = constants.Zero,
+  balanceLabel = "Balance:",
+  maxButtonLabel,
+  max,
   logo,
   color,
   bgColor,
@@ -97,15 +102,29 @@ export default function TokenInput({
 
   const maxRef = useRef<boolean>();
 
-  const setMax = useCallback(() => {
-    if (!amount.eq(max)) {
-      maxRef.current = true;
-      onInput(
-        getFullDisplayBalance(max, { mantissa: 6, trimMantissa: true }),
-        true
-      );
-    }
-  }, [amount, max, onInput]);
+  const handleClickMax = useCallback(
+    (e: SyntheticEvent) => {
+      e.preventDefault();
+      if (BigNumber.isBigNumber(max) && !amount.eq(max)) {
+        maxRef.current = true;
+        console.log(
+          "max",
+          max.toString(),
+          max.toNumber(),
+          formatEther(max),
+          formatBigNumber(max, { mantissa: 6, trimMantissa: true })
+        );
+        onInput(
+          formatBigNumber(max, { mantissa: 6, trimMantissa: true }),
+          true
+        );
+      }
+    },
+    [amount, max, onInput]
+  );
+
+  console.log("amount", amount.toString());
+  console.log("input", input);
 
   const isHZN = token === Token.HZN;
 
@@ -171,19 +190,27 @@ export default function TokenInput({
         />
         <Box display='flex' justifyContent='flex-end'>
           <Typography
-            color={amount.gt(max) ? "error" : "primary"}
-            className={classes.maxLabel}
+            color={
+              BigNumber.isBigNumber(max) && amount.gt(max) ? "error" : "primary"
+            }
+            className={classes.balanceLabel}
           >
-            Balance: {getFullDisplayBalance(max)} {token}
+            {balanceLabel}
+            {BigNumber.isBigNumber(max)
+              ? ` ${formatBigNumber(max)} ${token}`
+              : ""}
           </Typography>
-          {max.gt(0) && (
-            <Button
-              onClick={setMax}
+          {max?.gt(0) && (
+            <Link
+              href='#'
+              underline='none'
+              color='inherit'
+              onClick={handleClickMax}
               classes={{ root: classes.maxButton }}
               style={{ color: color }}
             >
-              (Max Mint)
-            </Button>
+              ({maxButtonLabel})
+            </Link>
           )}
         </Box>
       </Box>

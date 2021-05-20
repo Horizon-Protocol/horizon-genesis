@@ -36,14 +36,18 @@ export default function Earn() {
     token: Token.HZN,
     label: "Stake",
     amount: BigNumber.from(0),
-    max: BigNumber.from(0),
+    max: BigNumber.from(100),
+    maxButtonLabel: "Max Mint",
+    color: THEME_COLOR,
   };
+
   const toToken: TokenProps = {
     token: zAssets.zUSD,
     label: "Mint",
     color: THEME_COLOR,
     bgColor: "#0A1624",
     amount: BigNumber.from(0),
+    balanceLabel: "Minted at 700% C-Ratio",
   };
 
   return (

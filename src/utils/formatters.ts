@@ -16,6 +16,11 @@ export const getFullDisplayBalance = (
     ...format,
   });
 };
+export const formatBigNumber = (bn: BigNumber, format: numbro.Format = {}) => {
+  return numbro(bn.toString()).format({
+    ...format,
+  });
+};
 
 export const formatNumber = (value: number, format: numbro.Format = {}) => {
   return numbro(value).format({

@@ -48,6 +48,7 @@ export default function Earn() {
     bgColor: "#0A1624",
     amount: parseEther("0"),
     balanceLabel: "Minted at 700% C-Ratio",
+    inputPrefix: "$",
   };
 
   return (

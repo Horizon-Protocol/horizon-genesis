@@ -22,6 +22,7 @@ declare global {
     input: string;
     onInput(v: string, max?: boolean): void;
     amount: BigNumber; // ehter BN format of input
+    inputPrefix?: string;
   }
 }
 
@@ -68,6 +69,7 @@ const useStyles = makeStyles(({ palette }) => ({
     // fontFamily: "Rawline",
     color: ({ invalidInput = false }: { invalidInput: boolean }) =>
       invalidInput ? "red" : "#B4E0FF",
+    fontFamily: "Rawline",
     fontSize: 24,
     fontWeight: 700,
     lineHeight: " 29px",
@@ -101,6 +103,7 @@ export default function TokenInput({
   logo,
   color,
   bgColor,
+  inputPrefix,
 }: TokenInputProps) {
   const classes = useStyles({
     invalidInput: BigNumber.isBigNumber(max) && amount.gt(max),
@@ -174,6 +177,7 @@ export default function TokenInput({
             onInput(values.value, maxRef.current);
             maxRef.current = false;
           }}
+          prefix={inputPrefix}
           allowNegative={false}
           thousandSeparator
           isNumericString

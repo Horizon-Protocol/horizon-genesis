@@ -3,18 +3,19 @@ import { Avatar, Chip, ChipProps, CircularProgress } from "@material-ui/core";
 import { withStyles } from "@material-ui/core/styles";
 import { detailAtom } from "@atoms/wallet";
 import { loadingAllAtom } from "@atoms/loading";
-import useFetchState from "@hooks/useFetchState";
+import useFetchState from "@hooks/staker/useFetchState";
 import { ChainName } from "@utils/constants";
 
 const StyledChip = withStyles(({ palette }) => ({
   root: {
+    marginRight: 10,
     paddingLeft: 8,
     paddingRight: 8,
     color: palette.text.primary,
     textTransform: "none",
-    borderRadius: 24,
-    backgroundColor: "#0A171F",
-    border: "1px solid #11263B",
+    borderRadius: 4,
+    backgroundColor: "#091620",
+    border: "1px solid rgba(55,133,185,0.25)",
   },
 }))(Chip);
 

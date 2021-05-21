@@ -1,3 +1,4 @@
+import { atom } from "jotai";
 import { atomFamily } from "jotai/utils";
 import { BigNumber, constants } from "ethers";
 import { Token } from "@utils/constants";
@@ -24,14 +25,15 @@ const defaultData: Data = {
 };
 
 export const statAtomFamily = atomFamily(
-  ({ data = defaultData }: Param) => data,
-  null,
+  ({ data = defaultData }: Param) => atom(data),
   (a, b) => a.token === b.token
 );
 
-export const tokenStatAtomFamily = atomFamily(
-  (token: Token) => (get) => get(statAtomFamily({ token })),
-  (token: Token) => (get, set, data: Data) => {
-    set(statAtomFamily({ token }), data);
-  }
+export const tokenStatAtomFamily = atomFamily((token: Token) =>
+  atom(
+    (get) => get(statAtomFamily({ token })),
+    (get, set, data: Data) => {
+      set(statAtomFamily({ token }), data);
+    }
+  )
 );

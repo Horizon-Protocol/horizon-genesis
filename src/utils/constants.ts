@@ -76,8 +76,8 @@ export const SUPPORTED_WALLETS: WalletDetail[] = [
 export const CHAIN_NAME_MAP: {
   [chain: number]: string;
 } = {
-  56: "BSC Mainnet",
-  97: "BSC Testnet",
+  56: "BSC MAINNET",
+  97: "BSC TESTNET",
 };
 
 export const TOKEN_ADDRESS: {
@@ -95,9 +95,9 @@ export const TOKEN_ADDRESS: {
   97: {
     [Token.PHB]: "0xf09f5e21f86692c614d2d7b47e3b9729dc1c436f",
     [Token.HZN]: "0x74ba52975dd4f0a9cde1b8d4d54b808ef9d0a3f8",
-    [Token.HZN_BNB_LP]: "",
-    [Token.HZN_BNB_LP_DEPRECATED]: "",
-    [Token.HZN_BNB_LP_LEGACY]: "",
+    [Token.HZN_BNB_LP]: "0x74ba52975dd4f0a9cde1b8d4d54b808ef9d0a3f8",
+    [Token.HZN_BNB_LP_DEPRECATED]: "0x74ba52975dd4f0a9cde1b8d4d54b808ef9d0a3f8",
+    [Token.HZN_BNB_LP_LEGACY]: "0x74ba52975dd4f0a9cde1b8d4d54b808ef9d0a3f8",
   },
 };
 
@@ -117,9 +117,9 @@ export const STAKING_CONTRACT_ADDRESS: {
   97: {
     [Token.PHB]: "0x04f8bd779921F3df6EF0E98e4D2fb00D77ae051B",
     [Token.HZN]: "0x19b0E3B2413104b48Dc543A036CF808D5Fcb9d6F",
-    [Token.HZN_BNB_LP]: "",
-    [Token.HZN_BNB_LP_DEPRECATED]: "",
-    [Token.HZN_BNB_LP_LEGACY]: "",
+    [Token.HZN_BNB_LP]: "0x19b0E3B2413104b48Dc543A036CF808D5Fcb9d6F",
+    [Token.HZN_BNB_LP_DEPRECATED]: "0x19b0E3B2413104b48Dc543A036CF808D5Fcb9d6F",
+    [Token.HZN_BNB_LP_LEGACY]: "0x19b0E3B2413104b48Dc543A036CF808D5Fcb9d6F",
   },
 };
 

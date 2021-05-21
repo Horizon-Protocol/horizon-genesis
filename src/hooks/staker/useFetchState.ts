@@ -11,8 +11,8 @@ import {
   useLP,
   useDeprecatedLP,
   useLegacyLP,
-} from "./useContract";
-import useWallet from "./useWallet";
+} from "../useContract";
+import useWallet from "../useWallet";
 import useFetchStakingData from "./useFetchStakingData";
 
 export default function useFetchState() {

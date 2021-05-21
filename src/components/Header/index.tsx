@@ -5,9 +5,9 @@ import logo from "@assets/logo.png";
 import useWallet from "@hooks/useWallet";
 import NavTabs from "./NavTabs";
 import WalletInfo from "./WalletInfo";
-import WalletIndicator from "./WalletIndicator";
+import WalletsDialog from "./WalletsDialog";
 
-const useStyles = makeStyles({
+const useStyles = makeStyles(({ breakpoints }) => ({
   container: {
     padding: 16,
     borderBottom: "1px solid #11263B",
@@ -15,39 +15,73 @@ const useStyles = makeStyles({
   logo: {
     height: 40,
   },
+  nav: {
+    height: 40,
+    [breakpoints.between("sm", "md")]: {},
+    [breakpoints.down("sm")]: {
+      order: 3,
+    },
+  },
+  wallet: {
+    height: 40,
+    order: 2,
+    [breakpoints.down("sm")]: {
+      order: 2,
+      justifyContent: "center",
+      margin: "8px 0",
+    },
+  },
   connect: {
     fontSize: 14,
     paddingLeft: 18,
     paddingRight: 18,
   },
-  walletInfo: {},
-  walletIndicator: {},
-});
+}));
 
 export default function Header() {
   const classes = useStyles();
   const { connected } = useWallet();
 
   return (
-    <Grid container classes={{ container: classes.container }}>
-      <Grid container item xs={6} sm>
-        <img src={logo} alt='Horizon Mintr' className={classes.logo} />
-      </Grid>
-      <Grid container item xs={12} sm={6} justify='center'>
-        <NavTabs />
-      </Grid>
-      <Hidden smDown>
-        <Grid container item xs={6} sm justify='flex-end'>
+    <>
+      <Grid
+        container
+        alignItems='center'
+        classes={{ container: classes.container }}
+      >
+        <Grid container item xs={12} sm={6} md={2}>
+          <img src={logo} alt='Horizon Mintr' className={classes.logo} />
+        </Grid>
+        <Grid
+          container
+          item
+          xs={12}
+          sm={12}
+          md={8}
+          justify='center'
+          className={classes.nav}
+        >
+          <NavTabs />
+        </Grid>
+        <Grid
+          container
+          item
+          xs={12}
+          sm={6}
+          md={2}
+          justify='flex-end'
+          className={classes.wallet}
+        >
           {connected ? (
             <>
-              <WalletInfo className={classes.walletInfo} />
-              <WalletIndicator classes={{ root: classes.walletIndicator }} />
+              <WalletInfo />
             </>
           ) : (
             <ConnectButton classes={{ root: classes.connect }} />
           )}
         </Grid>
-      </Hidden>
-    </Grid>
+      </Grid>
+      <WalletsDialog />
+    </>
   );
 }

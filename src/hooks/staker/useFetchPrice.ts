@@ -7,7 +7,7 @@ import { tokenPriceAtomFamily } from "@atoms/price";
 import erc20Abi from "@abis/erc20.json";
 import { Erc20 } from "@abis/types";
 import { TokenAddresses, Token } from "@utils/constants";
-import { useRpcContract } from "./useContract";
+import { useRpcContract } from "../useContract";
 
 const lpDisabled = false;
 

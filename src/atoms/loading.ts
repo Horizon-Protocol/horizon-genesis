@@ -11,8 +11,7 @@ enum Loading {
 
 type Param = { name: Loading; loading?: boolean };
 const loadingFamily = atomFamily(
-  ({ name, loading = false }: Param) => loading,
-  null,
+  ({ loading = false }: Param) => atom(loading),
   (a, b) => a.name === b.name
 );
 

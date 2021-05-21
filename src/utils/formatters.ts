@@ -28,6 +28,6 @@ export const formatNumber = (value: number, format: numbro.Format = {}) => {
   });
 };
 
-export const formatAddress = (address: string, size: number = 8) => {
+export const formatAddress = (address: string, size: number = 6) => {
   return `${address.slice(0, size)}...${address.slice(-size)}`;
 };

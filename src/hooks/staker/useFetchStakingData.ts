@@ -6,9 +6,9 @@ import {
   earnedAtomFamily,
   withdrawableAtomFamily,
 } from "@atoms/balance";
-import useWallet from "./useWallet";
-import useStaking from "./useStaking";
 import { DEPRECATED_TOKENS } from "@utils/constants";
+import useWallet from "../useWallet";
+import useStaking from "./useStaking";
 
 export default function useFetchStakingData(token: TokenEnum) {
   const { account } = useWallet();

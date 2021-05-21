@@ -1,4 +1,5 @@
 import { useState } from "react";
+import { parseEther } from "@ethersproject/units";
 import { PAGE_COLOR } from "@utils/theme/constants";
 import bgMint from "@assets/images/mint.png";
 import arrowImg from "@assets/images/arrow-mint.png";
@@ -6,7 +7,6 @@ import PageCard from "@components/PageCard";
 import TargetCRatioOptions from "@components/TargetCRatioOptions";
 import TokenPair, { TokenProps } from "@components/TokenPair";
 import { Token } from "@utils/constants";
-import { BigNumber } from "@ethersproject/bignumber";
 import { zAssets } from "@utils/zAssets";
 
 const THEME_COLOR = PAGE_COLOR.mint;
@@ -35,8 +35,8 @@ export default function Earn() {
   const fromToken: TokenProps = {
     token: Token.HZN,
     label: "Stake",
-    amount: BigNumber.from(0),
-    max: BigNumber.from(100),
+    amount: parseEther("0"),
+    max: parseEther("100"),
     maxButtonLabel: "Max Mint",
     color: THEME_COLOR,
   };
@@ -46,7 +46,7 @@ export default function Earn() {
     label: "Mint",
     color: THEME_COLOR,
     bgColor: "#0A1624",
-    amount: BigNumber.from(0),
+    amount: parseEther("0"),
     balanceLabel: "Minted at 700% C-Ratio",
   };
 
@@ -71,6 +71,7 @@ export default function Earn() {
       />
       <TokenPair
         mt={3}
+        price={2}
         fromToken={fromToken}
         toToken={toToken}
         targetCRatio={targetCRatio}

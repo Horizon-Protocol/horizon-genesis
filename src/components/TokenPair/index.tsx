@@ -35,7 +35,7 @@ export default function TokenPair({
       setState({
         fromInput: input,
         fromMax: isMax,
-        toInput: (parseFloat(input) * price).toString(),
+        toInput: (parseFloat(input || "0") * price).toString(),
       });
     },
     [price, setState]

@@ -8,7 +8,7 @@ numbro.setDefaults({
   roundingFunction: Math.floor,
 });
 
-export const getFullDisplayBalance = (
+export const formatBalance = (
   balance: BigNumber,
   format: numbro.Format = {}
 ) => {

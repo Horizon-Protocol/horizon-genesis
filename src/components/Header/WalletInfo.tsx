@@ -7,7 +7,7 @@ import { openAtom } from "@atoms/wallet";
 import { availableAtomFamily } from "@atoms/balance";
 import useWallet from "@hooks/useWallet";
 import { Token } from "@utils/constants";
-import { getFullDisplayBalance } from "@utils/formatters";
+import { formatBalance } from "@utils/formatters";
 
 const useStyles = makeStyles({
   root: {
@@ -75,9 +75,7 @@ export default function WalletInfo({ className, ...props }: BoxProps) {
       <Box className={classes.balance}>
         {balances.map(({ token, amount }) => (
           <Box key={token}>
-            <Typography variant='caption'>
-              {getFullDisplayBalance(amount)}
-            </Typography>
+            <Typography variant='caption'>{formatBalance(amount)}</Typography>
             <StyledUnit variant='caption'>{token} Balance</StyledUnit>
           </Box>
         ))}

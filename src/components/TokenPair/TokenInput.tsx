@@ -1,11 +1,11 @@
-import { useCallback, useRef, SyntheticEvent } from "react";
+import { useCallback, useRef, SyntheticEvent, useMemo } from "react";
 import { formatEther } from "@ethersproject/units";
 import { Box, Link, InputBase, Typography, LinkProps } from "@material-ui/core";
 import { makeStyles } from "@material-ui/core/styles";
 import NumberFormat from "react-number-format";
 import { BigNumber, constants } from "ethers";
 import { Token, TokenName } from "@utils/constants";
-import { formatBigNumber } from "@utils/formatters";
+import { formatBalance } from "@utils/formatters";
 import { BORDER_COLOR } from "@utils/theme/constants";
 import hznLogo from "@assets/tokens/hzn.png";
 
@@ -113,24 +113,12 @@ export default function TokenInput({
       e.preventDefault();
       if (BigNumber.isBigNumber(max) && !amount.eq(max)) {
         maxRef.current = true;
-        console.log(
-          "max",
-          max.toString(),
-          max.toNumber(),
-          formatEther(max),
-          formatBigNumber(max, { mantissa: 6, trimMantissa: true })
-        );
-        onInput(
-          formatBigNumber(max, { mantissa: 6, trimMantissa: true }),
-          true
-        );
+
+        onInput(formatBalance(max, { mantissa: 6, trimMantissa: true }), true);
       }
     },
     [amount, max, onInput]
   );
-
-  console.log("amount", amount.toString());
-  console.log("input", input);
 
   const isHZN = token === Token.HZN;
 
@@ -204,7 +192,7 @@ export default function TokenInput({
           >
             {balanceLabel}
             {BigNumber.isBigNumber(max)
-              ? ` ${formatBigNumber(max)} ${token}`
+              ? ` ${formatBalance(max)} ${token}`
               : ""}
           </Typography>
           {max?.gt(0) && (

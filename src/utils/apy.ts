@@ -34,7 +34,7 @@ export const getApy = (
     return 0;
   }
   const apy = totalRewardPricePerYear.mul(10000).div(totalStakingTokenInPool);
-  // console.log("apy:", apy.toString(), getFullDisplayBalance(apy));
+  // console.log("apy:", apy.toString(), formatBalance(apy));
 
   return apy.toNumber() / 100;
 };

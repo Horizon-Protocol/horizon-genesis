@@ -59,7 +59,7 @@ export default function PageCard({
           color={color}
           title={title}
           description={description}
-          maxWidth={380}
+          maxWidth={420}
           py={3}
         />
       </Box>

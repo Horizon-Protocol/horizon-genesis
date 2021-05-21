@@ -13,7 +13,7 @@ const Description = withStyles({
   root: {
     marginBottom: 8,
     lineHeight: "22px",
-    letterSpacing: "0.5px",
+    color: "#C1D3E0",
   },
 })(Typography);
 

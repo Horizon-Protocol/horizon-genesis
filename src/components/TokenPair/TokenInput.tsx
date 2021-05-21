@@ -1,17 +1,15 @@
-import { useCallback, useRef, SyntheticEvent, useMemo } from "react";
-import { formatEther } from "@ethersproject/units";
-import { Box, Link, InputBase, Typography, LinkProps } from "@material-ui/core";
+import { useCallback, useRef, SyntheticEvent } from "react";
+import { Box, Link, InputBase, Typography } from "@material-ui/core";
 import { makeStyles } from "@material-ui/core/styles";
 import NumberFormat from "react-number-format";
-import { BigNumber, constants } from "ethers";
-import { Token, TokenName } from "@utils/constants";
+import { BigNumber } from "ethers";
 import { formatBalance } from "@utils/formatters";
 import { BORDER_COLOR } from "@utils/theme/constants";
-import hznLogo from "@assets/tokens/hzn.png";
+import TokenLogo from "@components/TokenLogo";
 
 declare global {
   interface TokenInputProps {
-    token: Token.HZN | zAssetsEnum;
+    token: TokenEnum | zAssetsEnum;
     label: string;
     balanceLabel?: JSX.Element | string;
     maxButtonLabel?: JSX.Element | string;
@@ -33,17 +31,6 @@ const useStyles = makeStyles(({ palette }) => ({
     background: "#091320",
   },
   inputBox: {},
-  tokenLogo: {
-    background: "rgba(55,133,185,0.08)",
-    textAlign: "center",
-  },
-  logoLabel: {
-    marginTop: 4,
-    fontSize: 9,
-    fontWeight: 700,
-    letterSpacing: "1.08px",
-    transform: "scale(0.75)",
-  },
   tokenNameTip: {
     fontSize: 12,
     letterSpacing: "0.43px",
@@ -125,8 +112,6 @@ export default function TokenInput({
     [amount, max, onInput]
   );
 
-  const isHZN = token === Token.HZN;
-
   return (
     <Box
       display='flex'
@@ -137,26 +122,7 @@ export default function TokenInput({
       style={{ backgroundColor: bgColor }}
     >
       <Box display='flex' alignItems='center'>
-        <Box
-          width={50}
-          height={50}
-          display='flex'
-          flexDirection='column'
-          justifyContent='center'
-          alignItems='center'
-          borderRadius='50%'
-          className={classes.tokenLogo}
-        >
-          <img
-            src={logo || hznLogo}
-            alt={token}
-            style={{
-              width: isHZN ? 26 : 18,
-              height: isHZN ? 26 : 18,
-            }}
-          />
-          {!isHZN && <span className={classes.logoLabel}>{token}</span>}
-        </Box>
+        <TokenLogo token={token} logo={logo} />
         <Box
           display='flex'
           flexDirection='column'

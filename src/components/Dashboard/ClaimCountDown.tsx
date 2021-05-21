@@ -1,8 +1,6 @@
-import { useMemo } from "react";
 import { Box, BoxProps, Typography } from "@material-ui/core";
 import { makeStyles } from "@material-ui/core/styles";
-import { useTimer } from "react-compound-timer";
-import differenceInMilliseconds from "date-fns/differenceInMilliseconds";
+import useClaimCountDown from "@hooks/useClaimCountDown";
 
 const useStyles = makeStyles({
   title: {
@@ -20,28 +18,10 @@ const useStyles = makeStyles({
   },
 });
 
-interface Props extends BoxProps {
-  date: Date;
-}
-
-export default function ClaimCountDown({ date, ...props }: Props) {
+export default function ClaimCountDown(props: BoxProps) {
   const classes = useStyles();
 
-  const milliSeconds = useMemo(
-    () => (date ? differenceInMilliseconds(date, new Date()) : 0),
-    [date]
-  );
-
-  const {
-    value: { d, h, m, s },
-  } = useTimer({
-    initialTime: milliSeconds,
-    direction: "backward",
-  });
-
-  if (!date || milliSeconds <= 0) {
-    return null;
-  }
+  const { formatted } = useClaimCountDown();
 
   return (
     <Box textAlign='center' {...props}>
@@ -49,7 +29,7 @@ export default function ClaimCountDown({ date, ...props }: Props) {
         NEXT REWARD CLAIM
       </Typography>
       <Typography variant='h5' className={classes.value}>
-        {d}d {h}h {m}m {m === 0 ? `${s}s` : ``}
+        {formatted}
       </Typography>
     </Box>
   );

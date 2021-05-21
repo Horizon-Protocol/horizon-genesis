@@ -19,11 +19,18 @@ const useStyles = makeStyles(() => ({
 function App() {
   const classes = useStyles();
 
+  const dashboardVisible = false;
+
   return (
     <Router>
       <Header />
-      {/* TODO: use floating button to expand and collapse */}
-      <Dashboard hidden className={classes.dashboard} zIndex={1} />
+      {/* TODO: use floating button to expand and collapse for mobile */}
+      <Dashboard
+        hidden={!dashboardVisible}
+        className={classes.dashboard}
+        zIndex={1}
+      />
+
       <Box mt={3}>
         <Switch>
           <Route path='/burn'>

@@ -4,11 +4,11 @@ import { PAGE_COLOR } from "@utils/theme/constants";
 import { Token } from "@utils/constants";
 import { zAssets } from "@utils/zAssets";
 import bg from "@assets/images/claim.png";
-import arrowRightImg from "@assets/images/burn-arrow-right.png";
+import useClaimCountDown from "@hooks/useClaimCountDown";
 import PageCard from "@components/PageCard";
 import { TokenProps } from "@components/TokenPair";
-import { Props as BalanceChangeProps } from "@components/BalanceChange";
 import RewardCard from "@components/Claim/RewardCard";
+import InfoList, { Info } from "@components/InfoList";
 import PrimaryButton from "@components/PrimaryButton";
 
 const THEME_COLOR = PAGE_COLOR.claim;
@@ -35,25 +35,26 @@ export default function Earn() {
     maxButtonLabel: "Max Unstake",
   };
 
-  const mockRewardStats: BalanceChangeProps = {
-    cRatio: {
-      from: 1500,
-      to: 700,
+  const { formatted } = useClaimCountDown();
+
+  const mockInfoList: Info[] = [
+    {
+      label: "Next Reward Claim Period",
+      value: formatted,
     },
-    debt: {
-      from: parseEther("6666"),
-      to: parseEther("4444"),
+    {
+      label: "Claim Period Ends",
+      value: "N/A",
     },
-    staked: {
-      from: parseEther("6666"),
-      to: parseEther("4444"),
+    {
+      label: "Total Rewards",
+      value: "0.00 HZN",
     },
-    transferrable: {
-      from: parseEther("6666"),
-      to: parseEther("4444"),
+    {
+      label: "Lifetime Rewards",
+      value: "0.00 HZN",
     },
-    gapImg: arrowRightImg,
-  };
+  ];
 
   return (
     <PageCard
@@ -81,6 +82,9 @@ export default function Earn() {
             </>
           }
         />
+      </Box>
+      <Box mt={3}>
+        <InfoList data={mockInfoList} />
       </Box>
       <Box mt={3}>
         <PrimaryButton size='large' fullWidth>

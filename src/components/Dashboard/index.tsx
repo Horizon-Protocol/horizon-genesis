@@ -56,8 +56,6 @@ const mockBalance = [
   },
 ];
 
-const mockClaimDate = new Date("2021-06-18T21:22:19Z");
-
 export default function Dashboard({ className, ...props }: BoxProps) {
   const classes = useStyles();
 
@@ -83,7 +81,7 @@ export default function Dashboard({ className, ...props }: BoxProps) {
           <Balance data={mockBalance} />
         </Box>
       </Box>
-      <ClaimCountDown p={2} date={mockClaimDate} />
+      <ClaimCountDown p={2} />
     </Box>
   );
 }

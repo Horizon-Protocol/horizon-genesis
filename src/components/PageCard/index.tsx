@@ -64,6 +64,7 @@ export default function PageCard({
         />
       </Box>
       <Box
+        py={3}
         display='flex'
         justifyContent='center'
         alignItems='stretch'

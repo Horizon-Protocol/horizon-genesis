@@ -1,14 +1,14 @@
 import { Box, BoxProps, Typography } from "@material-ui/core";
 import { HelpOutline } from "@material-ui/icons";
-import TargetCRatioOption from "./TargetCRatioOption";
+import PresetCRatioOption from "./CRatioOption";
 
 interface Props extends Omit<BoxProps, "onChange"> {
   value?: number;
-  options: TargetCRatioOption[];
+  options: PresetCRatioOption[];
   onChange(percent: number): void;
 }
 
-export default function TargetCRatioOptions({
+export default function PresetCRatioOptions({
   value,
   options,
   onChange,
@@ -17,12 +17,12 @@ export default function TargetCRatioOptions({
   return (
     <Box width='100%' {...props}>
       <Typography variant='subtitle2' align='center'>
-        Preset Minting Strategies
+        Preset Strategies
         <HelpOutline fontSize='inherit' />
       </Typography>
       <Box mt={1} display='flex' justifyContent='space-between'>
         {options.map((option) => (
-          <TargetCRatioOption
+          <PresetCRatioOption
             key={option.title}
             {...option}
             active={option.percent === value}

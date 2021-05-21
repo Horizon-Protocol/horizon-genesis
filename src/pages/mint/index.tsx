@@ -1,17 +1,23 @@
 import { useState } from "react";
+import { Box } from "@material-ui/core";
 import { parseEther } from "@ethersproject/units";
 import { PAGE_COLOR } from "@utils/theme/constants";
-import bgMint from "@assets/images/mint.png";
-import arrowImg from "@assets/images/arrow-mint.png";
-import PageCard from "@components/PageCard";
-import TargetCRatioOptions from "@components/TargetCRatioOptions";
-import TokenPair, { TokenProps } from "@components/TokenPair";
 import { Token } from "@utils/constants";
 import { zAssets } from "@utils/zAssets";
+import bgMint from "@assets/images/mint.png";
+import arrowImg from "@assets/images/mint-arrow.png";
+import arrowRightImg from "@assets/images/mint-arrow-right.png";
+import PageCard from "@components/PageCard";
+import PresetCRatioOptions from "@components/PresetCRatioOptions";
+import TokenPair, { TokenProps } from "@components/TokenPair";
+import BalanceChange, {
+  Props as BalanceChangeProps,
+} from "@components/BalanceChange";
+import PrimaryButton from "@components/PrimaryButton";
 
 const THEME_COLOR = PAGE_COLOR.mint;
 
-const targetCratioOptions: TargetCRatioOption[] = [
+const presetCratioOptions: PresetCRatioOption[] = [
   {
     title: "CONSERVATIVE",
     percent: 1000,
@@ -39,6 +45,7 @@ export default function Earn() {
     max: parseEther("100"),
     maxButtonLabel: "Max Mint",
     color: THEME_COLOR,
+    labelColor: THEME_COLOR,
   };
 
   const toToken: TokenProps = {
@@ -49,6 +56,26 @@ export default function Earn() {
     amount: parseEther("0"),
     balanceLabel: "Minted at 700% C-Ratio",
     inputPrefix: "$",
+  };
+
+  const mockBalanceChange: BalanceChangeProps = {
+    cRatio: {
+      from: 1500,
+      to: 700,
+    },
+    debt: {
+      from: parseEther("6666"),
+      to: parseEther("4444"),
+    },
+    staked: {
+      from: parseEther("6666"),
+      to: parseEther("4444"),
+    },
+    transferrable: {
+      from: parseEther("6666"),
+      to: parseEther("4444"),
+    },
+    gapImg: arrowRightImg,
   };
 
   return (
@@ -65,9 +92,9 @@ export default function Earn() {
         </>
       }
     >
-      <TargetCRatioOptions
+      <PresetCRatioOptions
         value={targetCRatio}
-        options={targetCratioOptions}
+        options={presetCratioOptions}
         onChange={setTargetCRatio}
       />
       <TokenPair
@@ -78,6 +105,12 @@ export default function Earn() {
         targetCRatio={targetCRatio}
         arrowImg={arrowImg}
       />
+      <BalanceChange my={3} {...mockBalanceChange} />
+      <Box>
+        <PrimaryButton size='large' fullWidth>
+          Mint Now
+        </PrimaryButton>
+      </Box>
     </PageCard>
   );
 }

@@ -17,6 +17,7 @@ declare global {
     maxButtonLabel?: JSX.Element | string;
     max?: BigNumber;
     color?: string;
+    labelColor?: string;
     bgColor?: string;
     logo?: string;
     input: string;
@@ -102,6 +103,7 @@ export default function TokenInput({
   max,
   logo,
   color,
+  labelColor,
   bgColor,
   inputPrefix,
 }: TokenInputProps) {
@@ -160,7 +162,12 @@ export default function TokenInput({
           flexDirection='column'
           className={classes.inputLabel}
         >
-          <Typography className={classes.tokenNameTip}>{label}</Typography>
+          <Typography
+            className={classes.tokenNameTip}
+            style={{ color: labelColor }}
+          >
+            {label}
+          </Typography>
           <Typography className={classes.tokenName}>{token}</Typography>
         </Box>
       </Box>

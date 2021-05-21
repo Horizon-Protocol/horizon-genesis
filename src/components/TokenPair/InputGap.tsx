@@ -1,6 +1,5 @@
 import { Box } from "@material-ui/core";
-import { VerticalAlignBottom } from "@material-ui/icons";
-import { makeStyles, fade } from "@material-ui/core/styles";
+import { makeStyles } from "@material-ui/core/styles";
 
 interface Props {
   direction?: "down" | "up";

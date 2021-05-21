@@ -46,7 +46,7 @@ const useStyles = makeStyles(({ palette }) =>
 );
 
 declare global {
-  interface TargetCRatioOption {
+  interface PresetCRatioOption {
     color: string;
     title: string;
     percent: number;
@@ -54,12 +54,12 @@ declare global {
 }
 
 interface Props
-  extends TargetCRatioOption,
-    Omit<ButtonBaseProps, keyof TargetCRatioOption> {
+  extends PresetCRatioOption,
+    Omit<ButtonBaseProps, keyof PresetCRatioOption> {
   active: boolean;
 }
 
-export default function TargetCRatioOption({
+export default function PresetCRatioOption({
   color,
   title,
   percent,

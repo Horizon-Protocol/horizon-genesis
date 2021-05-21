@@ -1,11 +1,5 @@
-import {
-  List,
-  ListItem,
-  ListItemIcon,
-  ListItemText,
-  makeStyles,
-} from "@material-ui/core";
-import { withStyles } from "@material-ui/core/styles";
+import { List, ListItem, ListItemIcon, ListItemText } from "@material-ui/core";
+import { makeStyles, withStyles } from "@material-ui/core/styles";
 
 interface Data {
   label: string;

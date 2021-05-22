@@ -16,6 +16,11 @@ const StyledButton = withStyles(({ palette }) => ({
 }))(Button);
 
 const useStyles = makeStyles({
+  root: {
+    fontSize: 14,
+    fontWeight: 700,
+    letterSpacing: "0.5px",
+  },
   rounded: {
     borderRadius: 6,
     background: "linear-gradient(180deg, #64B7DC 0%, #3785B9 100%)",

@@ -27,8 +27,10 @@ const useStyles = makeStyles(({ breakpoints }) => ({
     order: 2,
     [breakpoints.down("sm")]: {
       order: 2,
-      justifyContent: "center",
       margin: "8px 0",
+    },
+    [breakpoints.down("xs")]: {
+      justifyContent: "center",
     },
   },
   connect: {
@@ -77,7 +79,7 @@ export default function Header() {
               <WalletInfo />
             </>
           ) : (
-            <ConnectButton classes={{ root: classes.connect }} />
+            <ConnectButton rounded classes={{ root: classes.connect }} />
           )}
         </Grid>
       </Grid>

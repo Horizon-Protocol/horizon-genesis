@@ -13,7 +13,7 @@ const useStyles = makeStyles({
   },
   address: {
     borderRadius: 4,
-    padding: "6px 12px",
+    padding: "4px 12px",
     border: "1px solid rgba(55,133,185,0.25)",
   },
   dot: {
@@ -40,11 +40,14 @@ export default function WalletInfo({ className, ...props }: BoxProps) {
       {...props}
     >
       <Network />
-      <Button variant='text' size='small' className={classes.address}>
-        <Typography variant='body2' onClick={() => setOpen(true)}>
-          {shortAccount}
-          <i className={classes.dot} />
-        </Typography>
+      <Button
+        variant='text'
+        size='small'
+        onClick={() => setOpen(true)}
+        className={classes.address}
+      >
+        {shortAccount}
+        <i className={classes.dot} />
       </Button>
     </Box>
   );

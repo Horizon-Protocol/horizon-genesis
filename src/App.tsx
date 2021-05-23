@@ -7,6 +7,7 @@ import Claim from "@pages/claim";
 import Earn from "@pages/earn";
 import Header from "@components/Header";
 import Dashboard from "@components/Dashboard";
+import useFetchDebtData from "@hooks/useFetchDebtData";
 
 const useStyles = makeStyles(() => ({
   dashboard: {
@@ -20,6 +21,8 @@ function App() {
   const classes = useStyles();
 
   const dashboardVisible = false;
+
+  useFetchDebtData({});
 
   return (
     <Router>

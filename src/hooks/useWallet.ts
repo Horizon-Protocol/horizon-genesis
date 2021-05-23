@@ -2,6 +2,7 @@ import { useEffect, useMemo } from "react";
 import { useSnackbar } from "notistack";
 import { providers } from "ethers";
 import { useWallet as useBscWallet } from "@binance-chain/bsc-use-wallet";
+import horizon from "@lib/horizon";
 import { ChainName } from "@utils/constants";
 import { formatAddress } from "@utils/formatters";
 
@@ -63,16 +64,16 @@ export default function useWallet() {
     }
   }, [enqueueSnackbar, wallet.error]);
 
-  // useEffect(() => {
-  //   if (provider) {
-  //     provider.on("block", (blockNumber) => {
-  //       console.log("blockNumber", blockNumber);
-  //     });
-  //     return () => {
-  //       provider.removeAllListeners();
-  //     };
-  //   }
-  // }, [provider]);
+  useEffect(() => {
+    if (provider && connected) {
+      const signer = provider.getSigner();
+      horizon.setContractSettings({
+        networkId: wallet.chainId as any,
+        provider,
+        signer,
+      });
+    }
+  }, [connected, provider, wallet]);
 
   return {
     ...wallet,

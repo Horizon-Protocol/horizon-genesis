@@ -9,6 +9,7 @@ import Header from "@components/Header";
 import Dashboard from "@components/Dashboard";
 import useFetchAppData from "@hooks/useFetchAppData";
 import useFetchDebtData from "@hooks/useFetchDebtData";
+import useFetchZAssets from "@hooks/useFetchZAssets";
 
 const useStyles = makeStyles(() => ({
   dashboard: {
@@ -25,6 +26,7 @@ function App() {
 
   useFetchAppData();
   useFetchDebtData({});
+  useFetchZAssets();
 
   return (
     <Router>

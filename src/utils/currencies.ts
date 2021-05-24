@@ -1,4 +1,19 @@
+import { BigNumber } from "ethers";
+
 export type CurrencyKey = string;
+
+export type CryptoBalance = {
+  currencyKey: CurrencyKey;
+  balance: BigNumber;
+  usdBalance: BigNumber;
+  synth?: string;
+  transferrable?: BigNumber;
+};
+
+export type Asset = {
+  currencyKey: string;
+  balance: BigNumber;
+};
 
 export type Rates = Record<CurrencyKey, number>;
 

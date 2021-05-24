@@ -6,7 +6,7 @@ import { Box, BoxProps } from "@material-ui/core";
 import { makeStyles } from "@material-ui/core/styles";
 import clsx from "clsx";
 import { debtAtom } from "@atoms/debt";
-import { formatNumber } from "@utils/formatters";
+import { formatBalance, formatNumber } from "@utils/formatters";
 import { BORDER_COLOR, COLOR } from "@utils/theme/constants";
 import CRatioRange from "./CRatioRange";
 import StakingApy from "./StakingApy";
@@ -34,9 +34,9 @@ const useStyles = makeStyles(({ palette }) => ({
 export default function Dashboard({ className, ...props }: BoxProps) {
   const classes = useStyles();
 
-  const { transferable, currentCRatio } = useAtomValue(debtAtom);
+  const { balance, transferable, debtBalance } = useAtomValue(debtAtom);
+
   const hznRate = useAtomValue(hznRateAtom);
-  console.log("hznRate", hznRate);
 
   const balances = useMemo(
     () => [
@@ -47,32 +47,30 @@ export default function Dashboard({ className, ...props }: BoxProps) {
       },
       {
         label: "HZN Balance",
-        value: "2,000,000 HZN",
+        value: `${formatBalance(balance)} HZN`,
       },
       {
         label: "zUSD Balance",
-        value: "1,000,000 zUSD",
+        value: `${formatBalance(balance)} zUSD`,
       },
       {
         label: "",
       },
       {
         label: "Debt",
-        value: "$0.00",
+        value: `$ ${formatBalance(debtBalance)}`,
       },
       {
         label: "Staked",
-        value: "0.00 HZN",
+        value: `${formatBalance(balance)} HZN`,
       },
       {
         label: "Transferrable",
-        value: "168,888.00 HZN",
+        value: `${formatBalance(transferable)} HZN`,
       },
     ],
-    []
+    [hznRate, balance, debtBalance, transferable]
   );
-
-  console.log("currentCRatio", formatEther(currentCRatio));
 
   return (
     <Box

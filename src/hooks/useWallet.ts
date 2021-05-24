@@ -79,7 +79,7 @@ export default function useWallet() {
       });
       setAppReady(true);
     }
-  }, [rpcProvider]);
+  }, [rpcProvider, setAppReady]);
 
   useEffect(() => {
     if (provider && connected) {
@@ -91,7 +91,7 @@ export default function useWallet() {
       });
       setAppReady(true);
     }
-  }, [connected, provider, wallet]);
+  }, [connected, provider, setAppReady, wallet]);
 
   return {
     ...wallet,

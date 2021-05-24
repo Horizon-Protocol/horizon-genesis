@@ -134,8 +134,6 @@ export default function CRatioRange(props: BoxProps) {
     [currentCRatio, liquidationRatio, targetCRatio]
   );
 
-  console.log("progress", progress);
-
   const classes = useStyles({ color });
 
   return (

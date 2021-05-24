@@ -1,9 +1,9 @@
 import { useRequest } from "ahooks";
 import { useUpdateAtom } from "jotai/utils";
 import { debtAtom } from "@atoms/debt";
+import { BigNumber } from "@ethersproject/bignumber";
 import horizon from "@lib/horizon";
 import useWallet from "./useWallet";
-import { BigNumber } from "@ethersproject/bignumber";
 
 interface Params {}
 

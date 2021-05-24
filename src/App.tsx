@@ -7,6 +7,7 @@ import Claim from "@pages/claim";
 import Earn from "@pages/earn";
 import Header from "@components/Header";
 import Dashboard from "@components/Dashboard";
+import useFetchAppData from "@hooks/useFetchAppData";
 import useFetchDebtData from "@hooks/useFetchDebtData";
 
 const useStyles = makeStyles(() => ({
@@ -22,6 +23,7 @@ function App() {
 
   const dashboardVisible = true;
 
+  useFetchAppData();
   useFetchDebtData({});
 
   return (

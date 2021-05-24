@@ -1,15 +1,10 @@
-import { useCallback, useMemo } from "react";
-import {
-  Box,
-  Typography,
-  LinearProgress,
-  LinearProgressProps,
-  BoxProps,
-} from "@material-ui/core";
+import { useMemo } from "react";
+import { Box, Typography, LinearProgress, BoxProps } from "@material-ui/core";
 import { makeStyles, withStyles } from "@material-ui/core/styles";
 import { HelpOutline } from "@material-ui/icons";
 import { useAtomValue } from "jotai/utils";
-import { ratiosPercentAtom } from "@atoms/debt";
+import { ratiosPercentAtom } from "@atoms/app";
+import { currentCRatioPercentAtom } from "@atoms/debt";
 import { formatNumber } from "@utils/formatters";
 import { COLOR } from "@utils/theme/constants";
 
@@ -120,8 +115,8 @@ const Tick = ({
 };
 
 export default function CRatioRange(props: BoxProps) {
-  const { currentCRatio, targetCRatio, liquidationRatio } =
-    useAtomValue(ratiosPercentAtom);
+  const { targetCRatio, liquidationRatio } = useAtomValue(ratiosPercentAtom);
+  const currentCRatio = useAtomValue(currentCRatioPercentAtom);
 
   const { progress, color } = useMemo(
     () => ({

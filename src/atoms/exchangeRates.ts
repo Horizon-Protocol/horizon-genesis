@@ -6,5 +6,5 @@ export const ratesAtom = atom<Rates>({});
 
 export const hznRateAtom = selectAtom(
   ratesAtom,
-  (rates) => rates[CryptoCurrency.HZN]
+  (rates) => rates[CryptoCurrency.HZN] || 0
 );

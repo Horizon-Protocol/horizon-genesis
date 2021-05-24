@@ -10,6 +10,8 @@ export type CryptoBalance = {
   transferrable?: BigNumber;
 };
 
+export type SynthBalancesMap = Record<CurrencyKey, CryptoBalance>;
+
 export type Asset = {
   currencyKey: string;
   balance: BigNumber;
@@ -18,6 +20,7 @@ export type Asset = {
 export type Rates = Record<CurrencyKey, number>;
 
 export enum ZAssests {
+  zUSD = "zUSD",
   zBTC = "zBTC",
   zETH = "zETH",
   iBTC = "iBTC",
@@ -32,6 +35,11 @@ export enum CryptoCurrency {
 }
 
 export const zUSD_EXCHANGE_RATE = 1;
+
+export const FIAT_ZASSETS = new Set([ZAssests.zUSD]);
+
+export const isFiatCurrency = (currencyKey: CurrencyKey) =>
+  FIAT_ZASSETS.has(currencyKey);
 
 export const toInverseSynth = (currencyKey: CurrencyKey) =>
   currencyKey.replace(/^s/i, "i");

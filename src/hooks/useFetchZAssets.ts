@@ -1,19 +1,18 @@
 import { useRequest } from "ahooks";
 import { useUpdateAtom } from "jotai/utils";
-import { debtAtom } from "@atoms/debt";
 import { BigNumber, utils } from "ethers";
 import horizon from "@lib/horizon";
-import { CurrencyKey, CryptoBalance } from "@utils/currencies";
+import { zAssetsBalanceAtom, zAssetstotalUSDAtom } from "@atoms/debt";
+import { CurrencyKey, SynthBalancesMap } from "@utils/currencies";
 import useWallet from "./useWallet";
 
-export type SynthBalancesMap = Record<CurrencyKey, CryptoBalance>;
-
-type SynthBalancesTuple = [CurrencyKey[], number[], number[]];
+type SynthBalancesTuple = [CurrencyKey[], BigNumber[], BigNumber[]];
 
 export default function useFetchZAssets() {
   const { account } = useWallet();
 
-  const setDebtData = useUpdateAtom(debtAtom);
+  const setBalances = useUpdateAtom(zAssetsBalanceAtom);
+  const setTotalUSD = useUpdateAtom(zAssetstotalUSDAtom);
 
   useRequest(
     async () => {
@@ -26,10 +25,8 @@ export default function useFetchZAssets() {
 
       let totalUSDBalance = BigNumber.from(0);
 
-      console.log("synthsBalances", synthsBalances);
       currencyKeys.forEach((currencyKey: string, idx: number) => {
-        const balance = BigNumber.from(synthsBalances[idx]);
-        console.log("currencyKey", balance.toString());
+        const balance = synthsBalances[idx];
 
         // discard empty balances
         if (balance.gt(0)) {
@@ -38,24 +35,27 @@ export default function useFetchZAssets() {
           ) as CurrencyKey;
           const usdBalance = synthsUSDBalances[idx];
 
-          // balancesMap[synthName] = {
-          //   currencyKey: synthName,
-          //   balance,
-          //   usdBalance,
-          // };
+          balancesMap[synthName] = {
+            currencyKey: synthName,
+            balance,
+            usdBalance,
+          };
 
           totalUSDBalance = totalUSDBalance.add(usdBalance);
         }
       });
 
-      console.log({
-        totalUSDBalance: totalUSDBalance.toString(),
-        balancesMap: balancesMap,
-      });
+      return {
+        totalUSDBalance,
+        balancesMap,
+      };
     },
     {
       ready: !!account && !!horizon.js,
-      onSuccess() {},
+      onSuccess({ balancesMap, totalUSDBalance }) {
+        setBalances(balancesMap);
+        setTotalUSD(totalUSDBalance);
+      },
     }
   );
 }

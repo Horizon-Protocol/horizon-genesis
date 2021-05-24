@@ -40,12 +40,12 @@ export default function useFetchAppData() {
         liquidationRatio,
         liquidationDelay,
       ]) {
-        console.log({
-          totalSupply,
-          targetCRatio,
-          liquidationRatio: liquidationRatio.toString(),
-          liquidationDelay: liquidationDelay.toString(),
-        });
+        // console.log({
+        //   totalSupply,
+        //   targetCRatio,
+        //   liquidationRatio: liquidationRatio.toString(),
+        //   liquidationDelay: liquidationDelay.toString(),
+        // });
         setTotalSupply(totalSupply);
         setTargetCRatio(targetCRatio);
         setLiquidationRatio(liquidationRatio);

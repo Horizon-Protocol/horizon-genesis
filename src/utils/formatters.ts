@@ -1,5 +1,6 @@
 import { formatEther, parseEther } from "@ethersproject/units";
 import { BigNumber } from "ethers";
+import BigNumber from "bignumber.js";
 import numbro from "numbro";
 
 numbro.setDefaults({

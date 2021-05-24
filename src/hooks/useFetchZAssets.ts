@@ -28,7 +28,7 @@ export default function useFetchZAssets() {
 
       console.log("synthsBalances", synthsBalances);
       currencyKeys.forEach((currencyKey: string, idx: number) => {
-        const balance = BigNumber.from(utils.formatEther(synthsBalances[idx]));
+        const balance = BigNumber.from(synthsBalances[idx]);
         console.log("currencyKey", balance.toString());
 
         // discard empty balances

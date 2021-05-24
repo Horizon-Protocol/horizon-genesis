@@ -1,3 +1,4 @@
+import { atom } from "jotai";
 import { atomFamily } from "jotai/utils";
 import { Token } from "@utils/constants";
 
@@ -7,14 +8,15 @@ interface Param {
 }
 
 export const priceAtomFamily = atomFamily(
-  ({ price = 0 }: Param) => price,
-  null,
+  ({ price = 0 }: Param) => atom(price),
   (a, b) => a.token === b.token
 );
 
-export const tokenPriceAtomFamily = atomFamily(
-  (token: Token) => (get) => get(priceAtomFamily({ token })),
-  (token: Token) => (get, set, price: number) => {
-    set(priceAtomFamily({ token }), price);
-  }
+export const tokenPriceAtomFamily = atomFamily((token: Token) =>
+  atom(
+    (get) => get(priceAtomFamily({ token })),
+    (get, set, price: number) => {
+      set(priceAtomFamily({ token }), price);
+    }
+  )
 );

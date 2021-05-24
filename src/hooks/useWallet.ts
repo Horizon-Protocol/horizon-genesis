@@ -2,11 +2,18 @@ import { useEffect, useMemo } from "react";
 import { useSnackbar } from "notistack";
 import { providers } from "ethers";
 import { useWallet as useBscWallet } from "@binance-chain/bsc-use-wallet";
+import { useUpdateAtom } from "jotai/utils";
+import { readyAtom } from "@atoms/app";
 import horizon from "@lib/horizon";
-import { ChainName } from "@utils/constants";
+import { ChainId, ChainName } from "@utils/constants";
 import { formatAddress } from "@utils/formatters";
+import useRpcProvider from "./useRpcProvider";
 
 export default function useWallet() {
+  const setAppReady = useUpdateAtom(readyAtom);
+
+  const rpcProvider = useRpcProvider();
+
   const wallet = useBscWallet<providers.ExternalProvider>();
 
   const { enqueueSnackbar } = useSnackbar();
@@ -65,6 +72,16 @@ export default function useWallet() {
   }, [enqueueSnackbar, wallet.error]);
 
   useEffect(() => {
+    if (rpcProvider && !horizon.js) {
+      horizon.setContractSettings({
+        networkId: ChainId,
+        provider: rpcProvider,
+      });
+      setAppReady(true);
+    }
+  }, [rpcProvider]);
+
+  useEffect(() => {
     if (provider && connected) {
       const signer = provider.getSigner();
       horizon.setContractSettings({
@@ -72,6 +89,7 @@ export default function useWallet() {
         provider,
         signer,
       });
+      setAppReady(true);
     }
   }, [connected, provider, wallet]);
 

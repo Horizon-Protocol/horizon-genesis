@@ -1,15 +1,17 @@
+import { useMemo } from "react";
+import { formatEther } from "@ethersproject/units";
+import { hznRateAtom } from "@atoms/exchangeRates";
 import { useAtomValue } from "jotai/utils";
 import { Box, BoxProps } from "@material-ui/core";
 import { makeStyles } from "@material-ui/core/styles";
 import clsx from "clsx";
 import { debtAtom } from "@atoms/debt";
+import { formatNumber } from "@utils/formatters";
 import { BORDER_COLOR, COLOR } from "@utils/theme/constants";
 import CRatioRange from "./CRatioRange";
 import StakingApy from "./StakingApy";
 import Balance from "./Balance";
 import ClaimCountDown from "./ClaimCountDown";
-import { useMemo } from "react";
-import { formatEther } from "@ethersproject/units";
 
 const useStyles = makeStyles(({ palette }) => ({
   container: {
@@ -33,12 +35,14 @@ export default function Dashboard({ className, ...props }: BoxProps) {
   const classes = useStyles();
 
   const { transferable, currentCRatio } = useAtomValue(debtAtom);
+  const hznRate = useAtomValue(hznRateAtom);
+  console.log("hznRate", hznRate);
 
   const balances = useMemo(
     () => [
       {
         label: "HZN Price",
-        value: "$1.00",
+        value: `$${formatNumber(hznRate)}`,
         color: COLOR.safe,
       },
       {

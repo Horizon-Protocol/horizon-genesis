@@ -1,30 +1,18 @@
-import { useEffect, useState } from "react";
 import { useRequest } from "ahooks";
-import { useUpdateAtom } from "jotai/utils";
+import { useAtomValue, useUpdateAtom } from "jotai/utils";
 import { BigNumber } from "@ethersproject/bignumber";
 import {
+  readyAtom,
   totalSupplyAtom,
   targetCRatioAtom,
   liquidationRatioAtom,
   liquidationDelayAtom,
 } from "@atoms/app";
 import horizon from "@lib/horizon";
-import { ChainId } from "@utils/constants";
-import useRpcProvider from "./useRpcProvider";
+import useFetchExchangeRates from "./useFetchExchangeRates";
 
 export default function useFetchAppData() {
-  const [ready, setReady] = useState(false);
-  const rpcProvider = useRpcProvider();
-
-  useEffect(() => {
-    if (rpcProvider && !horizon.js) {
-      horizon.setContractSettings({
-        networkId: ChainId,
-        provider: rpcProvider,
-      });
-      setReady(true);
-    }
-  }, [rpcProvider]);
+  const appReady = useAtomValue(readyAtom);
 
   const setTotalSupply = useUpdateAtom(totalSupplyAtom);
   const setTargetCRatio = useUpdateAtom(targetCRatioAtom);
@@ -33,7 +21,6 @@ export default function useFetchAppData() {
 
   useRequest(
     async () => {
-      console.log("fetch!!!!!");
       const {
         contracts: { SystemSettings, Synthetix, Liquidations },
       } = horizon.js!;
@@ -46,7 +33,7 @@ export default function useFetchAppData() {
       return res;
     },
     {
-      ready: ready && !!horizon.js,
+      ready: appReady && !!horizon.js,
       onSuccess([
         totalSupply,
         targetCRatio,
@@ -66,4 +53,6 @@ export default function useFetchAppData() {
       },
     }
   );
+
+  useFetchExchangeRates();
 }

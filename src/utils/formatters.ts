@@ -1,4 +1,5 @@
-import { BigNumber, utils } from "ethers";
+import { formatEther, parseEther } from "@ethersproject/units";
+import { BigNumber } from "ethers";
 import numbro from "numbro";
 
 numbro.setDefaults({
@@ -8,11 +9,15 @@ numbro.setDefaults({
   roundingFunction: Math.floor,
 });
 
+export const formatRatioToPercent = (ratio: BigNumber) => {
+  return ratio.gt(0) ? parseEther("100").div(ratio).toNumber() : 0;
+};
+
 export const formatBalance = (
   balance: BigNumber,
   format: numbro.Format = {}
 ) => {
-  return numbro(utils.formatEther(balance)).format({
+  return numbro(formatEther(balance)).format({
     ...format,
   });
 };

@@ -1,4 +1,4 @@
-import { useMemo } from "react";
+import { useCallback, useMemo } from "react";
 import {
   Box,
   Typography,
@@ -8,32 +8,43 @@ import {
 } from "@material-ui/core";
 import { makeStyles, withStyles } from "@material-ui/core/styles";
 import { HelpOutline } from "@material-ui/icons";
+import { useAtomValue } from "jotai/utils";
+import { ratiosPercentAtom } from "@atoms/debt";
+import { formatNumber } from "@utils/formatters";
 import { COLOR } from "@utils/theme/constants";
 
-const getColorByRatio = (ratio: number) => {
-  if (ratio < 200) {
+const getColorByRatioPercent = (
+  ratio: number,
+  liquidation: number,
+  target: number
+) => {
+  if (ratio <= liquidation) {
     return COLOR.danger;
   }
-  if (ratio < 700) {
+  if (ratio < target) {
     return COLOR.warning;
   }
   return COLOR.safe;
 };
 
-const getPercentByRatio = (ratio: number) => {
+const getProgressByRatioPercent = (
+  ratio: number,
+  liquidation: number,
+  target: number
+) => {
   let percent = 0;
-  if (ratio < 0) {
+  if (ratio <= 0) {
     percent = 0;
-  } else if (ratio < 200) {
-    percent = (ratio / 200) * 25;
-  } else if (ratio < 700) {
-    percent = 25 + ((ratio - 200) / 500) * 50;
+  } else if (ratio < liquidation) {
+    percent = (ratio / liquidation) * 25;
+  } else if (ratio < target) {
+    percent = 25 + ((ratio - liquidation) / (target - liquidation)) * 50;
   } else {
-    // ratio >= 700
-    percent = 75 + ((ratio - 700) / 300) * 25;
+    // ratio >= target
+    percent = 75 + ((ratio - target) / (1000 - target)) * 25;
   }
 
-  return percent;
+  return Math.min(percent, 100);
 };
 
 const useStyles = makeStyles(() => ({
@@ -48,9 +59,21 @@ const useStyles = makeStyles(() => ({
     lineHeight: "14px",
     letterSpacing: "0.5px",
   },
-  progress: {
+  progressWrap: {
     position: "relative",
     paddingBottom: 32,
+  },
+  progress: {
+    height: 24,
+    borderRadius: 4,
+    border: `1px solid ${COLOR.border}`,
+  },
+  progressPrimary: {
+    backgroundColor: "transparent",
+  },
+  progressBar: {
+    backgroundColor: ({ color }: { color?: string }) => color,
+    borderRadius: 0,
   },
   tick: {
     position: "absolute",
@@ -62,22 +85,6 @@ const useStyles = makeStyles(() => ({
     borderLeft: `1px solid ${COLOR.border}`,
   },
 }));
-
-const BorderedProgress = withStyles(({ palette }) => ({
-  root: {
-    height: 24,
-    borderRadius: 4,
-    border: `1px solid ${COLOR.border}`,
-  },
-  colorPrimary: {
-    backgroundColor: "transparent",
-  },
-  bar: {
-    backgroundColor: ({ valueBuffer = 0 }: LinearProgressProps) =>
-      getColorByRatio(valueBuffer),
-    borderRadius: 0,
-  },
-}))(LinearProgress);
 
 const TickLabel = withStyles(() => ({
   root: {
@@ -112,20 +119,29 @@ const Tick = ({
   );
 };
 
-interface Props extends BoxProps {
-  ratio: number;
-}
+export default function CRatioRange(props: BoxProps) {
+  const { currentCRatio, targetCRatio, liquidationRatio } =
+    useAtomValue(ratiosPercentAtom);
 
-export default function CRatioRange({ ratio = 700, ...props }: Props) {
-  const { percent, color } = useMemo(
+  const { progress, color } = useMemo(
     () => ({
-      color: getColorByRatio(ratio),
-      percent: getPercentByRatio(ratio),
+      color: getColorByRatioPercent(
+        currentCRatio,
+        liquidationRatio,
+        targetCRatio
+      ),
+      progress: getProgressByRatioPercent(
+        currentCRatio,
+        liquidationRatio,
+        targetCRatio
+      ),
     }),
-    [ratio]
+    [currentCRatio, liquidationRatio, targetCRatio]
   );
 
-  const classes = useStyles();
+  console.log("progress", progress);
+
+  const classes = useStyles({ color });
 
   return (
     <Box py={3} textAlign='center' {...props}>
@@ -134,25 +150,39 @@ export default function CRatioRange({ ratio = 700, ...props }: Props) {
         classes={{ root: classes.number }}
         style={{ color }}
       >
-        {ratio}%
+        {formatNumber(currentCRatio)}%
       </Typography>
       <Typography variant='subtitle2' classes={{ root: classes.tip }}>
         Current C-Ratio &nbsp;
         <HelpOutline fontSize='inherit' />
       </Typography>
-      <Box className={classes.progress}>
-        <BorderedProgress
+      <Box className={classes.progressWrap}>
+        <LinearProgress
           variant='determinate'
-          value={percent}
-          valueBuffer={ratio}
+          value={progress}
+          valueBuffer={currentCRatio}
+          classes={{
+            root: classes.progress,
+            colorPrimary: classes.progressPrimary,
+            bar: classes.progressBar,
+          }}
         />
-        <Tick
-          percent={200}
-          left='25%'
-          label='Liquidation'
-          color={COLOR.danger}
-        />
-        <Tick percent={700} left='75%' label='Target' color={COLOR.safe} />
+        {liquidationRatio > 0 && (
+          <Tick
+            percent={liquidationRatio}
+            left='25%'
+            label='Liquidation'
+            color={COLOR.danger}
+          />
+        )}
+        {targetCRatio > 0 && (
+          <Tick
+            percent={targetCRatio}
+            left='75%'
+            label='Target'
+            color={COLOR.safe}
+          />
+        )}
       </Box>
     </Box>
   );

@@ -20,7 +20,7 @@ const useStyles = makeStyles(() => ({
 function App() {
   const classes = useStyles();
 
-  const dashboardVisible = false;
+  const dashboardVisible = true;
 
   useFetchDebtData({});
 

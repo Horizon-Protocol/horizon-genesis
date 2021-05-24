@@ -1,8 +1,8 @@
 import { useRequest } from "ahooks";
 import { useUpdateAtom } from "jotai/utils";
-import { debtAtom } from "@atoms/debt";
-import { BigNumber } from "@ethersproject/bignumber";
 import horizon from "@lib/horizon";
+import { toBigNumber } from "@utils/number";
+import { debtAtom } from "@atoms/debt";
 import useWallet from "./useWallet";
 
 interface Params {}
@@ -19,7 +19,7 @@ export default function useFetchDebtData(params: Params) {
         utils,
       } = horizon.js!;
       const zUSDBytes = utils.formatBytes32String("zUSD");
-      const res: BigNumber[] = await Promise.all([
+      const res = await Promise.all([
         Synthetix.collateralisationRatio(account),
         Synthetix.transferableSynthetix(account),
         Synthetix.debtBalanceOf(account, zUSDBytes),
@@ -28,7 +28,7 @@ export default function useFetchDebtData(params: Params) {
         Synthetix.balanceOf(account),
         Liquidations.getLiquidationDeadlineForAccount(account),
       ]);
-      return res;
+      return res.map(toBigNumber);
     },
     {
       ready: !!account && !!horizon.js,

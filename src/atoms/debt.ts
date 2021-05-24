@@ -1,18 +1,20 @@
-import { BigNumber, constants, utils } from "ethers";
+import { constants, utils } from "ethers";
 import { atom } from "jotai";
 import { atomWithReset, selectAtom } from "jotai/utils";
-import { formatBalance, formatRatioToPercent } from "@utils/formatters";
+import BigNumber from "bignumber.js";
+import { zeroBN } from "@utils/number";
+import { formatRatioToPercent } from "@utils/formatters";
 import { SynthBalancesMap } from "@utils/currencies";
 import { hznRateAtom } from "./exchangeRates";
 import { targetCRatioAtom } from "./app";
 
 export const debtAtom = atomWithReset({
-  currentCRatio: constants.Zero,
-  transferable: constants.Zero,
-  debtBalance: constants.Zero,
-  collateral: constants.Zero,
-  issuableSynths: constants.Zero,
-  balance: constants.Zero,
+  currentCRatio: zeroBN,
+  transferable: zeroBN,
+  debtBalance: zeroBN,
+  collateral: zeroBN,
+  issuableSynths: zeroBN,
+  balance: zeroBN,
 });
 
 export const currentCRatioPercentAtom = atom((get) =>
@@ -29,27 +31,27 @@ export const hznStakedAtom = atom((get) => {
 
   const hznRateBN = utils.parseEther("2.33");
 
-  console.log("currentCRatio", utils.formatEther(currentCRatio));
-  console.log("targetCRatio", utils.formatEther(targetCRatio));
-  console.log("ratio", utils.formatEther(currentCRatio.div(targetCRatio)));
+  console.log("currentCRatio", currentCRatio);
+  console.log("targetCRatio", targetCRatio);
+  console.log("ratio", currentCRatio.div(targetCRatio));
   console.log("ratio", currentCRatio.div(targetCRatio).toString());
-  const stakedCollateral = collateral.mul(
+  const stakedCollateral = collateral.multipliedBy(
     Math.min(1, currentCRatio.div(targetCRatio).toNumber())
   );
 
-  const stakedCollateralValue = stakedCollateral.mul(hznRateBN);
+  const stakedCollateralValue = stakedCollateral.multipliedBy(hznRateBN);
 
-  console.log("collateral", utils.formatEther(collateral));
-  console.log("stakedCollateral", utils.formatEther(stakedCollateral));
+  console.log("collateral", collateral);
+  console.log("stakedCollateral", stakedCollateral);
   console.log("hznRate", hznRate);
   console.log("stakedCollateralValue", stakedCollateralValue.toString());
 
-  console.log("fuck", utils.formatEther(stakedCollateralValue));
+  console.log("res", stakedCollateralValue);
   return stakedCollateralValue;
 });
 
 // zAssets
-export const zAssetstotalUSDAtom = atom<BigNumber>(constants.Zero);
+export const zAssetstotalUSDAtom = atom<BigNumber>(zeroBN);
 
 export const zAssetsBalanceAtom = atom<SynthBalancesMap>({});
 

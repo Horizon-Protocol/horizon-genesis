@@ -1,14 +1,15 @@
-import { constants } from "ethers";
 import { atom } from "jotai";
 import { atomWithReset } from "jotai/utils";
+import BigNumber from "bignumber.js";
+import { zeroBN } from "@utils/number";
 import { formatRatioToPercent } from "@utils/formatters";
 
 export const readyAtom = atomWithReset(false);
 
-export const totalSupplyAtom = atomWithReset(constants.Zero);
-export const targetCRatioAtom = atomWithReset(constants.Zero);
-export const liquidationRatioAtom = atomWithReset(constants.Zero);
-export const liquidationDelayAtom = atomWithReset(constants.Zero);
+export const totalSupplyAtom = atomWithReset(zeroBN);
+export const targetCRatioAtom = atomWithReset(zeroBN);
+export const liquidationRatioAtom = atomWithReset(zeroBN);
+export const liquidationDelayAtom = atomWithReset(zeroBN);
 
 // HZN price
 export const hznPriceAtom = atomWithReset(0);

@@ -1,5 +1,3 @@
-import { formatEther, parseEther } from "@ethersproject/units";
-import { BigNumber } from "ethers";
 import BigNumber from "bignumber.js";
 import numbro from "numbro";
 
@@ -11,14 +9,14 @@ numbro.setDefaults({
 });
 
 export const formatRatioToPercent = (ratio: BigNumber) => {
-  return ratio.gt(0) ? parseEther("100").div(ratio).toNumber() : 0;
+  return ratio.gt(0) ? new BigNumber("100").div(ratio).toNumber() : 0;
 };
 
 export const formatBalance = (
   balance: BigNumber,
   format: numbro.Format = {}
 ) => {
-  return numbro(formatEther(balance)).format({
+  return numbro(balance).format({
     ...format,
   });
 };

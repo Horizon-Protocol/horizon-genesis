@@ -2,8 +2,8 @@ import { useCallback } from "react";
 import { constants } from "ethers";
 import { useUpdateAtom } from "jotai/utils";
 import { useSnackbar } from "notistack";
-import { loadingAllAtom } from "@atoms/loading";
-import { availableAtomFamily } from "@atoms/balance";
+import { loadingAllAtom } from "@atoms/staker/loading";
+import { availableAtomFamily } from "@atoms/staker/balance";
 import { Token } from "@utils/constants";
 import {
   usePHB,

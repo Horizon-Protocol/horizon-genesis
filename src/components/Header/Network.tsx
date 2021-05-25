@@ -2,7 +2,7 @@ import { useAtomValue } from "jotai/utils";
 import { Avatar, Chip, ChipProps, CircularProgress } from "@material-ui/core";
 import { withStyles } from "@material-ui/core/styles";
 import { detailAtom } from "@atoms/wallet";
-import { loadingAllAtom } from "@atoms/loading";
+import { loadingAllAtom } from "@atoms/staker/loading";
 import useFetchState from "@hooks/staker/useFetchState";
 import { ChainName } from "@utils/constants";
 

@@ -8,7 +8,10 @@ import {
   CardContent,
 } from "@material-ui/core";
 import { useAtomValue } from "jotai/utils";
-import { stakedAtomFamily, withdrawableAtomFamily } from "@atoms/balance";
+import {
+  stakedAtomFamily,
+  withdrawableAtomFamily,
+} from "@atoms/staker/balance";
 import defaultTheme from "@utils/theme";
 import { DEPRECATED_TOKENS } from "@utils/constants";
 import useWallet from "@hooks/useWallet";

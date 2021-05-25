@@ -7,7 +7,7 @@ import { formatBalance, formatNumber } from "@utils/formatters";
 import { getApy } from "@utils/apy";
 import { tokenStatAtomFamily } from "@atoms/staker/stat";
 import { useMemo } from "react";
-import { tokenPriceAtomFamily } from "@atoms/price";
+import { tokenPriceAtomFamily } from "@atoms/staker/price";
 
 const useStyles = makeStyles({
   root: {

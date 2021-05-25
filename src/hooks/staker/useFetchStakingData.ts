@@ -5,7 +5,7 @@ import {
   stakedAtomFamily,
   earnedAtomFamily,
   withdrawableAtomFamily,
-} from "@atoms/balance";
+} from "@atoms/staker/balance";
 import { DEPRECATED_TOKENS } from "@utils/constants";
 import useWallet from "../useWallet";
 import useStaking from "./useStaking";

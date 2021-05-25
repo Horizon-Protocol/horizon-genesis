@@ -3,7 +3,7 @@ import { BigNumber, constants, utils } from "ethers";
 import { useUpdateAtom } from "jotai/utils";
 import { fetchPrice } from "@apis/coingecko";
 import { fetchTotalLiquidity } from "@apis/pancakeswap";
-import { tokenPriceAtomFamily } from "@atoms/price";
+import { tokenPriceAtomFamily } from "@atoms/staker/price";
 import erc20Abi from "@abis/erc20.json";
 import { Erc20 } from "@abis/types";
 import { TokenAddresses, Token } from "@utils/constants";

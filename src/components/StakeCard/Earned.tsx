@@ -7,7 +7,7 @@ import CountUp from "react-countup";
 import { CARD_CONTENT } from "@utils/theme/constants";
 import useFetchState from "@hooks/staker/useFetchState";
 import PrimaryButton from "@components/PrimaryButton";
-import { earnedAtomFamily } from "@atoms/balance";
+import { earnedAtomFamily } from "@atoms/staker/balance";
 import { formatBalance } from "@utils/formatters";
 import useStaking from "@hooks/staker/useStaking";
 

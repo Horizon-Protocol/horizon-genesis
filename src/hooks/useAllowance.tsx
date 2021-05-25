@@ -3,7 +3,7 @@ import { useAtom } from "jotai";
 import { BigNumber } from "ethers";
 import { useSnackbar } from "notistack";
 import { Erc20, HZN } from "@abis/types";
-import { tokenAllowanceAtomFamily } from "@atoms/balance";
+import { tokenAllowanceAtomFamily } from "@atoms/staker/balance";
 import { Token } from "@utils/constants";
 import {
   usePHB,

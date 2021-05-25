@@ -16,7 +16,7 @@ import {
   availableAtomFamily,
   stakedAtomFamily,
   withdrawableAtomFamily,
-} from "@atoms/balance";
+} from "@atoms/staker/balance";
 import { tokenStatAtomFamily } from "@atoms/staker/stat";
 import { TokenName } from "@utils/constants";
 import { formatBalance } from "@utils/formatters";

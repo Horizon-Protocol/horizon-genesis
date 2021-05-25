@@ -1,6 +1,6 @@
 import { atom } from "jotai";
 import { atomWithReset, selectAtom } from "jotai/utils";
-import { zeroBN, toBigNumber } from "@utils/number";
+import { zeroBN, cRatioToPercent } from "@utils/number";
 import { SynthBalancesMap } from "@utils/currencies";
 // import { hznRateAtom } from "./exchangeRates";
 import { targetCRatioAtom } from "./app";
@@ -25,11 +25,7 @@ export const currentCRatioPercentAtom = atom((get) => {
   // return percentCurrentCRatioOfTarget.isNaN()
   //   ? 0
   //   : percentCurrentCRatioOfTarget.toNumber();
-
-  const currentCRatioPercent = currentCRatio.isZero()
-    ? toBigNumber(0)
-    : toBigNumber(100).div(currentCRatio);
-  return currentCRatioPercent.isNaN() ? 0 : currentCRatioPercent.toNumber();
+  return cRatioToPercent(currentCRatio);
 });
 
 export const hznStakedAtom = atom((get) => {

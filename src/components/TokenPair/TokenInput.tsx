@@ -1,8 +1,9 @@
 import { useCallback, useRef, SyntheticEvent } from "react";
+import BigNumber from "bignumber.js";
 import { Box, Link, InputBase, Typography } from "@material-ui/core";
 import { makeStyles } from "@material-ui/core/styles";
 import NumberFormat from "react-number-format";
-import { formatNumber } from "@utils/number";
+import { formatNumber, NumericValue } from "@utils/number";
 import { BORDER_COLOR } from "@utils/theme/constants";
 import TokenLogo from "@components/TokenLogo";
 
@@ -12,15 +13,16 @@ declare global {
     label: string;
     balanceLabel?: JSX.Element | string;
     maxButtonLabel?: JSX.Element | string;
-    max: BN;
+    max?: BN;
     color?: string;
     labelColor?: string;
     bgColor?: string;
     logo?: string;
     input: string;
+    inputPrefix?: string;
     onInput(v: string, max?: boolean): void;
     amount: BN; // BN format of input
-    inputPrefix?: string;
+    toPair?(targetCRatio: BN, stakeAmount: NumericValue, hznRate: BN): BN; // convert between from and to token amount
   }
 }
 
@@ -59,7 +61,7 @@ const useStyles = makeStyles(({ palette }) => ({
     fontFamily: "Rawline",
     fontSize: 24,
     fontWeight: 700,
-    lineHeight: " 29px",
+    lineHeight: "26px",
     textAlign: "right",
   },
   balanceLabel: {
@@ -94,7 +96,7 @@ export default function TokenInput({
   inputPrefix,
 }: TokenInputProps) {
   const classes = useStyles({
-    invalidInput: amount.gt(max),
+    invalidInput: !!max && amount.gt(max),
   });
 
   const maxRef = useRef<boolean>();
@@ -102,10 +104,9 @@ export default function TokenInput({
   const handleClickMax = useCallback(
     (e: SyntheticEvent) => {
       e.preventDefault();
-      if (!amount.eq(max)) {
+      if (max && !amount.eq(max)) {
         maxRef.current = true;
-
-        onInput(formatNumber(max, { decimals: 6 }));
+        onInput(max.toFixed(6, BigNumber.ROUND_DOWN));
       }
     },
     [amount, max, onInput]
@@ -146,8 +147,11 @@ export default function TokenInput({
         <NumberFormat
           value={input}
           onValueChange={(values) => {
+            console.log("input values", values);
+            // if (values.value) {
             onInput(values.value, maxRef.current);
             maxRef.current = false;
+            // }
           }}
           prefix={inputPrefix}
           allowNegative={false}
@@ -167,7 +171,7 @@ export default function TokenInput({
             // className={classes.balanceLabel}
           >
             {balanceLabel}
-            {max.gt(0) && ` ${formatNumber(max)} ${token}`}
+            {max?.gt(0) && ` ${formatNumber(max)} ${token}`}
           </Typography>
           {max?.gt(0) && (
             <Link

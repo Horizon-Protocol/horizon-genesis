@@ -57,7 +57,10 @@ export const formatNumber = (
   }
 
   formattedValue.push(
-    toBigNumber(value).toFormat(options?.decimals ?? DEFAULT_NUMBER_DECIMALS)
+    toBigNumber(value).toFormat(
+      options?.decimals ?? DEFAULT_NUMBER_DECIMALS,
+      BigNumber.ROUND_DOWN
+    )
   );
   if (suffix) {
     formattedValue.push(` ${suffix}`);
@@ -99,9 +102,7 @@ export const formatPercent = (
   value: NumericValue,
   options?: { minDecimals: number }
 ) => {
-  const decimals = options?.minDecimals ?? 2;
-
-  return `${(Number(value) * 100).toFixed(decimals)}%`;
+  return formatNumber(Number(value) * 100);
 };
 
 // TODO: figure out a robust way to get the correct precision.
@@ -147,4 +148,11 @@ export function formatUnits(
 
 export function toEthersBig(a: any, b: number): ethers.BigNumber {
   return ethers.utils.parseUnits(a.div(Math.pow(10, b)).toString(), b);
+}
+
+export function cRatioToPercent(cRatio: BN): number {
+  const cRatioPercent = cRatio.isZero()
+    ? toBigNumber(0)
+    : toBigNumber(100).div(cRatio);
+  return cRatioPercent.isNaN() ? 0 : cRatioPercent.toNumber();
 }

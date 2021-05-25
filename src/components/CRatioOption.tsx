@@ -1,6 +1,7 @@
 import { Box, ButtonBase, ButtonBaseProps } from "@material-ui/core";
 import { makeStyles, createStyles } from "@material-ui/core/styles";
 import { fade } from "@material-ui/core/styles/colorManipulator";
+import { formatNumber } from "@utils/number";
 
 interface StyleProps {
   color: string;
@@ -49,6 +50,7 @@ declare global {
   interface PresetCRatioOption {
     color: string;
     title: string;
+    cRatio: BN;
     percent: number;
   }
 }
@@ -63,6 +65,7 @@ export default function PresetCRatioOption({
   color,
   title,
   percent,
+  cRatio,
   active,
   ...props
 }: Props) {
@@ -81,7 +84,7 @@ export default function PresetCRatioOption({
         borderColor={active ? color : "transparent"}
         justifyContent='center'
       >
-        <span className={classes.percent}>{percent}%</span>
+        <span className={classes.percent}>{percent.toFixed(0)}%</span>
         <span className={classes.suffix}>
           Target <br /> C-Ratio
         </span>

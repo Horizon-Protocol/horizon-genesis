@@ -1,19 +1,23 @@
 import { Box, BoxProps, Typography } from "@material-ui/core";
 import { HelpOutline } from "@material-ui/icons";
+import { useAtomValue } from "jotai/utils";
+import { presetCRatioPercentsAtom } from "@atoms/app";
 import PresetCRatioOption from "./CRatioOption";
 
 interface Props extends Omit<BoxProps, "onChange"> {
-  value?: number;
-  options: PresetCRatioOption[];
-  onChange(percent: number): void;
+  color: string;
+  value: BN;
+  onChange(cRatio: BN): void;
 }
 
 export default function PresetCRatioOptions({
+  color,
   value,
-  options,
   onChange,
   ...props
 }: Props) {
+  const presetCRatioPercents = useAtomValue(presetCRatioPercentsAtom);
+
   return (
     <Box width='100%' {...props}>
       <Typography variant='subtitle2' align='center'>
@@ -21,12 +25,13 @@ export default function PresetCRatioOptions({
         <HelpOutline fontSize='inherit' />
       </Typography>
       <Box mt={1} display='flex' justifyContent='space-between'>
-        {options.map((option) => (
+        {presetCRatioPercents.map((option) => (
           <PresetCRatioOption
             key={option.title}
+            color={color}
+            active={option.cRatio.eq(value)}
+            onClick={() => onChange(option.cRatio)}
             {...option}
-            active={option.percent === value}
-            onClick={() => onChange(option.percent)}
           />
         ))}
       </Box>

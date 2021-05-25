@@ -1,5 +1,4 @@
-import { useCallback, useMemo } from "react";
-import { useSetState } from "ahooks";
+import { useCallback, useEffect, useMemo } from "react";
 import { Box, BoxProps } from "@material-ui/core";
 import { toBigNumber, zeroBN } from "@utils/number";
 import TokenInput from "./TokenInput";
@@ -7,67 +6,75 @@ import InputGap from "./InputGap";
 
 export type TokenProps = Omit<TokenInputProps, "input" | "onInput">;
 
+export interface InputState {
+  fromInput: string;
+  fromMax: boolean;
+  toInput: string;
+  toMax: boolean;
+}
+
 export interface TokenPairProps {
   fromToken: TokenProps;
   toToken: TokenProps;
-  price: number;
-  targetCRatio?: number;
+  rate: BN;
+  cRatio: BN;
   arrowImg?: string;
-  onChange?(): void;
+  state: InputState;
+  setState: (
+    patch:
+      | Partial<InputState>
+      | ((prevState: InputState) => Partial<InputState>)
+  ) => void;
 }
 export default function TokenPair({
   fromToken,
   toToken,
-  price = 1,
-  targetCRatio,
+  rate,
+  cRatio,
   arrowImg,
+  state,
+  setState,
   ...props
 }: TokenPairProps & BoxProps) {
-  const [state, setState] = useSetState({
-    fromInput: "",
-    fromMax: false,
-    toInput: "",
-    toMax: false,
-  });
+  useEffect(() => {
+    console.log("change cRatio", cRatio.toNumber());
+    // setState({
+    //   fromInput:
+    // })
+  }, [cRatio]);
 
   const setFromInput = useCallback<TokenInputProps["onInput"]>(
-    (input, isMax) => {
+    (input, isMax = false) => {
       setState({
         fromInput: input,
         fromMax: isMax,
-        toInput: (parseFloat(input || "0") * price).toString(),
+        toInput:
+          fromToken?.toPair?.(cRatio, input || "0", rate).toString() || "",
+        toMax: false,
       });
     },
-    [price, setState]
+    [cRatio, fromToken, rate, setState]
   );
 
   const { fromAmount, toAmount } = useMemo(
     () => ({
-      fromAmount: state.fromMax
-        ? fromToken.max || zeroBN
-        : toBigNumber(state.fromInput.replace(/[^0-9.]/g, "") || 0),
-      toAmount: state.toMax
-        ? toToken.max || zeroBN
-        : toBigNumber(state.toInput.replace(/[^0-9.]/g, "") || 0),
+      fromAmount: toBigNumber(state.fromInput.replace(/[^0-9.]/g, "") || 0),
+      toAmount: toBigNumber(state.toInput.replace(/[^0-9.]/g, "") || 0),
     }),
-    [
-      fromToken.max,
-      state.fromInput,
-      state.fromMax,
-      state.toInput,
-      state.toMax,
-      toToken.max,
-    ]
+    [state.fromInput, state.toInput]
   );
 
   const setToInput = useCallback<TokenInputProps["onInput"]>(
-    (input) => {
+    (input, isMax = false) => {
       setState({
         toInput: input,
-        fromInput: (parseFloat(input || "0") / price).toString(),
+        toMax: isMax,
+        fromInput:
+          toToken?.toPair?.(cRatio, input || "0", rate).toString() || "",
+        fromMax: false,
       });
     },
-    [price, setState]
+    [cRatio, rate, setState, toToken]
   );
 
   return (

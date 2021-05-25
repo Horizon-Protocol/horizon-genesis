@@ -1,16 +1,12 @@
-import { useState, useMemo, useEffect } from "react";
+import { useState, useMemo, useCallback } from "react";
+import BigNumber from "bignumber.js";
 import { useSetState } from "ahooks";
 import { useAtomValue } from "jotai/utils";
 import { Box } from "@material-ui/core";
 import { PAGE_COLOR } from "@utils/theme/constants";
 import { Token } from "@utils/constants";
 import { zAssets } from "@utils/zAssets";
-import {
-  formatNumber,
-  toBigNumber,
-  zeroBN,
-  cRatioToPercent,
-} from "@utils/number";
+import { formatCRatioToPercent, toBigNumber, zeroBN } from "@utils/number";
 import {
   getStakingAmount,
   getMintAmount,
@@ -40,22 +36,12 @@ export default function Earn() {
     useAtomValue(debtAtom);
   const staked = useAtomValue(hznStakedAtom);
 
-  const [cRatio, setCRatio] = useState<BN>(targetCRatio);
-
   const [state, setState] = useSetState<InputState>({
     fromInput: "",
     fromMax: false,
     toInput: "",
     toMax: false,
   });
-
-  useEffect(() => {
-    setCRatio(targetCRatio);
-    if (targetCRatio) {
-    }
-  }, [targetCRatio]);
-
-  const cRatioPercent = useMemo(() => toBigNumber(100).div(cRatio), [cRatio]);
 
   const fromToken: TokenProps = useMemo(
     () => ({
@@ -66,9 +52,9 @@ export default function Earn() {
       maxButtonLabel: "Max Mint",
       color: THEME_COLOR,
       labelColor: THEME_COLOR,
-      toPair: getMintAmount,
+      toPair: (...args) => getMintAmount(targetCRatio, ...args).toString(),
     }),
-    [transferable]
+    [targetCRatio, transferable]
   );
 
   const toToken: TokenProps = useMemo(
@@ -78,20 +64,36 @@ export default function Earn() {
       color: THEME_COLOR,
       bgColor: "#0A1624",
       amount: toBigNumber(0),
-      balanceLabel: `Minted at ${formatNumber(cRatioPercent)}% C-Ratio`,
+      balanceLabel: `Minted at ${formatCRatioToPercent(targetCRatio)}% C-Ratio`,
       inputPrefix: "$",
-      toPair: getStakingAmount,
+      toPair: (...args) => getStakingAmount(targetCRatio, ...args).toString(),
     }),
-    [cRatioPercent]
+    [targetCRatio]
   );
 
-  const mockBalanceChange: BalanceChangeProps = useMemo(() => {
-    const fromAmount = toBigNumber(state.fromInput || 0);
-    const toAmount = toBigNumber(state.toInput || 0);
+  const handleSelectPresetCRatio = useCallback(
+    (presetCRatio: BN) => {
+      const fromtInput = balance
+        .multipliedBy(presetCRatio)
+        .div(targetCRatio)
+        .minus(staked);
+      setState({
+        fromInput: fromtInput.toFixed(6, BigNumber.ROUND_DOWN),
+        fromMax: false,
+      });
+    },
+    [balance, targetCRatio, staked, setState]
+  );
 
-    console.log("fromAmount", fromAmount.toNumber());
-    console.log("toAmount", toAmount.toNumber());
-
+  const fromAmount = useMemo(
+    () => toBigNumber(state.fromInput || 0),
+    [state.fromInput]
+  );
+  // const toAmount = useMemo(
+  //   () => toBigNumber(state.toInput || 0),
+  //   [state.toInput]
+  // );
+  const changedBalance: BalanceChangeProps = useMemo(() => {
     const changedStaked = staked.plus(fromAmount);
 
     const changedDebt = changedStaked
@@ -102,27 +104,25 @@ export default function Earn() {
       ? zeroBN
       : getTransferableAmountFromMint(balance, changedStaked);
 
-    console.log("lt", currentCRatio.isLessThan(targetCRatio));
-    const changedCRatio = currentCRatio.isLessThan(targetCRatio)
-      ? balance.multipliedBy(hznRateBN).dividedBy(changedDebt)
-      : changedStaked.multipliedBy(hznRateBN).dividedBy(changedDebt);
+    const changedCRatio = changedStaked.multipliedBy(targetCRatio).div(balance);
 
     console.log({
       balance: balance.toNumber(),
-      debt: debtBalance.toNumber(),
+      debt: debtBalance.toString(),
+      changedDebt: changedDebt.toString(),
       staked: staked.toNumber(),
       transferable: transferable.toNumber(),
-      hznRate: hznRateBN.toNumber(),
+      hznRate: hznRateBN.toString(),
       targetCRatio: targetCRatio.toNumber(),
-      currentCRatio: currentCRatio.toNumber(),
+      currentCRatio: currentCRatio.toString(),
+      changedCRatio: changedCRatio.toString(),
       changedStaked: changedStaked.toNumber(),
-      changedDebt: changedDebt.toNumber(),
       changedTransferable: changedTransferable.toNumber(),
     });
     return {
       cRatio: {
-        from: cRatioToPercent(currentCRatio),
-        to: cRatioToPercent(changedCRatio),
+        from: currentCRatio,
+        to: changedCRatio,
       },
       debt: {
         from: debtBalance,
@@ -139,8 +139,7 @@ export default function Earn() {
       gapImg: arrowRightImg,
     };
   }, [
-    state.fromInput,
-    state.toInput,
+    fromAmount,
     staked,
     targetCRatio,
     hznRateBN,
@@ -149,6 +148,10 @@ export default function Earn() {
     currentCRatio,
     debtBalance,
   ]);
+
+  const handleMint = useCallback(() => {
+    console.log("mint now");
+  }, []);
 
   return (
     <PageCard
@@ -166,22 +169,26 @@ export default function Earn() {
     >
       <PresetCRatioOptions
         color={THEME_COLOR}
-        value={cRatio}
-        onChange={setCRatio}
+        value={changedBalance.cRatio.to}
+        onChange={handleSelectPresetCRatio}
       />
       <TokenPair
         mt={3}
         rate={hznRateBN}
         fromToken={fromToken}
         toToken={toToken}
-        cRatio={cRatio}
         arrowImg={arrowImg}
         state={state}
         setState={setState}
       />
-      <BalanceChange my={3} {...mockBalanceChange} />
+      <BalanceChange my={3} {...changedBalance} />
       <Box>
-        <PrimaryButton size='large' fullWidth>
+        <PrimaryButton
+          disabled={fromAmount.eq(0)}
+          size='large'
+          fullWidth
+          onClick={handleMint}
+        >
           Mint Now
         </PrimaryButton>
       </Box>

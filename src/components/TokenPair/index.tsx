@@ -1,6 +1,6 @@
-import { useCallback, useEffect, useMemo } from "react";
+import { useCallback, useMemo } from "react";
 import { Box, BoxProps } from "@material-ui/core";
-import { toBigNumber, zeroBN } from "@utils/number";
+import { toBigNumber, formatNumber } from "@utils/number";
 import TokenInput from "./TokenInput";
 import InputGap from "./InputGap";
 
@@ -17,7 +17,6 @@ export interface TokenPairProps {
   fromToken: TokenProps;
   toToken: TokenProps;
   rate: BN;
-  cRatio: BN;
   arrowImg?: string;
   state: InputState;
   setState: (
@@ -26,34 +25,26 @@ export interface TokenPairProps {
       | ((prevState: InputState) => Partial<InputState>)
   ) => void;
 }
+
 export default function TokenPair({
   fromToken,
   toToken,
   rate,
-  cRatio,
   arrowImg,
   state,
   setState,
   ...props
 }: TokenPairProps & BoxProps) {
-  useEffect(() => {
-    console.log("change cRatio", cRatio.toNumber());
-    // setState({
-    //   fromInput:
-    // })
-  }, [cRatio]);
-
   const setFromInput = useCallback<TokenInputProps["onInput"]>(
     (input, isMax = false) => {
       setState({
         fromInput: input,
         fromMax: isMax,
-        toInput:
-          fromToken?.toPair?.(cRatio, input || "0", rate).toString() || "",
+        toInput: fromToken?.toPair?.(input || "0", rate),
         toMax: false,
       });
     },
-    [cRatio, fromToken, rate, setState]
+    [fromToken, rate, setState]
   );
 
   const { fromAmount, toAmount } = useMemo(
@@ -69,12 +60,11 @@ export default function TokenPair({
       setState({
         toInput: input,
         toMax: isMax,
-        fromInput:
-          toToken?.toPair?.(cRatio, input || "0", rate).toString() || "",
+        fromInput: toToken?.toPair?.(input || "0", rate),
         fromMax: false,
       });
     },
-    [cRatio, rate, setState, toToken]
+    [rate, setState, toToken]
   );
 
   return (

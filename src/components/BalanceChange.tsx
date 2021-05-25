@@ -2,7 +2,7 @@ import { useMemo } from "react";
 import { Box, BoxProps, List, ListItem, ListItemIcon } from "@material-ui/core";
 import { makeStyles, withStyles } from "@material-ui/core";
 import clsx from "clsx";
-import { formatNumber, formatPercent } from "@utils/number";
+import { formatCRatioToPercent, formatNumber } from "@utils/number";
 
 const Label = withStyles({
   root: {
@@ -36,8 +36,8 @@ const useStyles = makeStyles({
 
 export interface Props {
   cRatio: {
-    from: number;
-    to: number;
+    from: BN;
+    to: BN;
   };
   debt: {
     from: BN;
@@ -69,8 +69,8 @@ export default function BalanceChange({
     () => [
       {
         label: "C-Ratio",
-        from: `${formatPercent(cRatio.from)} %`,
-        to: `${formatPercent(cRatio.to)} %`,
+        from: `${formatCRatioToPercent(cRatio.from)} %`,
+        to: `${formatCRatioToPercent(cRatio.to)} %`,
       },
       {
         label: "Debt",

@@ -22,7 +22,7 @@ declare global {
     inputPrefix?: string;
     onInput(v: string, max?: boolean): void;
     amount: BN; // BN format of input
-    toPair?(targetCRatio: BN, stakeAmount: NumericValue, hznRate: BN): BN; // convert between from and to token amount
+    toPair?(stakeAmount: NumericValue, hznRate: BN): string; // convert between from and to token amount
   }
 }
 
@@ -147,11 +147,8 @@ export default function TokenInput({
         <NumberFormat
           value={input}
           onValueChange={(values) => {
-            console.log("input values", values);
-            // if (values.value) {
             onInput(values.value, maxRef.current);
             maxRef.current = false;
-            // }
           }}
           prefix={inputPrefix}
           allowNegative={false}

@@ -58,8 +58,8 @@ export const formatNumber = (
 
   formattedValue.push(
     toBigNumber(value).toFormat(
-      options?.decimals ?? DEFAULT_NUMBER_DECIMALS,
-      BigNumber.ROUND_DOWN
+      options?.decimals ?? DEFAULT_NUMBER_DECIMALS
+      // BigNumber.ROUND_DOWN
     )
   );
   if (suffix) {
@@ -154,5 +154,10 @@ export function cRatioToPercent(cRatio: BN): number {
   const cRatioPercent = cRatio.isZero()
     ? toBigNumber(0)
     : toBigNumber(100).div(cRatio);
-  return cRatioPercent.isNaN() ? 0 : cRatioPercent.toNumber();
+  return cRatioPercent.isNaN() ? 0 : Number(cRatioPercent.toFixed(2));
+}
+export function formatCRatioToPercent(cRatio: BN): string {
+  const cRatioPercent = cRatioToPercent(cRatio);
+
+  return formatNumber(cRatioPercent);
 }

@@ -5,38 +5,43 @@ import { HelpOutline } from "@material-ui/icons";
 import { useAtomValue } from "jotai/utils";
 import { ratiosPercentAtom } from "@atoms/app";
 import { currentCRatioPercentAtom } from "@atoms/debt";
-import { formatNumber } from "@utils/formatters";
+import { formatNumber } from "@utils/number";
 import { COLOR } from "@utils/theme/constants";
 
 const getColorByRatioPercent = (
-  ratio: number,
-  liquidation: number,
-  target: number
+  ratioPercent: number,
+  liquidationPercent: number,
+  targetPercent: number
 ) => {
-  if (ratio <= liquidation) {
+  if (ratioPercent <= liquidationPercent) {
     return COLOR.danger;
   }
-  if (ratio < target) {
+  if (ratioPercent < targetPercent) {
     return COLOR.warning;
   }
   return COLOR.safe;
 };
 
 const getProgressByRatioPercent = (
-  ratio: number,
-  liquidation: number,
-  target: number
+  ratioPercent: number,
+  liquidationPercent: number,
+  targetPercent: number
 ) => {
   let percent = 0;
-  if (ratio <= 0) {
+  if (ratioPercent <= 0) {
     percent = 0;
-  } else if (ratio < liquidation) {
-    percent = (ratio / liquidation) * 25;
-  } else if (ratio < target) {
-    percent = 25 + ((ratio - liquidation) / (target - liquidation)) * 50;
+  } else if (ratioPercent < liquidationPercent) {
+    percent = (ratioPercent / liquidationPercent) * 25;
+  } else if (ratioPercent < targetPercent) {
+    percent =
+      25 +
+      ((ratioPercent - liquidationPercent) /
+        (targetPercent - liquidationPercent)) *
+        50;
   } else {
     // ratio >= target
-    percent = 75 + ((ratio - target) / (1000 - target)) * 25;
+    percent =
+      75 + ((ratioPercent - targetPercent) / (1000 - targetPercent)) * 25;
   }
 
   return Math.min(percent, 100);
@@ -115,23 +120,24 @@ const Tick = ({
 };
 
 export default function CRatioRange(props: BoxProps) {
-  const { targetCRatio, liquidationRatio } = useAtomValue(ratiosPercentAtom);
-  const currentCRatio = useAtomValue(currentCRatioPercentAtom);
+  const { targetCRatioPercent, liquidationRatioPercent } =
+    useAtomValue(ratiosPercentAtom);
+  const currentCRatioPercent = useAtomValue(currentCRatioPercentAtom);
 
   const { progress, color } = useMemo(
     () => ({
       color: getColorByRatioPercent(
-        currentCRatio,
-        liquidationRatio,
-        targetCRatio
+        currentCRatioPercent,
+        liquidationRatioPercent,
+        targetCRatioPercent
       ),
       progress: getProgressByRatioPercent(
-        currentCRatio,
-        liquidationRatio,
-        targetCRatio
+        currentCRatioPercent,
+        liquidationRatioPercent,
+        targetCRatioPercent
       ),
     }),
-    [currentCRatio, liquidationRatio, targetCRatio]
+    [currentCRatioPercent, liquidationRatioPercent, targetCRatioPercent]
   );
 
   const classes = useStyles({ color });
@@ -143,7 +149,7 @@ export default function CRatioRange(props: BoxProps) {
         classes={{ root: classes.number }}
         style={{ color }}
       >
-        {formatNumber(currentCRatio)}%
+        {formatNumber(currentCRatioPercent)}%
       </Typography>
       <Typography variant='subtitle2' classes={{ root: classes.tip }}>
         Current C-Ratio &nbsp;
@@ -153,24 +159,24 @@ export default function CRatioRange(props: BoxProps) {
         <LinearProgress
           variant='determinate'
           value={progress}
-          valueBuffer={currentCRatio}
+          valueBuffer={currentCRatioPercent}
           classes={{
             root: classes.progress,
             colorPrimary: classes.progressPrimary,
             bar: classes.progressBar,
           }}
         />
-        {liquidationRatio > 0 && (
+        {liquidationRatioPercent > 0 && (
           <Tick
-            percent={liquidationRatio}
+            percent={liquidationRatioPercent}
             left='25%'
             label='Liquidation'
             color={COLOR.danger}
           />
         )}
-        {targetCRatio > 0 && (
+        {targetCRatioPercent > 0 && (
           <Tick
-            percent={targetCRatio}
+            percent={targetCRatioPercent}
             left='75%'
             label='Target'
             color={COLOR.safe}

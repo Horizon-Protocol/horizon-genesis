@@ -31,11 +31,11 @@ const tabs: LinkTabProps[] = [
     label: "Claim",
     color: PAGE_COLOR.claim,
   },
-  {
-    to: "/earn",
-    label: "Earn",
-    color: PAGE_COLOR.earn,
-  },
+  // {
+  //   to: "/earn",
+  //   label: "Earn",
+  //   color: PAGE_COLOR.earn,
+  // },
 ];
 
 const StyledTabs = withStyles({

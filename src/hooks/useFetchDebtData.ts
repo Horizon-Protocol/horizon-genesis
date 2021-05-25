@@ -28,7 +28,7 @@ export default function useFetchDebtData(params: Params) {
         Synthetix.balanceOf(account),
         Liquidations.getLiquidationDeadlineForAccount(account),
       ]);
-      return res.map(toBigNumber);
+      return res.map((item) => toBigNumber(utils.formatEther(item)));
     },
     {
       ready: !!account && !!horizon.js,

@@ -4,12 +4,13 @@ import { makeStyles } from "@material-ui/core/styles";
 import Mint from "@pages/mint";
 import Burn from "@pages/burn";
 import Claim from "@pages/claim";
-import Earn from "@pages/earn";
+// import Earn from "@pages/earn";
 import Header from "@components/Header";
 import Dashboard from "@components/Dashboard";
 import useFetchAppData from "@hooks/useFetchAppData";
 import useFetchDebtData from "@hooks/useFetchDebtData";
 import useFetchZAssets from "@hooks/useFetchZAssets";
+import useFetchFeePool from "@hooks/useFetchFeePool";
 
 const useStyles = makeStyles(() => ({
   dashboard: {
@@ -27,6 +28,7 @@ function App() {
   useFetchAppData();
   useFetchDebtData({});
   useFetchZAssets();
+  useFetchFeePool("0");
 
   return (
     <Router>
@@ -46,9 +48,9 @@ function App() {
           <Route path='/claim'>
             <Claim />
           </Route>
-          <Route path='/earn'>
+          {/* <Route path='/earn'>
             <Earn />
-          </Route>
+          </Route> */}
           <Route path='/'>
             <Mint />
           </Route>

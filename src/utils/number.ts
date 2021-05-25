@@ -2,6 +2,10 @@ import BigNumber from "bignumber.js";
 import { ethers } from "ethers";
 import { CurrencyKey, isFiatCurrency } from "./currencies";
 
+declare global {
+  type BN = BigNumber;
+}
+
 // ui defaults
 export const DEFAULT_SEARCH_DEBOUNCE_MS = 300;
 export const DEFAULT_REQUEST_REFRESH_INTERVAL = 30000; // 30s

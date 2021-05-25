@@ -1,15 +1,16 @@
 import { useRequest } from "ahooks";
 import { useAtomValue, useUpdateAtom } from "jotai/utils";
-import { BigNumber } from "@ethersproject/bignumber";
+import { utils } from "ethers";
 import {
   readyAtom,
   totalSupplyAtom,
   targetCRatioAtom,
   liquidationRatioAtom,
-  liquidationDelayAtom,
+  // liquidationDelayAtom,
 } from "@atoms/app";
 import horizon from "@lib/horizon";
 import useFetchExchangeRates from "./useFetchExchangeRates";
+import { toBigNumber } from "@utils/number";
 
 export default function useFetchAppData() {
   const appReady = useAtomValue(readyAtom);
@@ -17,20 +18,20 @@ export default function useFetchAppData() {
   const setTotalSupply = useUpdateAtom(totalSupplyAtom);
   const setTargetCRatio = useUpdateAtom(targetCRatioAtom);
   const setLiquidationRatio = useUpdateAtom(liquidationRatioAtom);
-  const setLiquidationDelay = useUpdateAtom(liquidationDelayAtom);
+  // const setLiquidationDelay = useUpdateAtom(liquidationDelayAtom);
 
   useRequest(
     async () => {
       const {
         contracts: { SystemSettings, Synthetix, Liquidations },
       } = horizon.js!;
-      const res: BigNumber[] = await Promise.all([
+      const res = await Promise.all([
         Synthetix.totalSupply(),
         SystemSettings.issuanceRatio(),
         Liquidations.liquidationRatio(),
-        Liquidations.liquidationDelay(),
+        // Liquidations.liquidationDelay(),
       ]);
-      return res;
+      return res.map((item) => toBigNumber(utils.formatEther(item)));
     },
     {
       ready: appReady && !!horizon.js,
@@ -38,18 +39,18 @@ export default function useFetchAppData() {
         totalSupply,
         targetCRatio,
         liquidationRatio,
-        liquidationDelay,
+        // liquidationDelay,
       ]) {
-        // console.log({
-        //   totalSupply,
-        //   targetCRatio,
-        //   liquidationRatio: liquidationRatio.toString(),
-        //   liquidationDelay: liquidationDelay.toString(),
-        // });
+        console.log({
+          totalSupply,
+          targetCRatio,
+          liquidationRatio: liquidationRatio,
+          // liquidationDelay: liquidationDelay,
+        });
         setTotalSupply(totalSupply);
         setTargetCRatio(targetCRatio);
         setLiquidationRatio(liquidationRatio);
-        setLiquidationDelay(liquidationDelay);
+        // setLiquidationDelay(liquidationDelay);
       },
     }
   );

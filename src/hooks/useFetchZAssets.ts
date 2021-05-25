@@ -1,12 +1,13 @@
 import { useRequest } from "ahooks";
 import { useUpdateAtom } from "jotai/utils";
-import { BigNumber, utils } from "ethers";
+import { utils } from "ethers";
 import horizon from "@lib/horizon";
 import { zAssetsBalanceAtom, zAssetstotalUSDAtom } from "@atoms/debt";
+import { toBigNumber } from "@utils/number";
 import { CurrencyKey, SynthBalancesMap } from "@utils/currencies";
 import useWallet from "./useWallet";
 
-type SynthBalancesTuple = [CurrencyKey[], BigNumber[], BigNumber[]];
+type SynthBalancesTuple = [CurrencyKey[], number[], number[]];
 
 export default function useFetchZAssets() {
   const { account } = useWallet();
@@ -23,17 +24,19 @@ export default function useFetchZAssets() {
       const [currencyKeys, synthsBalances, synthsUSDBalances] =
         (await SynthUtil!.synthsBalances(account)) as SynthBalancesTuple;
 
-      let totalUSDBalance = BigNumber.from(0);
+      let totalUSDBalance = toBigNumber(0);
 
       currencyKeys.forEach((currencyKey: string, idx: number) => {
-        const balance = synthsBalances[idx];
+        const balance = toBigNumber(utils.formatEther(synthsBalances[idx]));
 
         // discard empty balances
         if (balance.gt(0)) {
           const synthName = utils.parseBytes32String(
             currencyKey
           ) as CurrencyKey;
-          const usdBalance = synthsUSDBalances[idx];
+          const usdBalance = toBigNumber(
+            utils.formatEther(synthsUSDBalances[idx])
+          );
 
           balancesMap[synthName] = {
             currencyKey: synthName,
@@ -41,7 +44,7 @@ export default function useFetchZAssets() {
             usdBalance,
           };
 
-          totalUSDBalance = totalUSDBalance.add(usdBalance);
+          totalUSDBalance = totalUSDBalance.plus(usdBalance);
         }
       });
 

@@ -5,7 +5,7 @@ import { CARD_CONTENT } from "@utils/theme/constants";
 import { Token, TokenShortName } from "@utils/constants";
 import { formatBalance, formatNumber } from "@utils/formatters";
 import { getApy } from "@utils/apy";
-import { tokenStatAtomFamily } from "@atoms/stat";
+import { tokenStatAtomFamily } from "@atoms/staker/stat";
 import { useMemo } from "react";
 import { tokenPriceAtomFamily } from "@atoms/price";
 

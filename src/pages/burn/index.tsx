@@ -4,7 +4,7 @@ import { parseEther } from "@ethersproject/units";
 import { PAGE_COLOR } from "@utils/theme/constants";
 import { Token } from "@utils/constants";
 import { zAssets } from "@utils/zAssets";
-import bgMint from "@assets/images/burn.png";
+import headerBg from "@assets/images/burn.png";
 import arrowImg from "@assets/images/burn-arrow.png";
 import arrowRightImg from "@assets/images/burn-arrow-right.png";
 import PageCard from "@components/PageCard";
@@ -14,6 +14,7 @@ import BalanceChange, {
   Props as BalanceChangeProps,
 } from "@components/BalanceChange";
 import PrimaryButton from "@components/PrimaryButton";
+import { toBigNumber } from "@utils/number";
 
 const THEME_COLOR = PAGE_COLOR.burn;
 
@@ -44,8 +45,8 @@ export default function Earn() {
     color: THEME_COLOR,
     labelColor: THEME_COLOR,
     bgColor: "#0A1624",
-    amount: parseEther("0"),
-    max: parseEther("100"),
+    amount: toBigNumber(0),
+    max: toBigNumber(100),
     maxButtonLabel: "Max Burn",
     inputPrefix: "$",
   };
@@ -54,8 +55,8 @@ export default function Earn() {
     token: Token.HZN,
     label: "Stake",
     color: THEME_COLOR,
-    amount: parseEther("0"),
-    max: parseEther("100"),
+    amount: toBigNumber(0),
+    max: toBigNumber(100),
     maxButtonLabel: "Max Unstake",
   };
 
@@ -65,16 +66,16 @@ export default function Earn() {
       to: 700,
     },
     debt: {
-      from: parseEther("6666"),
-      to: parseEther("4444"),
+      from: toBigNumber("6666"),
+      to: toBigNumber("4444"),
     },
     staked: {
-      from: parseEther("6666"),
-      to: parseEther("4444"),
+      from: toBigNumber("6666"),
+      to: toBigNumber("4444"),
     },
     transferrable: {
-      from: parseEther("6666"),
-      to: parseEther("4444"),
+      from: toBigNumber("6666"),
+      to: toBigNumber("4444"),
     },
     gapImg: arrowRightImg,
   };
@@ -83,7 +84,7 @@ export default function Earn() {
     <PageCard
       mx='auto'
       color={THEME_COLOR}
-      headerBg={bgMint}
+      headerBg={headerBg}
       title='Burn'
       description={
         <>

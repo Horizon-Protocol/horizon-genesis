@@ -1,20 +1,18 @@
-import { BigNumber } from "ethers";
-
 export type CurrencyKey = string;
 
 export type CryptoBalance = {
   currencyKey: CurrencyKey;
-  balance: BigNumber;
-  usdBalance: BigNumber;
+  balance: BN;
+  usdBalance: BN;
   synth?: string;
-  transferrable?: BigNumber;
+  transferrable?: BN;
 };
 
 export type SynthBalancesMap = Record<CurrencyKey, CryptoBalance>;
 
 export type Asset = {
   currencyKey: string;
-  balance: BigNumber;
+  balance: BN;
 };
 
 export type Rates = Record<CurrencyKey, number>;
@@ -39,7 +37,7 @@ export const zUSD_EXCHANGE_RATE = 1;
 export const FIAT_ZASSETS = new Set([ZAssests.zUSD]);
 
 export const isFiatCurrency = (currencyKey: CurrencyKey) =>
-  FIAT_ZASSETS.has(currencyKey);
+  FIAT_ZASSETS.has(currencyKey as ZAssests);
 
 export const toInverseSynth = (currencyKey: CurrencyKey) =>
   currencyKey.replace(/^s/i, "i");

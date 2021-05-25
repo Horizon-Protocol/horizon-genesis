@@ -2,8 +2,7 @@ import { useCallback, useRef, SyntheticEvent } from "react";
 import { Box, Link, InputBase, Typography } from "@material-ui/core";
 import { makeStyles } from "@material-ui/core/styles";
 import NumberFormat from "react-number-format";
-import { BigNumber } from "ethers";
-import { formatBalance } from "@utils/formatters";
+import { formatNumber } from "@utils/number";
 import { BORDER_COLOR } from "@utils/theme/constants";
 import TokenLogo from "@components/TokenLogo";
 
@@ -13,14 +12,14 @@ declare global {
     label: string;
     balanceLabel?: JSX.Element | string;
     maxButtonLabel?: JSX.Element | string;
-    max?: BigNumber;
+    max: BN;
     color?: string;
     labelColor?: string;
     bgColor?: string;
     logo?: string;
     input: string;
     onInput(v: string, max?: boolean): void;
-    amount: BigNumber; // ehter BN format of input
+    amount: BN; // BN format of input
     inputPrefix?: string;
   }
 }
@@ -95,7 +94,7 @@ export default function TokenInput({
   inputPrefix,
 }: TokenInputProps) {
   const classes = useStyles({
-    invalidInput: BigNumber.isBigNumber(max) && amount.gt(max),
+    invalidInput: amount.gt(max),
   });
 
   const maxRef = useRef<boolean>();
@@ -103,10 +102,10 @@ export default function TokenInput({
   const handleClickMax = useCallback(
     (e: SyntheticEvent) => {
       e.preventDefault();
-      if (BigNumber.isBigNumber(max) && !amount.eq(max)) {
+      if (!amount.eq(max)) {
         maxRef.current = true;
 
-        onInput(formatBalance(max, { mantissa: 6, trimMantissa: true }), true);
+        onInput(formatNumber(max, { decimals: 6 }));
       }
     },
     [amount, max, onInput]
@@ -168,9 +167,7 @@ export default function TokenInput({
             // className={classes.balanceLabel}
           >
             {balanceLabel}
-            {BigNumber.isBigNumber(max)
-              ? ` ${formatBalance(max)} ${token}`
-              : ""}
+            {max.gt(0) && ` ${formatNumber(max)} ${token}`}
           </Typography>
           {max?.gt(0) && (
             <Link

@@ -1,9 +1,9 @@
 import { useState } from "react";
 import { Box } from "@material-ui/core";
-import { parseEther } from "@ethersproject/units";
 import { PAGE_COLOR } from "@utils/theme/constants";
 import { Token } from "@utils/constants";
 import { zAssets } from "@utils/zAssets";
+import { toBigNumber } from "@utils/number";
 import bgMint from "@assets/images/mint.png";
 import arrowImg from "@assets/images/mint-arrow.png";
 import arrowRightImg from "@assets/images/mint-arrow-right.png";
@@ -14,7 +14,6 @@ import BalanceChange, {
   Props as BalanceChangeProps,
 } from "@components/BalanceChange";
 import PrimaryButton from "@components/PrimaryButton";
-
 const THEME_COLOR = PAGE_COLOR.mint;
 
 const presetCratioOptions: PresetCRatioOption[] = [
@@ -41,8 +40,8 @@ export default function Earn() {
   const fromToken: TokenProps = {
     token: Token.HZN,
     label: "Stake",
-    amount: parseEther("0"),
-    max: parseEther("100"),
+    amount: toBigNumber(0),
+    max: toBigNumber(100),
     maxButtonLabel: "Max Mint",
     color: THEME_COLOR,
     labelColor: THEME_COLOR,
@@ -53,7 +52,8 @@ export default function Earn() {
     label: "Mint",
     color: THEME_COLOR,
     bgColor: "#0A1624",
-    amount: parseEther("0"),
+    amount: toBigNumber(0),
+    max: toBigNumber(100),
     balanceLabel: "Minted at 700% C-Ratio",
     inputPrefix: "$",
   };
@@ -64,16 +64,16 @@ export default function Earn() {
       to: 700,
     },
     debt: {
-      from: parseEther("6666"),
-      to: parseEther("4444"),
+      from: toBigNumber("6666"),
+      to: toBigNumber("4444"),
     },
     staked: {
-      from: parseEther("6666"),
-      to: parseEther("4444"),
+      from: toBigNumber("6666"),
+      to: toBigNumber("4444"),
     },
     transferrable: {
-      from: parseEther("6666"),
-      to: parseEther("4444"),
+      from: toBigNumber("6666"),
+      to: toBigNumber("4444"),
     },
     gapImg: arrowRightImg,
   };

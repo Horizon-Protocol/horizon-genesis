@@ -1,8 +1,6 @@
 import { atom } from "jotai";
 import { atomWithReset } from "jotai/utils";
-import BigNumber from "bignumber.js";
-import { zeroBN } from "@utils/number";
-import { formatRatioToPercent } from "@utils/formatters";
+import { zeroBN, toBigNumber } from "@utils/number";
 
 export const readyAtom = atomWithReset(false);
 
@@ -17,9 +15,19 @@ export const hznPriceAtom = atomWithReset(0);
 export const ratiosPercentAtom = atom((get) => {
   const targetCRatio = get(targetCRatioAtom);
   const liquidationRatio = get(liquidationRatioAtom);
+  const percentageTargetCRatio = targetCRatio.isZero()
+    ? toBigNumber(0)
+    : toBigNumber(100).div(targetCRatio);
+  const percentageLiquidationRatio = liquidationRatio.isZero()
+    ? toBigNumber(0)
+    : toBigNumber(100).div(liquidationRatio);
 
   return {
-    targetCRatio: formatRatioToPercent(targetCRatio),
-    liquidationRatio: formatRatioToPercent(liquidationRatio),
+    targetCRatioPercent: percentageTargetCRatio.isNaN()
+      ? 0
+      : percentageTargetCRatio.toNumber(),
+    liquidationRatioPercent: percentageLiquidationRatio.isNaN()
+      ? 0
+      : percentageLiquidationRatio.toNumber(),
   };
 });

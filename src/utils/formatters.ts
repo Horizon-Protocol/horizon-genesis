@@ -1,4 +1,4 @@
-import BigNumber from "bignumber.js";
+import { BigNumber } from "ethers";
 import numbro from "numbro";
 
 numbro.setDefaults({
@@ -7,10 +7,6 @@ numbro.setDefaults({
   // trimMantissa: true,
   roundingFunction: Math.floor,
 });
-
-export const formatRatioToPercent = (ratio: BigNumber) => {
-  return ratio.gt(0) ? new BigNumber("100").div(ratio).toNumber() : 0;
-};
 
 export const formatBalance = (
   balance: BigNumber,

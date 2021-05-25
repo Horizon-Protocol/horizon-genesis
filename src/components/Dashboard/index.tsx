@@ -1,11 +1,11 @@
 import { useMemo } from "react";
-import { hznRateAtom } from "@atoms/exchangeRates";
 import { useAtomValue } from "jotai/utils";
 import { Box, BoxProps } from "@material-ui/core";
 import { makeStyles } from "@material-ui/core/styles";
 import clsx from "clsx";
 import { debtAtom, hznStakedAtom, zUSDBalanceAtom } from "@atoms/debt";
-import { formatBalance, formatNumber } from "@utils/formatters";
+import { hznRateAtom } from "@atoms/exchangeRates";
+import { formatNumber } from "@utils/number";
 import { BORDER_COLOR, COLOR } from "@utils/theme/constants";
 import CRatioRange from "./CRatioRange";
 import StakingApy from "./StakingApy";
@@ -48,26 +48,26 @@ export default function Dashboard({ className, ...props }: BoxProps) {
       },
       {
         label: "HZN Balance",
-        value: `${formatBalance(balance)} HZN`,
+        value: `${formatNumber(balance)} HZN`,
       },
       {
         label: "zUSD Balance",
-        value: `${formatBalance(zUSDBalance)} zUSD`,
+        value: `${formatNumber(zUSDBalance)} zUSD`,
       },
       {
         label: "",
       },
       {
         label: "Debt",
-        value: `$ ${formatBalance(debtBalance)}`,
+        value: `$ ${formatNumber(debtBalance)}`,
       },
       {
         label: "Staked",
-        value: `${formatBalance(hznStaked)} HZN`,
+        value: `${formatNumber(hznStaked)} HZN`,
       },
       {
         label: "Transferrable",
-        value: `${formatBalance(transferable)} HZN`,
+        value: `${formatNumber(transferable)} HZN`,
       },
     ],
     [hznRate, balance, zUSDBalance, debtBalance, hznStaked, transferable]

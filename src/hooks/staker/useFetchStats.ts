@@ -1,7 +1,7 @@
 import { useCallback } from "react";
 import { useUpdateAtom } from "jotai/utils";
 import { BigNumber, constants } from "ethers";
-import { tokenStatAtomFamily } from "@atoms/stat";
+import { tokenStatAtomFamily } from "@atoms/staker/stat";
 import { BSC_BLOCK_TIME, Token } from "@utils/constants";
 import { useRpcStaking } from "./useStaking";
 import useFetchPrice from "./useFetchPrice";

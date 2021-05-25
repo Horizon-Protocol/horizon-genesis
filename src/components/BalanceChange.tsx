@@ -1,9 +1,8 @@
-import { BigNumber } from "@ethersproject/bignumber";
+import { useMemo } from "react";
 import { Box, BoxProps, List, ListItem, ListItemIcon } from "@material-ui/core";
 import { makeStyles, withStyles } from "@material-ui/core";
-import { formatBalance } from "@utils/formatters";
 import clsx from "clsx";
-import { useMemo } from "react";
+import { formatNumber } from "@utils/number";
 
 const Label = withStyles({
   root: {
@@ -41,16 +40,16 @@ export interface Props {
     to: number;
   };
   debt: {
-    from: BigNumber;
-    to: BigNumber;
+    from: BN;
+    to: BN;
   };
   staked: {
-    from: BigNumber;
-    to: BigNumber;
+    from: BN;
+    to: BN;
   };
   transferrable: {
-    from: BigNumber;
-    to: BigNumber;
+    from: BN;
+    to: BN;
   };
   gapImg?: string;
 }
@@ -75,18 +74,18 @@ export default function BalanceChange({
       },
       {
         label: "Debt",
-        from: `$${formatBalance(debt.from)} zUSD`,
-        to: `$${formatBalance(debt.to)} zUSD`,
+        from: `$${formatNumber(debt.from)} zUSD`,
+        to: `$${formatNumber(debt.to)} zUSD`,
       },
       {
         label: "Staked",
-        from: `${formatBalance(staked.from)} HZN`,
-        to: `${formatBalance(staked.to)} HZN`,
+        from: `${formatNumber(staked.from)} HZN`,
+        to: `${formatNumber(staked.to)} HZN`,
       },
       {
         label: "Transferrable",
-        from: `${formatBalance(transferrable.from)} HZN`,
-        to: `${formatBalance(transferrable.to)} HZN`,
+        from: `${formatNumber(transferrable.from)} HZN`,
+        to: `${formatNumber(transferrable.to)} HZN`,
       },
     ],
     [cRatio, debt, staked, transferrable]

@@ -1,8 +1,7 @@
 import { useCallback, useMemo } from "react";
 import { useSetState } from "ahooks";
-import { constants } from "ethers";
-import { parseEther } from "@ethersproject/units";
 import { Box, BoxProps } from "@material-ui/core";
+import { toBigNumber, zeroBN } from "@utils/number";
 import TokenInput from "./TokenInput";
 import InputGap from "./InputGap";
 
@@ -45,11 +44,11 @@ export default function TokenPair({
   const { fromAmount, toAmount } = useMemo(
     () => ({
       fromAmount: state.fromMax
-        ? fromToken.max || constants.Zero
-        : parseEther((state.fromInput || "0").replace(/[^0-9.]/g, "")),
+        ? fromToken.max || zeroBN
+        : toBigNumber(state.fromInput.replace(/[^0-9.]/g, "") || 0),
       toAmount: state.toMax
-        ? toToken.max || constants.Zero
-        : parseEther((state.toInput || "0").replace(/[^0-9.]/g, "")),
+        ? toToken.max || zeroBN
+        : toBigNumber(state.toInput.replace(/[^0-9.]/g, "") || 0),
     }),
     [
       fromToken.max,

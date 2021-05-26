@@ -3,6 +3,8 @@ import BigNumber from "bignumber.js";
 import { useSetState } from "ahooks";
 import { useAtomValue } from "jotai/utils";
 import { Box } from "@material-ui/core";
+import { ethers, utils } from "ethers";
+import horizon from "@lib/horizon";
 import { PAGE_COLOR } from "@utils/theme/constants";
 import { Token } from "@utils/constants";
 import { zAssets } from "@utils/zAssets";
@@ -149,9 +151,25 @@ export default function Earn() {
     debtBalance,
   ]);
 
-  const handleMint = useCallback(() => {
-    console.log("mint now");
-  }, []);
+  const handleMint = useCallback(async () => {
+    try {
+      const {
+        contracts: { Synthetix },
+      } = horizon.js!;
+      let tx: ethers.ContractTransaction;
+      if (state.fromMax) {
+        console.log("mint max");
+        tx = await Synthetix.issueMaxSynths();
+      } else {
+        console.log("mintL", state.fromInput);
+        tx = await Synthetix.issueSynths(utils.parseEther(state.fromInput));
+      }
+      const res = await tx.wait(1);
+      console.log("res", res);
+    } catch (e) {
+      console.log(e);
+    }
+  }, [state.fromInput, state.fromMax]);
 
   return (
     <PageCard

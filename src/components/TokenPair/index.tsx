@@ -1,6 +1,7 @@
 import { useCallback, useMemo } from "react";
 import { Box, BoxProps } from "@material-ui/core";
-import { toBigNumber, formatNumber } from "@utils/number";
+import numbro from "numbro";
+import { toBigNumber } from "@utils/number";
 import TokenInput from "./TokenInput";
 import InputGap from "./InputGap";
 
@@ -26,6 +27,21 @@ export interface TokenPairProps {
   ) => void;
 }
 
+/**
+ * make sure converted input value is exactly same as react-number-input value
+ * to avoid infinite onValueChange trigger
+ *
+ * @param {string} inputValue
+ * @return {*}  {string}
+ */
+const formatInputValue = (inputValue: string): string =>
+  inputValue &&
+  numbro(inputValue).format({
+    mantissa: 6,
+    trimMantissa: true,
+    thousandSeparated: false,
+  });
+
 export default function TokenPair({
   fromToken,
   toToken,
@@ -37,10 +53,12 @@ export default function TokenPair({
 }: TokenPairProps & BoxProps) {
   const setFromInput = useCallback<TokenInputProps["onInput"]>(
     (input, isMax = false) => {
+      const { toPair, max } = fromToken;
+      const toPairAmount = (isMax ? max?.toString() : input) || "0";
       setState({
-        fromInput: input,
+        fromInput: formatInputValue(input),
         fromMax: isMax,
-        toInput: fromToken?.toPair?.(input || "0", rate),
+        toInput: formatInputValue(toPair(toPairAmount, rate)),
         toMax: false,
       });
     },
@@ -57,10 +75,12 @@ export default function TokenPair({
 
   const setToInput = useCallback<TokenInputProps["onInput"]>(
     (input, isMax = false) => {
+      const { toPair, max } = toToken;
+      const toPairAmount = (isMax ? max?.toString() : input) || "0";
       setState({
-        toInput: input,
+        toInput: formatInputValue(input),
         toMax: isMax,
-        fromInput: toToken?.toPair?.(input || "0", rate),
+        fromInput: formatInputValue(toPair(toPairAmount, rate)),
         fromMax: false,
       });
     },

@@ -1,5 +1,4 @@
 import { useCallback, useRef, SyntheticEvent } from "react";
-import BigNumber from "bignumber.js";
 import { Box, Link, InputBase, Typography } from "@material-ui/core";
 import { makeStyles } from "@material-ui/core/styles";
 import NumberFormat from "react-number-format";
@@ -22,7 +21,7 @@ declare global {
     inputPrefix?: string;
     onInput(v: string, max?: boolean): void;
     amount: BN; // BN format of input
-    toPair?(stakeAmount: NumericValue, hznRate: BN): string; // convert between from and to token amount
+    toPair(stakeAmount: NumericValue, hznRate: BN): string; // convert between from and to token amount
   }
 }
 
@@ -106,7 +105,7 @@ export default function TokenInput({
       e.preventDefault();
       if (max && !amount.eq(max)) {
         maxRef.current = true;
-        onInput(max.toFixed(6, BigNumber.ROUND_DOWN));
+        onInput(max.toString(), true);
       }
     },
     [amount, max, onInput]
@@ -147,8 +146,11 @@ export default function TokenInput({
         <NumberFormat
           value={input}
           onValueChange={(values) => {
-            onInput(values.value, maxRef.current);
-            maxRef.current = false;
+            // WARN: to avoid infinite loop
+            if (input !== values.value) {
+              onInput(values.value, maxRef.current);
+              maxRef.current = false;
+            }
           }}
           prefix={inputPrefix}
           allowNegative={false}

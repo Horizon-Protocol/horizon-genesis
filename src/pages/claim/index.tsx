@@ -16,7 +16,7 @@ import useFetchRewards from "@hooks/useFetchRewards";
 const THEME_COLOR = PAGE_COLOR.claim;
 
 export default function Earn() {
-  const { refres } = useFetchRewards();
+  const { refresh } = useFetchRewards();
 
   const { claimable, stakingReward, exchangeReward } =
     useAtomValue(rewardsAtom);
@@ -49,7 +49,6 @@ export default function Earn() {
 
   const [loading, setLoading] = useState(false);
   const handleClaim = useCallback(async () => {
-    console.log("claim");
     try {
       const {
         contracts: { FeePool },
@@ -57,12 +56,12 @@ export default function Earn() {
       setLoading(true);
       const tx: ethers.ContractTransaction = await FeePool.claimFees();
       await tx.wait(1);
-      refres();
+      refresh();
     } catch (e) {
       console.log(e);
     }
     setLoading(false);
-  }, [refres]);
+  }, [refresh]);
 
   return (
     <PageCard

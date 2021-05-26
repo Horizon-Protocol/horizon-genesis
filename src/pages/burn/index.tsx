@@ -131,6 +131,7 @@ export default function Earn() {
 
     console.log({
       balance: balance.toNumber(),
+      escrowedReward: escrowedReward.toNumber(),
       debt: debtBalance.toString(),
       changedDebt: changedDebt.toString(),
       staked: staked.toNumber(),

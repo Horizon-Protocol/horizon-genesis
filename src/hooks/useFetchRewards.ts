@@ -11,7 +11,7 @@ export default function useFetchRewards() {
 
   const setRewards = useUpdateAtom(rewardsAtom);
 
-  const { refres } = useRequest(
+  const { refresh } = useRequest(
     async () => {
       const {
         contracts: { FeePool },
@@ -45,5 +45,5 @@ export default function useFetchRewards() {
     }
   );
 
-  return { refres };
+  return { refresh };
 }

@@ -4,9 +4,9 @@ import { Provider as JotaiProvider } from "jotai";
 import { ThemeProvider } from "@material-ui/styles";
 import { SnackbarProvider } from "notistack";
 import "@fontsource/raleway";
-import { UseWalletProvider } from "@binance-chain/bsc-use-wallet";
+import { Web3ReactProvider } from "@web3-react/core";
 import theme from "@utils/theme";
-import { ChainId } from "@utils/constants";
+import { getLibrary } from "@utils/web3React";
 import "./index.css";
 import App from "./App";
 
@@ -14,19 +14,19 @@ ReactDOM.render(
   <StrictMode>
     <JotaiProvider>
       {/* children */}
-      <ThemeProvider theme={theme}>
-        <SnackbarProvider
-          anchorOrigin={{
-            horizontal: "right",
-            vertical: "top",
-          }}
-          preventDuplicate
-        >
-          <UseWalletProvider chainId={ChainId}>
+      <Web3ReactProvider getLibrary={getLibrary}>
+        <ThemeProvider theme={theme}>
+          <SnackbarProvider
+            anchorOrigin={{
+              horizontal: "right",
+              vertical: "top",
+            }}
+            preventDuplicate
+          >
             <App />
-          </UseWalletProvider>
-        </SnackbarProvider>
-      </ThemeProvider>
+          </SnackbarProvider>
+        </ThemeProvider>
+      </Web3ReactProvider>
     </JotaiProvider>
   </StrictMode>,
   document.getElementById("root")

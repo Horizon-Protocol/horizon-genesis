@@ -79,7 +79,7 @@ export default function WalletsDialog(
   props: Omit<DialogProps, "open" | "onClose">
 ) {
   const classes = useStyles();
-  const { connect, connected, reset } = useWallet();
+  const { connectWallet, connected, deactivate } = useWallet();
 
   const [open, setOpen] = useAtom(openAtom);
   const [detail, setDetail] = useAtom(detailAtom);
@@ -91,17 +91,17 @@ export default function WalletsDialog(
       setOpen(false);
     } else {
       // change wallet
-      reset();
+      deactivate();
       setDetail(wallet);
       setTimeout(() => {
-        connect(wallet.connectorId);
+        connectWallet(wallet.connectorId);
       }, 50);
     }
   };
 
   const handleDisconnect = async () => {
     // change wallet
-    reset();
+    deactivate();
     setDetail(null);
     setOpen(false);
   };

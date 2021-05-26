@@ -15,6 +15,12 @@ export default defineConfig({
         find: "squarelink",
         replacement: path.resolve("node_modules/squarelink/dist/index.js"),
       },
+      {
+        find: "@binance-chain/bsc-connector",
+        replacement: path.resolve(
+          "node_modules/@binance-chain/bsc-connector/dist/bsc-connector.esm.js"
+        ),
+      },
     ],
   },
   optimizeDeps: {

@@ -1,4 +1,3 @@
-import { Connectors } from "@binance-chain/bsc-use-wallet";
 import BinanceLogo from "@assets/wallets/binance.svg";
 import MetamaskLogo from "@assets/wallets/metamask.svg";
 import TrustLogo from "@assets/wallets/trust.svg";
@@ -48,8 +47,13 @@ declare global {
     key: SupportedWalletEnum;
     label: string;
     logo: string;
-    connectorId: keyof Connectors;
+    connectorId: ConnectorNames;
   }
+}
+
+export enum ConnectorNames {
+  Injected = "injected",
+  BSC = "bsc",
 }
 
 export const SUPPORTED_WALLETS: WalletDetail[] = [
@@ -57,19 +61,19 @@ export const SUPPORTED_WALLETS: WalletDetail[] = [
     key: SupportedWallet.Metamask,
     label: "Metamask",
     logo: MetamaskLogo,
-    connectorId: "injected",
+    connectorId: ConnectorNames.Injected,
   },
   {
     key: SupportedWallet.Binance,
     label: "Binance Wallet",
     logo: BinanceLogo,
-    connectorId: "bsc",
+    connectorId: ConnectorNames.BSC,
   },
   {
     key: SupportedWallet.Trust,
     label: "Trust Wallet",
     logo: TrustLogo,
-    connectorId: "injected",
+    connectorId: ConnectorNames.Injected,
   },
 ];
 
@@ -78,6 +82,13 @@ export const CHAIN_NAME_MAP: {
 } = {
   56: "BSC MAINNET",
   97: "BSC TESTNET",
+};
+
+export const CHAIN_EXPLORER_URL_MAP: {
+  [chain: number]: string;
+} = {
+  56: "https://bscscan.com/",
+  97: "https://testnet.bscscan.com/",
 };
 
 export const TOKEN_ADDRESS: {
@@ -127,6 +138,7 @@ const EnvChainId = parseInt(import.meta.env.VITE_APP_CHAIN_ID);
 
 export const ChainId = [56, 97].indexOf(EnvChainId) > -1 ? EnvChainId : 97;
 export const ChainName = CHAIN_NAME_MAP[ChainId];
+export const ChainExplorerUrl = CHAIN_EXPLORER_URL_MAP[ChainId];
 export const TokenAddresses = TOKEN_ADDRESS[ChainId];
 export const StakingAddresses = STAKING_CONTRACT_ADDRESS[ChainId];
 

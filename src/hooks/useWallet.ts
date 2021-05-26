@@ -1,75 +1,83 @@
-import { useEffect, useMemo } from "react";
+import { useCallback, useEffect, useMemo, useState } from "react";
 import { useSnackbar } from "notistack";
 import { providers } from "ethers";
-import { useWallet as useBscWallet } from "@binance-chain/bsc-use-wallet";
+import { useWeb3React, UnsupportedChainIdError } from "@web3-react/core";
+import { NoBscProviderError } from "@binance-chain/bsc-connector";
+import {
+  NoEthereumProviderError,
+  UserRejectedRequestError as UserRejectedRequestErrorInjected,
+} from "@web3-react/injected-connector";
 import { useUpdateAtom } from "jotai/utils";
+import { NetworkId } from "@horizon-protocol/contracts-interface";
 import { readyAtom } from "@atoms/app";
 import horizon from "@lib/horizon";
-import { ChainId, ChainName } from "@utils/constants";
+import { connectorsByName } from "@utils/web3React";
+import { ChainId, ChainName, ConnectorNames } from "@utils/constants";
 import { formatAddress } from "@utils/formatters";
+import { setupNetwork } from "@utils/wallet";
 import useRpcProvider from "./useRpcProvider";
 
 export default function useWallet() {
   const setAppReady = useUpdateAtom(readyAtom);
 
-  const rpcProvider = useRpcProvider();
-
-  const wallet = useBscWallet<providers.ExternalProvider>();
-
   const { enqueueSnackbar } = useSnackbar();
 
-  const shortAccount = useMemo(
-    () => (wallet.account ? formatAddress(wallet.account) : ""),
-    [wallet.account]
-  );
-  const { connecting, connected } = useMemo(
-    () => ({
-      connecting: wallet.status === "connecting",
-      connected: wallet.status === "connected",
-    }),
-    [wallet.status]
-  );
+  const rpcProvider = useRpcProvider();
 
-  const provider = useMemo(
-    () =>
-      wallet.ethereum && wallet.chainId
-        ? new providers.Web3Provider(wallet.ethereum, {
-            name: ChainName,
-            chainId: wallet.chainId,
-          })
-        : null,
-    [wallet.ethereum, wallet.chainId]
-  );
+  const { account, activate, chainId, deactivate, library, active } =
+    useWeb3React<providers.Web3Provider>();
 
-  useEffect(() => {
-    // connect errors
-    if (wallet.error) {
-      let errorMsg = "Failed to connect wallet";
-      switch (wallet.error.name) {
-        case "ChainUnsupportedError":
-          errorMsg = "Chain Unsupported Error";
-          break;
-        case "ConnectorUnsupportedError":
-          errorMsg = "Connector Unsupported Error";
-          break;
-        case "ConnectionRejectedError":
-          errorMsg = "Connection Rejected Error";
-          break;
-        case "ConnectorConfigError":
-          errorMsg = "Connector Config Error";
-          break;
-        default:
-          if (wallet.error?.message) {
-            errorMsg = wallet.error.message;
-            if (errorMsg.indexOf("Invariant failed") > -1) {
-              errorMsg = "Please switch wallet network to Binance Smart Chain";
+  const [connecting, setConnecting] = useState(false);
+
+  const connectWallet = useCallback(
+    async (connectorId: ConnectorNames) => {
+      const connector = connectorsByName[connectorId];
+      const isInjected = connectorId === ConnectorNames.Injected;
+      setConnecting(true);
+      await activate(connector, async (error) => {
+        let errorMsg = "";
+        if (error instanceof UnsupportedChainIdError) {
+          if (isInjected) {
+            const hasSetup = await setupNetwork();
+            if (hasSetup) {
+              await activate(connector);
+            } else {
+              errorMsg = "Please switch to Binance Smart Chain";
             }
+          } else {
+            errorMsg = "Please switch to Binance Smart Chain";
           }
-          break;
-      }
-      enqueueSnackbar(errorMsg, { variant: "error" });
-    }
-  }, [enqueueSnackbar, wallet.error]);
+        } else {
+          // window.localStorage.removeItem(connectorLocalStorageKey)
+          errorMsg = "Failed to connect wallet";
+          if (
+            error instanceof NoEthereumProviderError ||
+            error instanceof NoBscProviderError
+          ) {
+            errorMsg = "No provider was found";
+          } else if (error instanceof UserRejectedRequestErrorInjected) {
+            errorMsg = "Please authorize to access your account";
+          } else {
+            if (error.message.indexOf("Binance-Chain-Tigris") > -1) {
+              errorMsg = "Please switch to Binance Smart Chain";
+            }
+            console.log(error.name, error.message);
+          }
+        }
+        if (errorMsg) {
+          enqueueSnackbar(errorMsg, { variant: "error" });
+        }
+      });
+
+      setConnecting(false);
+    },
+    [activate, enqueueSnackbar]
+  );
+
+  const shortAccount = useMemo(
+    () => (account ? formatAddress(account) : ""),
+    [account]
+  );
 
   useEffect(() => {
     if (rpcProvider && !horizon.js) {
@@ -82,23 +90,27 @@ export default function useWallet() {
   }, [rpcProvider, setAppReady]);
 
   useEffect(() => {
-    if (provider && connected) {
-      const signer = provider.getSigner();
+    if (library) {
+      const signer = library.getSigner();
       horizon.setContractSettings({
-        networkId: wallet.chainId as any,
-        provider,
+        networkId: chainId as NetworkId,
+        provider: library,
         signer,
       });
       setAppReady(true);
     }
-  }, [connected, provider, setAppReady, wallet]);
+  }, [library, setAppReady, chainId]);
 
   return {
-    ...wallet,
+    account,
+    activate,
+    chainId,
+    deactivate,
     connecting,
-    connected,
+    connected: active,
     shortAccount,
-    provider,
+    provider: library,
     ChainName,
+    connectWallet,
   };
 }

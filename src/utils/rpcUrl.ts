@@ -15,9 +15,11 @@ const RPC_NODES_MAP: { [chain: number]: string[] } = {
   ],
 };
 
-const RPC_NODES = RPC_NODES_MAP[ChainId];
+export const RPC_NODES = RPC_NODES_MAP[ChainId];
 
 export const getRpcUrl = () => {
   const randomIndex = random(0, RPC_NODES.length - 1);
   return RPC_NODES[randomIndex];
 };
+
+export default getRpcUrl;

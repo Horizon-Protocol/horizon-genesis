@@ -26,4 +26,9 @@ export default defineConfig({
   optimizeDeps: {
     include: ["@horizon-protocol/contracts-interface"],
   },
+  build: {
+    commonjsOptions: {
+      exclude: ["contracts-interface/*"],
+    },
+  },
 });

@@ -30,7 +30,7 @@ jobs:
         if: steps.yarn-cache.outputs.cache-hit != 'true'
         run: yarn install --frozen-lockfile
       - name: Build Bundle
-        run: yarn generate-types && yarn build
+        run: yarn build
         env:
           REACT_APP_CHAIN_ID: 97
           REACT_APP_COMMIT_VERSION: ${{ steps.get-commit-time.outputs.commitTime }}

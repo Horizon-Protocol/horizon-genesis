@@ -1,39 +1,30 @@
+import { useCallback, useMemo, useState } from "react";
 import { Box } from "@material-ui/core";
-import { parseEther } from "@ethersproject/units";
+import { ethers } from "ethers";
+import { useAtomValue } from "jotai/utils";
+import { rewardsAtom } from "@atoms/feePool";
+import horizon from "@lib/horizon";
 import { PAGE_COLOR } from "@utils/theme/constants";
-import { Token } from "@utils/constants";
-import { zAssets } from "@utils/zAssets";
 import bg from "@assets/images/claim.png";
 import useClaimCountDown from "@hooks/useClaimCountDown";
 import PageCard from "@components/PageCard";
-import { TokenProps } from "@components/TokenPair";
 import RewardCard from "@components/Claim/RewardCard";
 import InfoList, { Info } from "@components/InfoList";
 import PrimaryButton from "@components/PrimaryButton";
+import useFetchRewards from "@hooks/useFetchRewards";
 
 const THEME_COLOR = PAGE_COLOR.claim;
 
 export default function Earn() {
-  const rewardHZN: TokenProps = {
-    token: zAssets.zUSD,
-    label: "Burn",
-    color: THEME_COLOR,
-    labelColor: THEME_COLOR,
-    bgColor: "#0A1624",
-    amount: parseEther("0"),
-    max: parseEther("100"),
-    maxButtonLabel: "Max Burn",
-    inputPrefix: "$",
-  };
+  const { refres } = useFetchRewards();
 
-  const toToken: TokenProps = {
-    token: Token.HZN,
-    label: "Stake",
-    color: THEME_COLOR,
-    amount: parseEther("0"),
-    max: parseEther("100"),
-    maxButtonLabel: "Max Unstake",
-  };
+  const { claimable, stakingReward, exchangeReward } =
+    useAtomValue(rewardsAtom);
+
+  const canClaim = useMemo(
+    () => claimable && (stakingReward.isGreaterThan(0) || exchangeReward.gt(0)),
+    [claimable, exchangeReward, stakingReward]
+  );
 
   const { formatted } = useClaimCountDown();
 
@@ -56,6 +47,23 @@ export default function Earn() {
     },
   ];
 
+  const [loading, setLoading] = useState(false);
+  const handleClaim = useCallback(async () => {
+    console.log("claim");
+    try {
+      const {
+        contracts: { FeePool },
+      } = horizon.js!;
+      setLoading(true);
+      const tx: ethers.ContractTransaction = await FeePool.claimFees();
+      await tx.wait(1);
+      refres();
+    } catch (e) {
+      console.log(e);
+    }
+    setLoading(false);
+  }, [refres]);
+
   return (
     <PageCard
       mx='auto'
@@ -71,10 +79,10 @@ export default function Earn() {
       }
     >
       <Box display='flex' justifyContent='space-between'>
-        <RewardCard label='Staking Rewards' amount={parseEther("100.66")} />
+        <RewardCard label='Staking Rewards' amount={stakingReward} />
         <RewardCard
           label='Exchange Rewards'
-          amount={parseEther("777777.7")}
+          amount={exchangeReward}
           disabled
           help={
             <>
@@ -87,7 +95,13 @@ export default function Earn() {
         <InfoList data={mockInfoList} />
       </Box>
       <Box mt={3}>
-        <PrimaryButton size='large' fullWidth>
+        <PrimaryButton
+          loading={loading}
+          disabled={!canClaim}
+          size='large'
+          fullWidth
+          onClick={handleClaim}
+        >
           Claim Now
         </PrimaryButton>
       </Box>

@@ -1,6 +1,5 @@
 import { atom } from "jotai";
-import { selectAtom } from "jotai/utils";
-import { toBigNumber } from "@utils/number";
+import { zeroBN } from "@utils/number";
 
 interface FeePoolAtom {
   feePeriodDuration: number;
@@ -18,6 +17,12 @@ export const feePoolAtom = atom<FeePoolAtom>({
   feesToDistribute: 0,
   feesClaimed: 0,
   rewardsToDistribute: 0,
-  rewardsToDistributeBN: toBigNumber(0),
+  rewardsToDistributeBN: zeroBN,
   rewardsClaimed: 0,
+});
+
+export const rewardsAtom = atom({
+  claimable: false,
+  stakingReward: zeroBN,
+  exchangeReward: zeroBN,
 });

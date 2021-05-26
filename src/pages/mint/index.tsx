@@ -16,7 +16,7 @@ import {
 import { targetCRatioAtom } from "@atoms/app";
 import { hznRateAtom } from "@atoms/exchangeRates";
 import { debtAtom, hznStakedAtom } from "@atoms/debt";
-import bgMint from "@assets/images/mint.png";
+import headerBg from "@assets/images/mint.png";
 import arrowImg from "@assets/images/mint-arrow.png";
 import arrowRightImg from "@assets/images/mint-arrow-right.png";
 import PageCard from "@components/PageCard";
@@ -51,10 +51,10 @@ export default function Earn() {
   const fromToken: TokenProps = useMemo(
     () => ({
       token: Token.HZN,
-      label: "Stake",
+      label: "STAKE",
       amount: toBigNumber(0),
       max: transferable,
-      maxButtonLabel: "Max Mint",
+      maxButtonLabel: "Mint Max",
       color: THEME_COLOR,
       labelColor: THEME_COLOR,
       toPairInput: (amount) =>
@@ -66,7 +66,7 @@ export default function Earn() {
   const toToken: TokenProps = useMemo(
     () => ({
       token: zAssets.zUSD,
-      label: "Mint",
+      label: "MINT",
       color: THEME_COLOR,
       bgColor: "#0A1624",
       amount: toBigNumber(0),
@@ -189,7 +189,7 @@ export default function Earn() {
     <PageCard
       mx='auto'
       color={THEME_COLOR}
-      headerBg={bgMint}
+      headerBg={headerBg}
       title='Mint'
       description={
         <>

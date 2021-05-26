@@ -12,6 +12,7 @@ export const debtAtom = atomWithReset({
   debtBalance: zeroBN,
   collateral: zeroBN,
   issuableSynths: zeroBN,
+  escrowedReward: zeroBN,
 });
 
 export const currentCRatioPercentAtom = atom((get) => {

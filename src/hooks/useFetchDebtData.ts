@@ -15,9 +15,10 @@ export default function useFetchDebtData(params: Params) {
   useRequest(
     async () => {
       const {
-        contracts: { Synthetix, Liquidations },
+        contracts: { Synthetix, RewardEscrow, Liquidations },
         utils,
       } = horizon.js!;
+
       const zUSDBytes = utils.formatBytes32String("zUSD");
       const res = await Promise.all([
         Synthetix.collateralisationRatio(account),
@@ -26,6 +27,7 @@ export default function useFetchDebtData(params: Params) {
         Synthetix.collateral(account),
         Synthetix.maxIssuableSynths(account),
         Synthetix.balanceOf(account),
+        RewardEscrow.totalEscrowedAccountBalance(account),
         Liquidations.getLiquidationDeadlineForAccount(account),
       ]);
       return res.map((item) => toBigNumber(utils.formatEther(item)));
@@ -39,6 +41,7 @@ export default function useFetchDebtData(params: Params) {
         collateral,
         issuableSynths,
         balance,
+        escrowedReward,
         liquidationDeadline,
       ]) {
         console.log({
@@ -48,6 +51,7 @@ export default function useFetchDebtData(params: Params) {
           collateral,
           issuableSynths,
           balance,
+          escrowedReward,
           liquidationDeadline: liquidationDeadline.toString(),
         });
         setDebtData({
@@ -57,6 +61,7 @@ export default function useFetchDebtData(params: Params) {
           collateral,
           issuableSynths,
           balance,
+          escrowedReward,
         });
       },
     }

@@ -33,7 +33,8 @@ const useStyles = makeStyles(({ palette }) => ({
 export default function Dashboard({ className, ...props }: BoxProps) {
   const classes = useStyles();
 
-  const { balance, transferable, debtBalance } = useAtomValue(debtAtom);
+  const { balance, transferable, debtBalance, escrowedReward } =
+    useAtomValue(debtAtom);
   const hznStaked = useAtomValue(hznStakedAtom);
   const zUSDBalance = useAtomValue(zUSDBalanceAtom);
 
@@ -69,8 +70,20 @@ export default function Dashboard({ className, ...props }: BoxProps) {
         label: "Transferrable",
         value: `${formatNumber(transferable)} HZN`,
       },
+      {
+        label: "Escrowed",
+        value: `${formatNumber(escrowedReward)} HZN`,
+      },
     ],
-    [hznRate, balance, zUSDBalance, debtBalance, hznStaked, transferable]
+    [
+      hznRate,
+      balance,
+      zUSDBalance,
+      debtBalance,
+      hznStaked,
+      transferable,
+      escrowedReward,
+    ]
   );
 
   return (

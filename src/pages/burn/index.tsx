@@ -1,84 +1,199 @@
-import { useState } from "react";
+import { useMemo, useCallback, useState } from "react";
+import { useSetState } from "ahooks";
+import { useAtomValue } from "jotai/utils";
 import { Box } from "@material-ui/core";
-import { parseEther } from "@ethersproject/units";
+import { ethers, utils } from "ethers";
+import horizon from "@lib/horizon";
 import { PAGE_COLOR } from "@utils/theme/constants";
 import { Token } from "@utils/constants";
 import { zAssets } from "@utils/zAssets";
+import {
+  formatCRatioToPercent,
+  minBN,
+  toBigNumber,
+  zeroBN,
+} from "@utils/number";
+import {
+  getStakingAmount,
+  getMintAmount,
+  getTransferableAmountFromBurn,
+} from "@utils/helper";
+import { targetCRatioAtom } from "@atoms/app";
+import { hznRateAtom } from "@atoms/exchangeRates";
+import { debtAtom, hznStakedAtom, zUSDBalanceAtom } from "@atoms/debt";
 import headerBg from "@assets/images/burn.png";
 import arrowImg from "@assets/images/burn-arrow.png";
 import arrowRightImg from "@assets/images/burn-arrow-right.png";
 import PageCard from "@components/PageCard";
 import PresetCRatioOptions from "@components/PresetCRatioOptions";
-import TokenPair, { TokenProps } from "@components/TokenPair";
+import TokenPair, {
+  formatInputValue,
+  InputState,
+  TokenProps,
+} from "@components/TokenPair";
 import BalanceChange, {
   Props as BalanceChangeProps,
 } from "@components/BalanceChange";
 import PrimaryButton from "@components/PrimaryButton";
-import { toBigNumber } from "@utils/number";
 
 const THEME_COLOR = PAGE_COLOR.burn;
 
-const presetCratioOptions: PresetCRatioOption[] = [
-  {
-    title: "CONSERVATIVE",
-    percent: 1000,
-    color: THEME_COLOR,
-  },
-  {
-    title: "NEUTRAL",
-    percent: 850,
-    color: THEME_COLOR,
-  },
-  {
-    title: "AGGRESSIVE",
-    percent: 700,
-    color: THEME_COLOR,
-  },
-];
-
 export default function Earn() {
-  const [targetCRatio, setTargetCRatio] = useState<number>();
+  const targetCRatio = useAtomValue(targetCRatioAtom);
+  const hznRate = useAtomValue(hznRateAtom);
+  const hznRateBN = useMemo(() => toBigNumber(hznRate), [hznRate]);
+  const { currentCRatio, balance, transferable, debtBalance, escrowedReward } =
+    useAtomValue(debtAtom);
+  const zUSDBalance = useAtomValue(zUSDBalanceAtom);
+  const staked = useAtomValue(hznStakedAtom);
 
-  const fromToken: TokenProps = {
-    token: zAssets.zUSD,
-    label: "Burn",
-    color: THEME_COLOR,
-    labelColor: THEME_COLOR,
-    bgColor: "#0A1624",
-    amount: toBigNumber(0),
-    max: toBigNumber(100),
-    maxButtonLabel: "Max Burn",
-    inputPrefix: "$",
-  };
+  const [state, setState] = useSetState<InputState>({
+    fromInput: "",
+    fromMax: false,
+    toInput: "",
+    toMax: false,
+  });
 
-  const toToken: TokenProps = {
-    token: Token.HZN,
-    label: "Stake",
-    color: THEME_COLOR,
-    amount: toBigNumber(0),
-    max: toBigNumber(100),
-    maxButtonLabel: "Max Unstake",
-  };
+  const fromToken: TokenProps = useMemo(
+    () => ({
+      token: zAssets.zUSD,
+      label: "BURN",
+      color: THEME_COLOR,
+      bgColor: "#0A1624",
+      amount: toBigNumber(0),
+      max: minBN(zUSDBalance, debtBalance),
+      maxButtonLabel: "Burn Max",
+      inputPrefix: "$",
+      toPairInput: (amount) =>
+        getStakingAmount(targetCRatio, amount, hznRateBN).toString(),
+    }),
+    [debtBalance, hznRateBN, targetCRatio, zUSDBalance]
+  );
 
-  const mockBalanceChange: BalanceChangeProps = {
-    cRatio: {
-      from: 1500,
-      to: 700,
+  const toToken: TokenProps = useMemo(
+    () => ({
+      token: Token.HZN,
+      label: "UNSTAKE",
+      amount: toBigNumber(0),
+      balanceLabel: `Staked:`,
+      max: staked,
+      maxButtonLabel: "Unstake Max",
+      color: THEME_COLOR,
+      labelColor: THEME_COLOR,
+      toPairInput: (amount) =>
+        getMintAmount(targetCRatio, amount, hznRateBN).toString(),
+    }),
+    [hznRateBN, staked, targetCRatio]
+  );
+
+  const handleSelectPresetCRatio = useCallback(
+    (presetCRatio: BN) => {
+      const fromInput = balance
+        .multipliedBy(presetCRatio)
+        .div(targetCRatio)
+        .minus(staked);
+      const { toPairInput } = fromToken;
+      const toPairAmount = fromInput.toString() || "0";
+      setState({
+        fromInput: formatInputValue(fromInput.toString()),
+        fromMax: false,
+        toInput: formatInputValue(toPairInput(toPairAmount)),
+        toMax: false,
+      });
     },
-    debt: {
-      from: toBigNumber("6666"),
-      to: toBigNumber("4444"),
-    },
-    staked: {
-      from: toBigNumber("6666"),
-      to: toBigNumber("4444"),
-    },
-    transferrable: {
-      from: toBigNumber("6666"),
-      to: toBigNumber("4444"),
-    },
-    gapImg: arrowRightImg,
-  };
+    [balance, targetCRatio, staked, fromToken, setState]
+  );
+
+  const fromAmount = useMemo(
+    () => toBigNumber(state.fromInput || 0),
+    [state.fromInput]
+  );
+  // const toAmount = useMemo(
+  //   () => toBigNumber(state.toInput || 0),
+  //   [state.toInput]
+  // );
+  const changedBalance: BalanceChangeProps = useMemo(() => {
+    const changedStaked = staked.plus(fromAmount);
+
+    const changedDebt = changedStaked
+      .multipliedBy(targetCRatio)
+      .multipliedBy(hznRateBN);
+
+    const changedTransferable = getTransferableAmountFromBurn(
+      fromAmount,
+      escrowedReward,
+      targetCRatio,
+      hznRateBN,
+      transferable
+    );
+
+    const changedCRatio = changedStaked.multipliedBy(targetCRatio).div(balance);
+
+    console.log({
+      balance: balance.toNumber(),
+      debt: debtBalance.toString(),
+      changedDebt: changedDebt.toString(),
+      staked: staked.toNumber(),
+      transferable: transferable.toNumber(),
+      hznRate: hznRateBN.toString(),
+      targetCRatio: targetCRatio.toNumber(),
+      currentCRatio: currentCRatio.toString(),
+      changedCRatio: changedCRatio.toString(),
+      changedStaked: changedStaked.toNumber(),
+      changedTransferable: changedTransferable.toNumber(),
+    });
+    return {
+      cRatio: {
+        from: currentCRatio,
+        to: changedCRatio,
+      },
+      debt: {
+        from: debtBalance,
+        to: changedDebt,
+      },
+      staked: {
+        from: staked,
+        to: changedStaked,
+      },
+      transferrable: {
+        from: transferable,
+        to: changedTransferable,
+      },
+      gapImg: arrowRightImg,
+    };
+  }, [
+    fromAmount,
+    staked,
+    targetCRatio,
+    hznRateBN,
+    transferable,
+    balance,
+    currentCRatio,
+    debtBalance,
+  ]);
+
+  const [loading, setLoading] = useState<boolean>(false);
+  const handleBurn = useCallback(async () => {
+    try {
+      const {
+        contracts: { Synthetix },
+      } = horizon.js!;
+      setLoading(true);
+      let tx: ethers.ContractTransaction;
+      if (state.fromMax) {
+        console.log("mint max");
+        tx = await Synthetix.issueMaxSynths();
+      } else {
+        console.log("mint", state.fromInput);
+        tx = await Synthetix.issueSynths(utils.parseEther(state.fromInput));
+      }
+      const res = await tx.wait(1);
+      console.log("res", res);
+    } catch (e) {
+      console.log(e);
+    }
+    setLoading(false);
+  }, [state.fromInput, state.fromMax]);
 
   return (
     <PageCard
@@ -95,21 +210,27 @@ export default function Earn() {
       }
     >
       <PresetCRatioOptions
-        value={targetCRatio}
-        options={presetCratioOptions}
-        onChange={setTargetCRatio}
+        color={THEME_COLOR}
+        value={changedBalance.cRatio.to}
+        onChange={handleSelectPresetCRatio}
       />
       <TokenPair
         mt={3}
-        price={2}
         fromToken={fromToken}
         toToken={toToken}
-        targetCRatio={targetCRatio}
         arrowImg={arrowImg}
+        state={state}
+        setState={setState}
       />
-      <BalanceChange my={3} {...mockBalanceChange} />
+      <BalanceChange my={3} {...changedBalance} />
       <Box>
-        <PrimaryButton size='large' fullWidth>
+        <PrimaryButton
+          loading={loading}
+          disabled={fromAmount.eq(0)}
+          size='large'
+          fullWidth
+          onClick={handleBurn}
+        >
           Burn Now
         </PrimaryButton>
       </Box>

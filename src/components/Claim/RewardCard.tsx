@@ -1,14 +1,13 @@
 import { Box, BoxProps } from "@material-ui/core";
 import { makeStyles } from "@material-ui/core/styles";
-import { BigNumber } from "@ethersproject/bignumber";
-import TokenLogo from "@components/TokenLogo";
-import { formatBalance } from "@utils/formatters";
-import { COLOR, BORDER_COLOR } from "@utils/theme/constants";
 import clsx from "clsx";
+import TokenLogo from "@components/TokenLogo";
+import { COLOR, BORDER_COLOR } from "@utils/theme/constants";
+import { formatNumber } from "@utils/number";
 
 interface Props {
   label: string;
-  amount: BigNumber;
+  amount: BN;
   disabled?: boolean;
   help?: string | JSX.Element;
 }
@@ -79,7 +78,7 @@ export default function RewardCard({
       >
         <TokenLogo />
         <span className={classes.label}>{label}</span>
-        <span className={classes.amount}>{formatBalance(amount)} HZN</span>
+        <span className={classes.amount}>{formatNumber(amount)} HZN</span>
       </Box>
       {help ? (
         <Box position='absolute' className={classes.help}>

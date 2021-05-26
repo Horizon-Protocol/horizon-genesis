@@ -21,7 +21,7 @@ declare global {
     inputPrefix?: string;
     onInput(v: string, max?: boolean): void;
     amount: BN; // BN format of input
-    toPair(stakeAmount: NumericValue, hznRate: BN): string; // convert between from and to token amount
+    toPairInput(stakeAmount: NumericValue): string; // convert between from and to token amount
   }
 }
 

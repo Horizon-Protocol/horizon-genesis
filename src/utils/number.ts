@@ -58,8 +58,8 @@ export const formatNumber = (
 
   formattedValue.push(
     toBigNumber(value).toFormat(
-      options?.decimals ?? DEFAULT_NUMBER_DECIMALS
-      // BigNumber.ROUND_DOWN
+      options?.decimals ?? DEFAULT_NUMBER_DECIMALS,
+      BigNumber.ROUND_DOWN
     )
   );
   if (suffix) {

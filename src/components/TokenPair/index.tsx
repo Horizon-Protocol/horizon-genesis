@@ -17,7 +17,6 @@ export interface InputState {
 export interface TokenPairProps {
   fromToken: TokenProps;
   toToken: TokenProps;
-  rate: BN;
   arrowImg?: string;
   state: InputState;
   setState: (
@@ -34,7 +33,7 @@ export interface TokenPairProps {
  * @param {string} inputValue
  * @return {*}  {string}
  */
-const formatInputValue = (inputValue: string): string =>
+export const formatInputValue = (inputValue: string): string =>
   inputValue &&
   numbro(inputValue).format({
     mantissa: 6,
@@ -45,7 +44,6 @@ const formatInputValue = (inputValue: string): string =>
 export default function TokenPair({
   fromToken,
   toToken,
-  rate,
   arrowImg,
   state,
   setState,
@@ -53,16 +51,16 @@ export default function TokenPair({
 }: TokenPairProps & BoxProps) {
   const setFromInput = useCallback<TokenInputProps["onInput"]>(
     (input, isMax = false) => {
-      const { toPair, max } = fromToken;
+      const { toPairInput, max } = fromToken;
       const toPairAmount = (isMax ? max?.toString() : input) || "0";
       setState({
         fromInput: formatInputValue(input),
         fromMax: isMax,
-        toInput: formatInputValue(toPair(toPairAmount, rate)),
+        toInput: formatInputValue(toPairInput(toPairAmount)),
         toMax: false,
       });
     },
-    [fromToken, rate, setState]
+    [fromToken, setState]
   );
 
   const { fromAmount, toAmount } = useMemo(
@@ -75,16 +73,16 @@ export default function TokenPair({
 
   const setToInput = useCallback<TokenInputProps["onInput"]>(
     (input, isMax = false) => {
-      const { toPair, max } = toToken;
+      const { toPairInput, max } = toToken;
       const toPairAmount = (isMax ? max?.toString() : input) || "0";
       setState({
         toInput: formatInputValue(input),
         toMax: isMax,
-        fromInput: formatInputValue(toPair(toPairAmount, rate)),
+        fromInput: formatInputValue(toPairInput(toPairAmount)),
         fromMax: false,
       });
     },
-    [rate, setState, toToken]
+    [setState, toToken]
   );
 
   return (

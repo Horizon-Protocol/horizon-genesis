@@ -1,5 +1,4 @@
-import { useState, useMemo, useCallback } from "react";
-import BigNumber from "bignumber.js";
+import { useMemo, useCallback, useState } from "react";
 import { useSetState } from "ahooks";
 import { useAtomValue } from "jotai/utils";
 import { Box } from "@material-ui/core";
@@ -22,7 +21,11 @@ import arrowImg from "@assets/images/mint-arrow.png";
 import arrowRightImg from "@assets/images/mint-arrow-right.png";
 import PageCard from "@components/PageCard";
 import PresetCRatioOptions from "@components/PresetCRatioOptions";
-import TokenPair, { InputState, TokenProps } from "@components/TokenPair";
+import TokenPair, {
+  formatInputValue,
+  InputState,
+  TokenProps,
+} from "@components/TokenPair";
 import BalanceChange, {
   Props as BalanceChangeProps,
 } from "@components/BalanceChange";
@@ -54,9 +57,10 @@ export default function Earn() {
       maxButtonLabel: "Max Mint",
       color: THEME_COLOR,
       labelColor: THEME_COLOR,
-      toPair: (...args) => getMintAmount(targetCRatio, ...args).toString(),
+      toPairInput: (amount) =>
+        getMintAmount(targetCRatio, amount, hznRateBN).toString(),
     }),
-    [targetCRatio, transferable]
+    [hznRateBN, targetCRatio, transferable]
   );
 
   const toToken: TokenProps = useMemo(
@@ -68,23 +72,30 @@ export default function Earn() {
       amount: toBigNumber(0),
       balanceLabel: `Minted at ${formatCRatioToPercent(targetCRatio)}% C-Ratio`,
       inputPrefix: "$",
-      toPair: (...args) => getStakingAmount(targetCRatio, ...args).toString(),
+      toPairInput: (amount) =>
+        getStakingAmount(targetCRatio, amount, hznRateBN).toString(),
     }),
-    [targetCRatio]
+    [hznRateBN, targetCRatio]
   );
 
   const handleSelectPresetCRatio = useCallback(
     (presetCRatio: BN) => {
-      const fromtInput = balance
+      const fromInput = balance
         .multipliedBy(presetCRatio)
         .div(targetCRatio)
         .minus(staked);
+      const isMax = presetCRatio.eq(targetCRatio);
+      const { toPairInput, max } = fromToken;
+      const toPairAmount =
+        (isMax ? max?.toString() : fromInput.toString()) || "0";
       setState({
-        fromInput: fromtInput.toFixed(6, BigNumber.ROUND_DOWN),
-        fromMax: false,
+        fromInput: formatInputValue(fromInput.toString()),
+        fromMax: isMax,
+        toInput: formatInputValue(toPairInput(toPairAmount)),
+        toMax: false,
       });
     },
-    [balance, targetCRatio, staked, setState]
+    [balance, targetCRatio, staked, fromToken, setState]
   );
 
   const fromAmount = useMemo(
@@ -151,17 +162,19 @@ export default function Earn() {
     debtBalance,
   ]);
 
+  const [loading, setLoading] = useState<boolean>(false);
   const handleMint = useCallback(async () => {
     try {
       const {
         contracts: { Synthetix },
       } = horizon.js!;
+      setLoading(true);
       let tx: ethers.ContractTransaction;
       if (state.fromMax) {
         console.log("mint max");
         tx = await Synthetix.issueMaxSynths();
       } else {
-        console.log("mintL", state.fromInput);
+        console.log("mint", state.fromInput);
         tx = await Synthetix.issueSynths(utils.parseEther(state.fromInput));
       }
       const res = await tx.wait(1);
@@ -169,6 +182,7 @@ export default function Earn() {
     } catch (e) {
       console.log(e);
     }
+    setLoading(false);
   }, [state.fromInput, state.fromMax]);
 
   return (
@@ -192,7 +206,6 @@ export default function Earn() {
       />
       <TokenPair
         mt={3}
-        rate={hznRateBN}
         fromToken={fromToken}
         toToken={toToken}
         arrowImg={arrowImg}
@@ -202,6 +215,7 @@ export default function Earn() {
       <BalanceChange my={3} {...changedBalance} />
       <Box>
         <PrimaryButton
+          loading={loading}
           disabled={fromAmount.eq(0)}
           size='large'
           fullWidth

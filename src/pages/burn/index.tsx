@@ -7,20 +7,16 @@ import horizon from "@lib/horizon";
 import { PAGE_COLOR } from "@utils/theme/constants";
 import { Token } from "@utils/constants";
 import { zAssets } from "@utils/zAssets";
-import {
-  formatCRatioToPercent,
-  minBN,
-  toBigNumber,
-  zeroBN,
-} from "@utils/number";
-import {
-  getStakingAmount,
-  getMintAmount,
-  getTransferableAmountFromBurn,
-} from "@utils/helper";
+import { maxBN, minBN, toBigNumber, zeroBN } from "@utils/number";
+import { getTransferableAmountFromBurn } from "@utils/helper";
 import { targetCRatioAtom } from "@atoms/app";
 import { hznRateAtom } from "@atoms/exchangeRates";
-import { debtAtom, hznStakedAtom, zUSDBalanceAtom } from "@atoms/debt";
+import {
+  debtAtom,
+  hznStakedAtom,
+  zUSDBalanceAtom,
+  burnAmountToFixCRatioAtom,
+} from "@atoms/debt";
 import headerBg from "@assets/images/burn.png";
 import arrowImg from "@assets/images/burn-arrow.png";
 import arrowRightImg from "@assets/images/burn-arrow-right.png";
@@ -42,10 +38,22 @@ export default function Earn() {
   const targetCRatio = useAtomValue(targetCRatioAtom);
   const hznRate = useAtomValue(hznRateAtom);
   const hznRateBN = useMemo(() => toBigNumber(hznRate), [hznRate]);
-  const { currentCRatio, balance, transferable, debtBalance, escrowedReward } =
-    useAtomValue(debtAtom);
+  const {
+    currentCRatio,
+    balance,
+    transferable,
+    debtBalance,
+    escrowedReward,
+    collateral,
+  } = useAtomValue(debtAtom);
   const zUSDBalance = useAtomValue(zUSDBalanceAtom);
   const staked = useAtomValue(hznStakedAtom);
+  const burnAmountToFixCRatio = useAtomValue(burnAmountToFixCRatioAtom);
+
+  const collateralUSD = useMemo(
+    () => collateral.multipliedBy(hznRateBN),
+    [collateral, hznRateBN]
+  );
 
   const [state, setState] = useSetState<InputState>({
     fromInput: "",
@@ -65,9 +73,13 @@ export default function Earn() {
       maxButtonLabel: "Burn Max",
       inputPrefix: "$",
       toPairInput: (amount) =>
-        getStakingAmount(targetCRatio, amount, hznRateBN).toString(),
+        toBigNumber(amount)
+          .minus(burnAmountToFixCRatio)
+          .div(hznRate)
+          .div(targetCRatio)
+          .toString(),
     }),
-    [debtBalance, hznRateBN, targetCRatio, zUSDBalance]
+    [burnAmountToFixCRatio, debtBalance, hznRate, targetCRatio, zUSDBalance]
   );
 
   const toToken: TokenProps = useMemo(
@@ -81,27 +93,31 @@ export default function Earn() {
       color: THEME_COLOR,
       labelColor: THEME_COLOR,
       toPairInput: (amount) =>
-        getMintAmount(targetCRatio, amount, hznRateBN).toString(),
+        burnAmountToFixCRatio
+          .minus(
+            toBigNumber(amount).multipliedBy(hznRate).multipliedBy(targetCRatio)
+          )
+          .toString(),
     }),
-    [hznRateBN, staked, targetCRatio]
+    [burnAmountToFixCRatio, hznRate, staked, targetCRatio]
   );
 
   const handleSelectPresetCRatio = useCallback(
     (presetCRatio: BN) => {
-      const fromInput = balance
-        .multipliedBy(presetCRatio)
-        .div(targetCRatio)
-        .minus(staked);
+      const fromInput =
+        maxBN(
+          debtBalance.minus(collateralUSD.multipliedBy(presetCRatio)),
+          zeroBN
+        ).toString() || "0";
       const { toPairInput } = fromToken;
-      const toPairAmount = fromInput.toString() || "0";
       setState({
-        fromInput: formatInputValue(fromInput.toString()),
+        fromInput: formatInputValue(fromInput),
         fromMax: false,
-        toInput: formatInputValue(toPairInput(toPairAmount)),
+        toInput: formatInputValue(toPairInput(fromInput)),
         toMax: false,
       });
     },
-    [balance, targetCRatio, staked, fromToken, setState]
+    [debtBalance, collateralUSD, fromToken, setState]
   );
 
   const fromAmount = useMemo(
@@ -113,24 +129,19 @@ export default function Earn() {
   //   [state.toInput]
   // );
   const changedBalance: BalanceChangeProps = useMemo(() => {
-    const changedStaked = staked.plus(fromAmount);
+    const changedDebt = debtBalance.minus(fromAmount);
 
-    const changedDebt = changedStaked
-      .multipliedBy(targetCRatio)
-      .multipliedBy(hznRateBN);
+    const changedStaked = changedDebt.div(targetCRatio).div(hznRateBN);
 
-    const changedTransferable = getTransferableAmountFromBurn(
-      fromAmount,
-      escrowedReward,
-      targetCRatio,
-      hznRateBN,
-      transferable
+    const changedTransferable = transferable.plus(
+      fromAmount.minus(burnAmountToFixCRatio).div(hznRate).div(targetCRatio)
     );
 
-    const changedCRatio = changedStaked.multipliedBy(targetCRatio).div(balance);
+    const changedCRatio = debtBalance.minus(fromAmount).div(collateralUSD);
 
     console.log({
       balance: balance.toNumber(),
+      burnAmountToFixCRatio: burnAmountToFixCRatio.toNumber(),
       escrowedReward: escrowedReward.toNumber(),
       debt: debtBalance.toString(),
       changedDebt: changedDebt.toString(),
@@ -163,14 +174,18 @@ export default function Earn() {
       gapImg: arrowRightImg,
     };
   }, [
+    debtBalance,
     fromAmount,
-    staked,
     targetCRatio,
     hznRateBN,
     transferable,
+    burnAmountToFixCRatio,
+    hznRate,
+    collateralUSD,
     balance,
+    escrowedReward,
+    staked,
     currentCRatio,
-    debtBalance,
   ]);
 
   const [loading, setLoading] = useState<boolean>(false);

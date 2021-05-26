@@ -15,7 +15,7 @@ import {
 } from "@utils/helper";
 import { targetCRatioAtom } from "@atoms/app";
 import { hznRateAtom } from "@atoms/exchangeRates";
-import { debtAtom, hznStakedAtom } from "@atoms/debt";
+import { debtAtom, hznStakedAtom, issuableZassetsAtom } from "@atoms/debt";
 import headerBg from "@assets/images/mint.png";
 import arrowImg from "@assets/images/mint-arrow.png";
 import arrowRightImg from "@assets/images/mint-arrow-right.png";
@@ -40,6 +40,7 @@ export default function Earn() {
   const { currentCRatio, balance, transferable, debtBalance } =
     useAtomValue(debtAtom);
   const staked = useAtomValue(hznStakedAtom);
+  const issuableZassets = useAtomValue(issuableZassetsAtom);
 
   const [state, setState] = useSetState<InputState>({
     fromInput: "",
@@ -53,14 +54,14 @@ export default function Earn() {
       token: Token.HZN,
       label: "STAKE",
       amount: toBigNumber(0),
-      max: transferable,
+      max: issuableZassets,
       maxButtonLabel: "Mint Max",
       color: THEME_COLOR,
       labelColor: THEME_COLOR,
       toPairInput: (amount) =>
         getMintAmount(targetCRatio, amount, hznRateBN).toString(),
     }),
-    [hznRateBN, targetCRatio, transferable]
+    [hznRateBN, targetCRatio, issuableZassets]
   );
 
   const toToken: TokenProps = useMemo(

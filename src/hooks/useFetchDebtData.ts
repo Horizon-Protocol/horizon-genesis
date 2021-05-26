@@ -5,9 +5,7 @@ import { toBigNumber } from "@utils/number";
 import { debtAtom } from "@atoms/debt";
 import useWallet from "./useWallet";
 
-interface Params {}
-
-export default function useFetchDebtData(params: Params) {
+export default function useFetchDebtData() {
   const { account } = useWallet();
 
   const setDebtData = useUpdateAtom(debtAtom);

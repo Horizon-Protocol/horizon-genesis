@@ -26,7 +26,7 @@ function App() {
   const dashboardVisible = true;
 
   useFetchAppData();
-  useFetchDebtData({});
+  useFetchDebtData();
   useFetchZAssets();
   useFetchFeePool("0");
 
@@ -40,7 +40,7 @@ function App() {
         zIndex={1}
       />
 
-      <Box mt={3}>
+      <Box my={3}>
         <Switch>
           <Route path='/burn'>
             <Burn />

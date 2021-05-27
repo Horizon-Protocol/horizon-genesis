@@ -3,6 +3,7 @@ import { useSetState } from "ahooks";
 import { useAtomValue, useUpdateAtom } from "jotai/utils";
 import { Box, Typography } from "@material-ui/core";
 import { ethers } from "ethers";
+import { useSnackbar } from "notistack";
 import horizon from "@lib/horizon";
 import { PAGE_COLOR } from "@utils/theme/constants";
 import { Token } from "@utils/constants";
@@ -38,13 +39,14 @@ import { toFutureDate } from "@utils/date";
 const THEME_COLOR = PAGE_COLOR.burn;
 
 export default function Earn() {
-  const { account } = useWallet();
+  const { account, connected } = useWallet();
+  const { enqueueSnackbar } = useSnackbar();
+
   const targetCRatio = useAtomValue(targetCRatioAtom);
   const hznRate = useAtomValue(hznRateAtom);
   const hznRateBN = useMemo(() => toBigNumber(hznRate), [hznRate]);
   const {
     currentCRatio,
-    balance,
     transferable,
     debtBalance,
     escrowedReward,
@@ -249,11 +251,14 @@ export default function Earn() {
       setBalanceChanged(true);
     } catch (e) {
       console.log(e);
+      console.log(e.error);
+      enqueueSnackbar(e.error ?? "Operation Failed", { variant: "error" });
     }
     setLoading(false);
   }, [
     account,
     changedBalance.cRatio.to,
+    enqueueSnackbar,
     setBalanceChanged,
     state.fromInput,
     targetCRatio,
@@ -307,15 +312,17 @@ export default function Earn() {
       />
       <BalanceChange my={3} {...changedBalance} />
       <Box>
-        <PrimaryButton
-          loading={loading}
-          disabled={burnDisabled}
-          size='large'
-          fullWidth
-          onClick={handleBurn}
-        >
-          Burn Now
-        </PrimaryButton>
+        {connected && (
+          <PrimaryButton
+            loading={loading}
+            disabled={burnDisabled}
+            size='large'
+            fullWidth
+            onClick={handleBurn}
+          >
+            Burn Now
+          </PrimaryButton>
+        )}
       </Box>
     </PageCard>
   );

@@ -3,6 +3,7 @@ import { useSetState } from "ahooks";
 import { useAtomValue, useUpdateAtom } from "jotai/utils";
 import { Box } from "@material-ui/core";
 import { ethers, utils } from "ethers";
+import { useSnackbar } from "notistack";
 import horizon from "@lib/horizon";
 import { PAGE_COLOR } from "@utils/theme/constants";
 import { Token } from "@utils/constants";
@@ -13,6 +14,7 @@ import {
   getMintAmount,
   getTransferableAmountFromMint,
 } from "@utils/helper";
+import useWallet from "@hooks/useWallet";
 import { balanceChangedAtom, targetCRatioAtom } from "@atoms/app";
 import { hznRateAtom } from "@atoms/exchangeRates";
 import { debtAtom, hznStakedAtom } from "@atoms/debt";
@@ -34,6 +36,9 @@ import PrimaryButton from "@components/PrimaryButton";
 const THEME_COLOR = PAGE_COLOR.mint;
 
 export default function Earn() {
+  const { connected } = useWallet();
+  const { enqueueSnackbar } = useSnackbar();
+
   const targetCRatio = useAtomValue(targetCRatioAtom);
   const hznRate = useAtomValue(hznRateAtom);
   const hznRateBN = useMemo(() => toBigNumber(hznRate), [hznRate]);
@@ -186,18 +191,19 @@ export default function Earn() {
         console.log("mint max");
         tx = await Synthetix.issueMaxSynths();
       } else {
-        const mintAmount = fromToken.toPairInput(state.fromInput);
-        console.log("mint", mintAmount);
-        tx = await Synthetix.issueSynths(utils.parseEther(mintAmount));
+        console.log("mint", state.toInput);
+        tx = await Synthetix.issueSynths(utils.parseEther(state.toInput));
       }
       const res = await tx.wait(1);
       console.log("res", res);
       setBalanceChanged(true);
     } catch (e) {
       console.log(e);
+      console.log(e.error);
+      enqueueSnackbar(e.error ?? "Operation Failed", { variant: "error" });
     }
     setLoading(false);
-  }, [state.fromMax, state.fromInput, setBalanceChanged, fromToken]);
+  }, [state.fromMax, state.toInput, setBalanceChanged, enqueueSnackbar]);
 
   return (
     <PageCard
@@ -228,15 +234,17 @@ export default function Earn() {
       />
       <BalanceChange my={3} {...changedBalance} />
       <Box>
-        <PrimaryButton
-          loading={loading}
-          disabled={fromAmount.eq(0)}
-          size='large'
-          fullWidth
-          onClick={handleMint}
-        >
-          Mint Now
-        </PrimaryButton>
+        {connected && (
+          <PrimaryButton
+            loading={loading}
+            disabled={fromAmount.eq(0)}
+            size='large'
+            fullWidth
+            onClick={handleMint}
+          >
+            Mint Now
+          </PrimaryButton>
+        )}
       </Box>
     </PageCard>
   );

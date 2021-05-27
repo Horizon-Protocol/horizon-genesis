@@ -1,10 +1,12 @@
 import { useCallback, useMemo, useState } from "react";
 import { Box } from "@material-ui/core";
 import { ethers } from "ethers";
+import { useSnackbar } from "notistack";
 import { useAtomValue, useUpdateAtom } from "jotai/utils";
 import { balanceChangedAtom } from "@atoms/app";
 import { rewardsAtom } from "@atoms/feePool";
 import horizon from "@lib/horizon";
+import useWallet from "@hooks/useWallet";
 import { PAGE_COLOR } from "@utils/theme/constants";
 import bg from "@assets/images/claim.png";
 import useClaimCountDown from "@hooks/useClaimCountDown";
@@ -17,7 +19,10 @@ import useFetchRewards from "@hooks/useFetchRewards";
 const THEME_COLOR = PAGE_COLOR.claim;
 
 export default function Earn() {
+  const { connected } = useWallet();
   const { refresh } = useFetchRewards();
+
+  const { enqueueSnackbar } = useSnackbar();
 
   const { claimable, stakingReward, exchangeReward } =
     useAtomValue(rewardsAtom);
@@ -62,9 +67,11 @@ export default function Earn() {
       setBalanceChanged(true);
     } catch (e) {
       console.log(e);
+      console.log(e.error);
+      enqueueSnackbar(e.error ?? "Operation Failed", { variant: "error" });
     }
     setLoading(false);
-  }, [refresh, setBalanceChanged]);
+  }, [enqueueSnackbar, refresh, setBalanceChanged]);
 
   return (
     <PageCard
@@ -97,15 +104,17 @@ export default function Earn() {
         <InfoList data={mockInfoList} />
       </Box>
       <Box mt={3}>
-        <PrimaryButton
-          loading={loading}
-          disabled={!canClaim}
-          size='large'
-          fullWidth
-          onClick={handleClaim}
-        >
-          Claim Now
-        </PrimaryButton>
+        {connected && (
+          <PrimaryButton
+            loading={loading}
+            disabled={!canClaim}
+            size='large'
+            fullWidth
+            onClick={handleClaim}
+          >
+            Claim Now
+          </PrimaryButton>
+        )}
       </Box>
     </PageCard>
   );

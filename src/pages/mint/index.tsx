@@ -186,8 +186,9 @@ export default function Earn() {
         console.log("mint max");
         tx = await Synthetix.issueMaxSynths();
       } else {
-        console.log("mint", state.fromInput);
-        tx = await Synthetix.issueSynths(utils.parseEther(state.fromInput));
+        const mintAmount = fromToken.toPairInput(state.fromInput);
+        console.log("mint", mintAmount);
+        tx = await Synthetix.issueSynths(utils.parseEther(mintAmount));
       }
       const res = await tx.wait(1);
       console.log("res", res);
@@ -196,7 +197,7 @@ export default function Earn() {
       console.log(e);
     }
     setLoading(false);
-  }, [setBalanceChanged, state.fromInput, state.fromMax]);
+  }, [state.fromMax, state.fromInput, setBalanceChanged, fromToken]);
 
   return (
     <PageCard

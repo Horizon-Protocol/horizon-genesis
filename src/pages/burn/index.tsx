@@ -1,14 +1,13 @@
-import { useMemo, useCallback, useState } from "react";
+import { useMemo, useCallback, useState, useEffect } from "react";
 import { useSetState } from "ahooks";
 import { useAtomValue } from "jotai/utils";
-import { Box } from "@material-ui/core";
-import { ethers, utils } from "ethers";
+import { Box, Typography } from "@material-ui/core";
+import { ethers } from "ethers";
 import horizon from "@lib/horizon";
 import { PAGE_COLOR } from "@utils/theme/constants";
 import { Token } from "@utils/constants";
 import { zAssets } from "@utils/zAssets";
 import { maxBN, minBN, toBigNumber, zeroBN } from "@utils/number";
-import { getTransferableAmountFromBurn } from "@utils/helper";
 import { targetCRatioAtom } from "@atoms/app";
 import { hznRateAtom } from "@atoms/exchangeRates";
 import {
@@ -17,6 +16,8 @@ import {
   zUSDBalanceAtom,
   burnAmountToFixCRatioAtom,
 } from "@atoms/debt";
+import useWallet from "@hooks/useWallet";
+import useFetchBurnStatus from "@hooks/useFetchBurnStatus";
 import headerBg from "@assets/images/burn.png";
 import arrowImg from "@assets/images/burn-arrow.png";
 import arrowRightImg from "@assets/images/burn-arrow-right.png";
@@ -31,10 +32,13 @@ import BalanceChange, {
   Props as BalanceChangeProps,
 } from "@components/BalanceChange";
 import PrimaryButton from "@components/PrimaryButton";
+import { getTransferableAmountFromBurn } from "@utils/helper";
+import { toFutureDate } from "@utils/date";
 
 const THEME_COLOR = PAGE_COLOR.burn;
 
 export default function Earn() {
+  const { account } = useWallet();
   const targetCRatio = useAtomValue(targetCRatioAtom);
   const hznRate = useAtomValue(hznRateAtom);
   const hznRateBN = useMemo(() => toBigNumber(hznRate), [hznRate]);
@@ -45,6 +49,7 @@ export default function Earn() {
     debtBalance,
     escrowedReward,
     collateral,
+    issuableSynths,
   } = useAtomValue(debtAtom);
   const zUSDBalance = useAtomValue(zUSDBalanceAtom);
   const staked = useAtomValue(hznStakedAtom);
@@ -60,6 +65,17 @@ export default function Earn() {
     fromMax: false,
     toInput: "",
     toMax: false,
+  });
+
+  const [waitingPeriod, setWaitingPeriod] = useState<number>();
+  const [issuanceDelay, setIssuanceDelay] = useState<number>();
+  const fetchBurnStatus = useFetchBurnStatus();
+
+  useEffect(() => {
+    fetchBurnStatus().then(({ waitingPeriod, issuanceDelay }) => {
+      setWaitingPeriod(waitingPeriod);
+      setIssuanceDelay(issuanceDelay);
+    });
   });
 
   const fromToken: TokenProps = useMemo(
@@ -133,27 +149,38 @@ export default function Earn() {
 
     const changedStaked = changedDebt.div(targetCRatio).div(hznRateBN);
 
-    const changedTransferable = transferable.plus(
-      fromAmount.minus(burnAmountToFixCRatio).div(hznRate).div(targetCRatio)
+    // debtBalance + (escrowedReward * hznRate * targetCRatio) - issuableSynths
+    const debtEscrowBalance = maxBN(
+      debtBalance
+        .plus(escrowedReward.multipliedBy(hznRateBN).multipliedBy(targetCRatio))
+        .minus(issuableSynths),
+      zeroBN
+    );
+    const changedTransferable = getTransferableAmountFromBurn(
+      fromAmount,
+      debtEscrowBalance,
+      targetCRatio,
+      hznRateBN,
+      transferable
     );
 
     const changedCRatio = debtBalance.minus(fromAmount).div(collateralUSD);
 
-    console.log({
-      balance: balance.toNumber(),
-      burnAmountToFixCRatio: burnAmountToFixCRatio.toNumber(),
-      escrowedReward: escrowedReward.toNumber(),
-      debt: debtBalance.toString(),
-      changedDebt: changedDebt.toString(),
-      staked: staked.toNumber(),
-      transferable: transferable.toNumber(),
-      hznRate: hznRateBN.toString(),
-      targetCRatio: targetCRatio.toNumber(),
-      currentCRatio: currentCRatio.toString(),
-      changedCRatio: changedCRatio.toString(),
-      changedStaked: changedStaked.toNumber(),
-      changedTransferable: changedTransferable.toNumber(),
-    });
+    // console.log({
+    //   balance: balance.toNumber(),
+    //   burnAmountToFixCRatio: burnAmountToFixCRatio.toNumber(),
+    //   escrowedReward: escrowedReward.toNumber(),
+    //   debt: debtBalance.toString(),
+    //   changedDebt: changedDebt.toString(),
+    //   staked: staked.toNumber(),
+    //   transferable: transferable.toNumber(),
+    //   hznRate: hznRateBN.toString(),
+    //   targetCRatio: targetCRatio.toNumber(),
+    //   currentCRatio: currentCRatio.toString(),
+    //   changedCRatio: changedCRatio.toString(),
+    //   changedStaked: changedStaked.toNumber(),
+    //   changedTransferable: changedTransferable.toNumber(),
+    // });
     return {
       cRatio: {
         from: currentCRatio,
@@ -178,12 +205,12 @@ export default function Earn() {
     fromAmount,
     targetCRatio,
     hznRateBN,
+    escrowedReward,
+    issuableSynths,
     transferable,
-    burnAmountToFixCRatio,
-    hznRate,
     collateralUSD,
     balance,
-    escrowedReward,
+    burnAmountToFixCRatio,
     staked,
     currentCRatio,
   ]);
@@ -192,16 +219,31 @@ export default function Earn() {
   const handleBurn = useCallback(async () => {
     try {
       const {
-        contracts: { Synthetix },
+        contracts: { Synthetix, Issuer },
+        utils,
       } = horizon.js!;
       setLoading(true);
+      const burnToTarget = changedBalance.cRatio.to.eq(targetCRatio);
+      const zUSDBytes = utils.formatBytes32String("zUSD");
+      const isWaitingPeriod: boolean = await Synthetix.isWaitingPeriod(
+        zUSDBytes
+      );
+      console.log("isWaitingPeriod", isWaitingPeriod);
+      if (isWaitingPeriod) {
+        throw new Error("Waiting period for zUSD is still ongoing");
+      }
+
+      if (!burnToTarget && !(await Issuer.canBurnSynths(account))) {
+        throw new Error("Waiting period to burn is still ongoing");
+      }
+
       let tx: ethers.ContractTransaction;
-      if (state.fromMax) {
-        console.log("mint max");
-        tx = await Synthetix.issueMaxSynths();
+      if (burnToTarget) {
+        console.log("burn to target");
+        tx = await Synthetix.burnSynthsToTarget();
       } else {
-        console.log("mint", state.fromInput);
-        tx = await Synthetix.issueSynths(utils.parseEther(state.fromInput));
+        console.log("burn amount:", state.fromInput);
+        tx = await Synthetix.burnSynths(utils.parseEther(state.fromInput));
       }
       const res = await tx.wait(1);
       console.log("res", res);
@@ -209,7 +251,17 @@ export default function Earn() {
       console.log(e);
     }
     setLoading(false);
-  }, [state.fromInput, state.fromMax]);
+  }, [account, changedBalance.cRatio.to, state.fromInput, targetCRatio]);
+
+  const burnDisabled = useMemo(() => {
+    if (waitingPeriod || issuanceDelay) {
+      return true;
+    }
+    if (fromAmount.eq(0) || fromAmount.gt(fromToken.max)) {
+      return true;
+    }
+    return false;
+  }, [fromAmount, fromToken.max, issuanceDelay, waitingPeriod]);
 
   return (
     <PageCard
@@ -227,9 +279,18 @@ export default function Earn() {
     >
       <PresetCRatioOptions
         color={THEME_COLOR}
+        isBurn
         value={changedBalance.cRatio.to}
         onChange={handleSelectPresetCRatio}
       />
+      <Box mt={3}>
+        {waitingPeriod || issuanceDelay ? (
+          <Typography variant='h6' align='center'>
+            Burning blocked until: <br />
+            {toFutureDate((waitingPeriod || issuanceDelay)!)}
+          </Typography>
+        ) : null}
+      </Box>
       <TokenPair
         mt={3}
         fromToken={fromToken}
@@ -242,7 +303,7 @@ export default function Earn() {
       <Box>
         <PrimaryButton
           loading={loading}
-          disabled={fromAmount.eq(0)}
+          disabled={burnDisabled}
           size='large'
           fullWidth
           onClick={handleBurn}

@@ -12,7 +12,7 @@ declare global {
     label: string;
     balanceLabel?: JSX.Element | string;
     maxButtonLabel?: JSX.Element | string;
-    max?: BN;
+    max: BN;
     color?: string;
     labelColor?: string;
     bgColor?: string;
@@ -95,8 +95,10 @@ export default function TokenInput({
   inputPrefix,
 }: TokenInputProps) {
   const classes = useStyles({
-    invalidInput: !!max && amount.gt(max),
+    invalidInput: max.gt(0) && amount.gt(max),
   });
+
+  console.log("input", label, input);
 
   const maxRef = useRef<boolean>();
 
@@ -147,6 +149,7 @@ export default function TokenInput({
           value={input}
           onValueChange={(values) => {
             // WARN: to avoid infinite loop
+            console.log("onCalueChange", input, values);
             if (input !== values.value) {
               onInput(values.value, maxRef.current);
               maxRef.current = false;

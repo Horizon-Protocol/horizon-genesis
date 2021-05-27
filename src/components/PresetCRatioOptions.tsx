@@ -8,12 +8,14 @@ import { useMemo } from "react";
 
 interface Props extends Omit<BoxProps, "onChange"> {
   color: string;
+  isBurn?: boolean;
   value: BN;
   onChange(cRatio: BN): void;
 }
 
 export default function PresetCRatioOptions({
   color,
+  isBurn = false,
   value,
   onChange,
   ...props
@@ -33,6 +35,7 @@ export default function PresetCRatioOptions({
           <PresetCRatioOption
             key={option.title}
             color={color}
+            disabled={isBurn && currentPercent > option.percent}
             active={currentPercent > 0 && option.percent === currentPercent}
             onClick={() => onChange(option.cRatio)}
             {...option}

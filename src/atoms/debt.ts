@@ -1,9 +1,16 @@
 import { atom } from "jotai";
 import { atomWithReset, selectAtom } from "jotai/utils";
-import { zeroBN, cRatioToPercent, maxBN } from "@utils/number";
+import {
+  zeroBN,
+  cRatioToPercent,
+  maxBN,
+  minBN,
+  toBigNumber,
+} from "@utils/number";
 import { SynthBalancesMap } from "@utils/currencies";
 // import { hznRateAtom } from "./exchangeRates";
 import { targetCRatioAtom } from "./app";
+import { hznRateAtom } from "./exchangeRates";
 
 export const debtAtom = atomWithReset({
   balance: zeroBN,
@@ -32,12 +39,12 @@ export const currentCRatioPercentAtom = atom((get) => {
 export const hznStakedAtom = atom((get) => {
   const { currentCRatio, collateral } = get(debtAtom);
   const targetCRatio = get(targetCRatioAtom);
-  if (targetCRatio.lte(0)) {
+  if (targetCRatio.lte(zeroBN)) {
     return zeroBN;
   }
 
   const stakedCollateral = collateral.multipliedBy(
-    Math.min(1, currentCRatio.div(targetCRatio).toNumber())
+    minBN(toBigNumber(1), currentCRatio.div(targetCRatio))
   );
 
   return stakedCollateral;

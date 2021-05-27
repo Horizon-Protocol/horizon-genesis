@@ -19,13 +19,13 @@ export default function useFetchDebtData() {
 
       const zUSDBytes = utils.formatBytes32String("zUSD");
       const res = await Promise.all([
+        Synthetix.collateral(account),
         Synthetix.collateralisationRatio(account),
         Synthetix.transferableSynthetix(account),
         Synthetix.debtBalanceOf(account, zUSDBytes),
-        Synthetix.collateral(account),
         Synthetix.maxIssuableSynths(account),
         Synthetix.balanceOf(account),
-        RewardEscrow.totalEscrowedAccountBalance(account),
+        RewardEscrow.balanceOf(account),
         Liquidations.getLiquidationDeadlineForAccount(account),
       ]);
       return res.map((item) => toBigNumber(utils.formatEther(item)));
@@ -33,10 +33,10 @@ export default function useFetchDebtData() {
     {
       ready: !!account && !!horizon.js,
       onSuccess([
+        collateral,
         currentCRatio,
         transferable,
         debtBalance,
-        collateral,
         issuableSynths,
         balance,
         escrowedReward,

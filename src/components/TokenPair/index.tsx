@@ -33,13 +33,20 @@ export interface TokenPairProps {
  * @param {string} inputValue
  * @return {*}  {string}
  */
-export const formatInputValue = (inputValue: string): string =>
-  inputValue &&
-  numbro(inputValue).format({
-    mantissa: 6,
-    trimMantissa: true,
-    thousandSeparated: false,
-  });
+export const formatInputValue = (inputValue: string): string => {
+  if (toBigNumber(inputValue).lt(0)) {
+    console.log("no enough");
+    return "0";
+  }
+  return (
+    inputValue &&
+    numbro(inputValue).format({
+      mantissa: 6,
+      trimMantissa: true,
+      thousandSeparated: false,
+    })
+  );
+};
 
 export default function TokenPair({
   fromToken,
@@ -75,6 +82,7 @@ export default function TokenPair({
     (input, isMax = false) => {
       const { toPairInput, max } = toToken;
       const toPairAmount = (isMax ? max?.toString() : input) || "0";
+      console.log("to input change:", input, toPairAmount);
       setState({
         toInput: formatInputValue(input),
         toMax: isMax,

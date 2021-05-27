@@ -1,11 +1,11 @@
 import { Box, ButtonBase, ButtonBaseProps } from "@material-ui/core";
 import { makeStyles, createStyles } from "@material-ui/core/styles";
 import { fade } from "@material-ui/core/styles/colorManipulator";
-import { formatNumber } from "@utils/number";
 
 interface StyleProps {
   color: string;
   active: boolean;
+  disabled?: boolean;
 }
 
 const useStyles = makeStyles(({ palette }) =>
@@ -17,19 +17,22 @@ const useStyles = makeStyles(({ palette }) =>
       alignItems: "stretch",
       background: "#0A1624",
       overflow: "hidden",
+      opacity: ({ disabled }) => (disabled ? 0.5 : 1),
+      cursor: ({ disabled }) => (disabled ? "not-allowed" : "pointer"),
     },
     title: {
       lineHeight: "24px",
       background: ({ active, color }: StyleProps) =>
         active ? color : fade(palette.divider, 0.5),
-      color: ({ active, color }: StyleProps) =>
-        active ? "#0A1624" : "#62B5DB",
+      color: ({ active, disabled }: StyleProps) =>
+        !disabled && active ? "#0A1624" : "#62B5DB",
       textTransform: "uppercase",
       fontWeight: 700,
       letterSpacing: "0.43px",
     },
     percent: {
-      color: ({ active, color }: StyleProps) => (active ? color : "#6E89A6"),
+      color: ({ disabled, active, color }: StyleProps) =>
+        !disabled && active ? color : "#6E89A6",
       // fontFamily: "Rawline",
       fontSize: 22,
       letterSpacing: "0.92px",
@@ -37,7 +40,8 @@ const useStyles = makeStyles(({ palette }) =>
     },
     suffix: {
       marginLeft: 8,
-      color: ({ active, color }: StyleProps) => (active ? color : "#6E89A6"),
+      color: ({ disabled, active, color }: StyleProps) =>
+        !disabled && active ? color : "#6E89A6",
       fontSize: 12,
       letterSpacing: "0.5px",
       lineHeight: "14px",
@@ -67,12 +71,18 @@ export default function PresetCRatioOption({
   percent,
   cRatio,
   active,
+  disabled,
   ...props
 }: Props) {
-  const classes = useStyles({ color, active });
+  const classes = useStyles({ color, active, disabled });
 
   return (
-    <ButtonBase disableRipple className={classes.button} {...props}>
+    <ButtonBase
+      disableRipple
+      disabled={disabled}
+      className={classes.button}
+      {...props}
+    >
       <span className={classes.title}>{title}</span>
       <Box
         display='flex'

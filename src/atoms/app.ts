@@ -2,8 +2,18 @@ import { atom } from "jotai";
 import { atomWithReset, selectAtom } from "jotai/utils";
 import { zeroBN, toBigNumber, cRatioToPercent } from "@utils/number";
 
-export const readyAtom = atomWithReset(false);
+// app state
+export const readyAtom = atom(false);
 
+export const balanceChangedAtom = atom(true);
+
+export const needRefreshAtom = atom((get) => {
+  const ready = get(readyAtom);
+  const balanceChanged = get(balanceChangedAtom);
+  return ready && balanceChanged;
+});
+
+// static variables from contract
 export const totalSupplyAtom = atomWithReset(zeroBN);
 export const targetCRatioAtom = atomWithReset(zeroBN);
 export const liquidationRatioAtom = atomWithReset(zeroBN);

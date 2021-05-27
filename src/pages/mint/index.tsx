@@ -1,6 +1,6 @@
 import { useMemo, useCallback, useState } from "react";
 import { useSetState } from "ahooks";
-import { useAtomValue } from "jotai/utils";
+import { useAtomValue, useUpdateAtom } from "jotai/utils";
 import { Box } from "@material-ui/core";
 import { ethers, utils } from "ethers";
 import horizon from "@lib/horizon";
@@ -13,7 +13,7 @@ import {
   getMintAmount,
   getTransferableAmountFromMint,
 } from "@utils/helper";
-import { targetCRatioAtom } from "@atoms/app";
+import { balanceChangedAtom, targetCRatioAtom } from "@atoms/app";
 import { hznRateAtom } from "@atoms/exchangeRates";
 import { debtAtom, hznStakedAtom } from "@atoms/debt";
 import headerBg from "@assets/images/mint.png";
@@ -173,6 +173,7 @@ export default function Earn() {
     debtBalance,
   ]);
 
+  const setBalanceChanged = useUpdateAtom(balanceChangedAtom);
   const [loading, setLoading] = useState<boolean>(false);
   const handleMint = useCallback(async () => {
     try {
@@ -190,11 +191,12 @@ export default function Earn() {
       }
       const res = await tx.wait(1);
       console.log("res", res);
+      setBalanceChanged(true);
     } catch (e) {
       console.log(e);
     }
     setLoading(false);
-  }, [state.fromInput, state.fromMax]);
+  }, [setBalanceChanged, state.fromInput, state.fromMax]);
 
   return (
     <PageCard

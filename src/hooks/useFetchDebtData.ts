@@ -1,17 +1,20 @@
 import { useRequest } from "ahooks";
-import { useUpdateAtom } from "jotai/utils";
+import { useAtomValue, useUpdateAtom } from "jotai/utils";
 import horizon from "@lib/horizon";
 import { toBigNumber } from "@utils/number";
+import { needRefreshAtom } from "@atoms/app";
 import { debtAtom } from "@atoms/debt";
 import useWallet from "./useWallet";
 
 export default function useFetchDebtData() {
+  const needRefresh = useAtomValue(needRefreshAtom);
   const { account } = useWallet();
 
   const setDebtData = useUpdateAtom(debtAtom);
 
   useRequest(
     async () => {
+      console.log("load debt data");
       const {
         contracts: { Synthetix, RewardEscrow, Liquidations },
         utils,
@@ -32,6 +35,7 @@ export default function useFetchDebtData() {
     },
     {
       ready: !!account && !!horizon.js,
+      refreshDeps: [needRefresh],
       onSuccess([
         collateral,
         currentCRatio,

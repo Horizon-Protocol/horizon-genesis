@@ -1,6 +1,6 @@
 import { useMemo, useCallback, useState, useEffect } from "react";
 import { useSetState } from "ahooks";
-import { useAtomValue } from "jotai/utils";
+import { useAtomValue, useUpdateAtom } from "jotai/utils";
 import { Box, Typography } from "@material-ui/core";
 import { ethers } from "ethers";
 import horizon from "@lib/horizon";
@@ -8,7 +8,7 @@ import { PAGE_COLOR } from "@utils/theme/constants";
 import { Token } from "@utils/constants";
 import { zAssets } from "@utils/zAssets";
 import { maxBN, minBN, toBigNumber, zeroBN } from "@utils/number";
-import { targetCRatioAtom } from "@atoms/app";
+import { targetCRatioAtom, balanceChangedAtom } from "@atoms/app";
 import { hznRateAtom } from "@atoms/exchangeRates";
 import {
   debtAtom,
@@ -209,12 +209,11 @@ export default function Earn() {
     issuableSynths,
     transferable,
     collateralUSD,
-    balance,
-    burnAmountToFixCRatio,
     staked,
     currentCRatio,
   ]);
 
+  const setBalanceChanged = useUpdateAtom(balanceChangedAtom);
   const [loading, setLoading] = useState<boolean>(false);
   const handleBurn = useCallback(async () => {
     try {
@@ -247,11 +246,18 @@ export default function Earn() {
       }
       const res = await tx.wait(1);
       console.log("res", res);
+      setBalanceChanged(true);
     } catch (e) {
       console.log(e);
     }
     setLoading(false);
-  }, [account, changedBalance.cRatio.to, state.fromInput, targetCRatio]);
+  }, [
+    account,
+    changedBalance.cRatio.to,
+    setBalanceChanged,
+    state.fromInput,
+    targetCRatio,
+  ]);
 
   const burnDisabled = useMemo(() => {
     if (waitingPeriod || issuanceDelay) {

@@ -2,7 +2,8 @@ import { useRequest } from "ahooks";
 import { useAtomValue, useUpdateAtom } from "jotai/utils";
 import { utils } from "ethers";
 import {
-  readyAtom,
+  balanceChangedAtom,
+  needRefreshAtom,
   totalSupplyAtom,
   targetCRatioAtom,
   liquidationRatioAtom,
@@ -13,7 +14,8 @@ import useFetchExchangeRates from "./useFetchExchangeRates";
 import { toBigNumber } from "@utils/number";
 
 export default function useFetchAppData() {
-  const appReady = useAtomValue(readyAtom);
+  const needRefresh = useAtomValue(needRefreshAtom);
+  const setBalanceChanged = useUpdateAtom(balanceChangedAtom);
 
   const setTotalSupply = useUpdateAtom(totalSupplyAtom);
   const setTargetCRatio = useUpdateAtom(targetCRatioAtom);
@@ -22,6 +24,7 @@ export default function useFetchAppData() {
 
   useRequest(
     async () => {
+      console.log("load app state");
       const {
         contracts: { SystemSettings, Synthetix, Liquidations },
       } = horizon.js!;
@@ -34,7 +37,8 @@ export default function useFetchAppData() {
       return res.map((item) => toBigNumber(utils.formatEther(item)));
     },
     {
-      ready: appReady && !!horizon.js,
+      ready: needRefresh && !!horizon.js,
+      refreshDeps: [needRefresh],
       onSuccess([
         totalSupply,
         targetCRatio,
@@ -51,6 +55,7 @@ export default function useFetchAppData() {
         setTargetCRatio(targetCRatio);
         setLiquidationRatio(liquidationRatio);
         // setLiquidationDelay(liquidationDelay);
+        setBalanceChanged(false);
       },
     }
   );

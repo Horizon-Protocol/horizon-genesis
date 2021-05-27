@@ -1,7 +1,8 @@
 import { useCallback, useMemo, useState } from "react";
 import { Box } from "@material-ui/core";
 import { ethers } from "ethers";
-import { useAtomValue } from "jotai/utils";
+import { useAtomValue, useUpdateAtom } from "jotai/utils";
+import { balanceChangedAtom } from "@atoms/app";
 import { rewardsAtom } from "@atoms/feePool";
 import horizon from "@lib/horizon";
 import { PAGE_COLOR } from "@utils/theme/constants";
@@ -47,6 +48,7 @@ export default function Earn() {
     },
   ];
 
+  const setBalanceChanged = useUpdateAtom(balanceChangedAtom);
   const [loading, setLoading] = useState(false);
   const handleClaim = useCallback(async () => {
     try {
@@ -57,11 +59,12 @@ export default function Earn() {
       const tx: ethers.ContractTransaction = await FeePool.claimFees();
       await tx.wait(1);
       refresh();
+      setBalanceChanged(true);
     } catch (e) {
       console.log(e);
     }
     setLoading(false);
-  }, [refresh]);
+  }, [refresh, setBalanceChanged]);
 
   return (
     <PageCard

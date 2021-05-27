@@ -3,7 +3,7 @@ import { useAtomValue, useUpdateAtom } from "jotai/utils";
 import { utils, BigNumberish } from "ethers";
 import { ratesAtom } from "@atoms/exchangeRates";
 import horizon from "@lib/horizon";
-import { readyAtom } from "@atoms/app";
+import { needRefreshAtom } from "@atoms/app";
 import {
   Rates,
   CryptoCurrency,
@@ -21,12 +21,13 @@ const additionalCurrencies = [CryptoCurrency.HZN].map(
 );
 
 export default function useFetchExchangeRates() {
-  const appReady = useAtomValue(readyAtom);
+  const needRefresh = useAtomValue(needRefreshAtom);
+
   const setRates = useUpdateAtom(ratesAtom);
 
   useRequest(
     async () => {
-      console.log("fetch prices!!!!!");
+      console.log("load exchange rates");
       const exchangeRates: Rates = {};
       const {
         contracts: { SynthUtil, ExchangeRates },
@@ -56,7 +57,8 @@ export default function useFetchExchangeRates() {
       return exchangeRates;
     },
     {
-      ready: appReady && !!horizon.js,
+      ready: needRefresh && !!horizon.js,
+      refreshDeps: [needRefresh],
       onSuccess(rates) {
         setRates(rates);
       },

@@ -1,7 +1,8 @@
 import { useRequest } from "ahooks";
-import { useUpdateAtom } from "jotai/utils";
+import { useAtomValue, useUpdateAtom } from "jotai/utils";
 import { utils } from "ethers";
 import horizon from "@lib/horizon";
+import { needRefreshAtom } from "@atoms/app";
 import { zAssetsBalanceAtom, zAssetstotalUSDAtom } from "@atoms/debt";
 import { toBigNumber } from "@utils/number";
 import { CurrencyKey, SynthBalancesMap } from "@utils/currencies";
@@ -10,6 +11,7 @@ import useWallet from "./useWallet";
 type SynthBalancesTuple = [CurrencyKey[], number[], number[]];
 
 export default function useFetchZAssets() {
+  const needRefresh = useAtomValue(needRefreshAtom);
   const { account } = useWallet();
 
   const setBalances = useUpdateAtom(zAssetsBalanceAtom);
@@ -17,6 +19,7 @@ export default function useFetchZAssets() {
 
   useRequest(
     async () => {
+      console.log("load zAssets");
       const {
         contracts: { SynthUtil },
       } = horizon.js!;
@@ -55,6 +58,7 @@ export default function useFetchZAssets() {
     },
     {
       ready: !!account && !!horizon.js,
+      refreshDeps: [needRefresh],
       onSuccess({ balancesMap, totalUSDBalance }) {
         setBalances(balancesMap);
         setTotalUSD(totalUSDBalance);

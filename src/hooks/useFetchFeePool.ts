@@ -1,8 +1,8 @@
 import { useRequest } from "ahooks";
-import { useAtomValue, useUpdateAtom } from "jotai/utils";
+import { useAtomValue } from "jotai/utils";
 import { ethers, utils } from "ethers";
 import horizon from "@lib/horizon";
-import { readyAtom } from "@atoms/app";
+import { needRefreshAtom } from "@atoms/app";
 import { toBigNumber } from "@utils/number";
 
 type Period = "0" | "1"; // '0': current; '1': previous
@@ -17,10 +17,11 @@ type FeePeriod = {
 type FeePeriodDuration = ethers.BigNumber;
 
 export default function useFetchFeePool(period: Period) {
-  const appReady = useAtomValue(readyAtom);
+  const needRefresh = useAtomValue(needRefreshAtom);
 
   useRequest(
     async () => {
+      console.log("load fee pool");
       const {
         contracts: { FeePool },
       } = horizon.js!;
@@ -46,7 +47,8 @@ export default function useFetchFeePool(period: Period) {
       };
     },
     {
-      ready: appReady && !!horizon.js,
+      ready: needRefresh && !!horizon.js,
+      refreshDeps: [needRefresh],
       onSuccess(res) {
         console.log(res);
       },

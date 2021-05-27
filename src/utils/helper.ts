@@ -16,8 +16,8 @@ export function getMintAmount(
 ): BN {
   if (!stakeAmount || !targetCRatio || !hznRate) return toBigNumber(0);
   return toBigNumber(stakeAmount)
-    .multipliedBy(targetCRatio)
-    .multipliedBy(hznRate);
+    .multipliedBy(hznRate)
+    .multipliedBy(targetCRatio);
 }
 
 /**
@@ -35,7 +35,7 @@ export function getStakingAmount(
   hznRate: BN
 ): BN {
   if (!mintAmount || !targetCRatio || !hznRate) return toBigNumber(0);
-  return toBigNumber(mintAmount).dividedBy(targetCRatio).dividedBy(hznRate);
+  return toBigNumber(mintAmount).dividedBy(hznRate).dividedBy(targetCRatio);
 }
 
 export function getTransferableAmountFromMint(

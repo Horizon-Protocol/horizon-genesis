@@ -1,6 +1,6 @@
 import { atom } from "jotai";
 import { atomWithReset, selectAtom } from "jotai/utils";
-import { zeroBN, cRatioToPercent, maxBN, minBN } from "@utils/number";
+import { zeroBN, cRatioToPercent, maxBN } from "@utils/number";
 import { SynthBalancesMap } from "@utils/currencies";
 // import { hznRateAtom } from "./exchangeRates";
 import { targetCRatioAtom } from "./app";
@@ -41,14 +41,6 @@ export const hznStakedAtom = atom((get) => {
   );
 
   return stakedCollateral;
-});
-
-export const issuableZassetsAtom = atom((get) => {
-  const { debtBalance, issuableSynths, escrowedReward } = get(debtAtom);
-  console.log("issuableSynths", issuableSynths.toNumber());
-  console.log("debtBalance", debtBalance.toNumber());
-  console.log("escrowedReward", escrowedReward.toNumber());
-  return maxBN(issuableSynths.minus(debtBalance), zeroBN);
 });
 
 export const burnAmountToFixCRatioAtom = atom((get) => {

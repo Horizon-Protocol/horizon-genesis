@@ -252,7 +252,10 @@ export default function Earn() {
     } catch (e) {
       console.log(e);
       console.log(e.error);
-      enqueueSnackbar(e.error ?? "Operation Failed", { variant: "error" });
+      const detail = `${e.error?.code}: ${e.error?.reason}`;
+      enqueueSnackbar(e.error ? detail : "Operation Failed", {
+        variant: "error",
+      });
     }
     setLoading(false);
   }, [

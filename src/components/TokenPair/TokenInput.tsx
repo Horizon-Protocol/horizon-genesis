@@ -2,7 +2,6 @@ import { useCallback, useRef, SyntheticEvent } from "react";
 import { Box, Link, InputBase, Typography } from "@material-ui/core";
 import { makeStyles } from "@material-ui/core/styles";
 import NumberFormat from "react-number-format";
-import numbro from "numbro";
 import { formatNumber, NumericValue } from "@utils/number";
 import { BORDER_COLOR } from "@utils/theme/constants";
 import TokenLogo from "@components/TokenLogo";
@@ -13,7 +12,7 @@ declare global {
     label: string;
     balanceLabel?: JSX.Element | string;
     maxButtonLabel?: JSX.Element | string;
-    max: BN;
+    max?: BN;
     color?: string;
     labelColor?: string;
     bgColor?: string;
@@ -96,7 +95,7 @@ export default function TokenInput({
   inputPrefix,
 }: TokenInputProps) {
   const classes = useStyles({
-    invalidInput: amount.gt(max),
+    invalidInput: !!max && amount?.gt(max),
   });
 
   console.log("input", label, input);
@@ -106,7 +105,7 @@ export default function TokenInput({
   const handleClickMax = useCallback(
     (e: SyntheticEvent) => {
       e.preventDefault();
-      if (max && !amount.eq(max)) {
+      if (!!max && !amount.eq(max)) {
         maxRef.current = true;
         onInput(max.toString(), true);
       }
@@ -173,7 +172,7 @@ export default function TokenInput({
             }}
             // className={classes.balanceLabel}
           >
-            {balanceLabel} {formatNumber(max)} {token}
+            {balanceLabel} {max && formatNumber(max)} {token}
           </Typography>
           {max?.gt(0) && (
             <Link

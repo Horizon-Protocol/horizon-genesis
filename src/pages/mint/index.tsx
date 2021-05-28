@@ -76,7 +76,6 @@ export default function Earn() {
       color: THEME_COLOR,
       bgColor: "#0A1624",
       amount: toBigNumber(0),
-      max: toBigNumber(0),
       balanceLabel: `Minted at ${formatCRatioToPercent(targetCRatio)}% C-Ratio`,
       inputPrefix: "$",
       toPairInput: (amount) =>
@@ -87,18 +86,24 @@ export default function Earn() {
 
   const handleSelectPresetCRatio = useCallback(
     (presetCRatio: BN) => {
-      const fromInput = balance
-        .multipliedBy(presetCRatio)
-        .div(targetCRatio)
-        .minus(stakedCollateral);
+      console.log("preset c-ratio:", presetCRatio.toNumber());
       const isMax = presetCRatio.eq(targetCRatio);
       const { toPairInput, max } = fromToken;
-      const toPairAmount =
-        (isMax ? max?.toString() : fromInput.toString()) || "0";
+      let inputHZN: string;
+      if (isMax) {
+        inputHZN = max!.toString();
+      } else {
+        inputHZN = balance
+          .multipliedBy(presetCRatio)
+          .div(targetCRatio)
+          .minus(stakedCollateral)
+          .toString();
+      }
+
       setState({
-        fromInput: formatInputValue(fromInput.toString()),
+        fromInput: formatInputValue(inputHZN.toString()),
         fromMax: isMax,
-        toInput: formatInputValue(toPairInput(toPairAmount)),
+        toInput: formatInputValue(toPairInput(inputHZN)),
         toMax: false,
       });
     },
@@ -106,13 +111,10 @@ export default function Earn() {
   );
 
   const fromAmount = useMemo(
-    () => (state.fromMax ? fromToken.max : toBigNumber(state.fromInput || 0)),
+    () => (state.fromMax ? fromToken.max! : toBigNumber(state.fromInput || 0)),
     [fromToken.max, state.fromInput, state.fromMax]
   );
-  // const toAmount = useMemo(
-  //   () => toBigNumber(state.toInput || 0),
-  //   [state.toInput]
-  // );
+
   const changedBalance: BalanceChangeProps = useMemo(() => {
     const changedStaked = stakedCollateral.plus(fromAmount);
 
@@ -164,13 +166,14 @@ export default function Earn() {
       gapImg: arrowRightImg,
     };
   }, [
-    fromAmount,
     stakedCollateral,
+    fromAmount,
     targetCRatio,
     hznRateBN,
     transferable,
     balance,
     currentCRatio,
+    unstakedCollateral,
     collateral,
     debtBalance,
   ]);

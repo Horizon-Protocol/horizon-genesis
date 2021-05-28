@@ -29,6 +29,8 @@ export default function PresetCRatioOptions({
     [value]
   );
 
+  console.log("changed to cratio", value.toNumber());
+
   return (
     <Box width='100%' {...props}>
       <Typography variant='subtitle2' align='center'>
@@ -43,7 +45,7 @@ export default function PresetCRatioOptions({
             disabled={isBurn && currentCRatio.lt(option.cRatio)}
             active={
               changedCratioPercent > 0 &&
-              option.percent === changedCratioPercent
+              option.cRatio.toFixed(6) === value.toFixed(6)
             }
             onClick={() => onChange(option.cRatio)}
             {...option}

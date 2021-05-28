@@ -112,12 +112,15 @@ export default function Earn() {
       maxButtonLabel: "Unstake Max",
       color: THEME_COLOR,
       labelColor: THEME_COLOR,
-      toPairInput: (amount) =>
-        burnAmountToFixCRatio
-          .minus(
-            toBigNumber(amount).multipliedBy(hznRate).multipliedBy(targetCRatio)
-          )
-          .toString(),
+      toPairInput: (amount) => {
+        const tmpAmount = toBigNumber(amount)
+          .multipliedBy(hznRate)
+          .multipliedBy(targetCRatio);
+        const toAmount = burnAmountToFixCRatio.gt(zeroBN)
+          ? burnAmountToFixCRatio.minus(tmpAmount)
+          : tmpAmount;
+        return toAmount.toString();
+      },
     }),
     [burnAmountToFixCRatio, hznRate, stakedCollateral, targetCRatio]
   );

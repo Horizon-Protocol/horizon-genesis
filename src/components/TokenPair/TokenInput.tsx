@@ -2,6 +2,7 @@ import { useCallback, useRef, SyntheticEvent } from "react";
 import { Box, Link, InputBase, Typography } from "@material-ui/core";
 import { makeStyles } from "@material-ui/core/styles";
 import NumberFormat from "react-number-format";
+import numbro from "numbro";
 import { formatNumber, NumericValue } from "@utils/number";
 import { BORDER_COLOR } from "@utils/theme/constants";
 import TokenLogo from "@components/TokenLogo";
@@ -149,7 +150,7 @@ export default function TokenInput({
           value={input}
           onValueChange={(values) => {
             // WARN: to avoid infinite loop
-            console.log("onCalueChange", input, values);
+            console.log("onValueChange", input, values);
             if (input !== values.value) {
               onInput(values.value, maxRef.current);
               maxRef.current = false;

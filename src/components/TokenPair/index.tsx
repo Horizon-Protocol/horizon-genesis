@@ -35,7 +35,7 @@ export interface TokenPairProps {
  */
 export const formatInputValue = (inputValue: string): string => {
   if (toBigNumber(inputValue).lt(0)) {
-    console.log("no enough");
+    console.log("no enough", inputValue);
     return "0";
   }
   return (

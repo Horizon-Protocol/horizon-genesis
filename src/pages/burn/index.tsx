@@ -74,11 +74,13 @@ export default function Earn() {
   const fetchBurnStatus = useFetchBurnStatus();
 
   useEffect(() => {
-    fetchBurnStatus().then(({ waitingPeriod, issuanceDelay }) => {
-      setWaitingPeriod(waitingPeriod);
-      setIssuanceDelay(issuanceDelay);
-    });
-  });
+    if (connected) {
+      fetchBurnStatus().then(({ waitingPeriod, issuanceDelay }) => {
+        setWaitingPeriod(waitingPeriod);
+        setIssuanceDelay(issuanceDelay);
+      });
+    }
+  }, [connected, fetchBurnStatus]);
 
   const fromToken: TokenProps = useMemo(
     () => ({

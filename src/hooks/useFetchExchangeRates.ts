@@ -46,13 +46,14 @@ export default function useFetchExchangeRates() {
       synths.forEach((currencyKeyBytes32: CurrencyKey, idx: number) => {
         const currencyKey = utils.parseBytes32String(currencyKeyBytes32);
         const rate = Number(utils.formatEther(rates[idx]));
-
         exchangeRates[currencyKey] = rate;
-        // only interested in the standard synths (sETH -> ETH, etc)
+        // only interested in the standard synths (zETH -> ETH, etc)
         if (iStandardSynth(currencyKey)) {
           exchangeRates[synthToAsset(currencyKey)] = rate;
         }
       });
+
+      console.log(exchangeRates);
 
       return exchangeRates;
     },

@@ -40,11 +40,15 @@ export const isFiatCurrency = (currencyKey: CurrencyKey) =>
   FIAT_ZASSETS.has(currencyKey as ZAssests);
 
 export const toInverseSynth = (currencyKey: CurrencyKey) =>
-  currencyKey.replace(/^s/i, "i");
+  currencyKey.replace(/^z/i, "i");
+
 export const toStandardSynth = (currencyKey: CurrencyKey) =>
-  currencyKey.replace(/^i/i, "s");
+  currencyKey.replace(/^i/i, "z");
+
 export const synthToAsset = (currencyKey: CurrencyKey) =>
-  currencyKey.replace(/^(i|s)/i, "");
-export const assetToSynth = (currencyKey: CurrencyKey) => `s${currencyKey}`;
+  currencyKey.replace(/^(i|z)/i, "");
+
+export const assetToSynth = (currencyKey: CurrencyKey) => `z${currencyKey}`;
+
 export const iStandardSynth = (currencyKey: CurrencyKey) =>
-  currencyKey.startsWith("s");
+  currencyKey.startsWith("z");

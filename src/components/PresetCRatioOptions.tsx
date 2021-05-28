@@ -5,7 +5,7 @@ import { presetCRatioPercentsAtom } from "@atoms/app";
 import { cRatioToPercent } from "@utils/number";
 import PresetCRatioOption from "./CRatioOption";
 import { useMemo } from "react";
-import { currentCRatioPercentAtom, debtAtom } from "@atoms/debt";
+import { debtAtom } from "@atoms/debt";
 
 interface Props extends Omit<BoxProps, "onChange"> {
   color: string;

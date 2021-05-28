@@ -13,7 +13,7 @@ import { targetCRatioAtom, balanceChangedAtom } from "@atoms/app";
 import { hznRateAtom } from "@atoms/exchangeRates";
 import {
   debtAtom,
-  hznStakedAtom,
+  collateralDataAtom,
   zUSDBalanceAtom,
   burnAmountToFixCRatioAtom,
 } from "@atoms/debt";
@@ -54,7 +54,7 @@ export default function Earn() {
     issuableSynths,
   } = useAtomValue(debtAtom);
   const zUSDBalance = useAtomValue(zUSDBalanceAtom);
-  const staked = useAtomValue(hznStakedAtom);
+  const { stakedCollateral } = useAtomValue(collateralDataAtom);
   const burnAmountToFixCRatio = useAtomValue(burnAmountToFixCRatioAtom);
 
   const collateralUSD = useMemo(
@@ -108,7 +108,7 @@ export default function Earn() {
       label: "UNSTAKE",
       amount: toBigNumber(0),
       balanceLabel: `Staked:`,
-      max: staked,
+      max: stakedCollateral,
       maxButtonLabel: "Unstake Max",
       color: THEME_COLOR,
       labelColor: THEME_COLOR,
@@ -119,7 +119,7 @@ export default function Earn() {
           )
           .toString(),
     }),
-    [burnAmountToFixCRatio, hznRate, staked, targetCRatio]
+    [burnAmountToFixCRatio, hznRate, stakedCollateral, targetCRatio]
   );
 
   const handleSelectPresetCRatio = useCallback(
@@ -195,7 +195,7 @@ export default function Earn() {
         to: changedDebt,
       },
       staked: {
-        from: staked,
+        from: stakedCollateral,
         to: changedStaked,
       },
       transferrable: {
@@ -213,7 +213,7 @@ export default function Earn() {
     issuableSynths,
     transferable,
     collateralUSD,
-    staked,
+    stakedCollateral,
     currentCRatio,
   ]);
 

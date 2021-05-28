@@ -40,10 +40,10 @@ export function getStakingAmount(
 
 export function getTransferableAmountFromMint(
   balance: BN,
-  stakedValue: BN
+  stakedAmount: BN
 ): BN {
-  if (!balance || !stakedValue) return toBigNumber(0);
-  return maxBN(balance.minus(stakedValue), zeroBN);
+  if (!balance || !stakedAmount) return toBigNumber(0);
+  return maxBN(balance.minus(stakedAmount), zeroBN);
 }
 
 export function getTransferableAmountFromBurn(

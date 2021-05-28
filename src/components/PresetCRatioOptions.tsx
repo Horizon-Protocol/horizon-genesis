@@ -5,11 +5,12 @@ import { presetCRatioPercentsAtom } from "@atoms/app";
 import { cRatioToPercent } from "@utils/number";
 import PresetCRatioOption from "./CRatioOption";
 import { useMemo } from "react";
+import { currentCRatioPercentAtom, debtAtom } from "@atoms/debt";
 
 interface Props extends Omit<BoxProps, "onChange"> {
   color: string;
   isBurn?: boolean;
-  value: BN;
+  value: BN; // cRatio that changed to
   onChange(cRatio: BN): void;
 }
 
@@ -20,9 +21,13 @@ export default function PresetCRatioOptions({
   onChange,
   ...props
 }: Props) {
+  const { currentCRatio } = useAtomValue(debtAtom);
   const presetCRatioPercents = useAtomValue(presetCRatioPercentsAtom);
 
-  const currentPercent = useMemo<number>(() => cRatioToPercent(value), [value]);
+  const changedCratioPercent = useMemo<number>(
+    () => cRatioToPercent(value),
+    [value]
+  );
 
   return (
     <Box width='100%' {...props}>
@@ -35,8 +40,11 @@ export default function PresetCRatioOptions({
           <PresetCRatioOption
             key={option.title}
             color={color}
-            disabled={isBurn && currentPercent > option.percent}
-            active={currentPercent > 0 && option.percent === currentPercent}
+            disabled={isBurn && currentCRatio.lt(option.cRatio)}
+            active={
+              changedCratioPercent > 0 &&
+              option.percent === changedCratioPercent
+            }
             onClick={() => onChange(option.cRatio)}
             {...option}
           />

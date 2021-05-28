@@ -95,7 +95,7 @@ export default function TokenInput({
   inputPrefix,
 }: TokenInputProps) {
   const classes = useStyles({
-    invalidInput: max.gt(0) && amount.gt(max),
+    invalidInput: amount.gt(max),
   });
 
   console.log("input", label, input);
@@ -172,8 +172,7 @@ export default function TokenInput({
             }}
             // className={classes.balanceLabel}
           >
-            {balanceLabel}
-            {max?.gt(0) && ` ${formatNumber(max)} ${token}`}
+            {balanceLabel} {formatNumber(max)} {token}
           </Typography>
           {max?.gt(0) && (
             <Link

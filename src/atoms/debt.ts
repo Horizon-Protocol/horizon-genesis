@@ -8,9 +8,7 @@ import {
   toBigNumber,
 } from "@utils/number";
 import { SynthBalancesMap } from "@utils/currencies";
-// import { hznRateAtom } from "./exchangeRates";
 import { targetCRatioAtom } from "./app";
-import { hznRateAtom } from "./exchangeRates";
 
 export const debtAtom = atomWithReset({
   balance: zeroBN,
@@ -36,18 +34,28 @@ export const currentCRatioPercentAtom = atom((get) => {
   return cRatioToPercent(currentCRatio);
 });
 
-export const hznStakedAtom = atom((get) => {
-  const { currentCRatio, collateral } = get(debtAtom);
+// HZN amount in different status
+export const collateralDataAtom = atom((get) => {
   const targetCRatio = get(targetCRatioAtom);
-  if (targetCRatio.lte(zeroBN)) {
-    return zeroBN;
-  }
+  const { collateral, currentCRatio, transferable } = get(debtAtom);
 
   const stakedCollateral = collateral.multipliedBy(
-    minBN(toBigNumber(1), currentCRatio.div(targetCRatio))
+    minBN(toBigNumber(1), currentCRatio.dividedBy(targetCRatio))
   );
+  const lockedCollateral = collateral.minus(transferable);
+  const unstakedCollateral = collateral.minus(stakedCollateral);
 
-  return stakedCollateral;
+  console.log({
+    stakedCollateral: stakedCollateral.toNumber(),
+    unstakedCollateral: unstakedCollateral.toNumber(),
+    lockedCollateral: lockedCollateral.toNumber(),
+  });
+
+  return {
+    stakedCollateral,
+    unstakedCollateral,
+    lockedCollateral,
+  };
 });
 
 export const burnAmountToFixCRatioAtom = atom((get) => {

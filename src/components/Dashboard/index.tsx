@@ -3,7 +3,7 @@ import { useAtomValue } from "jotai/utils";
 import { Box, BoxProps } from "@material-ui/core";
 import { makeStyles } from "@material-ui/core/styles";
 import clsx from "clsx";
-import { debtAtom, hznStakedAtom, zUSDBalanceAtom } from "@atoms/debt";
+import { debtAtom, collateralDataAtom, zUSDBalanceAtom } from "@atoms/debt";
 import { hznRateAtom } from "@atoms/exchangeRates";
 import { formatNumber } from "@utils/number";
 import { BORDER_COLOR, COLOR } from "@utils/theme/constants";
@@ -35,7 +35,7 @@ export default function Dashboard({ className, ...props }: BoxProps) {
 
   const { collateral, transferable, debtBalance, escrowedReward } =
     useAtomValue(debtAtom);
-  const hznStaked = useAtomValue(hznStakedAtom);
+  const { stakedCollateral } = useAtomValue(collateralDataAtom);
   const zUSDBalance = useAtomValue(zUSDBalanceAtom);
 
   const hznRate = useAtomValue(hznRateAtom);
@@ -64,7 +64,7 @@ export default function Dashboard({ className, ...props }: BoxProps) {
       },
       {
         label: "Staked",
-        value: `${formatNumber(hznStaked)} HZN`,
+        value: `${formatNumber(stakedCollateral)} HZN`,
       },
       {
         label: "Transferrable",
@@ -75,7 +75,15 @@ export default function Dashboard({ className, ...props }: BoxProps) {
         value: `${formatNumber(escrowedReward)} HZN`,
       },
     ],
-    [hznRate, zUSDBalance, debtBalance, hznStaked, transferable, escrowedReward]
+    [
+      hznRate,
+      collateral,
+      zUSDBalance,
+      debtBalance,
+      stakedCollateral,
+      transferable,
+      escrowedReward,
+    ]
   );
 
   return (

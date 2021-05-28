@@ -17,7 +17,7 @@ import {
 import useWallet from "@hooks/useWallet";
 import { balanceChangedAtom, targetCRatioAtom } from "@atoms/app";
 import { hznRateAtom } from "@atoms/exchangeRates";
-import { debtAtom, hznStakedAtom } from "@atoms/debt";
+import { debtAtom, collateralDataAtom } from "@atoms/debt";
 import headerBg from "@assets/images/mint.png";
 import arrowImg from "@assets/images/mint-arrow.png";
 import arrowRightImg from "@assets/images/mint-arrow-right.png";
@@ -42,15 +42,10 @@ export default function Earn() {
   const targetCRatio = useAtomValue(targetCRatioAtom);
   const hznRate = useAtomValue(hznRateAtom);
   const hznRateBN = useMemo(() => toBigNumber(hznRate), [hznRate]);
-  const {
-    collateral,
-    currentCRatio,
-    balance,
-    transferable,
-    escrowedReward,
-    debtBalance,
-  } = useAtomValue(debtAtom);
-  const staked = useAtomValue(hznStakedAtom);
+  const { collateral, currentCRatio, balance, transferable, debtBalance } =
+    useAtomValue(debtAtom);
+  const { stakedCollateral, unstakedCollateral } =
+    useAtomValue(collateralDataAtom);
 
   const [state, setState] = useSetState<InputState>({
     fromInput: "",
@@ -64,14 +59,14 @@ export default function Earn() {
       token: Token.HZN,
       label: "STAKE",
       amount: toBigNumber(0),
-      max: transferable.plus(escrowedReward),
+      max: unstakedCollateral,
       maxButtonLabel: "Mint Max",
       color: THEME_COLOR,
       labelColor: THEME_COLOR,
       toPairInput: (amount) =>
         getMintAmount(targetCRatio, amount, hznRateBN).toString(),
     }),
-    [hznRateBN, targetCRatio, transferable, escrowedReward]
+    [hznRateBN, targetCRatio, unstakedCollateral]
   );
 
   const toToken: TokenProps = useMemo(
@@ -95,7 +90,7 @@ export default function Earn() {
       const fromInput = balance
         .multipliedBy(presetCRatio)
         .div(targetCRatio)
-        .minus(staked);
+        .minus(stakedCollateral);
       const isMax = presetCRatio.eq(targetCRatio);
       const { toPairInput, max } = fromToken;
       const toPairAmount =
@@ -107,7 +102,7 @@ export default function Earn() {
         toMax: false,
       });
     },
-    [balance, targetCRatio, staked, fromToken, setState]
+    [balance, targetCRatio, stakedCollateral, fromToken, setState]
   );
 
   const fromAmount = useMemo(
@@ -119,7 +114,7 @@ export default function Earn() {
   //   [state.toInput]
   // );
   const changedBalance: BalanceChangeProps = useMemo(() => {
-    const changedStaked = staked.plus(fromAmount);
+    const changedStaked = stakedCollateral.plus(fromAmount);
 
     const changedDebt = changedStaked
       .multipliedBy(targetCRatio)
@@ -130,14 +125,16 @@ export default function Earn() {
       : getTransferableAmountFromMint(balance, changedStaked);
 
     const changedCRatio = currentCRatio.isLessThan(targetCRatio)
-      ? changedDebt.div(collateral.multipliedBy(hznRateBN))
-      : changedStaked.multipliedBy(targetCRatio).div(balance);
+      ? changedDebt.div(
+          unstakedCollateral.plus(stakedCollateral).multipliedBy(hznRateBN)
+        )
+      : changedDebt.div(changedStaked.multipliedBy(hznRateBN));
 
     console.log({
       balance: balance.toString(),
       //   debt: debtBalance.toString(),
       changedDebt: changedDebt.toString(),
-      //   staked: staked.toNumber(),
+      //   stakedCollateral: stakedCollateral.toNumber(),
       //   transferable: transferable.toNumber(),
       hznRate: hznRateBN.toString(),
       collateral: collateral.toString(),
@@ -157,7 +154,7 @@ export default function Earn() {
         to: changedDebt,
       },
       staked: {
-        from: staked,
+        from: stakedCollateral,
         to: changedStaked,
       },
       transferrable: {
@@ -168,7 +165,7 @@ export default function Earn() {
     };
   }, [
     fromAmount,
-    staked,
+    stakedCollateral,
     targetCRatio,
     hznRateBN,
     transferable,

@@ -276,7 +276,7 @@ export default function Earn() {
     if (waitingPeriod || issuanceDelay) {
       return true;
     }
-    if (fromAmount.eq(0) || fromAmount.gt(fromToken.max)) {
+    if (fromAmount.eq(0) || fromAmount.gt(fromToken.max!)) {
       return true;
     }
     return false;

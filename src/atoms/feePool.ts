@@ -26,3 +26,12 @@ export const rewardsAtom = atom({
   stakingReward: zeroBN,
   exchangeReward: zeroBN,
 });
+
+export const nextFeePeriodStartAtom = atom((get) => {
+  const { startTime, feePeriodDuration } = get(feePoolAtom);
+  console.log({
+    startTime,
+    feePeriodDuration,
+  });
+  return new Date(startTime ? (startTime + feePeriodDuration) * 1000 : 0);
+});

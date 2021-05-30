@@ -15,6 +15,7 @@ export const needRefreshAtom = atom((get) => {
 
 // static variables from contract
 export const totalSupplyAtom = atomWithReset(zeroBN);
+export const totalIssuedZUSDExclEthAtom = atomWithReset(zeroBN); // total zUSD in pool
 export const targetCRatioAtom = atomWithReset(zeroBN);
 export const liquidationRatioAtom = atomWithReset(zeroBN);
 export const liquidationDelayAtom = atomWithReset(zeroBN);

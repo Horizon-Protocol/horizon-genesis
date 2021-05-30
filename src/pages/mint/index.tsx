@@ -41,7 +41,6 @@ export default function Earn() {
 
   const targetCRatio = useAtomValue(targetCRatioAtom);
   const hznRate = useAtomValue(hznRateAtom);
-  const hznRateBN = useMemo(() => toBigNumber(hznRate), [hznRate]);
   const { collateral, currentCRatio, balance, transferable, debtBalance } =
     useAtomValue(debtAtom);
   const { stakedCollateral, unstakedCollateral } =
@@ -64,9 +63,9 @@ export default function Earn() {
       color: THEME_COLOR,
       labelColor: THEME_COLOR,
       toPairInput: (amount) =>
-        getMintAmount(targetCRatio, amount, hznRateBN).toString(),
+        getMintAmount(targetCRatio, amount, hznRate).toString(),
     }),
-    [hznRateBN, targetCRatio, unstakedCollateral]
+    [hznRate, targetCRatio, unstakedCollateral]
   );
 
   const toToken: TokenProps = useMemo(
@@ -79,9 +78,9 @@ export default function Earn() {
       balanceLabel: `Minted at ${formatCRatioToPercent(targetCRatio)}% C-Ratio`,
       inputPrefix: "$",
       toPairInput: (amount) =>
-        getStakingAmount(targetCRatio, amount, hznRateBN).toString(),
+        getStakingAmount(targetCRatio, amount, hznRate).toString(),
     }),
-    [hznRateBN, targetCRatio]
+    [hznRate, targetCRatio]
   );
 
   const handleSelectPresetCRatio = useCallback(
@@ -120,7 +119,7 @@ export default function Earn() {
 
     const changedDebt = changedStaked
       .multipliedBy(targetCRatio)
-      .multipliedBy(hznRateBN);
+      .multipliedBy(hznRate);
 
     const changedTransferable = transferable.isZero()
       ? zeroBN
@@ -128,9 +127,9 @@ export default function Earn() {
 
     const changedCRatio = currentCRatio.isLessThan(targetCRatio)
       ? changedDebt.div(
-          unstakedCollateral.plus(stakedCollateral).multipliedBy(hznRateBN)
+          unstakedCollateral.plus(stakedCollateral).multipliedBy(hznRate)
         )
-      : changedDebt.div(changedStaked.multipliedBy(hznRateBN));
+      : changedDebt.div(changedStaked.multipliedBy(hznRate));
 
     console.log({
       balance: balance.toString(),
@@ -138,7 +137,7 @@ export default function Earn() {
       changedDebt: changedDebt.toString(),
       //   stakedCollateral: stakedCollateral.toNumber(),
       //   transferable: transferable.toNumber(),
-      hznRate: hznRateBN.toString(),
+      hznRate: hznRate.toString(),
       collateral: collateral.toString(),
       changedStaked: changedStaked.toString(),
       targetCRatio: targetCRatio.toString(),
@@ -169,7 +168,7 @@ export default function Earn() {
     stakedCollateral,
     fromAmount,
     targetCRatio,
-    hznRateBN,
+    hznRate,
     transferable,
     balance,
     currentCRatio,

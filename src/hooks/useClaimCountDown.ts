@@ -1,10 +1,15 @@
 import { useMemo } from "react";
 import { useTimer } from "react-compound-timer";
 import differenceInMilliseconds from "date-fns/differenceInMilliseconds";
+import { useAtomValue } from "jotai/utils";
+import { nextFeePeriodStartAtom } from "@atoms/feePool";
 
 const mockClaimDate = new Date("2021-06-18T21:22:19Z");
 
 export default function useClaimCountDown() {
+  const nextStart = useAtomValue(nextFeePeriodStartAtom);
+  // console.log("nextStart", nextStart);
+
   const milliSeconds = useMemo(
     () =>
       mockClaimDate ? differenceInMilliseconds(mockClaimDate, new Date()) : 0,

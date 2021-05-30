@@ -44,7 +44,6 @@ export default function Earn() {
 
   const targetCRatio = useAtomValue(targetCRatioAtom);
   const hznRate = useAtomValue(hznRateAtom);
-  const hznRateBN = useMemo(() => toBigNumber(hznRate), [hznRate]);
   const {
     currentCRatio,
     transferable,
@@ -58,8 +57,8 @@ export default function Earn() {
   const burnAmountToFixCRatio = useAtomValue(burnAmountToFixCRatioAtom);
 
   const collateralUSD = useMemo(
-    () => collateral.multipliedBy(hznRateBN),
-    [collateral, hznRateBN]
+    () => collateral.multipliedBy(hznRate),
+    [collateral, hznRate]
   );
 
   const [state, setState] = useSetState<InputState>({
@@ -154,12 +153,12 @@ export default function Earn() {
   const changedBalance: BalanceChangeProps = useMemo(() => {
     const changedDebt = debtBalance.minus(fromAmount);
 
-    const changedStaked = changedDebt.div(targetCRatio).div(hznRateBN);
+    const changedStaked = changedDebt.div(targetCRatio).div(hznRate);
 
     // debtBalance + (escrowedReward * hznRate * targetCRatio) - issuableSynths
     const debtEscrowBalance = maxBN(
       debtBalance
-        .plus(escrowedReward.multipliedBy(hznRateBN).multipliedBy(targetCRatio))
+        .plus(escrowedReward.multipliedBy(hznRate).multipliedBy(targetCRatio))
         .minus(issuableSynths),
       zeroBN
     );
@@ -167,7 +166,7 @@ export default function Earn() {
       fromAmount,
       debtEscrowBalance,
       targetCRatio,
-      hznRateBN,
+      hznRate,
       transferable
     );
 
@@ -181,7 +180,7 @@ export default function Earn() {
     //   changedDebt: changedDebt.toString(),
     //   staked: staked.toNumber(),
     //   transferable: transferable.toNumber(),
-    //   hznRate: hznRateBN.toString(),
+    //   hznRate: hznRate.toString(),
     //   targetCRatio: targetCRatio.toNumber(),
     //   currentCRatio: currentCRatio.toString(),
     //   changedCRatio: changedCRatio.toString(),
@@ -211,7 +210,7 @@ export default function Earn() {
     debtBalance,
     fromAmount,
     targetCRatio,
-    hznRateBN,
+    hznRate,
     escrowedReward,
     issuableSynths,
     transferable,

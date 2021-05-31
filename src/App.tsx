@@ -28,7 +28,7 @@ function App() {
   useFetchAppData();
   useFetchDebtData();
   useFetchZAssets();
-  useFetchFeePool("0");
+  useFetchFeePool();
 
   return (
     <Router>

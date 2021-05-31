@@ -8,6 +8,7 @@ import TokenLogo from "@components/TokenLogo";
 
 declare global {
   interface TokenInputProps {
+    disabled?: boolean;
     token: TokenEnum | zAssetsEnum;
     label: string;
     balanceLabel?: JSX.Element | string;
@@ -80,6 +81,7 @@ const useStyles = makeStyles(({ palette }) => ({
 }));
 
 export default function TokenInput({
+  disabled = false,
   token,
   label,
   input,
@@ -98,7 +100,7 @@ export default function TokenInput({
     invalidInput: !!max && amount?.gt(max),
   });
 
-  console.log("input", label, input);
+  // console.log("input", label, input);
 
   const maxRef = useRef<boolean>();
 
@@ -149,7 +151,7 @@ export default function TokenInput({
           value={input}
           onValueChange={(values) => {
             // WARN: to avoid infinite loop
-            console.log("onValueChange", input, values);
+            // console.log("onValueChange", input, values);
             if (input !== values.value) {
               onInput(values.value, maxRef.current);
               maxRef.current = false;
@@ -160,6 +162,7 @@ export default function TokenInput({
           thousandSeparator
           isNumericString
           placeholder='0.0'
+          disabled={disabled}
           customInput={InputBase}
           className={classes.input}
           classes={{ input: classes.innerInput }}

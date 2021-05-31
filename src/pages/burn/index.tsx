@@ -44,7 +44,6 @@ export default function Earn() {
 
   const targetCRatio = useAtomValue(targetCRatioAtom);
   const hznRate = useAtomValue(hznRateAtom);
-  const hznRateBN = useMemo(() => toBigNumber(hznRate), [hznRate]);
   const {
     currentCRatio,
     transferable,
@@ -58,8 +57,8 @@ export default function Earn() {
   const burnAmountToFixCRatio = useAtomValue(burnAmountToFixCRatioAtom);
 
   const collateralUSD = useMemo(
-    () => collateral.multipliedBy(hznRateBN),
-    [collateral, hznRateBN]
+    () => collateral.multipliedBy(hznRate),
+    [collateral, hznRate]
   );
 
   const [state, setState] = useSetState<InputState>({
@@ -84,6 +83,7 @@ export default function Earn() {
 
   const fromToken: TokenProps = useMemo(
     () => ({
+      disabled: !connected,
       token: zAssets.zUSD,
       label: "BURN",
       color: THEME_COLOR,
@@ -99,11 +99,19 @@ export default function Earn() {
           .div(targetCRatio)
           .toString(),
     }),
-    [burnAmountToFixCRatio, debtBalance, hznRate, targetCRatio, zUSDBalance]
+    [
+      burnAmountToFixCRatio,
+      connected,
+      debtBalance,
+      hznRate,
+      targetCRatio,
+      zUSDBalance,
+    ]
   );
 
   const toToken: TokenProps = useMemo(
     () => ({
+      disabled: !connected,
       token: Token.HZN,
       label: "UNSTAKE",
       amount: toBigNumber(0),
@@ -122,7 +130,7 @@ export default function Earn() {
         return toAmount.toString();
       },
     }),
-    [burnAmountToFixCRatio, hznRate, stakedCollateral, targetCRatio]
+    [burnAmountToFixCRatio, connected, hznRate, stakedCollateral, targetCRatio]
   );
 
   const handleSelectPresetCRatio = useCallback(
@@ -151,15 +159,15 @@ export default function Earn() {
   //   () => toBigNumber(state.toInput || 0),
   //   [state.toInput]
   // );
-  const changedBalance: BalanceChangeProps = useMemo(() => {
+  const changedBalance: Omit<BalanceChangeProps, "changed"> = useMemo(() => {
     const changedDebt = debtBalance.minus(fromAmount);
 
-    const changedStaked = changedDebt.div(targetCRatio).div(hznRateBN);
+    const changedStaked = changedDebt.div(targetCRatio).div(hznRate);
 
     // debtBalance + (escrowedReward * hznRate * targetCRatio) - issuableSynths
     const debtEscrowBalance = maxBN(
       debtBalance
-        .plus(escrowedReward.multipliedBy(hznRateBN).multipliedBy(targetCRatio))
+        .plus(escrowedReward.multipliedBy(hznRate).multipliedBy(targetCRatio))
         .minus(issuableSynths),
       zeroBN
     );
@@ -167,7 +175,7 @@ export default function Earn() {
       fromAmount,
       debtEscrowBalance,
       targetCRatio,
-      hznRateBN,
+      hznRate,
       transferable
     );
 
@@ -181,7 +189,7 @@ export default function Earn() {
     //   changedDebt: changedDebt.toString(),
     //   staked: staked.toNumber(),
     //   transferable: transferable.toNumber(),
-    //   hznRate: hznRateBN.toString(),
+    //   hznRate: hznRate.toString(),
     //   targetCRatio: targetCRatio.toNumber(),
     //   currentCRatio: currentCRatio.toString(),
     //   changedCRatio: changedCRatio.toString(),
@@ -211,7 +219,7 @@ export default function Earn() {
     debtBalance,
     fromAmount,
     targetCRatio,
-    hznRateBN,
+    hznRate,
     escrowedReward,
     issuableSynths,
     transferable,
@@ -253,6 +261,12 @@ export default function Earn() {
       }
       const res = await tx.wait(1);
       console.log("res", res);
+      setState({
+        fromInput: "",
+        fromMax: false,
+        toInput: "",
+        toMax: false,
+      });
       setBalanceChanged(true);
     } catch (e) {
       console.log(e);
@@ -268,6 +282,7 @@ export default function Earn() {
     changedBalance.cRatio.to,
     enqueueSnackbar,
     setBalanceChanged,
+    setState,
     state.fromInput,
     targetCRatio,
   ]);
@@ -318,7 +333,7 @@ export default function Earn() {
         state={state}
         setState={setState}
       />
-      <BalanceChange my={3} {...changedBalance} />
+      <BalanceChange my={3} changed={!!state.fromInput} {...changedBalance} />
       <Box>
         {connected && (
           <PrimaryButton

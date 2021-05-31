@@ -1,14 +1,15 @@
 import { useMemo } from "react";
 import { useTimer } from "react-compound-timer";
 import differenceInMilliseconds from "date-fns/differenceInMilliseconds";
+import isDate from "date-fns/isDate";
 
-const mockClaimDate = new Date("2021-06-18T21:22:19Z");
+const HOUR_MILLI_SECONDS = 1000 * 3600;
+const MINUTE_MILLI_SECONDS = 1000 * 60;
 
-export default function useClaimCountDown() {
+export default function useDateCountDown(targetDate?: Date) {
   const milliSeconds = useMemo(
-    () =>
-      mockClaimDate ? differenceInMilliseconds(mockClaimDate, new Date()) : 0,
-    []
+    () => (targetDate ? differenceInMilliseconds(targetDate, new Date()) : 0),
+    [targetDate]
   );
 
   const {
@@ -16,25 +17,30 @@ export default function useClaimCountDown() {
   } = useTimer({
     initialTime: milliSeconds,
     direction: "backward",
+    timeToUpdate:
+      milliSeconds > HOUR_MILLI_SECONDS ? MINUTE_MILLI_SECONDS : 1000,
   });
 
   const formatted = useMemo(() => {
+    if (!isDate(targetDate)) {
+      return "n/a";
+    }
+
     let res = ``;
     if (d > 0) {
       res += `${d}d `;
     }
-    if (h > 0) {
-      res += `${h}h `;
-    }
-    if (m > 0) {
-      res += `${m}m `;
-    }
+
+    res += `${h}h `;
+
+    res += `${m}m `;
+
     if (!d) {
       res += `${s}s `;
     }
 
     return res.trim();
-  }, [d, h, m, s]);
+  }, [targetDate, d, h, m, s]);
 
   return {
     formatted,

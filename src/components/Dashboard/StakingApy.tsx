@@ -2,6 +2,7 @@ import { Box, BoxProps, Typography } from "@material-ui/core";
 import { makeStyles } from "@material-ui/core/styles";
 import clsx from "clsx";
 import { COLOR } from "@utils/theme/constants";
+import { formatNumber } from "@utils/number";
 
 const useStyles = makeStyles(({ palette }) => ({
   container: {
@@ -35,7 +36,10 @@ export default function StakingApy({ percent, className, ...props }: Props) {
         variant='subtitle1'
         className={classes.percent}
       >
-        <span className={classes.percentValue}>{percent}</span>% APY
+        <span className={classes.percentValue}>
+          {percent ? formatNumber(percent) : "--"}
+        </span>
+        % APY
       </Typography>
     </Box>
   );

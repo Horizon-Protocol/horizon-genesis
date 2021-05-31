@@ -1,6 +1,8 @@
 import { Box, BoxProps, Typography } from "@material-ui/core";
 import { makeStyles } from "@material-ui/core/styles";
 import useClaimCountDown from "@hooks/useClaimCountDown";
+import { useAtomValue } from "jotai/utils";
+import { feePeriodDatesAtom } from "@atoms/feePool";
 
 const useStyles = makeStyles({
   title: {
@@ -11,6 +13,7 @@ const useStyles = makeStyles({
   value: {
     marginTop: 8,
     color: "#B4E0FF",
+    fontFamily: "Rawline",
     fontSize: "24px",
     fontWeight: 700,
     letterSpacing: "0.86px",
@@ -21,7 +24,8 @@ const useStyles = makeStyles({
 export default function ClaimCountDown(props: BoxProps) {
   const classes = useStyles();
 
-  const { formatted } = useClaimCountDown();
+  const { nextFeePeriodStarts } = useAtomValue(feePeriodDatesAtom);
+  const { formatted } = useClaimCountDown(nextFeePeriodStarts);
 
   return (
     <Box textAlign='center' {...props}>

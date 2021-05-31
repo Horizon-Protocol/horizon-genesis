@@ -11,6 +11,7 @@ import CRatioRange from "./CRatioRange";
 import StakingApy from "./StakingApy";
 import Balance from "./Balance";
 import ClaimCountDown from "./ClaimCountDown";
+import useUserStakingData from "@hooks/useUserStakingData";
 
 const useStyles = makeStyles(({ palette }) => ({
   container: {
@@ -39,6 +40,8 @@ export default function Dashboard({ className, ...props }: BoxProps) {
   const zUSDBalance = useAtomValue(zUSDBalanceAtom);
 
   const hznRate = useAtomValue(hznRateAtom);
+
+  const { stakingAPR } = useUserStakingData();
 
   const balances = useMemo(
     () => [
@@ -103,7 +106,7 @@ export default function Dashboard({ className, ...props }: BoxProps) {
         textAlign='center'
         className={classes.stats}
       >
-        <StakingApy percent={105.34} className={classes.apy} />
+        <StakingApy percent={stakingAPR * 100} className={classes.apy} />
         <Box p={1} className={classes.balance}>
           <Balance data={balances} />
         </Box>

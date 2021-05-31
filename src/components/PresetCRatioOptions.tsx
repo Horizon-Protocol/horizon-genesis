@@ -1,11 +1,12 @@
+import { useMemo } from "react";
 import { Box, BoxProps, Typography } from "@material-ui/core";
 import { HelpOutline } from "@material-ui/icons";
 import { useAtomValue } from "jotai/utils";
 import { presetCRatioPercentsAtom } from "@atoms/app";
 import { cRatioToPercent } from "@utils/number";
 import PresetCRatioOption from "./CRatioOption";
-import { useMemo } from "react";
 import { debtAtom } from "@atoms/debt";
+import useWallet from "@hooks/useWallet";
 
 interface Props extends Omit<BoxProps, "onChange"> {
   color: string;
@@ -21,6 +22,7 @@ export default function PresetCRatioOptions({
   onChange,
   ...props
 }: Props) {
+  const { account } = useWallet();
   const { currentCRatio } = useAtomValue(debtAtom);
   const presetCRatioPercents = useAtomValue(presetCRatioPercentsAtom);
 
@@ -29,7 +31,9 @@ export default function PresetCRatioOptions({
     [value]
   );
 
-  console.log("changed to cratio", value.toNumber());
+  if (!account) {
+    return null;
+  }
 
   return (
     <Box width='100%' {...props}>

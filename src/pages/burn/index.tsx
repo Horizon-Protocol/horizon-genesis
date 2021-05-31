@@ -317,14 +317,14 @@ export default function Earn() {
         value={changedBalance.cRatio.to}
         onChange={handleSelectPresetCRatio}
       />
-      <Box mt={3}>
-        {waitingPeriod || issuanceDelay ? (
+      {waitingPeriod || issuanceDelay ? (
+        <Box mt={3}>
           <Typography variant='h6' align='center'>
             Burning blocked until: <br />
             {toFutureDate((waitingPeriod || issuanceDelay)!)}
           </Typography>
-        ) : null}
-      </Box>
+        </Box>
+      ) : null}
       <TokenPair
         mt={3}
         fromToken={fromToken}

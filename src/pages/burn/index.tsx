@@ -150,7 +150,7 @@ export default function Earn() {
   //   () => toBigNumber(state.toInput || 0),
   //   [state.toInput]
   // );
-  const changedBalance: BalanceChangeProps = useMemo(() => {
+  const changedBalance: Omit<BalanceChangeProps, "changed"> = useMemo(() => {
     const changedDebt = debtBalance.minus(fromAmount);
 
     const changedStaked = changedDebt.div(targetCRatio).div(hznRate);
@@ -252,6 +252,12 @@ export default function Earn() {
       }
       const res = await tx.wait(1);
       console.log("res", res);
+      setState({
+        fromInput: "",
+        fromMax: false,
+        toInput: "",
+        toMax: false,
+      });
       setBalanceChanged(true);
     } catch (e) {
       console.log(e);
@@ -317,7 +323,7 @@ export default function Earn() {
         state={state}
         setState={setState}
       />
-      <BalanceChange my={3} {...changedBalance} />
+      <BalanceChange my={3} changed={!!state.fromInput} {...changedBalance} />
       <Box>
         {connected && (
           <PrimaryButton

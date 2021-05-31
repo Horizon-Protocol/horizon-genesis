@@ -98,7 +98,7 @@ export default function TokenInput({
     invalidInput: !!max && amount?.gt(max),
   });
 
-  console.log("input", label, input);
+  // console.log("input", label, input);
 
   const maxRef = useRef<boolean>();
 
@@ -149,7 +149,7 @@ export default function TokenInput({
           value={input}
           onValueChange={(values) => {
             // WARN: to avoid infinite loop
-            console.log("onValueChange", input, values);
+            // console.log("onValueChange", input, values);
             if (input !== values.value) {
               onInput(values.value, maxRef.current);
               maxRef.current = false;

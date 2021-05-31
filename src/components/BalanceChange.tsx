@@ -35,6 +35,7 @@ const useStyles = makeStyles({
 });
 
 export interface Props {
+  changed: boolean;
   cRatio: {
     from: BN;
     to: BN;
@@ -55,6 +56,7 @@ export interface Props {
 }
 
 export default function BalanceChange({
+  changed = false,
   cRatio,
   debt,
   staked,
@@ -103,8 +105,12 @@ export default function BalanceChange({
             <Label>{label}</Label>
             <Box display='flex' width='100%' justifyContent='flex-end'>
               <span className={classes.value}>{from}</span>
-              <span className={classes.gap}>{gapImg ? "" : "=>"}</span>
-              <span className={classes.value}>{to}</span>
+              {changed && (
+                <>
+                  <span className={classes.gap}>{gapImg ? "" : "=>"}</span>
+                  <span className={classes.value}>{to}</span>
+                </>
+              )}
             </Box>
           </ListItem>
         ))}

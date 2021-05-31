@@ -114,7 +114,7 @@ export default function Earn() {
     [fromToken.max, state.fromInput, state.fromMax]
   );
 
-  const changedBalance: BalanceChangeProps = useMemo(() => {
+  const changedBalance: Omit<BalanceChangeProps, "changed"> = useMemo(() => {
     const changedStaked = stakedCollateral.plus(fromAmount);
 
     const changedDebt = changedStaked
@@ -195,6 +195,12 @@ export default function Earn() {
       }
       const res = await tx.wait(1);
       console.log("res", res);
+      setState({
+        fromInput: "",
+        fromMax: false,
+        toInput: "",
+        toMax: false,
+      });
       setBalanceChanged(true);
     } catch (e) {
       console.log(e);
@@ -205,7 +211,13 @@ export default function Earn() {
       });
     }
     setLoading(false);
-  }, [state.fromMax, state.toInput, setBalanceChanged, enqueueSnackbar]);
+  }, [
+    state.fromMax,
+    state.toInput,
+    setState,
+    setBalanceChanged,
+    enqueueSnackbar,
+  ]);
 
   return (
     <PageCard
@@ -234,7 +246,7 @@ export default function Earn() {
         state={state}
         setState={setState}
       />
-      <BalanceChange my={3} {...changedBalance} />
+      <BalanceChange my={3} changed={!!state.fromInput} {...changedBalance} />
       <Box>
         {connected && (
           <PrimaryButton

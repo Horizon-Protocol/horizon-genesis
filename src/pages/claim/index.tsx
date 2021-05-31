@@ -4,7 +4,7 @@ import { ethers } from "ethers";
 import { useSnackbar } from "notistack";
 import { useAtomValue, useUpdateAtom } from "jotai/utils";
 import { balanceChangedAtom } from "@atoms/app";
-import { rewardsAtom } from "@atoms/feePool";
+import { rewardsAtom, feePeriodDatesAtom } from "@atoms/feePool";
 import horizon from "@lib/horizon";
 import useWallet from "@hooks/useWallet";
 import { PAGE_COLOR } from "@utils/theme/constants";
@@ -15,6 +15,7 @@ import RewardCard from "@components/Claim/RewardCard";
 import InfoList, { Info } from "@components/InfoList";
 import PrimaryButton from "@components/PrimaryButton";
 import useFetchRewards from "@hooks/useFetchRewards";
+import { formatNumber } from "@utils/number";
 
 const THEME_COLOR = PAGE_COLOR.claim;
 
@@ -27,12 +28,18 @@ export default function Earn() {
   const { claimable, stakingReward, exchangeReward } =
     useAtomValue(rewardsAtom);
 
-  const canClaim = useMemo(
-    () => claimable && (stakingReward.isGreaterThan(0) || exchangeReward.gt(0)),
-    [claimable, exchangeReward, stakingReward]
+  const totalRewards = useMemo(
+    () => stakingReward.plus(exchangeReward),
+    [stakingReward, exchangeReward]
   );
 
-  const { formatted } = useClaimCountDown();
+  const canClaim = useMemo(
+    () => claimable && totalRewards.isGreaterThan(0),
+    [claimable, totalRewards]
+  );
+
+  const { nextFeePeriodStarts } = useAtomValue(feePeriodDatesAtom);
+  const { formatted } = useClaimCountDown(nextFeePeriodStarts);
 
   const mockInfoList: Info[] = [
     {
@@ -41,16 +48,16 @@ export default function Earn() {
     },
     {
       label: "Claim Period Ends",
-      value: "N/A",
+      value: formatted,
     },
     {
       label: "Total Rewards",
-      value: "0.00 HZN",
+      value: `${formatNumber(totalRewards)} HZN`,
     },
-    {
-      label: "Lifetime Rewards",
-      value: "0.00 HZN",
-    },
+    // {
+    //   label: "Lifetime Rewards",
+    //   value: "0.00 HZN",
+    // },
   ];
 
   const setBalanceChanged = useUpdateAtom(balanceChangedAtom);

@@ -1328,20 +1328,20 @@
   resolved "https://registry.yarnpkg.com/@fontsource/raleway/-/raleway-4.3.0.tgz#8ca67d6f521f07c6e1fa611adea6a2e1cf1b23af"
   integrity sha512-uXY9PH241WKop5jOXvG7azKc/cTuyEKM+TIlV6Xos+lUGfPqBNmiR5J0IX4sJkyOq59UJjYcYCvEU/rOqfh/Tw==
 
-"@horizon-protocol/contracts-interface@2.45.4":
-  version "2.45.4"
-  resolved "https://registry.yarnpkg.com/@horizon-protocol/contracts-interface/-/contracts-interface-2.45.4.tgz#0c5a222c50913eea2b4be9eb168867b98f744f07"
-  integrity sha512-x1umscRDToSVmiMjeGvgY4kNDhIJgQgHWFFbZXvVuRjvr4jt7ab4TXt71nHiHS/5LFmt8nnFnMRB7zq/u+LvCw==
+"@horizon-protocol/contracts-interface@2.45.6":
+  version "2.45.6"
+  resolved "https://registry.yarnpkg.com/@horizon-protocol/contracts-interface/-/contracts-interface-2.45.6.tgz#c115c2064bc903d23a0ebdcd0cbfbd1ddbbe7f5c"
+  integrity sha512-g0nxg1fXYgkz2L46bHgHQtFzsByOj3xanNVvf/lPiMjemK3awt2usukPJncTFsvMdr7z/nvLGElN1mXQAx+yhg==
   dependencies:
-    "@horizon-protocol/smart-contract" "2.33.10"
+    "@horizon-protocol/smart-contract" "2.33.12"
     ethers "5.0.26"
     lodash "4.17.19"
     web3-utils "1.2.11"
 
-"@horizon-protocol/smart-contract@2.33.10":
-  version "2.33.10"
-  resolved "https://registry.yarnpkg.com/@horizon-protocol/smart-contract/-/smart-contract-2.33.10.tgz#ea6014eac49fa338fe9ff2a6b875cb639161b558"
-  integrity sha512-NsETi+6rkIKxE2I3YNb7u64ege7W5/kVnFvUtqDL1mBnr4XBeebOP7IjlhOBMIJGYUBcl/d2bh9r0FSzMJ4iBg==
+"@horizon-protocol/smart-contract@2.33.12":
+  version "2.33.12"
+  resolved "https://registry.yarnpkg.com/@horizon-protocol/smart-contract/-/smart-contract-2.33.12.tgz#d44203d8940abb1aac881d66aae12e9dac82c5df"
+  integrity sha512-GeFuT1vqg8OwLdWdI9DW1T/c28fWSddMRY9dtisdcvHpEAW2bCH9NMAN5SIX4mW8ZvogIRDMIA0gYPa2T0kDUg==
   dependencies:
     "@chainlink/contracts-0.0.10" "npm:@chainlink/contracts@0.0.10"
     "@eth-optimism/contracts" "0.0.2-alpha.7"

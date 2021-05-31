@@ -11,7 +11,17 @@ interface FeePoolAtom {
   rewardsClaimed: number;
 }
 
-export const feePoolAtom = atom<FeePoolAtom>({
+export const currentFeePeriodAtom = atom<FeePoolAtom>({
+  feePeriodDuration: 0,
+  startTime: 0,
+  feesToDistribute: 0,
+  feesClaimed: 0,
+  rewardsToDistribute: 0,
+  rewardsToDistributeBN: zeroBN,
+  rewardsClaimed: 0,
+});
+
+export const previoudFeePeriodAtom = atom<FeePoolAtom>({
   feePeriodDuration: 0,
   startTime: 0,
   feesToDistribute: 0,
@@ -27,11 +37,12 @@ export const rewardsAtom = atom({
   exchangeReward: zeroBN,
 });
 
-export const nextFeePeriodStartAtom = atom((get) => {
-  const { startTime, feePeriodDuration } = get(feePoolAtom);
-  console.log({
-    startTime,
-    feePeriodDuration,
-  });
-  return new Date(startTime ? (startTime + feePeriodDuration) * 1000 : 0);
+export const feePeriodDatesAtom = atom((get) => {
+  const { startTime, feePeriodDuration } = get(currentFeePeriodAtom);
+  return {
+    currentFeePeriodStarts: startTime ? new Date(startTime * 1000) : undefined,
+    nextFeePeriodStarts: startTime
+      ? new Date((startTime + feePeriodDuration) * 1000)
+      : undefined,
+  };
 });

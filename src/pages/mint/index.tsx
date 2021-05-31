@@ -55,6 +55,7 @@ export default function Earn() {
 
   const fromToken: TokenProps = useMemo(
     () => ({
+      disabled: !connected,
       token: Token.HZN,
       label: "STAKE",
       amount: toBigNumber(0),
@@ -65,11 +66,12 @@ export default function Earn() {
       toPairInput: (amount) =>
         getMintAmount(targetCRatio, amount, hznRate).toString(),
     }),
-    [hznRate, targetCRatio, unstakedCollateral]
+    [connected, hznRate, targetCRatio, unstakedCollateral]
   );
 
   const toToken: TokenProps = useMemo(
     () => ({
+      disabled: !connected,
       token: zAssets.zUSD,
       label: "MINT",
       color: THEME_COLOR,
@@ -80,7 +82,7 @@ export default function Earn() {
       toPairInput: (amount) =>
         getStakingAmount(targetCRatio, amount, hznRate).toString(),
     }),
-    [hznRate, targetCRatio]
+    [connected, hznRate, targetCRatio]
   );
 
   const handleSelectPresetCRatio = useCallback(

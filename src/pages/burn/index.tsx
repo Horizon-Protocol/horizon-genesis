@@ -83,6 +83,7 @@ export default function Earn() {
 
   const fromToken: TokenProps = useMemo(
     () => ({
+      disabled: !connected,
       token: zAssets.zUSD,
       label: "BURN",
       color: THEME_COLOR,
@@ -98,11 +99,19 @@ export default function Earn() {
           .div(targetCRatio)
           .toString(),
     }),
-    [burnAmountToFixCRatio, debtBalance, hznRate, targetCRatio, zUSDBalance]
+    [
+      burnAmountToFixCRatio,
+      connected,
+      debtBalance,
+      hznRate,
+      targetCRatio,
+      zUSDBalance,
+    ]
   );
 
   const toToken: TokenProps = useMemo(
     () => ({
+      disabled: !connected,
       token: Token.HZN,
       label: "UNSTAKE",
       amount: toBigNumber(0),
@@ -121,7 +130,7 @@ export default function Earn() {
         return toAmount.toString();
       },
     }),
-    [burnAmountToFixCRatio, hznRate, stakedCollateral, targetCRatio]
+    [burnAmountToFixCRatio, connected, hznRate, stakedCollateral, targetCRatio]
   );
 
   const handleSelectPresetCRatio = useCallback(
@@ -273,6 +282,7 @@ export default function Earn() {
     changedBalance.cRatio.to,
     enqueueSnackbar,
     setBalanceChanged,
+    setState,
     state.fromInput,
     targetCRatio,
   ]);

@@ -24,8 +24,8 @@ export default function useFetchRewards() {
       ])) as [boolean, [ethers.BigNumber, ethers.BigNumber]];
       return {
         claimable,
-        stakingReward: toBigNumber(utils.formatEther(availableFees[0])),
         exchangeReward: toBigNumber(utils.formatEther(availableFees[0])),
+        stakingReward: toBigNumber(utils.formatEther(availableFees[1])),
       };
     },
     {

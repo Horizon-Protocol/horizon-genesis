@@ -8,6 +8,7 @@ import TokenLogo from "@components/TokenLogo";
 
 declare global {
   interface TokenInputProps {
+    disabled?: boolean;
     token: TokenEnum | zAssetsEnum;
     label: string;
     balanceLabel?: JSX.Element | string;
@@ -80,6 +81,7 @@ const useStyles = makeStyles(({ palette }) => ({
 }));
 
 export default function TokenInput({
+  disabled = false,
   token,
   label,
   input,
@@ -160,6 +162,7 @@ export default function TokenInput({
           thousandSeparator
           isNumericString
           placeholder='0.0'
+          disabled={disabled}
           customInput={InputBase}
           className={classes.input}
           classes={{ input: classes.innerInput }}

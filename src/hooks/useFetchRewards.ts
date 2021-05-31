@@ -1,15 +1,22 @@
 import { useRequest } from "ahooks";
-import { useUpdateAtom } from "jotai/utils";
+import { useAtomValue, useResetAtom, useUpdateAtom } from "jotai/utils";
 import { ethers } from "ethers";
 import horizon from "@lib/horizon";
-import { rewardsAtom } from "@atoms/feePool";
+import { needRefreshAtom } from "@atoms/app";
+import { rewardsAtom, resetAtom } from "@atoms/feePool";
 import { toBigNumber } from "@utils/number";
 import useWallet from "./useWallet";
+import useDisconnected from "./useDisconnected";
 
 export default function useFetchRewards() {
   const { account } = useWallet();
 
+  const needRefresh = useAtomValue(needRefreshAtom);
   const setRewards = useUpdateAtom(rewardsAtom);
+
+  const resetRewards = useResetAtom(resetAtom);
+
+  useDisconnected(resetRewards);
 
   const { refresh } = useRequest(
     async () => {
@@ -30,6 +37,7 @@ export default function useFetchRewards() {
     },
     {
       ready: !!account && !!horizon.js,
+      refreshDeps: [account, needRefresh],
       onSuccess({ claimable, stakingReward, exchangeReward }) {
         console.log({
           claimable,

@@ -1,4 +1,5 @@
 import { atom } from "jotai";
+import { atomWithReset, RESET } from "jotai/utils";
 import { zeroBN } from "@utils/number";
 
 interface FeePoolAtom {
@@ -31,12 +32,6 @@ export const previoudFeePeriodAtom = atom<FeePoolAtom>({
   rewardsClaimed: 0,
 });
 
-export const rewardsAtom = atom({
-  claimable: false,
-  stakingReward: zeroBN,
-  exchangeReward: zeroBN,
-});
-
 export const feePeriodDatesAtom = atom((get) => {
   const { startTime, feePeriodDuration } = get(currentFeePeriodAtom);
   return {
@@ -45,4 +40,16 @@ export const feePeriodDatesAtom = atom((get) => {
       ? new Date((startTime + feePeriodDuration) * 1000)
       : undefined,
   };
+});
+
+// user rewards
+export const rewardsAtom = atomWithReset({
+  claimable: false,
+  stakingReward: zeroBN,
+  exchangeReward: zeroBN,
+});
+
+// reset user rewards
+export const resetAtom = atom(null, (get, set) => {
+  set(rewardsAtom, RESET);
 });

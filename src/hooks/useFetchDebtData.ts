@@ -1,16 +1,20 @@
 import { useRequest } from "ahooks";
-import { useAtomValue, useUpdateAtom } from "jotai/utils";
+import { useAtomValue, useResetAtom, useUpdateAtom } from "jotai/utils";
 import horizon from "@lib/horizon";
 import { toBigNumber } from "@utils/number";
 import { needRefreshAtom } from "@atoms/app";
-import { debtAtom } from "@atoms/debt";
+import { debtAtom, resetDebtAtom } from "@atoms/debt";
 import useWallet from "./useWallet";
+import useDisconnected from "./useDisconnected";
 
 export default function useFetchDebtData() {
   const needRefresh = useAtomValue(needRefreshAtom);
   const { account } = useWallet();
 
   const setDebtData = useUpdateAtom(debtAtom);
+  const resetDebtData = useResetAtom(resetDebtAtom);
+
+  useDisconnected(resetDebtData);
 
   useRequest(
     async () => {
@@ -35,7 +39,7 @@ export default function useFetchDebtData() {
     },
     {
       ready: !!account && !!horizon.js,
-      refreshDeps: [needRefresh],
+      refreshDeps: [account, needRefresh],
       onSuccess([
         collateral,
         currentCRatio,

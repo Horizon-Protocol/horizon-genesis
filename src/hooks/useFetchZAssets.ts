@@ -1,12 +1,17 @@
 import { useRequest } from "ahooks";
-import { useAtomValue, useUpdateAtom } from "jotai/utils";
+import { useAtomValue, useResetAtom, useUpdateAtom } from "jotai/utils";
 import { utils } from "ethers";
 import horizon from "@lib/horizon";
 import { needRefreshAtom } from "@atoms/app";
-import { zAssetsBalanceAtom, zAssetstotalUSDAtom } from "@atoms/debt";
+import {
+  zAssetsBalanceAtom,
+  zAssetstotalUSDAtom,
+  resetZAssetsAtom,
+} from "@atoms/debt";
 import { toBigNumber } from "@utils/number";
 import { CurrencyKey, SynthBalancesMap } from "@utils/currencies";
 import useWallet from "./useWallet";
+import useDisconnected from "./useDisconnected";
 
 type SynthBalancesTuple = [CurrencyKey[], number[], number[]];
 
@@ -16,6 +21,10 @@ export default function useFetchZAssets() {
 
   const setBalances = useUpdateAtom(zAssetsBalanceAtom);
   const setTotalUSD = useUpdateAtom(zAssetstotalUSDAtom);
+
+  const resetZAssets = useResetAtom(resetZAssetsAtom);
+
+  useDisconnected(resetZAssets);
 
   useRequest(
     async () => {

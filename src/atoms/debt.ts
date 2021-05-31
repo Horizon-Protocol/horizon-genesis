@@ -1,5 +1,5 @@
 import { atom } from "jotai";
-import { atomWithReset, selectAtom } from "jotai/utils";
+import { atomWithReset, selectAtom, RESET } from "jotai/utils";
 import {
   zeroBN,
   cRatioToPercent,
@@ -64,11 +64,21 @@ export const burnAmountToFixCRatioAtom = atom((get) => {
 });
 
 // zAssets
-export const zAssetstotalUSDAtom = atom(zeroBN);
+export const zAssetstotalUSDAtom = atomWithReset(zeroBN);
 
-export const zAssetsBalanceAtom = atom<SynthBalancesMap>({});
+export const zAssetsBalanceAtom = atomWithReset<SynthBalancesMap>({});
 
 export const zUSDBalanceAtom = selectAtom(
   zAssetsBalanceAtom,
   (rates) => rates["zUSD"]?.balance || zeroBN
 );
+
+// reset all debt balances
+export const resetDebtAtom = atom(null, (get, set) => {
+  set(debtAtom, RESET);
+});
+
+export const resetZAssetsAtom = atom(null, (get, set) => {
+  set(zAssetstotalUSDAtom, RESET);
+  set(zAssetsBalanceAtom, RESET);
+});

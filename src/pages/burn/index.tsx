@@ -19,8 +19,8 @@ import {
 } from "@atoms/debt";
 import useWallet from "@hooks/useWallet";
 import useFetchBurnStatus from "@hooks/useFetchBurnStatus";
-import headerBg from "@assets/images/burn.png";
-import arrowImg from "@assets/images/burn-arrow.png";
+import headerBg from "@assets/images/burn.svg";
+import arrowImg from "@assets/images/burn-arrow.svg";
 import arrowRightImg from "@assets/images/burn-arrow-right.png";
 import PageCard from "@components/PageCard";
 import PresetCRatioOptions from "@components/PresetCRatioOptions";

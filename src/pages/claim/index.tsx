@@ -8,7 +8,7 @@ import { rewardsAtom, feePeriodDatesAtom } from "@atoms/feePool";
 import horizon from "@lib/horizon";
 import useWallet from "@hooks/useWallet";
 import { PAGE_COLOR } from "@utils/theme/constants";
-import bg from "@assets/images/claim.png";
+import headerBg from "@assets/images/claim.svg";
 import useClaimCountDown from "@hooks/useClaimCountDown";
 import PageCard from "@components/PageCard";
 import RewardCard from "@components/Claim/RewardCard";
@@ -87,7 +87,7 @@ export default function Earn() {
     <PageCard
       mx='auto'
       color={THEME_COLOR}
-      headerBg={bg}
+      headerBg={headerBg}
       title='Claim'
       description={
         <>

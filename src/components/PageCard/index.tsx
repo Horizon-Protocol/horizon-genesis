@@ -13,22 +13,31 @@ declare global {
   }
 }
 
-const useStyles = makeStyles(({ palette }) => ({
+const useStyles = makeStyles({
   container: {
     overflow: "hidden",
     backgroundColor: "rgba(16,38,55,0.3)",
   },
   headerWrap: {
+    overflow: "hidden",
+    position: "relative",
     backgroundColor: "#0C111D",
     backgroundRepeat: "no-repeat",
     backgroundSize: "auto 180px",
     backgroundPosition: "top -18px left -18px",
-    backgroundImage: ({ bg }: { bg?: string }) => `url(${bg})`,
+    // backgroundImage: ({ bg }: { bg?: string }) => `url(${bg})`,
+  },
+  headerBg: {
+    opacity: 0.1,
+    position: "absolute",
+    left: -8,
+    top: -8,
+    height: "100%",
   },
   contentWrap: {
     padding: "24px 64px",
   },
-}));
+});
 
 export default function PageCard({
   color,
@@ -55,6 +64,7 @@ export default function PageCard({
         justifyContent='center'
         className={classes.headerWrap}
       >
+        <img src={headerBg} alt='' className={classes.headerBg} />
         <Header
           color={color}
           title={title}

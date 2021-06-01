@@ -25,12 +25,13 @@ const useStyles = makeStyles({
   },
   gap: {
     display: "inline-block",
-    width: 50,
+    width: 48,
     backgroundPosition: "center",
     backgroundRepeat: "no-repeat",
     backgroundSize: "60%",
     backgroundImage: ({ gapImg }: { gapImg?: string }) =>
       gapImg && `url(${gapImg})`,
+    transform: "rotateZ(180deg)",
   },
 });
 

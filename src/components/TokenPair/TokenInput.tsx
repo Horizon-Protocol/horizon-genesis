@@ -87,7 +87,7 @@ export default function TokenInput({
   input,
   onInput,
   amount,
-  balanceLabel = "Balance:",
+  balanceLabel,
   maxButtonLabel,
   max,
   logo,
@@ -99,6 +99,10 @@ export default function TokenInput({
   const classes = useStyles({
     invalidInput: !!max && amount?.gt(max),
   });
+
+  if (label === "MINT") {
+    console.log(label, amount?.toString(), max?.toString(), amount?.gt(max!));
+  }
 
   // console.log("input", label, input);
 
@@ -169,15 +173,20 @@ export default function TokenInput({
         />
         <Box display='flex' justifyContent='flex-end'>
           <Typography
+            component='span'
             classes={{
               root: classes.balanceLabel,
               colorError: classes.balanceLabelError,
             }}
             // className={classes.balanceLabel}
           >
-            {balanceLabel} {max && formatNumber(max)} {token}
+            {balanceLabel
+              ? balanceLabel
+              : max
+              ? `Balance: ${formatNumber(max)} ${token}`
+              : ""}
           </Typography>
-          {max?.gt(0) && (
+          {maxButtonLabel && max?.gt(0) ? (
             <Link
               href='#'
               underline='none'
@@ -188,7 +197,7 @@ export default function TokenInput({
             >
               ({maxButtonLabel})
             </Link>
-          )}
+          ) : null}
         </Box>
       </Box>
     </Box>

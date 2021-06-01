@@ -8,7 +8,12 @@ import horizon from "@lib/horizon";
 import { PAGE_COLOR } from "@utils/theme/constants";
 import { Token } from "@utils/constants";
 import { zAssets } from "@utils/zAssets";
-import { formatCRatioToPercent, toBigNumber, zeroBN } from "@utils/number";
+import {
+  formatCRatioToPercent,
+  formatNumber,
+  toBigNumber,
+  zeroBN,
+} from "@utils/number";
 import {
   getStakingAmount,
   getMintAmount,
@@ -20,7 +25,7 @@ import { hznRateAtom } from "@atoms/exchangeRates";
 import { debtAtom, collateralDataAtom } from "@atoms/debt";
 import headerBg from "@assets/images/mint.svg";
 import arrowImg from "@assets/images/mint-arrow.svg";
-import arrowRightImg from "@assets/images/mint-arrow-right.png";
+import arrowRightImg from "@assets/images/mint-arrow-right.svg";
 import PageCard from "@components/PageCard";
 import PresetCRatioOptions from "@components/PresetCRatioOptions";
 import TokenPair, {
@@ -46,6 +51,11 @@ export default function Earn() {
   const { stakedCollateral, unstakedCollateral } =
     useAtomValue(collateralDataAtom);
 
+  const unstakedCollateralUSD = useMemo(
+    () => getMintAmount(targetCRatio, unstakedCollateral, hznRate),
+    [hznRate, targetCRatio, unstakedCollateral]
+  );
+
   const [state, setState] = useSetState<InputState>({
     fromInput: "",
     fromMax: false,
@@ -59,6 +69,7 @@ export default function Earn() {
       token: Token.HZN,
       label: "STAKE",
       amount: toBigNumber(0),
+      balanceLabel: `Balance: ${formatNumber(unstakedCollateral)} ${Token.HZN}`,
       max: unstakedCollateral,
       maxButtonLabel: "Mint Max",
       color: THEME_COLOR,
@@ -77,12 +88,13 @@ export default function Earn() {
       color: THEME_COLOR,
       bgColor: "#0A1624",
       amount: toBigNumber(0),
+      max: unstakedCollateralUSD,
       balanceLabel: `Minted at ${formatCRatioToPercent(targetCRatio)}% C-Ratio`,
       inputPrefix: "$",
       toPairInput: (amount) =>
         getStakingAmount(targetCRatio, amount, hznRate).toString(),
     }),
-    [connected, hznRate, targetCRatio]
+    [connected, hznRate, targetCRatio, unstakedCollateralUSD]
   );
 
   const handleSelectPresetCRatio = useCallback(

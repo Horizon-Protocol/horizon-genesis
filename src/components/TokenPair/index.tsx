@@ -59,11 +59,11 @@ export default function TokenPair({
   const setFromInput = useCallback<TokenInputProps["onInput"]>(
     (input, isMax = false) => {
       const { toPairInput, max } = fromToken;
-      const toPairAmount = (isMax ? max?.toString() : input) || "0";
+      const stringAmount = (isMax ? max?.toString() : input) || "";
       setState({
-        fromInput: formatInputValue(input),
+        fromInput: stringAmount && formatInputValue(stringAmount),
         fromMax: isMax,
-        toInput: formatInputValue(toPairInput(toPairAmount)),
+        toInput: stringAmount && formatInputValue(toPairInput(stringAmount)),
         toMax: false,
       });
     },
@@ -81,12 +81,11 @@ export default function TokenPair({
   const setToInput = useCallback<TokenInputProps["onInput"]>(
     (input, isMax = false) => {
       const { toPairInput, max } = toToken;
-      const toPairAmount = (isMax ? max?.toString() : input) || "0";
-      console.log("to input change:", input, toPairAmount);
+      const stringAmount = (isMax ? max?.toString() : input) || "";
       setState({
-        toInput: formatInputValue(input),
+        toInput: stringAmount && formatInputValue(stringAmount),
         toMax: isMax,
-        fromInput: formatInputValue(toPairInput(toPairAmount)),
+        fromInput: stringAmount && formatInputValue(toPairInput(stringAmount)),
         fromMax: false,
       });
     },

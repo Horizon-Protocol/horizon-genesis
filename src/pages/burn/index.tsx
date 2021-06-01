@@ -8,7 +8,7 @@ import horizon from "@lib/horizon";
 import { PAGE_COLOR } from "@utils/theme/constants";
 import { Token } from "@utils/constants";
 import { zAssets } from "@utils/zAssets";
-import { maxBN, minBN, toBigNumber, zeroBN } from "@utils/number";
+import { formatNumber, maxBN, minBN, toBigNumber, zeroBN } from "@utils/number";
 import { targetCRatioAtom, balanceChangedAtom } from "@atoms/app";
 import { hznRateAtom } from "@atoms/exchangeRates";
 import {
@@ -21,7 +21,7 @@ import useWallet from "@hooks/useWallet";
 import useFetchBurnStatus from "@hooks/useFetchBurnStatus";
 import headerBg from "@assets/images/burn.svg";
 import arrowImg from "@assets/images/burn-arrow.svg";
-import arrowRightImg from "@assets/images/burn-arrow-right.png";
+import arrowRightImg from "@assets/images/burn-arrow-right.svg";
 import PageCard from "@components/PageCard";
 import PresetCRatioOptions from "@components/PresetCRatioOptions";
 import TokenPair, {
@@ -115,7 +115,7 @@ export default function Earn() {
       token: Token.HZN,
       label: "UNSTAKE",
       amount: toBigNumber(0),
-      balanceLabel: `Staked:`,
+      balanceLabel: `Staked: ${formatNumber(stakedCollateral)} ${Token.HZN}`,
       max: stakedCollateral,
       maxButtonLabel: "Unstake Max",
       color: THEME_COLOR,

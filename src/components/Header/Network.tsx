@@ -34,8 +34,6 @@ export default function WalletIndicator(props: ChipProps) {
 
   const isFetching = useIsFetching([CONTRACT]);
 
-  console.log("isFetching", isFetching);
-
   const refresh = useCallback(() => {
     queryClient.refetchQueries([CONTRACT], {
       fetching: false,

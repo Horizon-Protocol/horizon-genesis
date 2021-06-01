@@ -4,6 +4,7 @@ import numbro from "numbro";
 import { toBigNumber } from "@utils/number";
 import TokenInput from "./TokenInput";
 import InputGap from "./InputGap";
+import { toNumber } from "lodash";
 
 export type TokenProps = Omit<TokenInputProps, "input" | "onInput">;
 
@@ -12,6 +13,7 @@ export interface InputState {
   fromMax: boolean;
   toInput: string;
   toMax: boolean;
+  error: string;
 }
 
 export interface TokenPairProps {
@@ -48,6 +50,13 @@ export const formatInputValue = (inputValue: string): string => {
   );
 };
 
+const isExceedMax = (stringAmount: string, max?: BN) => {
+  if (stringAmount && max) {
+    return toBigNumber(stringAmount).gt(max);
+  }
+  return false;
+};
+
 export default function TokenPair({
   fromToken,
   toToken,
@@ -65,6 +74,7 @@ export default function TokenPair({
         fromMax: isMax,
         toInput: stringAmount && formatInputValue(toPairInput(stringAmount)),
         toMax: false,
+        error: isExceedMax(stringAmount, max) ? "Insufficient balance" : "",
       });
     },
     [fromToken, setState]
@@ -82,12 +92,14 @@ export default function TokenPair({
     (input, isMax = false) => {
       const { toPairInput, max } = toToken;
       const stringAmount = (isMax ? max?.toString() : input) || "";
-      setState({
+
+      setState(() => ({
         toInput: stringAmount && formatInputValue(stringAmount),
         toMax: isMax,
         fromInput: stringAmount && formatInputValue(toPairInput(stringAmount)),
         fromMax: false,
-      });
+        error: isExceedMax(stringAmount, max) ? "Insufficient balance" : "",
+      }));
     },
     [setState, toToken]
   );
@@ -97,6 +109,7 @@ export default function TokenPair({
       <TokenInput
         {...fromToken}
         amount={fromAmount}
+        invalid={!!state.error}
         input={state.fromInput}
         onInput={setFromInput}
       />
@@ -104,6 +117,7 @@ export default function TokenPair({
       <TokenInput
         {...toToken}
         amount={toAmount}
+        invalid={!!state.error}
         input={state.toInput}
         onInput={setToInput}
       />

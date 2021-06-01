@@ -62,6 +62,7 @@ export default function Earn() {
     fromMax: false,
     toInput: "",
     toMax: false,
+    error: "",
   });
 
   const fromToken: TokenProps = useMemo(
@@ -254,6 +255,7 @@ export default function Earn() {
         value={changedBalance.cRatio.to}
         onChange={handleSelectPresetCRatio}
       />
+      {state.error ? <span>{state.error}</span> : null}
       <TokenPair
         mt={3}
         fromToken={fromToken}

@@ -33,6 +33,7 @@ const useStyles = makeStyles({
     fontWeight: 700,
     letterSpacing: "0.86px",
     lineHeight: "28px",
+    textAlign: "center",
   },
   help: {
     position: "absolute",

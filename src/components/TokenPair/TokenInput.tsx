@@ -22,6 +22,7 @@ declare global {
     inputPrefix?: string;
     onInput(v: string, max?: boolean): void;
     amount: BN; // BN format of input
+    invalid?: boolean;
     toPairInput(stakeAmount: NumericValue): string; // convert between from and to token amount
   }
 }
@@ -56,8 +57,8 @@ const useStyles = makeStyles(({ palette }) => ({
   input: {},
   innerInput: {
     // fontFamily: "Rawline",
-    color: ({ invalidInput = false }: { invalidInput: boolean }) =>
-      invalidInput ? "red" : "#B4E0FF",
+    color: ({ invalid = false }: { invalid: boolean }) =>
+      invalid ? "red" : "#B4E0FF",
     fontFamily: "Rawline",
     fontSize: 24,
     fontWeight: 700,
@@ -95,9 +96,10 @@ export default function TokenInput({
   labelColor,
   bgColor,
   inputPrefix,
+  invalid = false,
 }: TokenInputProps) {
   const classes = useStyles({
-    invalidInput: !!max && amount?.gt(max),
+    invalid,
   });
 
   if (label === "MINT") {

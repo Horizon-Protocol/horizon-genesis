@@ -1,3 +1,4 @@
+import { useCallback } from "react";
 import { useQuery, QueryFunction } from "react-query";
 import { useAtomValue, useUpdateAtom } from "jotai/utils";
 import { utils, BigNumberish } from "ethers";
@@ -11,7 +12,7 @@ import {
   iStandardSynth,
   synthToAsset,
 } from "@utils/currencies";
-import { useCallback } from "react";
+import { CONTRACT, PUBLIC } from "@utils/queryKeys";
 
 type CurrencyRate = BigNumberish;
 type SynthRatesTuple = [string[], CurrencyRate[]];
@@ -27,7 +28,7 @@ export default function useFetchExchangeRates() {
   const setRates = useUpdateAtom(ratesAtom);
 
   const fetcher = useCallback<QueryFunction<Rates>>(async ({ queryKey }) => {
-    console.log("fetch", queryKey[0]);
+    console.log("fetch", ...queryKey);
     const exchangeRates: Rates = {};
     const {
       contracts: { SynthUtil, ExchangeRates },
@@ -55,7 +56,7 @@ export default function useFetchExchangeRates() {
     return exchangeRates;
   }, []);
 
-  useQuery(["exchangeRates", needRefresh], fetcher, {
+  useQuery([CONTRACT, PUBLIC, "exchangeRates", needRefresh], fetcher, {
     onSuccess(rates) {
       setRates(rates);
     },

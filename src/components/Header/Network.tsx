@@ -2,9 +2,10 @@ import { useAtomValue } from "jotai/utils";
 import { Avatar, Chip, ChipProps, CircularProgress } from "@material-ui/core";
 import { withStyles } from "@material-ui/core/styles";
 import { detailAtom } from "@atoms/wallet";
-import { loadingAllAtom } from "@atoms/staker/loading";
-import useFetchState from "@hooks/staker/useFetchState";
 import { ChainName } from "@utils/constants";
+import { useIsFetching, useQueryClient } from "react-query";
+import { CONTRACT } from "@utils/queryKeys";
+import { useCallback } from "react";
 
 const StyledChip = withStyles(({ palette }) => ({
   root: {
@@ -29,8 +30,17 @@ const StyledAvatar = withStyles(({ palette }) => ({
 
 export default function WalletIndicator(props: ChipProps) {
   const wallet = useAtomValue(detailAtom);
-  const loading = useAtomValue(loadingAllAtom);
-  const refresh = useFetchState();
+  const queryClient = useQueryClient();
+
+  const isFetching = useIsFetching([CONTRACT]);
+
+  console.log("isFetching", isFetching);
+
+  const refresh = useCallback(() => {
+    queryClient.refetchQueries([CONTRACT], {
+      fetching: false,
+    });
+  }, [queryClient]);
 
   if (!wallet) {
     return null;
@@ -41,7 +51,7 @@ export default function WalletIndicator(props: ChipProps) {
     <StyledChip
       variant='outlined'
       avatar={
-        loading ? (
+        isFetching > 0 ? (
           <CircularProgress color='primary' size={20} />
         ) : (
           <StyledAvatar

@@ -5,7 +5,7 @@ import { NetworkId } from "@horizon-protocol/contracts-interface";
 import { useUpdateAtom } from "jotai/utils";
 import { readyAtom } from "@atoms/app";
 import horizon from "@lib/horizon";
-import { ChainId } from "@utils/constants";
+import { ChainId, REACT_QUERY_DEFAULT_OPTIONS } from "@utils/constants";
 import useWallet from "./useWallet";
 import useRpcProvider from "./useRpcProvider";
 
@@ -34,11 +34,14 @@ export default function useSetupHorizonLib() {
           provider: rpcProvider,
         });
       }
+      console.log("1111", queryClient.getDefaultOptions());
       queryClient.setDefaultOptions({
         queries: {
+          ...REACT_QUERY_DEFAULT_OPTIONS,
           enabled: !!horizon.js,
         },
       });
+      console.log("2222", queryClient.getDefaultOptions());
       setAppReady(!!horizon.js);
     } catch (error) {
       enqueueSnackbar("Failed to initiate horizon.js sdk!", {

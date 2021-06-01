@@ -1,13 +1,14 @@
+import { useCallback } from "react";
 import { useQuery, QueryFunction } from "react-query";
 import { useAtomValue, useResetAtom, useUpdateAtom } from "jotai/utils";
 import { ethers } from "ethers";
 import horizon from "@lib/horizon";
 import { needRefreshAtom } from "@atoms/app";
 import { rewardsAtom, resetAtom } from "@atoms/feePool";
+import { CONTRACT, USER } from "@utils/queryKeys";
 import { toBigNumber } from "@utils/number";
 import useWallet from "./useWallet";
 import useDisconnected from "./useDisconnected";
-import { useCallback } from "react";
 
 interface Result {
   claimable: boolean;
@@ -25,9 +26,11 @@ export default function useFetchRewards() {
 
   useDisconnected(resetRewards);
 
-  const fetcher = useCallback<QueryFunction<Result, [string, string, boolean]>>(
+  const fetcher = useCallback<
+    QueryFunction<Result, [string, string, string, string, boolean]>
+  >(
     async ({ queryKey }) => {
-      console.log("fetch", queryKey[0]);
+      console.log("fetch", ...queryKey);
       const {
         contracts: { FeePool },
         utils,
@@ -46,21 +49,25 @@ export default function useFetchRewards() {
     [account]
   );
 
-  const { refetch } = useQuery(["rewards", account!, needRefresh], fetcher, {
-    enabled: !!account && !!horizon.js,
-    onSuccess({ claimable, stakingReward, exchangeReward }) {
-      console.log({
-        claimable,
-        stakingReward,
-        exchangeReward,
-      });
-      setRewards({
-        claimable,
-        stakingReward,
-        exchangeReward,
-      });
-    },
-  });
+  const { refetch } = useQuery(
+    [CONTRACT, USER, "rewards", account!, needRefresh],
+    fetcher,
+    {
+      enabled: !!account && !!horizon.js,
+      onSuccess({ claimable, stakingReward, exchangeReward }) {
+        console.log({
+          claimable,
+          stakingReward,
+          exchangeReward,
+        });
+        setRewards({
+          claimable,
+          stakingReward,
+          exchangeReward,
+        });
+      },
+    }
+  );
 
   return { refresh: refetch };
 }

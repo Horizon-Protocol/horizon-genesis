@@ -13,6 +13,7 @@ import {
 import horizon from "@lib/horizon";
 import useFetchExchangeRates from "./useFetchExchangeRates";
 import { toBigNumber } from "@utils/number";
+import { CONTRACT, PUBLIC } from "@utils/queryKeys";
 
 export default function useFetchAppData() {
   const needRefresh = useAtomValue(needRefreshAtom);
@@ -24,31 +25,30 @@ export default function useFetchAppData() {
   const setLiquidationRatio = useUpdateAtom(liquidationRatioAtom);
   // const setLiquidationDelay = useUpdateAtom(liquidationDelayAtom);
 
-  const fetcher = useCallback<QueryFunction<BN[], [string, boolean]>>(
-    async ({ queryKey }) => {
-      console.log("fetch", queryKey[0]);
-      const {
-        contracts: { SystemSettings, Synthetix, Liquidations },
-        utils,
-      } = horizon.js!;
-      const res = await Promise.all([
-        Synthetix.totalSupply(),
-        Synthetix.totalIssuedSynthsExcludeEtherCollateral(
-          utils.formatBytes32String("zUSD"),
-          {
-            blockTag: "latest",
-          }
-        ),
-        SystemSettings.issuanceRatio(),
-        Liquidations.liquidationRatio(),
-        // Liquidations.liquidationDelay(),
-      ]);
-      return res.map((item) => toBigNumber(utils.formatEther(item)));
-    },
-    []
-  );
+  const fetcher = useCallback<
+    QueryFunction<BN[], [string, string, string, boolean]>
+  >(async ({ queryKey }) => {
+    console.log("fetch", ...queryKey);
+    const {
+      contracts: { SystemSettings, Synthetix, Liquidations },
+      utils,
+    } = horizon.js!;
+    const res = await Promise.all([
+      Synthetix.totalSupply(),
+      Synthetix.totalIssuedSynthsExcludeEtherCollateral(
+        utils.formatBytes32String("zUSD"),
+        {
+          blockTag: "latest",
+        }
+      ),
+      SystemSettings.issuanceRatio(),
+      Liquidations.liquidationRatio(),
+      // Liquidations.liquidationDelay(),
+    ]);
+    return res.map((item) => toBigNumber(utils.formatEther(item)));
+  }, []);
 
-  useQuery(["app", needRefresh], fetcher, {
+  useQuery([CONTRACT, PUBLIC, "app", needRefresh], fetcher, {
     onSuccess([
       totalSupply,
       totalIssuedZUSDExclEth,

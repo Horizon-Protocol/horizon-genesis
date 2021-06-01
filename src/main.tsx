@@ -8,6 +8,7 @@ import "@fontsource/raleway";
 import { Web3ReactProvider } from "@web3-react/core";
 import theme from "@utils/theme";
 import { getLibrary } from "@utils/web3React";
+import { REACT_QUERY_DEFAULT_OPTIONS } from "@utils/constants";
 import "./index.css";
 import App from "./App";
 
@@ -15,9 +16,8 @@ import App from "./App";
 const queryClient = new QueryClient({
   defaultOptions: {
     queries: {
+      ...REACT_QUERY_DEFAULT_OPTIONS,
       enabled: false,
-      staleTime: Infinity,
-      refetchInterval: 30000,
     },
     mutations: {
       useErrorBoundary: true,

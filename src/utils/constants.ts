@@ -154,3 +154,9 @@ export const DEPRECATED_TOKENS = [
   Token.HZN_BNB_LP_DEPRECATED,
   Token.HZN_BNB_LP_LEGACY,
 ];
+
+// react query default options
+export const REACT_QUERY_DEFAULT_OPTIONS = {
+  staleTime: Infinity,
+  refetchInterval: 15000, // 15s,
+};

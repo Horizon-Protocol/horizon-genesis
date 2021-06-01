@@ -1,3 +1,4 @@
+import { useCallback } from "react";
 import { useQuery, QueryFunction } from "react-query";
 import { useAtomValue, useUpdateAtom } from "jotai/utils";
 import { ethers, utils } from "ethers";
@@ -5,7 +6,7 @@ import horizon from "@lib/horizon";
 import { needRefreshAtom } from "@atoms/app";
 import { currentFeePeriodAtom, previoudFeePeriodAtom } from "@atoms/feePool";
 import { toBigNumber } from "@utils/number";
-import { useCallback } from "react";
+import { CONTRACT, PUBLIC } from "@utils/queryKeys";
 
 type Period = "0" | "1"; // '0': current; '1': previous
 
@@ -31,10 +32,11 @@ export default function useFetchFeePool() {
   const setPreviousFeePeriod = useUpdateAtom(previoudFeePeriodAtom);
 
   const fetchData = useCallback<
-    QueryFunction<Results, [string, Period, boolean]>
+    QueryFunction<Results, [string, string, string, Period, boolean]>
   >(async ({ queryKey }) => {
-    const [key, period] = queryKey;
-    console.log("fetch", key, period);
+    console.log("fetch", ...queryKey);
+
+    const [, , , period] = queryKey;
 
     const {
       contracts: { FeePool },
@@ -61,14 +63,14 @@ export default function useFetchFeePool() {
   }, []);
 
   // current period
-  useQuery(["feepool", "0", needRefresh], fetchData, {
+  useQuery([CONTRACT, PUBLIC, "feepool", "0", needRefresh], fetchData, {
     onSuccess(res) {
       setCurrentFeePeriod(res);
     },
   });
 
   // previous period
-  useQuery(["feepool", "1", needRefresh], fetchData, {
+  useQuery([CONTRACT, PUBLIC, "feepool", "1", needRefresh], fetchData, {
     onSuccess(res) {
       setPreviousFeePeriod(res);
     },

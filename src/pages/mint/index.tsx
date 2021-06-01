@@ -228,6 +228,13 @@ export default function Earn() {
     setLoading(false);
   }, [state.fromMax, state.toInput, setState, refresh, enqueueSnackbar]);
 
+  const mintDisabled = useMemo(() => {
+    if (fromAmount.eq(0) || fromAmount.gt(fromToken.max!)) {
+      return true;
+    }
+    return false;
+  }, [fromAmount, fromToken.max]);
+
   return (
     <PageCard
       mx='auto'
@@ -260,7 +267,7 @@ export default function Earn() {
         {connected && (
           <PrimaryButton
             loading={loading}
-            disabled={fromAmount.eq(0)}
+            disabled={mintDisabled}
             size='large'
             fullWidth
             onClick={handleMint}

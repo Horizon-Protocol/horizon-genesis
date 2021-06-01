@@ -39,17 +39,19 @@ export const collateralDataAtom = atom((get) => {
   const targetCRatio = get(targetCRatioAtom);
   const { collateral, currentCRatio, transferable } = get(debtAtom);
 
-  const stakedCollateral = collateral.multipliedBy(
-    minBN(toBigNumber(1), currentCRatio.dividedBy(targetCRatio))
-  );
+  const stakedCollateral = targetCRatio.isZero()
+    ? zeroBN
+    : collateral.multipliedBy(
+        minBN(toBigNumber(1), currentCRatio.dividedBy(targetCRatio))
+      );
   const lockedCollateral = collateral.minus(transferable);
   const unstakedCollateral = collateral.minus(stakedCollateral);
 
-  console.log({
-    stakedCollateral: stakedCollateral.toNumber(),
-    unstakedCollateral: unstakedCollateral.toNumber(),
-    lockedCollateral: lockedCollateral.toNumber(),
-  });
+  // console.log({
+  //   stakedCollateral: stakedCollateral.toNumber(),
+  //   unstakedCollateral: unstakedCollateral.toNumber(),
+  //   lockedCollateral: lockedCollateral.toNumber(),
+  // });
 
   return {
     stakedCollateral,

@@ -7,6 +7,7 @@ import Claim from "@pages/claim";
 // import Earn from "@pages/earn";
 import Header from "@components/Header";
 import Dashboard from "@components/Dashboard";
+import useSetupHorizonLib from "@hooks/useSetupHorizonLib";
 import useFetchAppData from "@hooks/useFetchAppData";
 import useFetchDebtData from "@hooks/useFetchDebtData";
 import useFetchZAssets from "@hooks/useFetchZAssets";
@@ -25,6 +26,7 @@ function App() {
 
   const dashboardVisible = true;
 
+  useSetupHorizonLib();
   useFetchAppData();
   useFetchDebtData();
   useFetchZAssets();

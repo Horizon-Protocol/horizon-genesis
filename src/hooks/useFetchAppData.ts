@@ -1,4 +1,5 @@
-import { useRequest } from "ahooks";
+import { useCallback } from "react";
+import { useQuery, QueryFunction } from "react-query";
 import { useAtomValue, useUpdateAtom } from "jotai/utils";
 import {
   balanceChangedAtom,
@@ -23,8 +24,9 @@ export default function useFetchAppData() {
   const setLiquidationRatio = useUpdateAtom(liquidationRatioAtom);
   // const setLiquidationDelay = useUpdateAtom(liquidationDelayAtom);
 
-  useRequest(
-    async () => {
+  const fetcher = useCallback<QueryFunction<BN[], [string, boolean]>>(
+    async ({ queryKey }) => {
+      console.log("fetch", queryKey[0]);
       const {
         contracts: { SystemSettings, Synthetix, Liquidations },
         utils,
@@ -43,29 +45,29 @@ export default function useFetchAppData() {
       ]);
       return res.map((item) => toBigNumber(utils.formatEther(item)));
     },
-    {
-      ready: needRefresh && !!horizon.js,
-      refreshDeps: [needRefresh],
-      onSuccess([
-        totalSupply,
-        totalIssuedZUSDExclEth,
-        targetCRatio,
-        liquidationRatio,
-        // liquidationDelay,
-      ]) {
-        console.log({
-          totalIssuedZUSDExclEth: totalIssuedZUSDExclEth.toString(),
-          // liquidationDelay: liquidationDelay,
-        });
-        setTotalSupply(totalSupply);
-        setTotalIssuedZUSDExclEth(totalIssuedZUSDExclEth);
-        setTargetCRatio(targetCRatio);
-        setLiquidationRatio(liquidationRatio);
-        // setLiquidationDelay(liquidationDelay);
-        setBalanceChanged(false);
-      },
-    }
+    []
   );
+
+  useQuery(["app", needRefresh], fetcher, {
+    onSuccess([
+      totalSupply,
+      totalIssuedZUSDExclEth,
+      targetCRatio,
+      liquidationRatio,
+      // liquidationDelay,
+    ]) {
+      // console.log({
+      //   totalIssuedZUSDExclEth: totalIssuedZUSDExclEth.toString(),
+      //   // liquidationDelay: liquidationDelay,
+      // });
+      setTotalSupply(totalSupply);
+      setTotalIssuedZUSDExclEth(totalIssuedZUSDExclEth);
+      setTargetCRatio(targetCRatio);
+      setLiquidationRatio(liquidationRatio);
+      // setLiquidationDelay(liquidationDelay);
+      setBalanceChanged(false);
+    },
+  });
 
   useFetchExchangeRates();
 }

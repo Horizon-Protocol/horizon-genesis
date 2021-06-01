@@ -1,4 +1,4 @@
-import { useRequest } from "ahooks";
+import { useQuery, QueryFunction } from "react-query";
 import { useAtomValue, useUpdateAtom } from "jotai/utils";
 import { utils, BigNumberish } from "ethers";
 import { ratesAtom } from "@atoms/exchangeRates";
@@ -11,6 +11,7 @@ import {
   iStandardSynth,
   synthToAsset,
 } from "@utils/currencies";
+import { useCallback } from "react";
 
 type CurrencyRate = BigNumberish;
 type SynthRatesTuple = [string[], CurrencyRate[]];
@@ -25,44 +26,38 @@ export default function useFetchExchangeRates() {
 
   const setRates = useUpdateAtom(ratesAtom);
 
-  useRequest(
-    async () => {
-      console.log("load exchange rates");
-      const exchangeRates: Rates = {};
-      const {
-        contracts: { SynthUtil, ExchangeRates },
-      } = horizon.js!;
-      const [synthsRates, ratesForCurrencies] = (await Promise.all([
-        SynthUtil.synthsRates(),
-        ExchangeRates.ratesForCurrencies(additionalCurrencies),
-      ])) as [SynthRatesTuple, CurrencyRate[]];
+  const fetcher = useCallback<QueryFunction<Rates>>(async ({ queryKey }) => {
+    console.log("fetch", queryKey[0]);
+    const exchangeRates: Rates = {};
+    const {
+      contracts: { SynthUtil, ExchangeRates },
+    } = horizon.js!;
+    const [synthsRates, ratesForCurrencies] = (await Promise.all([
+      SynthUtil.synthsRates(),
+      ExchangeRates.ratesForCurrencies(additionalCurrencies),
+    ])) as [SynthRatesTuple, CurrencyRate[]];
 
-      const synths = [...synthsRates[0], ...additionalCurrencies] as string[];
-      const rates = [
-        ...synthsRates[1],
-        ...ratesForCurrencies,
-      ] as CurrencyRate[];
+    const synths = [...synthsRates[0], ...additionalCurrencies] as string[];
+    const rates = [...synthsRates[1], ...ratesForCurrencies] as CurrencyRate[];
 
-      synths.forEach((currencyKeyBytes32: CurrencyKey, idx: number) => {
-        const currencyKey = utils.parseBytes32String(currencyKeyBytes32);
-        const rate = Number(utils.formatEther(rates[idx]));
-        exchangeRates[currencyKey] = rate;
-        // only interested in the standard synths (zETH -> ETH, etc)
-        if (iStandardSynth(currencyKey)) {
-          exchangeRates[synthToAsset(currencyKey)] = rate;
-        }
-      });
+    synths.forEach((currencyKeyBytes32: CurrencyKey, idx: number) => {
+      const currencyKey = utils.parseBytes32String(currencyKeyBytes32);
+      const rate = Number(utils.formatEther(rates[idx]));
+      exchangeRates[currencyKey] = rate;
+      // only interested in the standard synths (zETH -> ETH, etc)
+      if (iStandardSynth(currencyKey)) {
+        exchangeRates[synthToAsset(currencyKey)] = rate;
+      }
+    });
 
-      console.log(exchangeRates);
+    console.log(exchangeRates);
 
-      return exchangeRates;
+    return exchangeRates;
+  }, []);
+
+  useQuery(["exchangeRates", needRefresh], fetcher, {
+    onSuccess(rates) {
+      setRates(rates);
     },
-    {
-      ready: needRefresh && !!horizon.js,
-      refreshDeps: [needRefresh],
-      onSuccess(rates) {
-        setRates(rates);
-      },
-    }
-  );
+  });
 }

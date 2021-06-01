@@ -30,7 +30,7 @@ type ContractSettings = {
   useOvm?: boolean;
 };
 
-type Horizon = {
+export type Horizon = {
   js: HorizonJS | null;
   setContractSettings: (contractSettings: ContractSettings) => void;
   synthsMap: SynthsMap | null;
@@ -48,7 +48,7 @@ const horizon: Horizon = {
 
   setContractSettings({ networkId, provider, signer }: ContractSettings) {
     this.js = initHorizonJS({
-      networkId: NetworkId.Testnet,
+      networkId,
       provider,
       signer,
     });

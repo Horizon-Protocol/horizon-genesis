@@ -1,4 +1,4 @@
-import { useRequest } from "ahooks";
+import { useQuery, QueryFunction } from "react-query";
 import { useAtomValue, useResetAtom, useUpdateAtom } from "jotai/utils";
 import { utils } from "ethers";
 import horizon from "@lib/horizon";
@@ -12,6 +12,7 @@ import { toBigNumber } from "@utils/number";
 import { CurrencyKey, SynthBalancesMap } from "@utils/currencies";
 import useWallet from "./useWallet";
 import useDisconnected from "./useDisconnected";
+import { useCallback } from "react";
 
 type SynthBalancesTuple = [CurrencyKey[], number[], number[]];
 
@@ -26,9 +27,17 @@ export default function useFetchZAssets() {
 
   useDisconnected(resetZAssets);
 
-  useRequest(
-    async () => {
-      console.log("load zAssets");
+  const fetcher = useCallback<
+    QueryFunction<
+      {
+        totalUSDBalance: BN;
+        balancesMap: SynthBalancesMap;
+      },
+      [string, boolean]
+    >
+  >(
+    async ({ queryKey }) => {
+      console.log("fetch", queryKey[0]);
       const {
         contracts: { SynthUtil },
       } = horizon.js!;
@@ -65,13 +74,14 @@ export default function useFetchZAssets() {
         balancesMap,
       };
     },
-    {
-      ready: !!account && !!horizon.js,
-      refreshDeps: [needRefresh],
-      onSuccess({ balancesMap, totalUSDBalance }) {
-        setBalances(balancesMap);
-        setTotalUSD(totalUSDBalance);
-      },
-    }
+    [account]
   );
+
+  useQuery(["zAssets", needRefresh], fetcher, {
+    enabled: !!account && !!horizon.js,
+    onSuccess({ balancesMap, totalUSDBalance }) {
+      setBalances(balancesMap);
+      setTotalUSD(totalUSDBalance);
+    },
+  });
 }

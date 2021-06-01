@@ -12,7 +12,7 @@ export const connectorsByName: { [connectorName in ConnectorNames]: any } = {
   [ConnectorNames.BSC]: bscConnector,
 };
 
+// called when connectint to wallet.
 export const getLibrary = <T>(provider: T): providers.Web3Provider => {
-  console.log("provider", provider);
   return new providers.Web3Provider(provider);
 };

@@ -1,4 +1,4 @@
-import { useCallback, useEffect, useMemo, useState } from "react";
+import { useCallback, useMemo, useState } from "react";
 import { useSnackbar } from "notistack";
 import { providers } from "ethers";
 import { useWeb3React, UnsupportedChainIdError } from "@web3-react/core";
@@ -7,22 +7,14 @@ import {
   NoEthereumProviderError,
   UserRejectedRequestError as UserRejectedRequestErrorInjected,
 } from "@web3-react/injected-connector";
-import { useUpdateAtom } from "jotai/utils";
-import { NetworkId } from "@horizon-protocol/contracts-interface";
-import { readyAtom } from "@atoms/app";
-import horizon from "@lib/horizon";
+
 import { connectorsByName } from "@utils/web3React";
-import { ChainId, ChainName, ConnectorNames } from "@utils/constants";
+import { ChainName, ConnectorNames } from "@utils/constants";
 import { formatAddress } from "@utils/formatters";
 import { setupNetwork } from "@utils/wallet";
-import useRpcProvider from "./useRpcProvider";
 
 export default function useWallet() {
-  const setAppReady = useUpdateAtom(readyAtom);
-
   const { enqueueSnackbar } = useSnackbar();
-
-  const rpcProvider = useRpcProvider();
 
   const { account, activate, chainId, deactivate, library, active } =
     useWeb3React<providers.Web3Provider>();
@@ -78,28 +70,6 @@ export default function useWallet() {
     () => (account ? formatAddress(account) : ""),
     [account]
   );
-
-  useEffect(() => {
-    if (rpcProvider && !horizon.js) {
-      horizon.setContractSettings({
-        networkId: ChainId,
-        provider: rpcProvider,
-      });
-      setAppReady(true);
-    }
-  }, [rpcProvider, setAppReady]);
-
-  useEffect(() => {
-    if (library) {
-      const signer = library.getSigner();
-      horizon.setContractSettings({
-        networkId: chainId as NetworkId,
-        provider: library,
-        signer,
-      });
-      setAppReady(true);
-    }
-  }, [library, setAppReady, chainId]);
 
   return {
     account,

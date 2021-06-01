@@ -1,4 +1,4 @@
-import { useRequest } from "ahooks";
+import { useQuery, QueryFunction } from "react-query";
 import { useAtomValue, useUpdateAtom } from "jotai/utils";
 import { ethers, utils } from "ethers";
 import horizon from "@lib/horizon";
@@ -16,7 +16,13 @@ type FeePeriod = {
   rewardsToDistribute: ethers.BigNumber;
   rewardsClaimed: ethers.BigNumber;
 };
+
 type FeePeriodDuration = ethers.BigNumber;
+
+type Results = { [k in keyof FeePeriod]: number } & {
+  feePeriodDuration: number;
+  rewardsToDistributeBN: BN;
+};
 
 export default function useFetchFeePool() {
   const needRefresh = useAtomValue(needRefreshAtom);
@@ -24,8 +30,12 @@ export default function useFetchFeePool() {
   const setCurrentFeePeriod = useUpdateAtom(currentFeePeriodAtom);
   const setPreviousFeePeriod = useUpdateAtom(previoudFeePeriodAtom);
 
-  const fetchData = useCallback(async (period: Period) => {
-    console.log("load fee pool", period);
+  const fetchData = useCallback<
+    QueryFunction<Results, [string, Period, boolean]>
+  >(async ({ queryKey }) => {
+    const [key, period] = queryKey;
+    console.log("fetch", key, period);
+
     const {
       contracts: { FeePool },
     } = horizon.js!;
@@ -51,21 +61,15 @@ export default function useFetchFeePool() {
   }, []);
 
   // current period
-  useRequest(fetchData, {
-    defaultParams: ["0"],
-    ready: needRefresh && !!horizon.js,
-    refreshDeps: [needRefresh],
-    onSuccess(res, [period]) {
-      console.log(res);
+  useQuery(["feepool", "0", needRefresh], fetchData, {
+    onSuccess(res) {
       setCurrentFeePeriod(res);
     },
   });
 
   // previous period
-  useRequest(fetchData, {
-    defaultParams: ["1"],
-    ready: !!horizon.js,
-    onSuccess(res, [period]) {
+  useQuery(["feepool", "1", needRefresh], fetchData, {
+    onSuccess(res) {
       setPreviousFeePeriod(res);
     },
   });

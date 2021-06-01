@@ -114,6 +114,7 @@ export default function TokenInput({
     (e: SyntheticEvent) => {
       e.preventDefault();
       if (!!max && !amount.eq(max)) {
+        // TODO: still buggy for burn page.
         maxRef.current = true;
         onInput(max.toString(), true);
       }
@@ -157,11 +158,11 @@ export default function TokenInput({
           value={input}
           onValueChange={(values) => {
             // WARN: to avoid infinite loop
-            // console.log("onValueChange", input, values);
+            console.log("onValueChange", maxRef.current, label, input, values);
             if (input !== values.value) {
               onInput(values.value, maxRef.current);
-              maxRef.current = false;
             }
+            maxRef.current = false;
           }}
           prefix={inputPrefix}
           allowNegative={false}

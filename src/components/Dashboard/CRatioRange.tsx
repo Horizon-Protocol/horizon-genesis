@@ -152,7 +152,7 @@ export default function CRatioRange(props: BoxProps) {
         {formatNumber(currentCRatioPercent)}%
       </Typography>
       <Typography variant='subtitle2' classes={{ root: classes.tip }}>
-        Current C-Ratio &nbsp;
+        Current C-Ratio
         <HelpOutline fontSize='inherit' />
       </Typography>
       <Box className={classes.progressWrap}>

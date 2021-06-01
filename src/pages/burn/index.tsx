@@ -1,6 +1,6 @@
 import { useMemo, useCallback, useState, useEffect } from "react";
 import { useSetState } from "ahooks";
-import { useAtomValue, useUpdateAtom } from "jotai/utils";
+import { useAtomValue } from "jotai/utils";
 import { Box, Typography } from "@material-ui/core";
 import { ethers } from "ethers";
 import { useSnackbar } from "notistack";
@@ -67,6 +67,7 @@ export default function Earn() {
     fromMax: false,
     toInput: "",
     toMax: false,
+    error: "",
   });
 
   const [waitingPeriod, setWaitingPeriod] = useState<number>();
@@ -328,7 +329,7 @@ export default function Earn() {
         </Box>
       ) : null}
       <TokenPair
-        mt={3}
+        mt={2}
         fromToken={fromToken}
         toToken={toToken}
         arrowImg={arrowImg}

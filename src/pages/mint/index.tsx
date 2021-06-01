@@ -255,9 +255,8 @@ export default function Earn() {
         value={changedBalance.cRatio.to}
         onChange={handleSelectPresetCRatio}
       />
-      {state.error ? <span>{state.error}</span> : null}
       <TokenPair
-        mt={3}
+        mt={2}
         fromToken={fromToken}
         toToken={toToken}
         arrowImg={arrowImg}

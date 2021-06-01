@@ -35,7 +35,7 @@ const useStyles = makeStyles({
     height: "100%",
   },
   contentWrap: {
-    padding: "24px 64px",
+    padding: "24px 56px 32px",
   },
 });
 

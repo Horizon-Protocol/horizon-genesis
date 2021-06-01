@@ -3,7 +3,7 @@ import { Box, Link, InputBase, Typography } from "@material-ui/core";
 import { makeStyles } from "@material-ui/core/styles";
 import NumberFormat from "react-number-format";
 import { formatNumber, NumericValue } from "@utils/number";
-import { BORDER_COLOR } from "@utils/theme/constants";
+import { BORDER_COLOR, COLOR } from "@utils/theme/constants";
 import TokenLogo from "@components/TokenLogo";
 
 declare global {
@@ -58,7 +58,7 @@ const useStyles = makeStyles(({ palette }) => ({
   innerInput: {
     // fontFamily: "Rawline",
     color: ({ invalid = false }: { invalid: boolean }) =>
-      invalid ? "red" : "#B4E0FF",
+      invalid ? COLOR.danger : "#B4E0FF",
     fontFamily: "Rawline",
     fontSize: 24,
     fontWeight: 700,

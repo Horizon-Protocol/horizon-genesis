@@ -1,10 +1,11 @@
 import { useCallback, useMemo } from "react";
-import { Box, BoxProps } from "@material-ui/core";
+import { Box, BoxProps, Typography } from "@material-ui/core";
+import { withStyles } from "@material-ui/core/styles";
 import numbro from "numbro";
 import { toBigNumber } from "@utils/number";
+import { COLOR } from "@utils/theme/constants";
 import TokenInput from "./TokenInput";
 import InputGap from "./InputGap";
-import { toNumber } from "lodash";
 
 export type TokenProps = Omit<TokenInputProps, "input" | "onInput">;
 
@@ -57,6 +58,18 @@ const isExceedMax = (stringAmount: string, max?: BN) => {
   return false;
 };
 
+const InputError = withStyles({
+  root: {
+    minHeight: 24,
+    color: COLOR.danger,
+    fontSize: 10,
+    fontWeight: 500,
+    letterSpacing: "0.36px",
+    lineHeight: "14px",
+    textAlign: "center",
+  },
+})(Typography);
+
 export default function TokenPair({
   fromToken,
   toToken,
@@ -106,6 +119,7 @@ export default function TokenPair({
 
   return (
     <Box {...props}>
+      <InputError>{state.error}</InputError>
       <TokenInput
         {...fromToken}
         amount={fromAmount}

@@ -17,7 +17,7 @@ const useStyles = makeStyles(({ palette }) =>
       alignItems: "stretch",
       background: "#0A1624",
       overflow: "hidden",
-      opacity: ({ disabled }) => (disabled ? 0.5 : 1),
+      opacity: ({ disabled }) => (disabled ? 0.2 : 1),
       cursor: ({ disabled }) => (disabled ? "not-allowed" : "pointer"),
     },
     title: {

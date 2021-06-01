@@ -34,12 +34,14 @@ export default function useSetupHorizonLib() {
           provider: rpcProvider,
         });
       }
+      console.log("1111", queryClient.getDefaultOptions());
       queryClient.setDefaultOptions({
         queries: {
           ...REACT_QUERY_DEFAULT_OPTIONS,
           enabled: !!horizon.js,
         },
       });
+      console.log("2222", queryClient.getDefaultOptions());
       setAppReady(!!horizon.js);
     } catch (error) {
       enqueueSnackbar("Failed to initiate horizon.js sdk!", {

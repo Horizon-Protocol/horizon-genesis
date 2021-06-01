@@ -3,9 +3,9 @@ import { Avatar, Chip, ChipProps, CircularProgress } from "@material-ui/core";
 import { withStyles } from "@material-ui/core/styles";
 import { detailAtom } from "@atoms/wallet";
 import { ChainName } from "@utils/constants";
-import { useIsFetching, useQueryClient } from "react-query";
+import { useIsFetching } from "react-query";
 import { CONTRACT } from "@utils/queryKeys";
-import { useCallback } from "react";
+import useRefresh from "@hooks/useRefresh";
 
 const StyledChip = withStyles(({ palette }) => ({
   root: {
@@ -30,15 +30,10 @@ const StyledAvatar = withStyles(({ palette }) => ({
 
 export default function WalletIndicator(props: ChipProps) {
   const wallet = useAtomValue(detailAtom);
-  const queryClient = useQueryClient();
 
   const isFetching = useIsFetching([CONTRACT]);
 
-  const refresh = useCallback(() => {
-    queryClient.refetchQueries([CONTRACT], {
-      fetching: false,
-    });
-  }, [queryClient]);
+  const refresh = useRefresh();
 
   if (!wallet) {
     return null;

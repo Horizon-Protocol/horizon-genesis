@@ -1,16 +1,14 @@
 import { useCallback } from "react";
 import { QueryFunction, useQuery } from "react-query";
-import { useAtomValue, useResetAtom, useUpdateAtom } from "jotai/utils";
+import { useResetAtom, useUpdateAtom } from "jotai/utils";
 import horizon from "@lib/horizon";
 import { toBigNumber } from "@utils/number";
 import { CONTRACT, USER } from "@utils/queryKeys";
-import { needRefreshAtom } from "@atoms/app";
 import { debtAtom, resetDebtAtom } from "@atoms/debt";
 import useWallet from "./useWallet";
 import useDisconnected from "./useDisconnected";
 
 export default function useFetchDebtData() {
-  const needRefresh = useAtomValue(needRefreshAtom);
   const { account } = useWallet();
 
   const setDebtData = useUpdateAtom(debtAtom);
@@ -18,9 +16,7 @@ export default function useFetchDebtData() {
 
   useDisconnected(resetDebtData);
 
-  const fetcher = useCallback<
-    QueryFunction<BN[], [string, string, string, boolean]>
-  >(
+  const fetcher = useCallback<QueryFunction<BN[], string[]>>(
     async ({ queryKey }) => {
       console.log("fetch", ...queryKey);
       const {
@@ -44,7 +40,7 @@ export default function useFetchDebtData() {
     [account]
   );
 
-  useQuery([CONTRACT, USER, "debt", needRefresh], fetcher, {
+  useQuery([CONTRACT, USER, "debt"], fetcher, {
     enabled: !!account && !!horizon.js,
     onSuccess([
       collateral,

@@ -9,7 +9,7 @@ import { PAGE_COLOR } from "@utils/theme/constants";
 import { Token } from "@utils/constants";
 import { zAssets } from "@utils/zAssets";
 import { formatNumber, maxBN, minBN, toBigNumber, zeroBN } from "@utils/number";
-import { targetCRatioAtom, balanceChangedAtom } from "@atoms/app";
+import { targetCRatioAtom } from "@atoms/app";
 import { hznRateAtom } from "@atoms/exchangeRates";
 import {
   debtAtom,
@@ -18,6 +18,7 @@ import {
   burnAmountToFixCRatioAtom,
 } from "@atoms/debt";
 import useWallet from "@hooks/useWallet";
+import useRefresh from "@hooks/useRefresh";
 import useFetchBurnStatus from "@hooks/useFetchBurnStatus";
 import headerBg from "@assets/images/burn.svg";
 import arrowImg from "@assets/images/burn-arrow.svg";
@@ -70,6 +71,8 @@ export default function Earn() {
 
   const [waitingPeriod, setWaitingPeriod] = useState<number>();
   const [issuanceDelay, setIssuanceDelay] = useState<number>();
+
+  const refresh = useRefresh();
   const fetchBurnStatus = useFetchBurnStatus();
 
   useEffect(() => {
@@ -228,7 +231,6 @@ export default function Earn() {
     currentCRatio,
   ]);
 
-  const setBalanceChanged = useUpdateAtom(balanceChangedAtom);
   const [loading, setLoading] = useState<boolean>(false);
   const handleBurn = useCallback(async () => {
     try {
@@ -267,7 +269,7 @@ export default function Earn() {
         toInput: "",
         toMax: false,
       });
-      setBalanceChanged(true);
+      refresh();
     } catch (e) {
       console.log(e);
       console.log(e.error);
@@ -281,7 +283,7 @@ export default function Earn() {
     account,
     changedBalance.cRatio.to,
     enqueueSnackbar,
-    setBalanceChanged,
+    refresh,
     setState,
     state.fromInput,
     targetCRatio,

@@ -1,9 +1,7 @@
 import { useCallback } from "react";
 import { useQuery, QueryFunction } from "react-query";
-import { useAtomValue, useUpdateAtom } from "jotai/utils";
+import { useUpdateAtom } from "jotai/utils";
 import {
-  balanceChangedAtom,
-  needRefreshAtom,
   totalSupplyAtom,
   totalIssuedZUSDExclEthAtom,
   targetCRatioAtom,
@@ -16,39 +14,37 @@ import { toBigNumber } from "@utils/number";
 import { CONTRACT, PUBLIC } from "@utils/queryKeys";
 
 export default function useFetchAppData() {
-  const needRefresh = useAtomValue(needRefreshAtom);
-  const setBalanceChanged = useUpdateAtom(balanceChangedAtom);
-
   const setTotalSupply = useUpdateAtom(totalSupplyAtom);
   const setTotalIssuedZUSDExclEth = useUpdateAtom(totalIssuedZUSDExclEthAtom);
   const setTargetCRatio = useUpdateAtom(targetCRatioAtom);
   const setLiquidationRatio = useUpdateAtom(liquidationRatioAtom);
   // const setLiquidationDelay = useUpdateAtom(liquidationDelayAtom);
 
-  const fetcher = useCallback<
-    QueryFunction<BN[], [string, string, string, boolean]>
-  >(async ({ queryKey }) => {
-    console.log("fetch", ...queryKey);
-    const {
-      contracts: { SystemSettings, Synthetix, Liquidations },
-      utils,
-    } = horizon.js!;
-    const res = await Promise.all([
-      Synthetix.totalSupply(),
-      Synthetix.totalIssuedSynthsExcludeEtherCollateral(
-        utils.formatBytes32String("zUSD"),
-        {
-          blockTag: "latest",
-        }
-      ),
-      SystemSettings.issuanceRatio(),
-      Liquidations.liquidationRatio(),
-      // Liquidations.liquidationDelay(),
-    ]);
-    return res.map((item) => toBigNumber(utils.formatEther(item)));
-  }, []);
+  const fetcher = useCallback<QueryFunction<BN[], string[]>>(
+    async ({ queryKey }) => {
+      console.log("fetch", ...queryKey);
+      const {
+        contracts: { SystemSettings, Synthetix, Liquidations },
+        utils,
+      } = horizon.js!;
+      const res = await Promise.all([
+        Synthetix.totalSupply(),
+        Synthetix.totalIssuedSynthsExcludeEtherCollateral(
+          utils.formatBytes32String("zUSD"),
+          {
+            blockTag: "latest",
+          }
+        ),
+        SystemSettings.issuanceRatio(),
+        Liquidations.liquidationRatio(),
+        // Liquidations.liquidationDelay(),
+      ]);
+      return res.map((item) => toBigNumber(utils.formatEther(item)));
+    },
+    []
+  );
 
-  useQuery([CONTRACT, PUBLIC, "app", needRefresh], fetcher, {
+  useQuery([CONTRACT, PUBLIC, "app"], fetcher, {
     onSuccess([
       totalSupply,
       totalIssuedZUSDExclEth,
@@ -65,7 +61,6 @@ export default function useFetchAppData() {
       setTargetCRatio(targetCRatio);
       setLiquidationRatio(liquidationRatio);
       // setLiquidationDelay(liquidationDelay);
-      setBalanceChanged(false);
     },
   });
 

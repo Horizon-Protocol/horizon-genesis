@@ -1,17 +1,22 @@
+import { useEffect } from "react";
 import { BrowserRouter as Router, Switch, Route } from "react-router-dom";
+import { useAtomValue } from "jotai/utils";
 import { Box } from "@material-ui/core";
 import { makeStyles } from "@material-ui/core/styles";
+import { readyAtom } from "@atoms/app";
+import useSetupHorizonLib from "@hooks/useSetupHorizonLib";
+import useFetchAppData from "@hooks/useFetchAppData";
+import useFetchDebtData from "@hooks/useFetchDebtData";
+import useFetchZAssets from "@hooks/useFetchZAssets";
+import useFetchFeePool from "@hooks/useFetchFeePool";
+import useRefresh from "@hooks/useRefresh";
+import { CONTRACT, PUBLIC } from "@utils/queryKeys";
 import Mint from "@pages/mint";
 import Burn from "@pages/burn";
 import Claim from "@pages/claim";
 // import Earn from "@pages/earn";
 import Header from "@components/Header";
 import Dashboard from "@components/Dashboard";
-import useSetupHorizonLib from "@hooks/useSetupHorizonLib";
-import useFetchAppData from "@hooks/useFetchAppData";
-import useFetchDebtData from "@hooks/useFetchDebtData";
-import useFetchZAssets from "@hooks/useFetchZAssets";
-import useFetchFeePool from "@hooks/useFetchFeePool";
 
 const useStyles = makeStyles(() => ({
   dashboard: {
@@ -21,16 +26,28 @@ const useStyles = makeStyles(() => ({
   },
 }));
 
+const queryPublic = [CONTRACT, PUBLIC];
+
 function App() {
   const classes = useStyles();
 
   const dashboardVisible = true;
+
+  const appReady = useAtomValue(readyAtom);
 
   useSetupHorizonLib();
   useFetchAppData();
   useFetchDebtData();
   useFetchZAssets();
   useFetchFeePool();
+
+  const refreshPublic = useRefresh(queryPublic);
+
+  useEffect(() => {
+    if (appReady) {
+      refreshPublic();
+    }
+  }, [appReady, refreshPublic]);
 
   return (
     <Router>

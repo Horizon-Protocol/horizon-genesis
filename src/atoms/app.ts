@@ -5,14 +5,6 @@ import { zeroBN, toBigNumber, cRatioToPercent } from "@utils/number";
 // app state
 export const readyAtom = atom(false);
 
-export const balanceChangedAtom = atom(true);
-
-export const needRefreshAtom = atom((get) => {
-  const ready = get(readyAtom);
-  const balanceChanged = get(balanceChangedAtom);
-  return ready && balanceChanged;
-});
-
 // static variables from contract
 export const totalSupplyAtom = atomWithReset(zeroBN);
 export const totalIssuedZUSDExclEthAtom = atomWithReset(zeroBN); // total zUSD in pool

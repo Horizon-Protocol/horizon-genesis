@@ -2,8 +2,7 @@ import { useCallback, useMemo, useState } from "react";
 import { Box } from "@material-ui/core";
 import { ethers } from "ethers";
 import { useSnackbar } from "notistack";
-import { useAtomValue, useUpdateAtom } from "jotai/utils";
-import { balanceChangedAtom } from "@atoms/app";
+import { useAtomValue } from "jotai/utils";
 import { rewardsAtom, feePeriodDatesAtom } from "@atoms/feePool";
 import horizon from "@lib/horizon";
 import useWallet from "@hooks/useWallet";
@@ -16,12 +15,13 @@ import InfoList, { Info } from "@components/InfoList";
 import PrimaryButton from "@components/PrimaryButton";
 import useFetchRewards from "@hooks/useFetchRewards";
 import { formatNumber } from "@utils/number";
+import useRefresh from "@hooks/useRefresh";
 
 const THEME_COLOR = PAGE_COLOR.claim;
 
 export default function Earn() {
   const { connected } = useWallet();
-  const { refresh } = useFetchRewards();
+  const refetchRewards = useFetchRewards();
 
   const { enqueueSnackbar } = useSnackbar();
 
@@ -60,7 +60,7 @@ export default function Earn() {
     // },
   ];
 
-  const setBalanceChanged = useUpdateAtom(balanceChangedAtom);
+  const refresh = useRefresh();
   const [loading, setLoading] = useState(false);
   const handleClaim = useCallback(async () => {
     try {
@@ -70,8 +70,8 @@ export default function Earn() {
       setLoading(true);
       const tx: ethers.ContractTransaction = await FeePool.claimFees();
       await tx.wait(1);
+      refetchRewards();
       refresh();
-      setBalanceChanged(true);
     } catch (e) {
       console.log(e);
       console.log(e.error);
@@ -81,7 +81,7 @@ export default function Earn() {
       });
     }
     setLoading(false);
-  }, [enqueueSnackbar, refresh, setBalanceChanged]);
+  }, [enqueueSnackbar, refetchRewards, refresh]);
 
   return (
     <PageCard

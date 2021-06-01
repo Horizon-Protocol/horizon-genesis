@@ -1,6 +1,6 @@
 import { useMemo, useCallback, useState } from "react";
 import { useSetState } from "ahooks";
-import { useAtomValue, useUpdateAtom } from "jotai/utils";
+import { useAtomValue } from "jotai/utils";
 import { Box } from "@material-ui/core";
 import { ethers, utils } from "ethers";
 import { useSnackbar } from "notistack";
@@ -20,7 +20,7 @@ import {
   getTransferableAmountFromMint,
 } from "@utils/helper";
 import useWallet from "@hooks/useWallet";
-import { balanceChangedAtom, targetCRatioAtom } from "@atoms/app";
+import { targetCRatioAtom } from "@atoms/app";
 import { hznRateAtom } from "@atoms/exchangeRates";
 import { debtAtom, collateralDataAtom } from "@atoms/debt";
 import headerBg from "@assets/images/mint.svg";
@@ -37,6 +37,7 @@ import BalanceChange, {
   Props as BalanceChangeProps,
 } from "@components/BalanceChange";
 import PrimaryButton from "@components/PrimaryButton";
+import useRefresh from "@hooks/useRefresh";
 
 const THEME_COLOR = PAGE_COLOR.mint;
 
@@ -191,7 +192,7 @@ export default function Earn() {
     debtBalance,
   ]);
 
-  const setBalanceChanged = useUpdateAtom(balanceChangedAtom);
+  const refresh = useRefresh();
   const [loading, setLoading] = useState<boolean>(false);
   const handleMint = useCallback(async () => {
     try {
@@ -215,7 +216,7 @@ export default function Earn() {
         toInput: "",
         toMax: false,
       });
-      setBalanceChanged(true);
+      refresh();
     } catch (e) {
       console.log(e);
       console.log(e.error);
@@ -225,13 +226,7 @@ export default function Earn() {
       });
     }
     setLoading(false);
-  }, [
-    state.fromMax,
-    state.toInput,
-    setState,
-    setBalanceChanged,
-    enqueueSnackbar,
-  ]);
+  }, [state.fromMax, state.toInput, setState, refresh, enqueueSnackbar]);
 
   return (
     <PageCard

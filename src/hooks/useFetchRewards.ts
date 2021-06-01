@@ -27,7 +27,7 @@ export default function useFetchRewards() {
   useDisconnected(resetRewards);
 
   const fetcher = useCallback<
-    QueryFunction<Result, [string, string, string, string, boolean]>
+    QueryFunction<Result, [string, string, string, boolean]>
   >(
     async ({ queryKey }) => {
       console.log("fetch", ...queryKey);
@@ -50,16 +50,16 @@ export default function useFetchRewards() {
   );
 
   const { refetch } = useQuery(
-    [CONTRACT, USER, "rewards", account!, needRefresh],
+    [CONTRACT, USER, "rewards", needRefresh],
     fetcher,
     {
       enabled: !!account && !!horizon.js,
       onSuccess({ claimable, stakingReward, exchangeReward }) {
-        console.log({
-          claimable,
-          stakingReward,
-          exchangeReward,
-        });
+        // console.log({
+        //   claimable,
+        //   stakingReward,
+        //   exchangeReward,
+        // });
         setRewards({
           claimable,
           stakingReward,

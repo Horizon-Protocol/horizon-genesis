@@ -56,16 +56,16 @@ export default function useFetchDebtData() {
       escrowedReward,
       liquidationDeadline,
     ]) {
-      console.log({
-        currentCRatio,
-        transferable,
-        debtBalance,
-        collateral,
-        issuableSynths,
-        balance,
-        escrowedReward,
-        liquidationDeadline: liquidationDeadline.toString(),
-      });
+      // console.log({
+      //   currentCRatio,
+      //   transferable,
+      //   debtBalance,
+      //   collateral,
+      //   issuableSynths,
+      //   balance,
+      //   escrowedReward,
+      //   liquidationDeadline: liquidationDeadline.toString(),
+      // });
       setDebtData({
         currentCRatio,
         transferable,

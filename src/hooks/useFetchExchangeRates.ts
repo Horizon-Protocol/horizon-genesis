@@ -51,13 +51,12 @@ export default function useFetchExchangeRates() {
       }
     });
 
-    console.log(exchangeRates);
-
     return exchangeRates;
   }, []);
 
   useQuery([CONTRACT, PUBLIC, "exchangeRates", needRefresh], fetcher, {
     onSuccess(rates) {
+      // console.log(rates);
       setRates(rates);
     },
   });

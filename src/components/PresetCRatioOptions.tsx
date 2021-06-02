@@ -1,8 +1,8 @@
-import { useMemo } from "react";
+import { useCallback, useMemo } from "react";
 import { Box, BoxProps, Typography } from "@material-ui/core";
 import { HelpOutline } from "@material-ui/icons";
 import { useAtomValue } from "jotai/utils";
-import { presetCRatioPercentsAtom } from "@atoms/app";
+import { presetCRatioPercentsAtom, targetCRatioAtom } from "@atoms/app";
 import { cRatioToPercent } from "@utils/number";
 import PresetCRatioOption from "./CRatioOption";
 import { debtAtom } from "@atoms/debt";
@@ -23,12 +23,35 @@ export default function PresetCRatioOptions({
   ...props
 }: Props) {
   const { account } = useWallet();
+  const targetCRatio = useAtomValue(targetCRatioAtom);
   const { currentCRatio } = useAtomValue(debtAtom);
   const presetCRatioPercents = useAtomValue(presetCRatioPercentsAtom);
 
   const changedCratioPercent = useMemo<number>(
     () => cRatioToPercent(value),
     [value]
+  );
+
+  type OptionItem = typeof presetCRatioPercents[number];
+  const checkDisabled = useCallback(
+    (option: OptionItem) => {
+      if (isBurn && currentCRatio.lt(option.cRatio)) {
+        return true;
+      }
+      return value.eq(option.cRatio);
+    },
+    [currentCRatio, isBurn, value]
+  );
+
+  const checkActive = useCallback(
+    (option: OptionItem) => {
+      return (
+        !currentCRatio.eq(targetCRatio) &&
+        changedCratioPercent > 0 &&
+        option.cRatio.toFixed(6) === value.toFixed(6)
+      );
+    },
+    [changedCratioPercent, currentCRatio, targetCRatio, value]
   );
 
   if (!account) {
@@ -46,11 +69,8 @@ export default function PresetCRatioOptions({
           <PresetCRatioOption
             key={option.title}
             color={color}
-            disabled={isBurn && currentCRatio.lte(option.cRatio)}
-            active={
-              changedCratioPercent > 0 &&
-              option.cRatio.toFixed(6) === value.toFixed(6)
-            }
+            disabled={checkDisabled(option)}
+            active={checkActive(option)}
             onClick={() => onChange(option.cRatio)}
             {...option}
           />

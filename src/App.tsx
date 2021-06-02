@@ -11,7 +11,7 @@ import useFetchDebtData from "@hooks/useFetchDebtData";
 import useFetchZAssets from "@hooks/useFetchZAssets";
 import useFetchFeePool from "@hooks/useFetchFeePool";
 import useRefresh from "@hooks/useRefresh";
-import { filterPublic } from "@utils/queryKeys";
+import { CONTRACT, filterPublic } from "@utils/queryKeys";
 import Mint from "@pages/mint";
 import Burn from "@pages/burn";
 import Claim from "@pages/claim";
@@ -42,16 +42,16 @@ function App() {
   useFetchZAssets();
   useFetchFeePool();
 
-  const refreshAll = useRefresh();
-  const refreshPublic = useRefresh(filterPublic);
+  const refresh = useRefresh();
 
   useEffect(() => {
     if (account) {
-      refreshAll();
+      console.log("refresh All", account);
+      refresh([CONTRACT, account]);
     } else if (appReady) {
-      refreshPublic();
+      refresh(filterPublic);
     }
-  }, [account, appReady, refreshAll, refreshPublic]);
+  }, [account, appReady, refresh]);
 
   return (
     <Router>

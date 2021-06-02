@@ -36,7 +36,7 @@ export default function useFetchDebtData() {
     return res.map((item) => toBigNumber(utils.formatEther(item)));
   }, [account]);
 
-  useQuery([CONTRACT, USER, "debt"], fetcher, {
+  useQuery([CONTRACT, account, "debt"], fetcher, {
     enabled: !!account && !!horizon.js,
     onSuccess([
       collateral,

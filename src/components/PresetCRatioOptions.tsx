@@ -46,7 +46,7 @@ export default function PresetCRatioOptions({
           <PresetCRatioOption
             key={option.title}
             color={color}
-            disabled={isBurn && currentCRatio.lt(option.cRatio)}
+            disabled={isBurn && currentCRatio.lte(option.cRatio)}
             active={
               changedCratioPercent > 0 &&
               option.cRatio.toFixed(6) === value.toFixed(6)

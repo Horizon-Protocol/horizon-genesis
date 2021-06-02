@@ -41,7 +41,7 @@ export default function useFetchRewards() {
     };
   }, [account]);
 
-  const { refetch } = useQuery([CONTRACT, USER, "rewards"], fetcher, {
+  const { refetch } = useQuery([CONTRACT, account, "rewards"], fetcher, {
     enabled: !!account && !!horizon.js,
     onSuccess({ claimable, stakingReward, exchangeReward }) {
       // console.log({

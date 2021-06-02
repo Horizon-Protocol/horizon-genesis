@@ -6,22 +6,25 @@ import { CONTRACT } from "@utils/queryKeys";
 const ContractFilter = [CONTRACT];
 
 export default function useRefresh(
-  queryKey: QueryKey = ContractFilter,
+  defaultQueryKey: QueryKey = ContractFilter,
   filters?: QueryFilters,
   options?: RefetchOptions
 ) {
   const queryClient = useQueryClient();
 
-  const refresh = useCallback(() => {
-    queryClient.refetchQueries(
-      queryKey,
-      {
-        fetching: false,
-        ...filters,
-      },
-      options
-    );
-  }, [filters, options, queryClient, queryKey]);
+  const refresh = useCallback(
+    (queryKey?: QueryKey) => {
+      queryClient.refetchQueries(
+        queryKey || defaultQueryKey,
+        {
+          fetching: false,
+          ...filters,
+        },
+        options
+      );
+    },
+    [defaultQueryKey, filters, options, queryClient]
+  );
 
   return refresh;
 }

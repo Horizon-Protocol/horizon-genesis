@@ -70,7 +70,7 @@ export default function useFetchZAssets() {
     };
   }, [account]);
 
-  useQuery([CONTRACT, USER, "zAssets"], fetcher, {
+  useQuery([CONTRACT, account, "zAssets"], fetcher, {
     enabled: !!account && !!horizon.js,
     onSuccess({ balancesMap, totalUSDBalance }) {
       setBalances(balancesMap);

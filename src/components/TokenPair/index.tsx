@@ -29,7 +29,6 @@ export function useInputState() {
 
   useEffect(() => {
     if (!connected) {
-      console.log("reset input ");
       setState(() => ({
         fromInput: "",
         toInput: "",
@@ -37,7 +36,7 @@ export function useInputState() {
         error: "",
       }));
     }
-  }, [connected]);
+  }, [connected, setState]);
 
   return { state, setState };
 }

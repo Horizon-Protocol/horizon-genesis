@@ -7,6 +7,7 @@ import { debtAtom, collateralDataAtom, zUSDBalanceAtom } from "@atoms/debt";
 import { hznRateAtom } from "@atoms/exchangeRates";
 import { formatNumber } from "@utils/number";
 import { BORDER_COLOR, COLOR } from "@utils/theme/constants";
+import Alert from "./Alert";
 import CRatioRange from "./CRatioRange";
 import StakingApy from "./StakingApy";
 import Balance from "./Balance";
@@ -16,7 +17,6 @@ import useUserStakingData from "@hooks/useUserStakingData";
 const useStyles = makeStyles(({ palette }) => ({
   container: {
     width: "100%",
-    maxWidth: 320,
     background: "#0C111D",
   },
   stats: {
@@ -90,28 +90,31 @@ export default function Dashboard({ className, ...props }: BoxProps) {
   );
 
   return (
-    <Box
-      border={1}
-      borderRadius={10}
-      borderColor={BORDER_COLOR}
-      className={clsx(classes.container, className)}
-      {...props}
-    >
-      <CRatioRange px={2} />
+    <>
+      <Alert px={2} py={1} mb={2} />
       <Box
-        mt={4}
-        p={2}
-        pt={0}
-        pb={3}
-        textAlign='center'
-        className={classes.stats}
+        border={1}
+        borderRadius={10}
+        borderColor={BORDER_COLOR}
+        className={clsx(classes.container, className)}
+        {...props}
       >
-        <StakingApy percent={stakingAPR * 100} className={classes.apy} />
-        <Box p={1} className={classes.balance}>
-          <Balance data={balances} />
+        <CRatioRange px={2} />
+        <Box
+          mt={4}
+          p={2}
+          pt={0}
+          pb={3}
+          textAlign='center'
+          className={classes.stats}
+        >
+          <StakingApy percent={stakingAPR * 100} className={classes.apy} />
+          <Box p={1} className={classes.balance}>
+            <Balance data={balances} />
+          </Box>
         </Box>
+        <ClaimCountDown p={2} />
       </Box>
-      <ClaimCountDown p={2} />
-    </Box>
+    </>
   );
 }

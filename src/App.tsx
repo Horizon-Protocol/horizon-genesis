@@ -21,6 +21,8 @@ import Dashboard from "@components/Dashboard";
 
 const useStyles = makeStyles(() => ({
   dashboard: {
+    width: "100%",
+    maxWidth: 320,
     position: "fixed",
     top: 100,
     right: 24,
@@ -57,11 +59,9 @@ function App() {
     <Router>
       <Header />
       {/* TODO: use floating button to expand and collapse for mobile */}
-      <Dashboard
-        hidden={!dashboardVisible}
-        className={classes.dashboard}
-        zIndex={1}
-      />
+      <Box hidden={!dashboardVisible} className={classes.dashboard} zIndex={1}>
+        <Dashboard />
+      </Box>
 
       <Box my={3}>
         <Switch>

@@ -46,7 +46,7 @@ export default function Earn() {
 
   const targetCRatio = useAtomValue(targetCRatioAtom);
   const hznRate = useAtomValue(hznRateAtom);
-  const { collateral, currentCRatio, balance, transferable, debtBalance } =
+  const { currentCRatio, balance, transferable, debtBalance } =
     useAtomValue(debtAtom);
   const { stakedCollateral, unstakedCollateral } =
     useAtomValue(collateralDataAtom);
@@ -146,7 +146,6 @@ export default function Earn() {
     //   //   stakedCollateral: stakedCollateral.toNumber(),
     //   //   transferable: transferable.toNumber(),
     //   hznRate: hznRate.toString(),
-    //   collateral: collateral.toString(),
     //   changedStaked: changedStaked.toString(),
     //   targetCRatio: targetCRatio.toString(),
     //   currentCRatio: currentCRatio.toString(),
@@ -181,7 +180,6 @@ export default function Earn() {
     balance,
     currentCRatio,
     unstakedCollateral,
-    collateral,
     debtBalance,
   ]);
 

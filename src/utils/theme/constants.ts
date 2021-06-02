@@ -8,6 +8,7 @@ export const COLOR = {
   danger: "#ff3366",
   warning: "#FFA539",
   safe: "#2AD4B7",
+  tip: "#62B5DB",
 };
 
 export const PAGE_COLOR = {

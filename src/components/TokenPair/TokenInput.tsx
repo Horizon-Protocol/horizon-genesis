@@ -115,7 +115,6 @@ export default function TokenInput({
         if (maxRef.current) {
           maxRef.current = false;
         }
-        console.log("maxRef.current", maxRef.current);
       }
     },
     [amount, max, onInput]

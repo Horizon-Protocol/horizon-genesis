@@ -159,5 +159,5 @@ export const DEPRECATED_TOKENS = [
 // react query default options
 export const REACT_QUERY_DEFAULT_OPTIONS: Partial<DefaultOptions["queries"]> = {
   staleTime: Infinity,
-  refetchInterval: false, //15000, // 15s,
+  refetchInterval: 15000, // 15s,
 };

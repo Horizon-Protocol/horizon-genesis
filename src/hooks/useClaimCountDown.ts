@@ -13,7 +13,7 @@ export default function useDateCountDown(targetDate?: Date) {
   );
 
   const {
-    value: { d, h, m, s },
+    value: { d, h, m, s, state },
   } = useTimer({
     initialTime: milliSeconds,
     direction: "backward",
@@ -43,6 +43,7 @@ export default function useDateCountDown(targetDate?: Date) {
   }, [targetDate, d, h, m, s]);
 
   return {
+    state,
     formatted,
   };
 }

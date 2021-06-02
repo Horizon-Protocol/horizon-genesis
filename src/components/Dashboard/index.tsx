@@ -5,14 +5,14 @@ import { makeStyles } from "@material-ui/core/styles";
 import clsx from "clsx";
 import { debtAtom, collateralDataAtom, zUSDBalanceAtom } from "@atoms/debt";
 import { hznRateAtom } from "@atoms/exchangeRates";
+import useUserStakingData from "@hooks/useUserStakingData";
 import { formatNumber } from "@utils/number";
 import { BORDER_COLOR, COLOR } from "@utils/theme/constants";
-import Alert from "./Alert";
+import Alert from "@components/Alerts";
 import CRatioRange from "./CRatioRange";
 import StakingApy from "./StakingApy";
 import Balance from "./Balance";
 import ClaimCountDown from "./ClaimCountDown";
-import useUserStakingData from "@hooks/useUserStakingData";
 
 const useStyles = makeStyles(({ palette }) => ({
   container: {

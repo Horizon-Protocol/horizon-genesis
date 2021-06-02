@@ -18,7 +18,6 @@ export default function useFetchBurnStatus() {
           account,
           formatBytes32String("sUSD")
         );
-      console.log("maxSecsLeftInWaitingPeriod", maxSecsLeftInWaitingPeriod);
       return Number(maxSecsLeftInWaitingPeriod);
     } catch (e) {
       console.log(e);

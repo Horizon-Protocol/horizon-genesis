@@ -26,7 +26,6 @@ export default function useFetchExchangeRates() {
 
   const fetcher = useCallback<QueryFunction<Rates, string[]>>(
     async ({ queryKey }) => {
-      console.log("fetch", ...queryKey);
       const exchangeRates: Rates = {};
       const {
         contracts: { SynthUtil, ExchangeRates },

@@ -4,13 +4,14 @@ import { useAtomValue } from "jotai/utils";
 import { Box } from "@material-ui/core";
 import { makeStyles } from "@material-ui/core/styles";
 import { readyAtom } from "@atoms/app";
+import useWallet from "@hooks/useWallet";
 import useSetupHorizonLib from "@hooks/useSetupHorizonLib";
 import useFetchAppData from "@hooks/useFetchAppData";
 import useFetchDebtData from "@hooks/useFetchDebtData";
 import useFetchZAssets from "@hooks/useFetchZAssets";
 import useFetchFeePool from "@hooks/useFetchFeePool";
 import useRefresh from "@hooks/useRefresh";
-import { CONTRACT, PUBLIC } from "@utils/queryKeys";
+import { filterPublic } from "@utils/queryKeys";
 import Mint from "@pages/mint";
 import Burn from "@pages/burn";
 import Claim from "@pages/claim";
@@ -26,10 +27,10 @@ const useStyles = makeStyles(() => ({
   },
 }));
 
-const queryPublic = [CONTRACT, PUBLIC];
-
 function App() {
   const classes = useStyles();
+
+  const { account } = useWallet();
 
   const dashboardVisible = true;
 
@@ -41,13 +42,16 @@ function App() {
   useFetchZAssets();
   useFetchFeePool();
 
-  const refreshPublic = useRefresh(queryPublic);
+  const refreshAll = useRefresh();
+  const refreshPublic = useRefresh(filterPublic);
 
   useEffect(() => {
-    if (appReady) {
+    if (account) {
+      refreshAll();
+    } else if (appReady) {
       refreshPublic();
     }
-  }, [appReady, refreshPublic]);
+  }, [account, appReady, refreshAll, refreshPublic]);
 
   return (
     <Router>

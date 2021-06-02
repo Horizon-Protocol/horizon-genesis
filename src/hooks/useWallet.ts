@@ -70,9 +70,10 @@ export default function useWallet() {
     () => (account ? formatAddress(account) : ""),
     [account]
   );
+  const address = useMemo(() => account || "", [account]);
 
   return {
-    account,
+    account: address,
     activate,
     chainId,
     deactivate,

@@ -1,6 +1,7 @@
 import { useCallback, useMemo } from "react";
 import { Box, BoxProps, Typography } from "@material-ui/core";
 import { withStyles } from "@material-ui/core/styles";
+import { useSetState } from "ahooks";
 import numbro from "numbro";
 import { toBigNumber } from "@utils/number";
 import { COLOR } from "@utils/theme/constants";
@@ -14,6 +15,17 @@ export interface InputState {
   toInput: string;
   isMax: boolean;
   error: string;
+}
+
+export function useInputState() {
+  const [state, setState] = useSetState<InputState>({
+    fromInput: "",
+    toInput: "",
+    isMax: false,
+    error: "",
+  });
+
+  return { state, setState };
 }
 
 export interface TokenPairProps {
@@ -37,7 +49,7 @@ export interface TokenPairProps {
  */
 export const formatInputValue = (inputValue: string): string => {
   if (toBigNumber(inputValue).lt(0)) {
-    console.log("no enough", inputValue);
+    console.log("not enough", inputValue);
     return "0";
   }
   return (
@@ -118,8 +130,6 @@ export default function TokenPair({
   const handleUserInput = useCallback(() => {
     setState({ isMax: false });
   }, [setState]);
-
-  console.log("state", state);
 
   return (
     <Box {...props}>

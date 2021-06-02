@@ -31,8 +31,6 @@ export default function useFetchFeePool() {
   const fetchData = useCallback<
     QueryFunction<Results, [string, string, string, Period]>
   >(async ({ queryKey }) => {
-    console.log("fetch", ...queryKey);
-
     const [, , , period] = queryKey;
 
     const {

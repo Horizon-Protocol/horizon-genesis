@@ -24,26 +24,22 @@ export default function useFetchRewards() {
 
   useDisconnected(resetRewards);
 
-  const fetcher = useCallback<QueryFunction<Result, string[]>>(
-    async ({ queryKey }) => {
-      console.log("fetch", ...queryKey);
-      const {
-        contracts: { FeePool },
-        utils,
-      } = horizon.js!;
+  const fetcher = useCallback<QueryFunction<Result, string[]>>(async () => {
+    const {
+      contracts: { FeePool },
+      utils,
+    } = horizon.js!;
 
-      const [claimable, availableFees] = (await Promise.all([
-        FeePool.isFeesClaimable(account),
-        FeePool.feesAvailable(account),
-      ])) as [boolean, [ethers.BigNumber, ethers.BigNumber]];
-      return {
-        claimable,
-        exchangeReward: toBigNumber(utils.formatEther(availableFees[0])),
-        stakingReward: toBigNumber(utils.formatEther(availableFees[1])),
-      };
-    },
-    [account]
-  );
+    const [claimable, availableFees] = (await Promise.all([
+      FeePool.isFeesClaimable(account),
+      FeePool.feesAvailable(account),
+    ])) as [boolean, [ethers.BigNumber, ethers.BigNumber]];
+    return {
+      claimable,
+      exchangeReward: toBigNumber(utils.formatEther(availableFees[0])),
+      stakingReward: toBigNumber(utils.formatEther(availableFees[1])),
+    };
+  }, [account]);
 
   const { refetch } = useQuery([CONTRACT, USER, "rewards"], fetcher, {
     enabled: !!account && !!horizon.js,

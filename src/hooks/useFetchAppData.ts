@@ -22,7 +22,6 @@ export default function useFetchAppData() {
 
   const fetcher = useCallback<QueryFunction<BN[], string[]>>(
     async ({ queryKey }) => {
-      console.log("fetch", ...queryKey);
       const {
         contracts: { SystemSettings, Synthetix, Liquidations },
         utils,

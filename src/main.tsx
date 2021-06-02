@@ -2,6 +2,7 @@ import { StrictMode } from "react";
 import ReactDOM from "react-dom";
 import { Provider as JotaiProvider } from "jotai";
 import { QueryClient, QueryClientProvider } from "react-query";
+import { ReactQueryDevtools } from "react-query/devtools";
 import { ThemeProvider } from "@material-ui/styles";
 import { SnackbarProvider } from "notistack";
 import "@fontsource/raleway";
@@ -42,6 +43,8 @@ ReactDOM.render(
             </SnackbarProvider>
           </ThemeProvider>
         </Web3ReactProvider>
+        {/* The rest of your application */}
+        <ReactQueryDevtools initialIsOpen={true} />
       </QueryClientProvider>
     </JotaiProvider>
   </StrictMode>,

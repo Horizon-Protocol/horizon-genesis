@@ -1,5 +1,4 @@
 import { useMemo, useCallback, useState, useEffect } from "react";
-import { useSetState } from "ahooks";
 import { useAtomValue } from "jotai/utils";
 import { Box, Typography } from "@material-ui/core";
 import { ethers } from "ethers";
@@ -26,8 +25,8 @@ import arrowRightImg from "@assets/images/burn-arrow-right.svg";
 import PageCard from "@components/PageCard";
 import PresetCRatioOptions from "@components/PresetCRatioOptions";
 import TokenPair, {
+  useInputState,
   formatInputValue,
-  InputState,
   TokenProps,
 } from "@components/TokenPair";
 import BalanceChange, {
@@ -62,12 +61,7 @@ export default function Earn() {
     [collateral, hznRate]
   );
 
-  const [state, setState] = useSetState<InputState>({
-    fromInput: "",
-    toInput: "",
-    isMax: false,
-    error: "",
-  });
+  const { state, setState } = useInputState();
 
   const [waitingPeriod, setWaitingPeriod] = useState<number>();
   const [issuanceDelay, setIssuanceDelay] = useState<number>();

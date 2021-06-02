@@ -34,47 +34,41 @@ export default function useFetchZAssets() {
       },
       string[]
     >
-  >(
-    async ({ queryKey }) => {
-      console.log("fetch", ...queryKey);
-      const {
-        contracts: { SynthUtil },
-      } = horizon.js!;
-      const balancesMap: SynthBalancesMap = {};
-      const [currencyKeys, synthsBalances, synthsUSDBalances] =
-        (await SynthUtil!.synthsBalances(account)) as SynthBalancesTuple;
+  >(async () => {
+    const {
+      contracts: { SynthUtil },
+    } = horizon.js!;
+    const balancesMap: SynthBalancesMap = {};
+    const [currencyKeys, synthsBalances, synthsUSDBalances] =
+      (await SynthUtil!.synthsBalances(account)) as SynthBalancesTuple;
 
-      let totalUSDBalance = toBigNumber(0);
+    let totalUSDBalance = toBigNumber(0);
 
-      currencyKeys.forEach((currencyKey: string, idx: number) => {
-        const balance = toBigNumber(utils.formatEther(synthsBalances[idx]));
+    currencyKeys.forEach((currencyKey: string, idx: number) => {
+      const balance = toBigNumber(utils.formatEther(synthsBalances[idx]));
 
-        // discard empty balances
-        if (balance.gt(0)) {
-          const synthName = utils.parseBytes32String(
-            currencyKey
-          ) as CurrencyKey;
-          const usdBalance = toBigNumber(
-            utils.formatEther(synthsUSDBalances[idx])
-          );
+      // discard empty balances
+      if (balance.gt(0)) {
+        const synthName = utils.parseBytes32String(currencyKey) as CurrencyKey;
+        const usdBalance = toBigNumber(
+          utils.formatEther(synthsUSDBalances[idx])
+        );
 
-          balancesMap[synthName] = {
-            currencyKey: synthName,
-            balance,
-            usdBalance,
-          };
+        balancesMap[synthName] = {
+          currencyKey: synthName,
+          balance,
+          usdBalance,
+        };
 
-          totalUSDBalance = totalUSDBalance.plus(usdBalance);
-        }
-      });
+        totalUSDBalance = totalUSDBalance.plus(usdBalance);
+      }
+    });
 
-      return {
-        totalUSDBalance,
-        balancesMap,
-      };
-    },
-    [account]
-  );
+    return {
+      totalUSDBalance,
+      balancesMap,
+    };
+  }, [account]);
 
   useQuery([CONTRACT, USER, "zAssets"], fetcher, {
     enabled: !!account && !!horizon.js,

@@ -16,29 +16,25 @@ export default function useFetchDebtData() {
 
   useDisconnected(resetDebtData);
 
-  const fetcher = useCallback<QueryFunction<BN[], string[]>>(
-    async ({ queryKey }) => {
-      console.log("fetch", ...queryKey);
-      const {
-        contracts: { Synthetix, RewardEscrow, Liquidations },
-        utils,
-      } = horizon.js!;
+  const fetcher = useCallback<QueryFunction<BN[], string[]>>(async () => {
+    const {
+      contracts: { Synthetix, RewardEscrow, Liquidations },
+      utils,
+    } = horizon.js!;
 
-      const zUSDBytes = utils.formatBytes32String("zUSD");
-      const res = await Promise.all([
-        Synthetix.collateral(account),
-        Synthetix.collateralisationRatio(account),
-        Synthetix.transferableSynthetix(account),
-        Synthetix.debtBalanceOf(account, zUSDBytes),
-        Synthetix.maxIssuableSynths(account),
-        Synthetix.balanceOf(account),
-        RewardEscrow.balanceOf(account),
-        Liquidations.getLiquidationDeadlineForAccount(account),
-      ]);
-      return res.map((item) => toBigNumber(utils.formatEther(item)));
-    },
-    [account]
-  );
+    const zUSDBytes = utils.formatBytes32String("zUSD");
+    const res = await Promise.all([
+      Synthetix.collateral(account),
+      Synthetix.collateralisationRatio(account),
+      Synthetix.transferableSynthetix(account),
+      Synthetix.debtBalanceOf(account, zUSDBytes),
+      Synthetix.maxIssuableSynths(account),
+      Synthetix.balanceOf(account),
+      RewardEscrow.balanceOf(account),
+      Liquidations.getLiquidationDeadlineForAccount(account),
+    ]);
+    return res.map((item) => toBigNumber(utils.formatEther(item)));
+  }, [account]);
 
   useQuery([CONTRACT, USER, "debt"], fetcher, {
     enabled: !!account && !!horizon.js,
@@ -50,7 +46,7 @@ export default function useFetchDebtData() {
       issuableSynths,
       balance,
       escrowedReward,
-      liquidationDeadline,
+      // liquidationDeadline,
     ]) {
       // console.log({
       //   currentCRatio,

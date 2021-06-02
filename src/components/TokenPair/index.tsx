@@ -1,4 +1,4 @@
-import { useCallback, useMemo } from "react";
+import { useCallback, useEffect, useMemo } from "react";
 import { Box, BoxProps, Typography } from "@material-ui/core";
 import { withStyles } from "@material-ui/core/styles";
 import { useSetState } from "ahooks";
@@ -7,6 +7,7 @@ import { toBigNumber } from "@utils/number";
 import { COLOR } from "@utils/theme/constants";
 import TokenInput from "./TokenInput";
 import InputGap from "./InputGap";
+import useWallet from "@hooks/useWallet";
 
 export type TokenProps = Omit<TokenInputProps, "input" | "onInput">;
 
@@ -18,12 +19,25 @@ export interface InputState {
 }
 
 export function useInputState() {
+  const { connected } = useWallet();
   const [state, setState] = useSetState<InputState>({
     fromInput: "",
     toInput: "",
     isMax: false,
     error: "",
   });
+
+  useEffect(() => {
+    if (!connected) {
+      console.log("reset input ");
+      setState(() => ({
+        fromInput: "",
+        toInput: "",
+        isMax: false,
+        error: "",
+      }));
+    }
+  }, [connected]);
 
   return { state, setState };
 }
@@ -94,12 +108,12 @@ export default function TokenPair({
       const { toPairInput, max } = fromToken;
       const stringAmount = (isMax ? max?.toString() : input) || "";
       console.log("setFromInput", isMax, input, stringAmount);
-      setState({
+      setState(() => ({
         fromInput: stringAmount && formatInputValue(stringAmount),
         toInput: stringAmount && formatInputValue(toPairInput(stringAmount)),
         isMax,
         error: isExceedMax(stringAmount, max) ? "Insufficient balance" : "",
-      });
+      }));
     },
     [fromToken, setState]
   );

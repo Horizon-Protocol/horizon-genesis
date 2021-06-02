@@ -108,11 +108,11 @@ export default function Earn() {
           .toString();
       }
 
-      setState({
+      setState(() => ({
         fromInput: formatInputValue(inputHZN.toString()),
         toInput: formatInputValue(toPairInput(inputHZN)),
         isMax,
-      });
+      }));
     },
     [balance, targetCRatio, stakedCollateral, fromToken, setState]
   );
@@ -203,11 +203,11 @@ export default function Earn() {
       }
       const res = await tx.wait(1);
       console.log("res", res);
-      setState({
+      setState(() => ({
         fromInput: "",
         toInput: "",
         isMax: false,
-      });
+      }));
       refresh();
     } catch (e) {
       console.log(e);

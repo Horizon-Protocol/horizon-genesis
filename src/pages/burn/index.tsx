@@ -138,11 +138,11 @@ export default function Earn() {
           zeroBN
         ).toString() || "0";
       const { toPairInput } = fromToken;
-      setState({
+      setState(() => ({
         fromInput: formatInputValue(fromInput),
         toInput: formatInputValue(toPairInput(fromInput)),
         isMax: false,
-      });
+      }));
     },
     [debtBalance, collateralUSD, fromToken, setState]
   );
@@ -256,11 +256,11 @@ export default function Earn() {
       }
       const res = await tx.wait(1);
       console.log("res", res);
-      setState({
+      setState(() => ({
         fromInput: "",
         toInput: "",
         isMax: false,
-      });
+      }));
       refresh();
     } catch (e) {
       console.log(e);

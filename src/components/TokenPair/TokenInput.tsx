@@ -21,6 +21,7 @@ declare global {
     input: string;
     inputPrefix?: string;
     onInput(v: string, max?: boolean): void;
+    onUserInput?(): void;
     amount: BN; // BN format of input
     invalid?: boolean;
     toPairInput(stakeAmount: NumericValue): string; // convert between from and to token amount
@@ -87,6 +88,7 @@ export default function TokenInput({
   label,
   input,
   onInput,
+  onUserInput,
   amount,
   balanceLabel,
   maxButtonLabel,
@@ -102,24 +104,29 @@ export default function TokenInput({
     invalid,
   });
 
-  if (label === "MINT") {
-    console.log(label, amount?.toString(), max?.toString(), amount?.gt(max!));
-  }
-
-  // console.log("input", label, input);
-
   const maxRef = useRef<boolean>();
 
   const handleClickMax = useCallback(
     (e: SyntheticEvent) => {
       e.preventDefault();
       if (!!max && !amount.eq(max)) {
-        // TODO: still buggy for burn page.
-        maxRef.current = true;
         onInput(max.toString(), true);
+        // when click 2+ times max.
+        if (maxRef.current) {
+          maxRef.current = false;
+        }
+        console.log("maxRef.current", maxRef.current);
       }
     },
     [amount, max, onInput]
+  );
+
+  const handleUserInput = useCallback(
+    (e: SyntheticEvent) => {
+      maxRef.current = false;
+      onUserInput?.();
+    },
+    [onUserInput]
   );
 
   return (
@@ -158,12 +165,19 @@ export default function TokenInput({
           value={input}
           onValueChange={(values) => {
             // WARN: to avoid infinite loop
-            console.log("onValueChange", maxRef.current, label, input, values);
+            console.log("onValueChange", {
+              maxRef: maxRef.current,
+              label,
+              input,
+              values,
+            });
             if (input !== values.value) {
               onInput(values.value, maxRef.current);
             }
             maxRef.current = false;
           }}
+          // onChange fires after onValue change if user input
+          onChange={handleUserInput}
           prefix={inputPrefix}
           allowNegative={false}
           thousandSeparator

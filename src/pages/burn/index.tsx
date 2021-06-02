@@ -64,9 +64,8 @@ export default function Earn() {
 
   const [state, setState] = useSetState<InputState>({
     fromInput: "",
-    fromMax: false,
     toInput: "",
-    toMax: false,
+    isMax: false,
     error: "",
   });
 
@@ -147,9 +146,8 @@ export default function Earn() {
       const { toPairInput } = fromToken;
       setState({
         fromInput: formatInputValue(fromInput),
-        fromMax: false,
         toInput: formatInputValue(toPairInput(fromInput)),
-        toMax: false,
+        isMax: false,
       });
     },
     [debtBalance, collateralUSD, fromToken, setState]
@@ -266,9 +264,8 @@ export default function Earn() {
       console.log("res", res);
       setState({
         fromInput: "",
-        fromMax: false,
         toInput: "",
-        toMax: false,
+        isMax: false,
       });
       refresh();
     } catch (e) {

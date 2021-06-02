@@ -59,9 +59,8 @@ export default function Earn() {
 
   const [state, setState] = useSetState<InputState>({
     fromInput: "",
-    fromMax: false,
     toInput: "",
-    toMax: false,
+    isMax: false,
     error: "",
   });
 
@@ -117,17 +116,16 @@ export default function Earn() {
 
       setState({
         fromInput: formatInputValue(inputHZN.toString()),
-        fromMax: isMax,
         toInput: formatInputValue(toPairInput(inputHZN)),
-        toMax: false,
+        isMax,
       });
     },
     [balance, targetCRatio, stakedCollateral, fromToken, setState]
   );
 
   const fromAmount = useMemo(
-    () => (state.fromMax ? fromToken.max! : toBigNumber(state.fromInput || 0)),
-    [fromToken.max, state.fromInput, state.fromMax]
+    () => (state.isMax ? fromToken.max! : toBigNumber(state.fromInput || 0)),
+    [fromToken.max, state.fromInput, state.isMax]
   );
 
   const changedBalance: Omit<BalanceChangeProps, "changed"> = useMemo(() => {
@@ -147,20 +145,20 @@ export default function Earn() {
         )
       : changedDebt.div(changedStaked.multipliedBy(hznRate));
 
-    console.log({
-      balance: balance.toString(),
-      //   debt: debtBalance.toString(),
-      changedDebt: changedDebt.toString(),
-      //   stakedCollateral: stakedCollateral.toNumber(),
-      //   transferable: transferable.toNumber(),
-      hznRate: hznRate.toString(),
-      collateral: collateral.toString(),
-      changedStaked: changedStaked.toString(),
-      targetCRatio: targetCRatio.toString(),
-      currentCRatio: currentCRatio.toString(),
-      changedCRatio: changedCRatio.toString(),
-      //   changedTransferable: changedTransferable.toNumber(),
-    });
+    // console.log({
+    //   balance: balance.toString(),
+    //   //   debt: debtBalance.toString(),
+    //   changedDebt: changedDebt.toString(),
+    //   //   stakedCollateral: stakedCollateral.toNumber(),
+    //   //   transferable: transferable.toNumber(),
+    //   hznRate: hznRate.toString(),
+    //   collateral: collateral.toString(),
+    //   changedStaked: changedStaked.toString(),
+    //   targetCRatio: targetCRatio.toString(),
+    //   currentCRatio: currentCRatio.toString(),
+    //   changedCRatio: changedCRatio.toString(),
+    //   //   changedTransferable: changedTransferable.toNumber(),
+    // });
     return {
       cRatio: {
         from: currentCRatio,
@@ -202,7 +200,7 @@ export default function Earn() {
       } = horizon.js!;
       setLoading(true);
       let tx: ethers.ContractTransaction;
-      if (state.fromMax) {
+      if (state.isMax) {
         console.log("mint max");
         tx = await Synthetix.issueMaxSynths();
       } else {
@@ -213,9 +211,8 @@ export default function Earn() {
       console.log("res", res);
       setState({
         fromInput: "",
-        fromMax: false,
         toInput: "",
-        toMax: false,
+        isMax: false,
       });
       refresh();
     } catch (e) {
@@ -227,7 +224,7 @@ export default function Earn() {
       });
     }
     setLoading(false);
-  }, [state.fromMax, state.toInput, setState, refresh, enqueueSnackbar]);
+  }, [state.isMax, state.toInput, setState, refresh, enqueueSnackbar]);
 
   const mintDisabled = useMemo(() => {
     if (fromAmount.eq(0) || fromAmount.gt(fromToken.max!)) {

@@ -11,9 +11,8 @@ export type TokenProps = Omit<TokenInputProps, "input" | "onInput">;
 
 export interface InputState {
   fromInput: string;
-  fromMax: boolean;
   toInput: string;
-  toMax: boolean;
+  isMax: boolean;
   error: string;
 }
 
@@ -85,9 +84,8 @@ export default function TokenPair({
       console.log("setFromInput", isMax, input, stringAmount);
       setState({
         fromInput: stringAmount && formatInputValue(stringAmount),
-        fromMax: isMax,
         toInput: stringAmount && formatInputValue(toPairInput(stringAmount)),
-        toMax: false,
+        isMax,
         error: isExceedMax(stringAmount, max) ? "Insufficient balance" : "",
       });
     },
@@ -106,17 +104,22 @@ export default function TokenPair({
     (input, isMax = false) => {
       const { toPairInput, max } = toToken;
       const stringAmount = (isMax ? max?.toString() : input) || "";
-
+      console.log("setToInput", isMax, input, stringAmount);
       setState(() => ({
         toInput: stringAmount && formatInputValue(stringAmount),
-        toMax: isMax,
         fromInput: stringAmount && formatInputValue(toPairInput(stringAmount)),
-        fromMax: false,
+        isMax,
         error: isExceedMax(stringAmount, max) ? "Insufficient balance" : "",
       }));
     },
     [setState, toToken]
   );
+
+  const handleUserInput = useCallback(() => {
+    setState({ isMax: false });
+  }, [setState]);
+
+  console.log("state", state);
 
   return (
     <Box {...props}>
@@ -127,6 +130,7 @@ export default function TokenPair({
         invalid={!!state.error}
         input={state.fromInput}
         onInput={setFromInput}
+        onUserInput={handleUserInput}
       />
       <InputGap img={arrowImg} />
       <TokenInput
@@ -135,6 +139,7 @@ export default function TokenPair({
         invalid={!!state.error}
         input={state.toInput}
         onInput={setToInput}
+        onUserInput={handleUserInput}
       />
     </Box>
   );

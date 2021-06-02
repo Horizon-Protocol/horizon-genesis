@@ -1,7 +1,8 @@
+import { BigNumber } from "ethers";
+import { DefaultOptions } from "react-query";
 import BinanceLogo from "@assets/wallets/binance.svg";
 import MetamaskLogo from "@assets/wallets/metamask.svg";
 import TrustLogo from "@assets/wallets/trust.svg";
-import { BigNumber } from "ethers";
 
 export enum Action {
   Stake = 1,
@@ -156,7 +157,7 @@ export const DEPRECATED_TOKENS = [
 ];
 
 // react query default options
-export const REACT_QUERY_DEFAULT_OPTIONS = {
+export const REACT_QUERY_DEFAULT_OPTIONS: Partial<DefaultOptions["queries"]> = {
   staleTime: Infinity,
-  refetchInterval: 15000, // 15s,
+  refetchInterval: false, //15000, // 15s,
 };

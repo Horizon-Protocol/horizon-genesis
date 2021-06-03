@@ -106,7 +106,7 @@ export default function TokenPair({
     (input, isMax = false) => {
       const { toPairInput, max } = fromToken;
       const stringAmount = (isMax ? max?.toString() : input) || "";
-      console.log("setFromInput", isMax, input, stringAmount);
+      // console.log("setFromInput", isMax, input, stringAmount);
       setState(() => ({
         fromInput: stringAmount && formatInputValue(stringAmount),
         toInput: stringAmount && formatInputValue(toPairInput(stringAmount)),
@@ -129,7 +129,7 @@ export default function TokenPair({
     (input, isMax = false) => {
       const { toPairInput, max } = toToken;
       const stringAmount = (isMax ? max?.toString() : input) || "";
-      console.log("setToInput", isMax, input, stringAmount);
+      // console.log("setToInput", isMax, input, stringAmount);
       setState(() => ({
         toInput: stringAmount && formatInputValue(stringAmount),
         fromInput: stringAmount && formatInputValue(toPairInput(stringAmount)),

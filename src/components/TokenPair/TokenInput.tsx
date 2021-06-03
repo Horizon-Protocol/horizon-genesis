@@ -164,12 +164,12 @@ export default function TokenInput({
           value={input}
           onValueChange={(values) => {
             // WARN: to avoid infinite loop
-            console.log("onValueChange", {
-              maxRef: maxRef.current,
-              label,
-              input,
-              values,
-            });
+            // console.log("onValueChange", {
+            //   maxRef: maxRef.current,
+            //   label,
+            //   input,
+            //   values,
+            // });
             if (input !== values.value) {
               onInput(values.value, maxRef.current);
             }

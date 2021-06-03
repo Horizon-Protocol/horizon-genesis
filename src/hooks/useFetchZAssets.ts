@@ -1,20 +1,24 @@
 import { useCallback } from "react";
 import { useQuery, QueryFunction } from "react-query";
 import { useResetAtom, useUpdateAtom } from "jotai/utils";
-import { utils } from "ethers";
+import { ethers, utils } from "ethers";
 import horizon from "@lib/horizon";
 import {
   zAssetsBalanceAtom,
   zAssetstotalUSDAtom,
   resetZAssetsAtom,
 } from "@atoms/debt";
-import { toBN } from "@utils/number";
+import { etherToBN, zeroBN } from "@utils/number";
 import { CurrencyKey, SynthBalancesMap } from "@utils/currencies";
-import { CONTRACT, USER } from "@utils/queryKeys";
+import { CONTRACT } from "@utils/queryKeys";
 import useWallet from "./useWallet";
 import useDisconnected from "./useDisconnected";
 
-type SynthBalancesTuple = [CurrencyKey[], number[], number[]];
+type SynthBalancesTuple = [
+  CurrencyKey[],
+  ethers.BigNumber[],
+  ethers.BigNumber[]
+];
 
 export default function useFetchZAssets() {
   const { account } = useWallet();
@@ -42,15 +46,15 @@ export default function useFetchZAssets() {
     const [currencyKeys, synthsBalances, synthsUSDBalances] =
       (await SynthUtil!.synthsBalances(account)) as SynthBalancesTuple;
 
-    let totalUSDBalance = toBN(0);
+    let totalUSDBalance = zeroBN;
 
     currencyKeys.forEach((currencyKey: string, idx: number) => {
-      const balance = toBN(utils.formatEther(synthsBalances[idx]));
+      const balance = etherToBN(synthsBalances[idx]);
 
       // discard empty balances
       if (balance.gt(0)) {
         const synthName = utils.parseBytes32String(currencyKey) as CurrencyKey;
-        const usdBalance = toBN(utils.formatEther(synthsUSDBalances[idx]));
+        const usdBalance = etherToBN(synthsUSDBalances[idx]);
 
         balancesMap[synthName] = {
           currencyKey: synthName,

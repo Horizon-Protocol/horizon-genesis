@@ -1,5 +1,5 @@
 import bignumber from "bignumber.js";
-import { ethers } from "ethers";
+import { ethers, utils } from "ethers";
 import { CurrencyKey, isFiatCurrency } from "./currencies";
 
 declare global {
@@ -37,6 +37,9 @@ export const getDecimalPlaces = (value: NumericValue) =>
 
 export const toBN = (value: NumericValue) =>
   bignumber.isBigNumber(value) ? value : new bignumber(value);
+
+export const etherToBN = (value: ethers.BigNumber) =>
+  toBN(utils.formatEther(value));
 
 export const zeroBN = toBN(0);
 

@@ -1,4 +1,4 @@
-import { SyntheticEvent, useCallback } from "react";
+import { SyntheticEvent, useCallback, useMemo } from "react";
 import { Link, LinkProps } from "@material-ui/core";
 // import { ArrowRightAlt } from "@material-ui/icons";
 import { makeStyles } from "@material-ui/core/styles";
@@ -31,10 +31,11 @@ type Props = {
   to?: string;
   onClick?: () => void;
 } & Omit<RouterLinkProps, "to" | "onClick"> &
-  Omit<LinkProps, "onClick">;
+  Omit<LinkProps, "href" | "onClick">;
 
 export default function ActionLink({
-  to = "#",
+  to,
+  href,
   onClick,
   children,
   ...props
@@ -51,10 +52,16 @@ export default function ActionLink({
     [to, onClick]
   );
 
+  const linkProps = useMemo(() => {
+    if (to) {
+      return { to, component: RouterLink };
+    }
+    return { href };
+  }, [href, to]);
+
   return (
     <Link
-      component={RouterLink}
-      to={to}
+      {...linkProps}
       onClick={handleClick}
       classes={{ root: classes.actionLink }}
       {...props}

@@ -142,6 +142,9 @@ export const ChainName = CHAIN_NAME_MAP[ChainId];
 export const ChainExplorerUrl = CHAIN_EXPLORER_URL_MAP[ChainId];
 export const TokenAddresses = TOKEN_ADDRESS[ChainId];
 export const StakingAddresses = STAKING_CONTRACT_ADDRESS[ChainId];
+export const HZNBuyLink = `https://exchange.pancakeswap.finance/#/swap?outputCurrency=${
+  TokenAddresses[Token.HZN]
+}`;
 
 // BSC 3 seconds per block
 export const BSC_BLOCK_TIME = 3;

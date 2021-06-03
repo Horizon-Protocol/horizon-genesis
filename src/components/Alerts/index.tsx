@@ -24,16 +24,17 @@ const useStyles = makeStyles({
   },
 });
 
-const nextFeePeriodStarts = new Date("2021-06-02T23:56:00");
+// const nextFeePeriodStarts = new Date("2021-06-02T23:56:00");
 
 export default function Alert({ className, ...props }: BoxProps) {
   const { account } = useWallet();
   const targetCRatio = useAtomValue(targetCRatioAtom);
   const { currentCRatio } = useAtomValue(debtAtom);
-  const { stakedCollateral } = useAtomValue(collateralDataAtom);
+  const { stakedCollateral, unstakedCollateral } =
+    useAtomValue(collateralDataAtom);
   const { claimable } = useAtomValue(rewardsAtom);
 
-  // const { nextFeePeriodStarts } = useAtomValue(feePeriodDatesAtom);
+  const { nextFeePeriodStarts } = useAtomValue(feePeriodDatesAtom);
   const { formatted } = useClaimCountDown(nextFeePeriodStarts);
 
   const { color, component } = useMemo(() => {
@@ -46,7 +47,7 @@ export default function Alert({ className, ...props }: BoxProps) {
     }
     // staked 0
     else if (stakedCollateral.eq(0)) {
-      alertComponent = <EmptyStaked />;
+      alertComponent = <EmptyStaked unstaked={unstakedCollateral} />;
     }
     // above targetCRatio percent
     else if (currentCRatio.gt(0) && currentCRatio.lte(targetCRatio)) {

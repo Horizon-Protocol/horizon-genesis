@@ -32,8 +32,8 @@ jobs:
       - name: Build Bundle
         run: yarn build
         env:
-          REACT_APP_CHAIN_ID: 97
-          REACT_APP_COMMIT_VERSION: ${{ steps.get-commit-time.outputs.commitTime }}
+          VITE_APP_CHAIN_ID: 97
+          VITE_APP_COMMIT_VERSION: ${{ steps.get-commit-time.outputs.commitTime }}
 
       - name: Upload to S3
         uses: jakejarvis/s3-sync-action@master

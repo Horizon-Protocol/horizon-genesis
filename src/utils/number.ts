@@ -3,7 +3,7 @@ import { ethers, utils } from "ethers";
 import { CurrencyKey, isFiatCurrency } from "./currencies";
 
 declare global {
-  type BN = bignumber;
+  interface BN extends bignumber {}
 }
 
 // ui defaults

@@ -65,11 +65,12 @@ export default function Alert({ className, ...props }: BoxProps) {
     return { color, component: alertComponent };
   }, [
     account,
-    currentCRatio,
-    claimable,
-    formatted,
     stakedCollateral,
+    currentCRatio,
     targetCRatio,
+    claimable,
+    unstakedCollateral,
+    formatted,
   ]);
 
   const classes = useStyles({ color });

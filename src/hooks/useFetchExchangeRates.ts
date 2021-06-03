@@ -1,6 +1,6 @@
 import { useCallback } from "react";
 import { useQuery, QueryFunction } from "react-query";
-import { useAtomValue, useUpdateAtom } from "jotai/utils";
+import { useUpdateAtom } from "jotai/utils";
 import { utils, BigNumberish } from "ethers";
 import { ratesAtom } from "@atoms/exchangeRates";
 import horizon from "@lib/horizon";

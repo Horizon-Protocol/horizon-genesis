@@ -1,5 +1,5 @@
 import { useUpdateAtom } from "jotai/utils";
-import { Button, Box, BoxProps, Typography } from "@material-ui/core";
+import { Button, Box, BoxProps } from "@material-ui/core";
 import { makeStyles } from "@material-ui/core/styles";
 import clsx from "clsx";
 import { openAtom } from "@atoms/wallet";

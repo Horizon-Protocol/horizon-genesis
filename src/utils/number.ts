@@ -1,9 +1,9 @@
-import BigNumber from "bignumber.js";
+import bignumber from "bignumber.js";
 import { ethers } from "ethers";
 import { CurrencyKey, isFiatCurrency } from "./currencies";
 
 declare global {
-  type BN = BigNumber;
+  type BN = bignumber;
 }
 
 // ui defaults
@@ -14,7 +14,7 @@ export const DEFAULT_FIAT_DECIMALS = 2;
 export const DEFAULT_NUMBER_DECIMALS = 2;
 export const DEFAULT_PERCENT_DECIMALS = 2;
 
-export type NumericValue = BigNumber | string | number;
+export type NumericValue = BN | string | number;
 
 export type FormatNumberOptions = {
   decimals?: number;
@@ -36,13 +36,13 @@ export const getDecimalPlaces = (value: NumericValue) =>
   (value.toString().split(".")[1] || "").length;
 
 export const toBN = (value: NumericValue) =>
-  BigNumber.isBigNumber(value) ? value : new BigNumber(value);
+  bignumber.isBigNumber(value) ? value : new bignumber(value);
 
 export const zeroBN = toBN(0);
 
-export const maxBN = BigNumber.maximum;
+export const maxBN = bignumber.maximum;
 
-export const minBN = BigNumber.minimum;
+export const minBN = bignumber.minimum;
 
 export const formatNumber = (
   value: NumericValue,
@@ -59,7 +59,7 @@ export const formatNumber = (
   formattedValue.push(
     toBN(value).toFormat(
       options?.decimals ?? DEFAULT_NUMBER_DECIMALS,
-      BigNumber.ROUND_DOWN
+      bignumber.ROUND_DOWN
     )
   );
   if (suffix) {

@@ -44,7 +44,7 @@ export default function ActionLink({
 
   const handleClick = useCallback(
     (e: SyntheticEvent) => {
-      if (to === "#") {
+      if (!to || to === "#") {
         e.preventDefault();
         onClick?.();
       }

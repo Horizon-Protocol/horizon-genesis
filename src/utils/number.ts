@@ -35,10 +35,10 @@ export const LONG_CRYPTO_CURRENCY_DECIMALS = 8;
 export const getDecimalPlaces = (value: NumericValue) =>
   (value.toString().split(".")[1] || "").length;
 
-export const toBigNumber = (value: NumericValue) =>
+export const toBN = (value: NumericValue) =>
   BigNumber.isBigNumber(value) ? value : new BigNumber(value);
 
-export const zeroBN = toBigNumber(0);
+export const zeroBN = toBN(0);
 
 export const maxBN = BigNumber.maximum;
 
@@ -57,7 +57,7 @@ export const formatNumber = (
   }
 
   formattedValue.push(
-    toBigNumber(value).toFormat(
+    toBN(value).toFormat(
       options?.decimals ?? DEFAULT_NUMBER_DECIMALS,
       BigNumber.ROUND_DOWN
     )
@@ -138,12 +138,9 @@ export function formatUnits(
   units: number,
   decimals?: number
 ): string {
-  return formatNumber(
-    toBigNumber(value.toString()).dividedBy(toBigNumber(10).pow(units)),
-    {
-      decimals: decimals,
-    }
-  );
+  return formatNumber(toBN(value.toString()).dividedBy(toBN(10).pow(units)), {
+    decimals: decimals,
+  });
 }
 
 export function toEthersBig(a: any, b: number): ethers.BigNumber {
@@ -151,9 +148,7 @@ export function toEthersBig(a: any, b: number): ethers.BigNumber {
 }
 
 export function cRatioToPercent(cRatio: BN): number {
-  const cRatioPercent = cRatio.isZero()
-    ? toBigNumber(0)
-    : toBigNumber(100).div(cRatio);
+  const cRatioPercent = cRatio.isZero() ? toBN(0) : toBN(100).div(cRatio);
   return cRatioPercent.isNaN() ? 0 : Number(cRatioPercent.toFixed(2));
 }
 export function formatCRatioToPercent(cRatio: BN): string {

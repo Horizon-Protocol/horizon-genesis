@@ -8,7 +8,7 @@ import {
   zAssetstotalUSDAtom,
   resetZAssetsAtom,
 } from "@atoms/debt";
-import { toBigNumber } from "@utils/number";
+import { toBN } from "@utils/number";
 import { CurrencyKey, SynthBalancesMap } from "@utils/currencies";
 import { CONTRACT, USER } from "@utils/queryKeys";
 import useWallet from "./useWallet";
@@ -42,17 +42,15 @@ export default function useFetchZAssets() {
     const [currencyKeys, synthsBalances, synthsUSDBalances] =
       (await SynthUtil!.synthsBalances(account)) as SynthBalancesTuple;
 
-    let totalUSDBalance = toBigNumber(0);
+    let totalUSDBalance = toBN(0);
 
     currencyKeys.forEach((currencyKey: string, idx: number) => {
-      const balance = toBigNumber(utils.formatEther(synthsBalances[idx]));
+      const balance = toBN(utils.formatEther(synthsBalances[idx]));
 
       // discard empty balances
       if (balance.gt(0)) {
         const synthName = utils.parseBytes32String(currencyKey) as CurrencyKey;
-        const usdBalance = toBigNumber(
-          utils.formatEther(synthsUSDBalances[idx])
-        );
+        const usdBalance = toBN(utils.formatEther(synthsUSDBalances[idx]));
 
         balancesMap[synthName] = {
           currencyKey: synthName,

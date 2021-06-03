@@ -10,7 +10,7 @@ import {
 } from "@atoms/app";
 import horizon from "@lib/horizon";
 import useFetchExchangeRates from "./useFetchExchangeRates";
-import { toBigNumber } from "@utils/number";
+import { toBN } from "@utils/number";
 import { CONTRACT, PUBLIC } from "@utils/queryKeys";
 
 export default function useFetchAppData() {
@@ -38,7 +38,7 @@ export default function useFetchAppData() {
         Liquidations.liquidationRatio(),
         // Liquidations.liquidationDelay(),
       ]);
-      return res.map((item) => toBigNumber(utils.formatEther(item)));
+      return res.map((item) => toBN(utils.formatEther(item)));
     },
     []
   );

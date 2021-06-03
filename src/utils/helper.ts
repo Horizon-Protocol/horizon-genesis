@@ -1,4 +1,4 @@
-import { NumericValue, toBigNumber, zeroBN, maxBN } from "@utils/number";
+import { NumericValue, toBN, zeroBN, maxBN } from "@utils/number";
 
 /**
  * to mint zUSD amount
@@ -14,10 +14,8 @@ export function getMintAmount(
   stakeAmount: NumericValue,
   hznRate: BN
 ): BN {
-  if (!stakeAmount || !targetCRatio || !hznRate) return toBigNumber(0);
-  return toBigNumber(stakeAmount)
-    .multipliedBy(hznRate)
-    .multipliedBy(targetCRatio);
+  if (!stakeAmount || !targetCRatio || !hznRate) return toBN(0);
+  return toBN(stakeAmount).multipliedBy(hznRate).multipliedBy(targetCRatio);
 }
 
 /**
@@ -34,15 +32,15 @@ export function getStakingAmount(
   mintAmount: NumericValue,
   hznRate: BN
 ): BN {
-  if (!mintAmount || !targetCRatio || !hznRate) return toBigNumber(0);
-  return toBigNumber(mintAmount).dividedBy(hznRate).dividedBy(targetCRatio);
+  if (!mintAmount || !targetCRatio || !hznRate) return toBN(0);
+  return toBN(mintAmount).dividedBy(hznRate).dividedBy(targetCRatio);
 }
 
 export function getTransferableAmountFromMint(
   balance: BN,
   stakedAmount: BN
 ): BN {
-  if (!balance || !stakedAmount) return toBigNumber(0);
+  if (!balance || !stakedAmount) return toBN(0);
   return maxBN(balance.minus(stakedAmount), zeroBN);
 }
 
@@ -53,10 +51,10 @@ export function getTransferableAmountFromBurn(
   hznRate: BN,
   transferable: BN
 ): BN {
-  if (!amountToBurn) return toBigNumber(0);
+  if (!amountToBurn) return toBN(0);
   return transferable.plus(
     maxBN(
-      toBigNumber(amountToBurn)
+      toBN(amountToBurn)
         .minus(debtEscrowBalance)
         .dividedBy(targetCRatio)
         .dividedBy(hznRate),

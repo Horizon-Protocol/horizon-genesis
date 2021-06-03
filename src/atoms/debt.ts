@@ -1,12 +1,6 @@
 import { atom } from "jotai";
 import { atomWithReset, selectAtom, RESET } from "jotai/utils";
-import {
-  zeroBN,
-  cRatioToPercent,
-  maxBN,
-  minBN,
-  toBigNumber,
-} from "@utils/number";
+import { zeroBN, cRatioToPercent, maxBN, minBN, toBN } from "@utils/number";
 import { SynthBalancesMap } from "@utils/currencies";
 import { targetCRatioAtom } from "./app";
 
@@ -25,8 +19,8 @@ export const currentCRatioPercentAtom = atom((get) => {
   // const targetCRatio = get(targetCRatioAtom);
 
   // const percentCurrentCRatioOfTarget = currentCRatio.isZero()
-  //   ? toBigNumber(0)
-  //   : toBigNumber(100).multipliedBy(targetCRatio).div(currentCRatio);
+  //   ? toBN(0)
+  //   : toBN(100).multipliedBy(targetCRatio).div(currentCRatio);
 
   // return percentCurrentCRatioOfTarget.isNaN()
   //   ? 0
@@ -42,7 +36,7 @@ export const collateralDataAtom = atom((get) => {
   const stakedCollateral = targetCRatio.isZero()
     ? zeroBN
     : collateral.multipliedBy(
-        minBN(toBigNumber(1), currentCRatio.dividedBy(targetCRatio))
+        minBN(toBN(1), currentCRatio.dividedBy(targetCRatio))
       );
   const lockedCollateral = collateral.minus(transferable);
   const unstakedCollateral = collateral.minus(stakedCollateral);

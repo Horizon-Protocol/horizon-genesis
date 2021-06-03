@@ -5,7 +5,7 @@ import { ethers } from "ethers";
 import horizon from "@lib/horizon";
 import { rewardsAtom, resetAtom } from "@atoms/feePool";
 import { CONTRACT, USER } from "@utils/queryKeys";
-import { toBigNumber } from "@utils/number";
+import { toBN } from "@utils/number";
 import useWallet from "./useWallet";
 import useDisconnected from "./useDisconnected";
 
@@ -36,8 +36,8 @@ export default function useFetchRewards() {
     ])) as [boolean, [ethers.BigNumber, ethers.BigNumber]];
     return {
       claimable,
-      exchangeReward: toBigNumber(utils.formatEther(availableFees[0])),
-      stakingReward: toBigNumber(utils.formatEther(availableFees[1])),
+      exchangeReward: toBN(utils.formatEther(availableFees[0])),
+      stakingReward: toBN(utils.formatEther(availableFees[1])),
     };
   }, [account]);
 

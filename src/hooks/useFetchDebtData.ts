@@ -2,8 +2,8 @@ import { useCallback } from "react";
 import { QueryFunction, useQuery } from "react-query";
 import { useResetAtom, useUpdateAtom } from "jotai/utils";
 import horizon from "@lib/horizon";
-import { toBigNumber } from "@utils/number";
-import { CONTRACT, USER } from "@utils/queryKeys";
+import { toBN } from "@utils/number";
+import { CONTRACT } from "@utils/queryKeys";
 import { debtAtom, resetDebtAtom } from "@atoms/debt";
 import useWallet from "./useWallet";
 import useDisconnected from "./useDisconnected";
@@ -33,7 +33,7 @@ export default function useFetchDebtData() {
       RewardEscrow.balanceOf(account),
       Liquidations.getLiquidationDeadlineForAccount(account),
     ]);
-    return res.map((item) => toBigNumber(utils.formatEther(item)));
+    return res.map((item) => toBN(utils.formatEther(item)));
   }, [account]);
 
   useQuery([CONTRACT, account, "debt"], fetcher, {

@@ -4,7 +4,7 @@ import { useUpdateAtom } from "jotai/utils";
 import { ethers, utils } from "ethers";
 import horizon from "@lib/horizon";
 import { currentFeePeriodAtom, previoudFeePeriodAtom } from "@atoms/feePool";
-import { toBigNumber } from "@utils/number";
+import { toBN } from "@utils/number";
 import { CONTRACT, PUBLIC } from "@utils/queryKeys";
 
 type Period = "0" | "1"; // '0': current; '1': previous
@@ -50,7 +50,7 @@ export default function useFetchFeePool() {
       feesClaimed: Number(utils.formatEther(feePeriod.feesClaimed)) || 0,
       rewardsToDistribute:
         Number(utils.formatEther(feePeriod.rewardsToDistribute)) || 0,
-      rewardsToDistributeBN: toBigNumber(
+      rewardsToDistributeBN: toBN(
         utils.formatEther(feePeriod.rewardsToDistribute)
       ),
       rewardsClaimed: Number(utils.formatEther(feePeriod.rewardsClaimed)) || 0,

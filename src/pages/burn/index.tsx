@@ -7,7 +7,7 @@ import horizon from "@lib/horizon";
 import { PAGE_COLOR } from "@utils/theme/constants";
 import { Token } from "@utils/constants";
 import { zAssets } from "@utils/zAssets";
-import { formatNumber, maxBN, minBN, toBigNumber, zeroBN } from "@utils/number";
+import { formatNumber, maxBN, minBN, toBN, zeroBN } from "@utils/number";
 import { targetCRatioAtom } from "@atoms/app";
 import { hznRateAtom } from "@atoms/exchangeRates";
 import {
@@ -85,12 +85,12 @@ export default function Earn() {
       label: "BURN",
       color: THEME_COLOR,
       bgColor: "#0A1624",
-      amount: toBigNumber(0),
+      amount: toBN(0),
       max: minBN(zUSDBalance, debtBalance),
       maxButtonLabel: "Burn Max",
       inputPrefix: "$",
       toPairInput: (amount) =>
-        toBigNumber(amount)
+        toBN(amount)
           .minus(burnAmountToFixCRatio)
           .div(hznRate)
           .div(targetCRatio)
@@ -111,14 +111,14 @@ export default function Earn() {
       disabled: !connected,
       token: Token.HZN,
       label: "UNSTAKE",
-      amount: toBigNumber(0),
+      amount: toBN(0),
       balanceLabel: `Staked: ${formatNumber(stakedCollateral)} ${Token.HZN}`,
       max: stakedCollateral,
       maxButtonLabel: "Unstake Max",
       color: THEME_COLOR,
       labelColor: THEME_COLOR,
       toPairInput: (amount) => {
-        const tmpAmount = toBigNumber(amount)
+        const tmpAmount = toBN(amount)
           .multipliedBy(hznRate)
           .multipliedBy(targetCRatio);
         const toAmount = burnAmountToFixCRatio.gt(zeroBN)
@@ -148,11 +148,11 @@ export default function Earn() {
   );
 
   const fromAmount = useMemo(
-    () => toBigNumber(state.fromInput || 0),
+    () => toBN(state.fromInput || 0),
     [state.fromInput]
   );
   // const toAmount = useMemo(
-  //   () => toBigNumber(state.toInput || 0),
+  //   () => toBN(state.toInput || 0),
   //   [state.toInput]
   // );
   const changedBalance: Omit<BalanceChangeProps, "changed"> = useMemo(() => {

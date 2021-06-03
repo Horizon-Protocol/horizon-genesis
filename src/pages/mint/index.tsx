@@ -10,7 +10,7 @@ import { zAssets } from "@utils/zAssets";
 import {
   formatCRatioToPercent,
   formatNumber,
-  toBigNumber,
+  toBN,
   zeroBN,
 } from "@utils/number";
 import {
@@ -63,7 +63,7 @@ export default function Earn() {
       disabled: !connected,
       token: Token.HZN,
       label: "STAKE",
-      amount: toBigNumber(0),
+      amount: toBN(0),
       balanceLabel: `Balance: ${formatNumber(unstakedCollateral)} ${Token.HZN}`,
       max: unstakedCollateral,
       maxButtonLabel: "Mint Max",
@@ -82,7 +82,7 @@ export default function Earn() {
       label: "MINT",
       color: THEME_COLOR,
       bgColor: "#0A1624",
-      amount: toBigNumber(0),
+      amount: toBN(0),
       max: unstakedCollateralUSD,
       balanceLabel: `Minted at ${formatCRatioToPercent(targetCRatio)}% C-Ratio`,
       inputPrefix: "$",
@@ -118,7 +118,7 @@ export default function Earn() {
   );
 
   const fromAmount = useMemo(
-    () => (state.isMax ? fromToken.max! : toBigNumber(state.fromInput || 0)),
+    () => (state.isMax ? fromToken.max! : toBN(state.fromInput || 0)),
     [fromToken.max, state.fromInput, state.isMax]
   );
 

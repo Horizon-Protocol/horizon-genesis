@@ -1,6 +1,6 @@
 import { atom } from "jotai";
 import { atomWithReset, selectAtom } from "jotai/utils";
-import { zeroBN, toBigNumber, cRatioToPercent } from "@utils/number";
+import { zeroBN, toBN, cRatioToPercent } from "@utils/number";
 
 // app state
 export const readyAtom = atom(false);
@@ -33,12 +33,12 @@ export const presetCRatioPercentsAtom = selectAtom(
       {
         title: "CONSERVATIVE",
         percent: targetCRatioPercent + 400,
-        cRatio: toBigNumber(100).div(toBigNumber(targetCRatioPercent + 400)),
+        cRatio: toBN(100).div(toBN(targetCRatioPercent + 400)),
       },
       {
         title: "NEUTRAL",
         percent: targetCRatioPercent + 200,
-        cRatio: toBigNumber(100).div(toBigNumber(targetCRatioPercent + 200)),
+        cRatio: toBN(100).div(toBN(targetCRatioPercent + 200)),
       },
       {
         title: "AGGRESSIVE",

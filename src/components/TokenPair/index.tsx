@@ -3,7 +3,7 @@ import { Box, BoxProps, Typography } from "@material-ui/core";
 import { withStyles } from "@material-ui/core/styles";
 import { useSetState } from "ahooks";
 import numbro from "numbro";
-import { toBigNumber } from "@utils/number";
+import { toBN } from "@utils/number";
 import { COLOR } from "@utils/theme/constants";
 import TokenInput from "./TokenInput";
 import InputGap from "./InputGap";
@@ -61,7 +61,7 @@ export interface TokenPairProps {
  * @return {*}  {string}
  */
 export const formatInputValue = (inputValue: string): string => {
-  if (toBigNumber(inputValue).lt(0)) {
+  if (toBN(inputValue).lt(0)) {
     console.log("not enough", inputValue);
     return "0";
   }
@@ -77,7 +77,7 @@ export const formatInputValue = (inputValue: string): string => {
 
 const isExceedMax = (stringAmount: string, max?: BN) => {
   if (stringAmount && max) {
-    return toBigNumber(stringAmount).gt(max);
+    return toBN(stringAmount).gt(max);
   }
   return false;
 };
@@ -119,8 +119,8 @@ export default function TokenPair({
 
   const { fromAmount, toAmount } = useMemo(
     () => ({
-      fromAmount: toBigNumber(state.fromInput.replace(/[^0-9.]/g, "") || 0),
-      toAmount: toBigNumber(state.toInput.replace(/[^0-9.]/g, "") || 0),
+      fromAmount: toBN(state.fromInput.replace(/[^0-9.]/g, "") || 0),
+      toAmount: toBN(state.toInput.replace(/[^0-9.]/g, "") || 0),
     }),
     [state.fromInput, state.toInput]
   );

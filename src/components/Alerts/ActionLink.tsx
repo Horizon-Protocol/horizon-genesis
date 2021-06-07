@@ -46,8 +46,8 @@ export default function ActionLink({
     (e: SyntheticEvent) => {
       if (to === "#") {
         e.preventDefault();
-        onClick?.();
       }
+      onClick?.();
     },
     [to, onClick]
   );

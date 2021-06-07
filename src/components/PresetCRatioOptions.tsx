@@ -38,9 +38,9 @@ export default function PresetCRatioOptions({
       if (isBurn && currentCRatio.lt(option.cRatio)) {
         return true;
       }
-      return value.eq(option.cRatio);
+      return false;
     },
-    [currentCRatio, isBurn, value]
+    [currentCRatio, isBurn]
   );
 
   const checkActive = useCallback(

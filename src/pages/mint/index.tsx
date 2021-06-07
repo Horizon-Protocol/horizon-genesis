@@ -46,7 +46,7 @@ export default function Earn() {
 
   const targetCRatio = useAtomValue(targetCRatioAtom);
   const hznRate = useAtomValue(hznRateAtom);
-  const { currentCRatio, balance, transferable, debtBalance } =
+  const { currentCRatio, balance, collateral, transferable, debtBalance } =
     useAtomValue(debtAtom);
   const { stakedCollateral, unstakedCollateral } =
     useAtomValue(collateralDataAtom);
@@ -95,17 +95,25 @@ export default function Earn() {
   const handleSelectPresetCRatio = useCallback(
     (presetCRatio: BN) => {
       console.log("preset c-ratio:", presetCRatio.toNumber());
-      const isMax = presetCRatio.eq(targetCRatio);
+      const isMax = false; // presetCRatio.eq(targetCRatio);
       const { toPairInput, max } = fromToken;
       let inputHZN: string;
       if (isMax) {
         inputHZN = max!.toString();
       } else {
-        inputHZN = balance
+        console.log({
+          balance: balance.toString(),
+          collateral: collateral.toString(),
+          presetCRatio: presetCRatio.toString(),
+          targetCRatio: targetCRatio.toString(),
+          stakedCollateral: stakedCollateral.toString(),
+        });
+        inputHZN = collateral
           .multipliedBy(presetCRatio)
           .div(targetCRatio)
           .minus(stakedCollateral)
           .toString();
+        console.log("input HZN", inputHZN.toString());
       }
 
       setState(() => ({
@@ -114,7 +122,7 @@ export default function Earn() {
         isMax,
       }));
     },
-    [balance, targetCRatio, stakedCollateral, fromToken, setState]
+    [targetCRatio, fromToken, setState, balance, collateral, stakedCollateral]
   );
 
   const fromAmount = useMemo(
@@ -131,7 +139,7 @@ export default function Earn() {
 
     const changedTransferable = transferable.isZero()
       ? zeroBN
-      : getTransferableAmountFromMint(balance, changedStaked);
+      : getTransferableAmountFromMint(collateral, changedStaked);
 
     const changedCRatio = currentCRatio.isLessThan(targetCRatio)
       ? changedDebt.div(
@@ -177,7 +185,7 @@ export default function Earn() {
     targetCRatio,
     hznRate,
     transferable,
-    balance,
+    collateral,
     currentCRatio,
     unstakedCollateral,
     debtBalance,

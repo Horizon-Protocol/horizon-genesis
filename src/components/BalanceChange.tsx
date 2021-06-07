@@ -4,20 +4,42 @@ import { makeStyles, withStyles } from "@material-ui/core";
 import clsx from "clsx";
 import { formatCRatioToPercent, formatNumber } from "@utils/number";
 
-const Label = withStyles({
+const Label = withStyles(({ breakpoints }) => ({
   root: {
     color: "#5897C1",
     fontSize: 14,
+    [breakpoints.down("xs")]: {
+      marginBottom: 8,
+    },
   },
-})(ListItemIcon);
+}))(ListItemIcon);
 
-const useStyles = makeStyles({
+interface StyleProps {
+  changed?: boolean;
+  gapImg?: string;
+}
+const useStyles = makeStyles(({ breakpoints }) => ({
   container: {
     padding: "16px 24px",
     background: "#091320",
+    [breakpoints.down("xs")]: {
+      padding: "16px 0",
+    },
   },
   listItem: {
     padding: "6px 0",
+    [breakpoints.down("xs")]: {
+      flexWrap: "wrap",
+    },
+  },
+  content: {
+    display: "flex",
+    width: "100%",
+    justifyContent: "flex-end",
+    [breakpoints.down("xs")]: {
+      marginBottom: 8,
+      justifyContent: "flex-start",
+    },
   },
   value: {
     fontSize: 14,
@@ -29,11 +51,10 @@ const useStyles = makeStyles({
     backgroundPosition: "center",
     backgroundRepeat: "no-repeat",
     backgroundSize: "60%",
-    backgroundImage: ({ gapImg }: { gapImg?: string }) =>
-      gapImg && `url(${gapImg})`,
+    backgroundImage: ({ gapImg }: StyleProps) => gapImg && `url(${gapImg})`,
     transform: "rotateZ(180deg)",
   },
-});
+}));
 
 export interface Props {
   changed: boolean;
@@ -66,7 +87,7 @@ export default function BalanceChange({
   className,
   ...props
 }: Props & BoxProps) {
-  const classes = useStyles({ gapImg });
+  const classes = useStyles({ gapImg, changed });
 
   const data = useMemo(
     () => [
@@ -104,7 +125,7 @@ export default function BalanceChange({
             classes={{ root: classes.listItem }}
           >
             <Label>{label}</Label>
-            <Box display='flex' width='100%' justifyContent='flex-end'>
+            <Box className={classes.content}>
               <span className={classes.value}>{from}</span>
               {changed && (
                 <>

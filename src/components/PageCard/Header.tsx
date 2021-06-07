@@ -11,6 +11,7 @@ const Title = withStyles({
 
 const Description = withStyles({
   root: {
+    padding: "0 12px",
     marginBottom: 8,
     lineHeight: "22px",
     color: "#C1D3E0",

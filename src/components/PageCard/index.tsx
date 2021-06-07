@@ -13,7 +13,7 @@ declare global {
   }
 }
 
-const useStyles = makeStyles({
+const useStyles = makeStyles(({ breakpoints }) => ({
   container: {
     overflow: "hidden",
     backgroundColor: "rgba(16,38,55,0.3)",
@@ -36,8 +36,11 @@ const useStyles = makeStyles({
   },
   contentWrap: {
     padding: "24px 56px 32px",
+    [breakpoints.down("xs")]: {
+      padding: "24px 12px 32px",
+    },
   },
-});
+}));
 
 export default function PageCard({
   color,
@@ -52,7 +55,8 @@ export default function PageCard({
 
   return (
     <Box
-      width={640}
+      width='100%'
+      maxWidth={640}
       border={1}
       borderRadius={10}
       borderColor={BORDER_COLOR}

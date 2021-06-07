@@ -28,10 +28,13 @@ declare global {
   }
 }
 
-const useStyles = makeStyles(({ palette }) => ({
+const useStyles = makeStyles(({ breakpoints }) => ({
   root: {
     padding: "16px 24px",
     background: "#091320",
+    [breakpoints.down("xs")]: {
+      padding: "16px 0",
+    },
   },
   inputBox: {},
   tokenNameTip: {
@@ -45,6 +48,9 @@ const useStyles = makeStyles(({ palette }) => ({
     fontWeight: 700,
     letterSpacing: "0.86px",
     lineHeight: "28px",
+    [breakpoints.down("xs")]: {
+      fontSize: 18,
+    },
   },
   label: {
     padding: 12,
@@ -65,6 +71,11 @@ const useStyles = makeStyles(({ palette }) => ({
     fontWeight: 700,
     lineHeight: "26px",
     textAlign: "right",
+  },
+  amountLabel: {
+    [breakpoints.down("sm")]: {
+      flexWrap: "wrap",
+    },
   },
   balanceLabel: {
     fontSize: 12,
@@ -187,7 +198,11 @@ export default function TokenInput({
           className={classes.input}
           classes={{ input: classes.innerInput }}
         />
-        <Box display='flex' justifyContent='flex-end'>
+        <Box
+          display='flex'
+          justifyContent='flex-end'
+          className={classes.amountLabel}
+        >
           <Typography
             component='span'
             classes={{

@@ -23,15 +23,18 @@ const Value = withStyles(() => ({
   },
 }))(ListItemText);
 
-const useStyles = makeStyles({
+const useStyles = makeStyles(({ breakpoints }) => ({
   container: {
     padding: "16px 24px",
     background: "#091320",
+    [breakpoints.down("xs")]: {
+      padding: "16px 0",
+    },
   },
   listItem: {
     padding: 0,
   },
-});
+}));
 
 export interface Info {
   label: string;

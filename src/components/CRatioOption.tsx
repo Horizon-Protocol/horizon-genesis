@@ -8,7 +8,7 @@ interface StyleProps {
   disabled?: boolean;
 }
 
-const useStyles = makeStyles(({ palette }) =>
+const useStyles = makeStyles(({ breakpoints, palette }) =>
   createStyles({
     button: {
       width: 150,
@@ -19,6 +19,9 @@ const useStyles = makeStyles(({ palette }) =>
       overflow: "hidden",
       opacity: ({ disabled }) => (disabled ? 0.2 : 1),
       cursor: ({ disabled }) => (disabled ? "not-allowed" : "pointer"),
+      [breakpoints.down("xs")]: {
+        width: 105,
+      },
     },
     title: {
       lineHeight: "24px",
@@ -29,6 +32,15 @@ const useStyles = makeStyles(({ palette }) =>
       textTransform: "uppercase",
       fontWeight: 700,
       letterSpacing: "0.43px",
+      [breakpoints.down("xs")]: {
+        fontSize: 10,
+        fontWeight: 400,
+      },
+    },
+    content: {
+      [breakpoints.down("xs")]: {
+        flexDirection: "column",
+      },
     },
     percent: {
       color: ({ disabled, active, color }: StyleProps) =>
@@ -93,6 +105,8 @@ export default function PresetCRatioOption({
         borderRadius='0 0 4px 4px'
         borderColor={active ? color : "transparent"}
         justifyContent='center'
+        alignItems='center'
+        className={classes.content}
       >
         <span className={classes.percent}>{percent.toFixed(0)}%</span>
         <span className={classes.suffix}>

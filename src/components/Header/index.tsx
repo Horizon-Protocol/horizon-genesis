@@ -14,6 +14,9 @@ const useStyles = makeStyles(({ breakpoints }) => ({
   },
   logo: {
     height: 40,
+    [breakpoints.down("xs")]: {
+      margin: "auto",
+    },
   },
   nav: {
     height: 40,

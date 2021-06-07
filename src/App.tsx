@@ -52,9 +52,9 @@ function App() {
     <Router>
       <Header />
       {/* TODO: use floating button to expand and collapse for mobile */}
-      <Box hidden={!dashboardVisible} className={classes.dashboard} zIndex={1}>
+      {/* <Box hidden={!dashboardVisible} className={classes.dashboard} zIndex={1}>
         <Dashboard />
-      </Box>
+      </Box> */}
 
       <Box my={3}>
         <Switch>

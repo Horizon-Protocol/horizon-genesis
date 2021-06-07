@@ -1,7 +1,7 @@
 import { useEffect } from "react";
 import { BrowserRouter as Router, Switch, Route } from "react-router-dom";
 import { useAtomValue } from "jotai/utils";
-import { Box } from "@material-ui/core";
+import { Box, Hidden } from "@material-ui/core";
 import { makeStyles } from "@material-ui/core/styles";
 import { readyAtom } from "@atoms/app";
 import useSetupHorizonLib from "@hooks/useSetupHorizonLib";
@@ -17,20 +17,41 @@ import Claim from "@pages/claim";
 import Header from "@components/Header";
 import Dashboard from "@components/Dashboard";
 
-const useStyles = makeStyles(() => ({
+const useStyles = makeStyles(({ breakpoints }) => ({
+  body: {
+    display: "flex",
+    justifyContent: "center",
+    [breakpoints.down("md")]: {
+      margin: "24px 0",
+    },
+  },
+  placeholder: {
+    flexShrink: 1,
+    width: "100%",
+    maxWidth: 320,
+    [breakpoints.down("lg")]: {
+      maxWidth: 280,
+    },
+  },
+  page: {
+    margin: "0 24px",
+    flexBasis: 640,
+    [breakpoints.down("lg")]: {
+      flexBasis: "600px",
+    },
+  },
   dashboard: {
     width: "100%",
     maxWidth: 320,
-    position: "fixed",
-    top: 100,
-    right: 24,
+    [breakpoints.down("sm")]: {
+      position: "fixed",
+      right: 0,
+    },
   },
 }));
 
 function App() {
   const classes = useStyles();
-
-  const dashboardVisible = true;
 
   const appReady = useAtomValue(readyAtom);
 
@@ -52,25 +73,30 @@ function App() {
     <Router>
       <Header />
       {/* TODO: use floating button to expand and collapse for mobile */}
-      {/* <Box hidden={!dashboardVisible} className={classes.dashboard} zIndex={1}>
-        <Dashboard />
-      </Box> */}
 
-      <Box my={3}>
-        <Switch>
-          <Route path='/burn'>
-            <Burn />
-          </Route>
-          <Route path='/claim'>
-            <Claim />
-          </Route>
-          {/* <Route path='/earn'>
+      <Box className={classes.body}>
+        <Hidden mdDown>
+          <Box className={classes.placeholder}></Box>
+        </Hidden>
+        <Box className={classes.page}>
+          <Switch>
+            <Route path='/burn'>
+              <Burn />
+            </Route>
+            <Route path='/claim'>
+              <Claim />
+            </Route>
+            {/* <Route path='/earn'>
             <Earn />
           </Route> */}
-          <Route path='/'>
-            <Mint />
-          </Route>
-        </Switch>
+            <Route path='/'>
+              <Mint />
+            </Route>
+          </Switch>
+        </Box>
+        <Box className={classes.dashboard}>
+          <Dashboard />
+        </Box>
       </Box>
     </Router>
   );

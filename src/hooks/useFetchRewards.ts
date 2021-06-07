@@ -40,7 +40,7 @@ export default function useFetchRewards() {
     };
   }, [account]);
 
-  const { refetch } = useQuery([CONTRACT, account, "rewards"], fetcher, {
+  useQuery([CONTRACT, account, "rewards"], fetcher, {
     enabled: !!account && !!horizon.js,
     onSuccess({ claimable, stakingReward, exchangeReward }) {
       // console.log({
@@ -55,6 +55,4 @@ export default function useFetchRewards() {
       });
     },
   });
-
-  return refetch;
 }

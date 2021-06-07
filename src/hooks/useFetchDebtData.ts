@@ -1,5 +1,5 @@
 import { useCallback } from "react";
-import { QueryFunction, useQuery } from "react-query";
+import { useQuery } from "react-query";
 import { useResetAtom, useUpdateAtom } from "jotai/utils";
 import horizon from "@lib/horizon";
 import { etherToBN } from "@utils/number";
@@ -16,7 +16,7 @@ export default function useFetchDebtData() {
 
   useDisconnected(resetDebtData);
 
-  const fetcher = useCallback<QueryFunction<BN[], string[]>>(async () => {
+  const fetcher = useCallback(async () => {
     const {
       contracts: { Synthetix, RewardEscrow, Liquidations },
       utils,

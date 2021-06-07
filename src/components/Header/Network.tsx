@@ -55,7 +55,7 @@ export default function WalletIndicator(props: ChipProps) {
         )
       }
       label={ChainName}
-      onClick={() => refresh}
+      onClick={() => refresh()}
       {...props}
     />
     // </Tooltip>

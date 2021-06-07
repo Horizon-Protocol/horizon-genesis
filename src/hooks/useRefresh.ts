@@ -1,30 +1,30 @@
+import { CONTRACT, PUBLIC } from "@utils/queryKeys";
 import { useCallback } from "react";
-import { useQueryClient, QueryKey, RefetchOptions } from "react-query";
-import { QueryFilters } from "react-query/types/core/utils";
-import { CONTRACT } from "@utils/queryKeys";
+import { useQueryClient } from "react-query";
+import useWallet from "./useWallet";
 
-const ContractFilter = [CONTRACT];
-
-export default function useRefresh(
-  defaultQueryKey: QueryKey = ContractFilter,
-  filters?: QueryFilters,
-  options?: RefetchOptions
-) {
+export default function useRefresh() {
+  const { account } = useWallet();
   const queryClient = useQueryClient();
 
-  const refresh = useCallback(
-    (queryKey?: QueryKey) => {
-      queryClient.refetchQueries(
-        queryKey || defaultQueryKey,
-        {
-          fetching: false,
-          ...filters,
-        },
-        options
-      );
-    },
-    [defaultQueryKey, filters, options, queryClient]
-  );
+  const refreshPublic = useCallback(() => {
+    queryClient.refetchQueries([CONTRACT, PUBLIC], {
+      fetching: false,
+    });
+  }, [queryClient]);
+
+  const refreshUser = useCallback(() => {
+    if (account) {
+      queryClient.refetchQueries([CONTRACT, account], {
+        fetching: false,
+      });
+    }
+  }, [account, queryClient]);
+
+  const refresh = useCallback(() => {
+    refreshPublic();
+    refreshUser();
+  }, [refreshPublic, refreshUser]);
 
   return refresh;
 }

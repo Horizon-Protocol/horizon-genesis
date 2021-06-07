@@ -21,7 +21,7 @@ const THEME_COLOR = PAGE_COLOR.claim;
 
 export default function Earn() {
   const { connected } = useWallet();
-  const refetchRewards = useFetchRewards();
+  useFetchRewards();
 
   const { enqueueSnackbar } = useSnackbar();
 
@@ -70,7 +70,6 @@ export default function Earn() {
       setLoading(true);
       const tx: ethers.ContractTransaction = await FeePool.claimFees();
       await tx.wait(1);
-      refetchRewards();
       refresh();
     } catch (e) {
       console.log(e);
@@ -81,7 +80,7 @@ export default function Earn() {
       });
     }
     setLoading(false);
-  }, [enqueueSnackbar, refetchRewards, refresh]);
+  }, [enqueueSnackbar, refresh]);
 
   return (
     <PageCard

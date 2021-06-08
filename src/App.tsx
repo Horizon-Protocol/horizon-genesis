@@ -1,8 +1,9 @@
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 import { BrowserRouter as Router, Switch, Route } from "react-router-dom";
 import { useAtomValue } from "jotai/utils";
-import { Box, Hidden } from "@material-ui/core";
-import { makeStyles } from "@material-ui/core/styles";
+import { Box, Hidden, useMediaQuery, Button } from "@material-ui/core";
+import { ExpandLess, ExpandMore } from "@material-ui/icons";
+import { makeStyles, useTheme } from "@material-ui/core/styles";
 import { readyAtom } from "@atoms/app";
 import useSetupHorizonLib from "@hooks/useSetupHorizonLib";
 import useFetchAppData from "@hooks/useFetchAppData";
@@ -16,13 +17,19 @@ import Claim from "@pages/claim";
 // import Earn from "@pages/earn";
 import Header from "@components/Header";
 import Dashboard from "@components/Dashboard";
+import Alerts from "@components/Alerts";
+import clsx from "clsx";
 
-const useStyles = makeStyles(({ breakpoints }) => ({
+const useStyles = makeStyles(({ breakpoints, palette }) => ({
   body: {
+    margin: "24px 0",
     display: "flex",
     justifyContent: "center",
     [breakpoints.down("md")]: {
       margin: "24px 0",
+    },
+    [breakpoints.down("sm")]: {
+      flexWrap: "wrap",
     },
   },
   placeholder: {
@@ -39,21 +46,54 @@ const useStyles = makeStyles(({ breakpoints }) => ({
     [breakpoints.down("lg")]: {
       flexBasis: "600px",
     },
+    [breakpoints.down("sm")]: {
+      flex: "1 1 480px",
+      margin: "0 8px 150px",
+    },
+  },
+  alerts: {
+    [breakpoints.down("sm")]: {
+      // position: "fixed",
+      // right: 0,
+      // zIndex: 3,
+    },
   },
   dashboard: {
     width: "100%",
     maxWidth: 320,
     [breakpoints.down("sm")]: {
+      zIndex: 3,
+      maxWidth: "100%",
       position: "fixed",
+      left: 0,
       right: 0,
+      bottom: 0,
+      maxHeight: 170,
+      background: "black",
+      overflow: "hidden",
+      borderTop: `2px solid ${palette.divider}`,
+      backgroundColor: "#102637",
+      transition: "max-height 0.25s ease-in",
+      "&.expanded": {
+        maxHeight: "100%",
+      },
     },
+  },
+  showMore: {
+    position: "absolute",
+    top: 0,
+    right: 0,
   },
 }));
 
 function App() {
+  const { breakpoints } = useTheme();
+  const downSM = useMediaQuery(breakpoints.down("sm"));
   const classes = useStyles();
 
   const appReady = useAtomValue(readyAtom);
+
+  const [expanded, setExpanded] = useState(false);
 
   useSetupHorizonLib();
   useFetchAppData();
@@ -74,6 +114,7 @@ function App() {
       <Header />
       {/* TODO: use floating button to expand and collapse for mobile */}
 
+      {downSM && <Alerts px={2} py={1} mb={2} className={classes.alerts} />}
       <Box className={classes.body}>
         <Hidden mdDown>
           <Box className={classes.placeholder}></Box>
@@ -94,8 +135,20 @@ function App() {
             </Route>
           </Switch>
         </Box>
-        <Box className={classes.dashboard}>
+        <Box className={clsx(classes.dashboard, expanded ? "expanded" : "")}>
+          {!downSM && (
+            <Alerts px={2} py={1} mb={2} className={classes.alerts} />
+          )}
           <Dashboard />
+          {downSM && (
+            <Button
+              startIcon={expanded ? <ExpandMore /> : <ExpandLess />}
+              className={classes.showMore}
+              onClick={() => setExpanded((v) => !v)}
+            >
+              Show {expanded ? "Less" : "More"}
+            </Button>
+          )}
         </Box>
       </Box>
     </Router>

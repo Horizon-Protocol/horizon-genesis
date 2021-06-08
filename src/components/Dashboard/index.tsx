@@ -8,7 +8,6 @@ import { hznRateAtom } from "@atoms/exchangeRates";
 import useUserStakingData from "@hooks/useUserStakingData";
 import { formatNumber } from "@utils/number";
 import { BORDER_COLOR, COLOR } from "@utils/theme/constants";
-import Alerts from "@components/Alerts";
 import CRatioRange from "./CRatioRange";
 import StakingApy from "./StakingApy";
 import Balance from "./Balance";
@@ -91,7 +90,6 @@ export default function Dashboard({ className, ...props }: BoxProps) {
 
   return (
     <>
-      <Alerts px={2} py={1} mb={2} />
       <Box
         border={1}
         borderRadius={10}

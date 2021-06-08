@@ -62,7 +62,8 @@ export default function RewardCard({
 
   return (
     <Box
-      width={225}
+      width='50%'
+      maxWidth={225}
       height={244}
       position='relative'
       className={clsx(classes.root, className)}
@@ -79,7 +80,11 @@ export default function RewardCard({
       >
         <TokenLogo />
         <span className={classes.label}>{label}</span>
-        <span className={classes.amount}>{formatNumber(amount)} HZN</span>
+        <span className={classes.amount}>
+          {formatNumber(amount)}
+          <br />
+          HZN
+        </span>
       </Box>
       {help ? (
         <Box position='absolute' className={classes.help}>

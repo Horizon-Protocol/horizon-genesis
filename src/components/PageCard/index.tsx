@@ -37,7 +37,7 @@ const useStyles = makeStyles(({ breakpoints }) => ({
   contentWrap: {
     padding: "24px 56px 32px",
     [breakpoints.down("xs")]: {
-      padding: "24px 12px 32px",
+      padding: "24px 8px",
     },
   },
 }));

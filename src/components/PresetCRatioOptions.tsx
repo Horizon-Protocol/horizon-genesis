@@ -36,8 +36,8 @@ export default function PresetCRatioOptions({
   const checkDisabled = useCallback(
     (option: OptionItem) => {
       // burn
-      if (isBurn && currentCRatio.lt(option.cRatio)) {
-        return true;
+      if (isBurn) {
+        return currentCRatio.lte(option.cRatio);
       }
       // mint
       return currentCRatio.gte(option.cRatio);

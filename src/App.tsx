@@ -1,7 +1,13 @@
 import { useEffect, useState } from "react";
 import { BrowserRouter as Router, Switch, Route } from "react-router-dom";
 import { useAtomValue } from "jotai/utils";
-import { Box, Hidden, useMediaQuery, Button } from "@material-ui/core";
+import {
+  Box,
+  Hidden,
+  useMediaQuery,
+  Button,
+  Typography,
+} from "@material-ui/core";
 import { ExpandLess, ExpandMore } from "@material-ui/icons";
 import { makeStyles, useTheme } from "@material-ui/core/styles";
 import { readyAtom } from "@atoms/app";
@@ -20,7 +26,12 @@ import Dashboard from "@components/Dashboard";
 import Alerts from "@components/Alerts";
 import clsx from "clsx";
 
+const AppDisabled = !!import.meta.env.VITE_APP_DISABLED;
+
 const useStyles = makeStyles(({ breakpoints, palette }) => ({
+  container: {
+    filter: AppDisabled ? "blur(2px)" : undefined,
+  },
   body: {
     margin: "24px 0",
     display: "flex",
@@ -84,6 +95,15 @@ const useStyles = makeStyles(({ breakpoints, palette }) => ({
     top: 0,
     right: 0,
   },
+  mask: {
+    zIndex: 99,
+    content: '""',
+    position: "fixed",
+    top: 0,
+    right: 0,
+    bottom: 0,
+    left: 0,
+  },
 }));
 
 function App() {
@@ -110,48 +130,62 @@ function App() {
   }, [appReady, refresh]);
 
   return (
-    <Router>
-      <Header />
-      {/* TODO: use floating button to expand and collapse for mobile */}
+    <>
+      <Box
+        display='flex'
+        justifyContent='center'
+        alignItems='center'
+        className={classes.mask}
+      >
+        <Typography variant='h3'>Available Soon</Typography>
+      </Box>
+      <Box className={classes.container}>
+        <Router>
+          <Header />
+          {/* TODO: use floating button to expand and collapse for mobile */}
 
-      {downSM && <Alerts px={2} py={1} mb={2} className={classes.alerts} />}
-      <Box className={classes.body}>
-        <Hidden mdDown>
-          <Box className={classes.placeholder}></Box>
-        </Hidden>
-        <Box className={classes.page}>
-          <Switch>
-            <Route path='/burn'>
-              <Burn />
-            </Route>
-            <Route path='/claim'>
-              <Claim />
-            </Route>
-            {/* <Route path='/earn'>
+          {downSM && <Alerts px={2} py={1} mb={2} className={classes.alerts} />}
+          <Box className={classes.body}>
+            <Hidden mdDown>
+              <Box className={classes.placeholder}></Box>
+            </Hidden>
+            <Box className={classes.page}>
+              <Switch>
+                <Route path='/burn'>
+                  <Burn />
+                </Route>
+                <Route path='/claim'>
+                  <Claim />
+                </Route>
+                {/* <Route path='/earn'>
             <Earn />
           </Route> */}
-            <Route path='/'>
-              <Mint />
-            </Route>
-          </Switch>
-        </Box>
-        <Box className={clsx(classes.dashboard, expanded ? "expanded" : "")}>
-          {!downSM && (
-            <Alerts px={2} py={1} mb={2} className={classes.alerts} />
-          )}
-          <Dashboard />
-          {downSM && (
-            <Button
-              startIcon={expanded ? <ExpandMore /> : <ExpandLess />}
-              className={classes.showMore}
-              onClick={() => setExpanded((v) => !v)}
+                <Route path='/'>
+                  <Mint />
+                </Route>
+              </Switch>
+            </Box>
+            <Box
+              className={clsx(classes.dashboard, expanded ? "expanded" : "")}
             >
-              Show {expanded ? "Less" : "More"}
-            </Button>
-          )}
-        </Box>
+              {!downSM && (
+                <Alerts px={2} py={1} mb={2} className={classes.alerts} />
+              )}
+              <Dashboard />
+              {downSM && (
+                <Button
+                  startIcon={expanded ? <ExpandMore /> : <ExpandLess />}
+                  className={classes.showMore}
+                  onClick={() => setExpanded((v) => !v)}
+                >
+                  Show {expanded ? "Less" : "More"}
+                </Button>
+              )}
+            </Box>
+          </Box>
+        </Router>
       </Box>
-    </Router>
+    </>
   );
 }
 

@@ -141,24 +141,27 @@ export default function Earn() {
       ? zeroBN
       : getTransferableAmountFromMint(collateral, changedStaked);
 
-    const changedCRatio = currentCRatio.isLessThan(targetCRatio)
-      ? changedDebt.div(
-          unstakedCollateral.plus(stakedCollateral).multipliedBy(hznRate)
-        )
-      : changedDebt.div(changedStaked.multipliedBy(hznRate));
+    const changedCRatio = fromAmount.gt(0)
+      ? currentCRatio.isLessThan(targetCRatio)
+        ? changedDebt.div(
+            unstakedCollateral.plus(stakedCollateral).multipliedBy(hznRate)
+          )
+        : changedDebt.div(changedStaked.multipliedBy(hznRate))
+      : currentCRatio;
 
     // console.log({
     //   balance: balance.toString(),
-    //   //   debt: debtBalance.toString(),
+    //   debt: debtBalance.toString(),
     //   changedDebt: changedDebt.toString(),
-    //   //   stakedCollateral: stakedCollateral.toNumber(),
-    //   //   transferable: transferable.toNumber(),
+    //   stakedCollateral: stakedCollateral.toNumber(),
+    //   unstakedCollateral: unstakedCollateral.toNumber(),
+    //   transferable: transferable.toNumber(),
     //   hznRate: hznRate.toString(),
     //   changedStaked: changedStaked.toString(),
     //   targetCRatio: targetCRatio.toString(),
     //   currentCRatio: currentCRatio.toString(),
     //   changedCRatio: changedCRatio.toString(),
-    //   //   changedTransferable: changedTransferable.toNumber(),
+    //   changedTransferable: changedTransferable.toNumber(),
     // });
     return {
       cRatio: {

@@ -35,10 +35,12 @@ export default function PresetCRatioOptions({
   type OptionItem = typeof presetCRatioPercents[number];
   const checkDisabled = useCallback(
     (option: OptionItem) => {
+      // burn
       if (isBurn && currentCRatio.lt(option.cRatio)) {
         return true;
       }
-      return false;
+      // mint
+      return currentCRatio.gte(option.cRatio);
     },
     [currentCRatio, isBurn]
   );

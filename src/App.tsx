@@ -138,7 +138,16 @@ function App() {
           alignItems='center'
           className={classes.mask}
         >
-          <Typography variant='h3'>Available Soon</Typography>
+          <Typography
+            variant='h3'
+            color='textPrimary'
+            gutterBottom
+            style={{
+              fontWeight: 700,
+            }}
+          >
+            Available Soon
+          </Typography>
         </Box>
       )}
       <Box className={classes.container}>

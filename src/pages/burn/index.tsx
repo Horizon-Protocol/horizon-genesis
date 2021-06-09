@@ -142,6 +142,7 @@ export default function Earn() {
         fromInput: formatInputValue(fromInput),
         toInput: formatInputValue(toPairInput(fromInput)),
         isMax: false,
+        error: "",
       }));
     },
     [debtBalance, collateralUSD, fromToken, setState]

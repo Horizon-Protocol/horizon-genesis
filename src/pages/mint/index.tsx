@@ -120,6 +120,7 @@ export default function Earn() {
         fromInput: formatInputValue(inputHZN.toString()),
         toInput: formatInputValue(toPairInput(inputHZN)),
         isMax,
+        error: "",
       }));
     },
     [targetCRatio, fromToken, setState, balance, collateral, stakedCollateral]

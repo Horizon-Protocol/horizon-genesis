@@ -131,14 +131,16 @@ function App() {
 
   return (
     <>
-      <Box
-        display='flex'
-        justifyContent='center'
-        alignItems='center'
-        className={classes.mask}
-      >
-        <Typography variant='h3'>Available Soon</Typography>
-      </Box>
+      {AppDisabled && (
+        <Box
+          display='flex'
+          justifyContent='center'
+          alignItems='center'
+          className={classes.mask}
+        >
+          <Typography variant='h3'>Available Soon</Typography>
+        </Box>
+      )}
       <Box className={classes.container}>
         <Router>
           <Header />

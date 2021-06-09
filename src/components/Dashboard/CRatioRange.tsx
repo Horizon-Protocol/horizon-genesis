@@ -147,9 +147,9 @@ export default function CRatioRange(props: BoxProps) {
       <Typography
         variant='h6'
         classes={{ root: classes.number }}
-        style={{ color }}
+        style={{ color: currentCRatioPercent ? color : undefined }}
       >
-        {formatNumber(currentCRatioPercent)}%
+        {currentCRatioPercent ? formatNumber(currentCRatioPercent) : "--"}%
       </Typography>
       <Typography variant='subtitle2' classes={{ root: classes.tip }}>
         Current C-Ratio

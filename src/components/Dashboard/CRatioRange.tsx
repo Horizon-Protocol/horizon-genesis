@@ -1,5 +1,11 @@
 import { useMemo } from "react";
-import { Box, Typography, LinearProgress, BoxProps } from "@material-ui/core";
+import {
+  Box,
+  Tooltip,
+  Typography,
+  LinearProgress,
+  BoxProps,
+} from "@material-ui/core";
 import { makeStyles, withStyles } from "@material-ui/core/styles";
 import { HelpOutline } from "@material-ui/icons";
 import { useAtomValue } from "jotai/utils";
@@ -151,10 +157,12 @@ export default function CRatioRange(props: BoxProps) {
       >
         {currentCRatioPercent ? formatNumber(currentCRatioPercent) : "--"}%
       </Typography>
-      <Typography variant='subtitle2' classes={{ root: classes.tip }}>
-        Current C-Ratio
-        <HelpOutline fontSize='inherit' />
-      </Typography>
+      <Tooltip title='Preset Strategies' placement='top'>
+        <Typography variant='subtitle2' classes={{ root: classes.tip }}>
+          Current C-Ratio
+          <HelpOutline fontSize='inherit' />
+        </Typography>
+      </Tooltip>
       <Box className={classes.progressWrap}>
         <LinearProgress
           variant='determinate'

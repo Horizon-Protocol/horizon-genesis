@@ -1,5 +1,5 @@
 import { useCallback, useMemo } from "react";
-import { Box, BoxProps, Typography } from "@material-ui/core";
+import { Box, BoxProps, Tooltip, Typography } from "@material-ui/core";
 import { HelpOutline } from "@material-ui/icons";
 import { useAtomValue } from "jotai/utils";
 import { presetCRatioPercentsAtom, targetRatioAtom } from "@atoms/app";
@@ -62,10 +62,12 @@ export default function PresetCRatioOptions({
 
   return (
     <Box width='100%' {...props}>
-      <Typography variant='subtitle2' align='center'>
-        Preset Strategies
-        <HelpOutline fontSize='inherit' />
-      </Typography>
+      <Tooltip title='Preset Strategies' placement='top'>
+        <Typography variant='subtitle2' component='div' align='center'>
+          Preset Strategies
+          <HelpOutline fontSize='inherit' />
+        </Typography>
+      </Tooltip>
       <Box mt={1} display='flex' justifyContent='space-between'>
         {presetCRatioPercents.map((option) => (
           <PresetCRatioOption

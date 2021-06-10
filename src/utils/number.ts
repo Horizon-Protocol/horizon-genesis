@@ -1,5 +1,6 @@
 import bignumber from "bignumber.js";
 import { ethers, utils } from "ethers";
+import numbro from "numbro";
 import { CurrencyKey, isFiatCurrency } from "./currencies";
 
 declare global {
@@ -157,5 +158,14 @@ export function cRatioToPercent(cRatio: BN): number {
 export function formatCRatioToPercent(cRatio: BN): string {
   const cRatioPercent = cRatioToPercent(cRatio);
 
-  return formatNumber(cRatioPercent);
+  const percent = formatNumber(cRatioPercent);
+
+  if (cRatioPercent > 10_000_000) {
+    return numbro(cRatioPercent).format({
+      average: true,
+      mantissa: 2,
+    });
+  }
+
+  return percent;
 }

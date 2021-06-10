@@ -4,7 +4,7 @@ import { Box, BoxProps } from "@material-ui/core";
 import { makeStyles } from "@material-ui/core/styles";
 import clsx from "clsx";
 import { COLOR } from "@utils/theme/constants";
-import { targetCRatioAtom } from "@atoms/app";
+import { liquidationRatioAtom, targetRatioAtom } from "@atoms/app";
 import { collateralDataAtom, debtAtom } from "@atoms/debt";
 import { rewardsAtom, feePeriodDatesAtom } from "@atoms/feePool";
 import useWallet from "@hooks/useWallet";
@@ -14,6 +14,7 @@ import EmptyStaked from "./EmptyStaked";
 import AboveTarget from "./AboveTarget";
 import BelowTarget from "./BelowTarget";
 import Claimable from "./Claimable";
+import BelowLiquidation from "./BelowLiquidation";
 
 const useStyles = makeStyles({
   container: {
@@ -28,7 +29,8 @@ const useStyles = makeStyles({
 
 export default function Alert({ className, ...props }: BoxProps) {
   const { account } = useWallet();
-  const targetCRatio = useAtomValue(targetCRatioAtom);
+  const targetRatio = useAtomValue(targetRatioAtom);
+  const liquidationRatio = useAtomValue(liquidationRatioAtom);
   const { currentCRatio } = useAtomValue(debtAtom);
   const { stakedCollateral, unstakedCollateral } =
     useAtomValue(collateralDataAtom);
@@ -49,14 +51,19 @@ export default function Alert({ className, ...props }: BoxProps) {
     else if (stakedCollateral.eq(0)) {
       alertComponent = <EmptyStaked unstaked={unstakedCollateral} />;
     }
-    // above targetCRatio percent
-    else if (currentCRatio.gt(0) && currentCRatio.lte(targetCRatio)) {
-      alertComponent = <AboveTarget />;
+    // below liquidation percent
+    else if (currentCRatio.gt(0) && currentCRatio.gte(liquidationRatio)) {
+      color = COLOR.danger;
+      alertComponent = <BelowLiquidation color={COLOR.danger} />;
     }
-    // below targetCRatio percent
-    else if (currentCRatio.gt(0) && currentCRatio.gt(targetCRatio)) {
+    // below targetRatio percent
+    else if (currentCRatio.gt(0) && currentCRatio.gt(targetRatio)) {
       color = COLOR.warning;
       alertComponent = <BelowTarget />;
+    }
+    // above targetRatio percent
+    else if (currentCRatio.gt(0) && currentCRatio.lte(targetRatio)) {
+      alertComponent = <AboveTarget />;
     }
     // claimable
     else if (claimable) {
@@ -67,7 +74,8 @@ export default function Alert({ className, ...props }: BoxProps) {
     account,
     stakedCollateral,
     currentCRatio,
-    targetCRatio,
+    liquidationRatio,
+    targetRatio,
     claimable,
     unstakedCollateral,
     formatted,

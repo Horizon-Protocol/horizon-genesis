@@ -4,7 +4,7 @@ import { useUpdateAtom } from "jotai/utils";
 import {
   totalSupplyAtom,
   totalIssuedZUSDExclEthAtom,
-  targetCRatioAtom,
+  targetRatioAtom,
   liquidationRatioAtom,
   // liquidationDelayAtom,
 } from "@atoms/app";
@@ -16,7 +16,7 @@ import { CONTRACT, PUBLIC } from "@utils/queryKeys";
 export default function useFetchAppData() {
   const setTotalSupply = useUpdateAtom(totalSupplyAtom);
   const setTotalIssuedZUSDExclEth = useUpdateAtom(totalIssuedZUSDExclEthAtom);
-  const setTargetCRatio = useUpdateAtom(targetCRatioAtom);
+  const setTargetCRatio = useUpdateAtom(targetRatioAtom);
   const setLiquidationRatio = useUpdateAtom(liquidationRatioAtom);
   // const setLiquidationDelay = useUpdateAtom(liquidationDelayAtom);
 
@@ -47,7 +47,7 @@ export default function useFetchAppData() {
     onSuccess([
       totalSupply,
       totalIssuedZUSDExclEth,
-      targetCRatio,
+      targetRatio,
       liquidationRatio,
       // liquidationDelay,
     ]) {
@@ -57,7 +57,7 @@ export default function useFetchAppData() {
       // });
       setTotalSupply(totalSupply);
       setTotalIssuedZUSDExclEth(totalIssuedZUSDExclEth);
-      setTargetCRatio(targetCRatio);
+      setTargetCRatio(targetRatio);
       setLiquidationRatio(liquidationRatio);
       // setLiquidationDelay(liquidationDelay);
     },

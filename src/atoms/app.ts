@@ -8,7 +8,7 @@ export const readyAtom = atom(false);
 // static variables from contract
 export const totalSupplyAtom = atomWithReset(zeroBN);
 export const totalIssuedZUSDExclEthAtom = atomWithReset(zeroBN); // total zUSD in pool
-export const targetCRatioAtom = atomWithReset(zeroBN);
+export const targetRatioAtom = atomWithReset(zeroBN);
 export const liquidationRatioAtom = atomWithReset(zeroBN);
 export const liquidationDelayAtom = atomWithReset(zeroBN);
 
@@ -16,19 +16,19 @@ export const liquidationDelayAtom = atomWithReset(zeroBN);
 export const hznPriceAtom = atomWithReset(0);
 
 export const ratiosPercentAtom = atom((get) => {
-  const targetCRatio = get(targetCRatioAtom);
+  const targetRatio = get(targetRatioAtom);
   const liquidationRatio = get(liquidationRatioAtom);
 
   return {
-    targetCRatio,
-    targetCRatioPercent: cRatioToPercent(targetCRatio),
+    targetRatio,
+    targetCRatioPercent: cRatioToPercent(targetRatio),
     liquidationRatioPercent: cRatioToPercent(liquidationRatio),
   };
 });
 
 export const presetCRatioPercentsAtom = selectAtom(
   ratiosPercentAtom,
-  ({ targetCRatio, targetCRatioPercent }) => {
+  ({ targetRatio, targetCRatioPercent }) => {
     return [
       {
         title: "CONSERVATIVE",
@@ -43,7 +43,7 @@ export const presetCRatioPercentsAtom = selectAtom(
       {
         title: "AGGRESSIVE",
         percent: targetCRatioPercent,
-        cRatio: targetCRatio,
+        cRatio: targetRatio,
       },
     ];
   }

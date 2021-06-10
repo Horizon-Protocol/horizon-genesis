@@ -8,7 +8,7 @@ import { PAGE_COLOR } from "@utils/theme/constants";
 import { Token } from "@utils/constants";
 import { zAssets } from "@utils/zAssets";
 import { formatNumber, maxBN, minBN, toBN, zeroBN } from "@utils/number";
-import { targetCRatioAtom } from "@atoms/app";
+import { targetRatioAtom } from "@atoms/app";
 import { hznRateAtom } from "@atoms/exchangeRates";
 import {
   debtAtom,
@@ -42,7 +42,7 @@ export default function Earn() {
   const { account, connected } = useWallet();
   const { enqueueSnackbar } = useSnackbar();
 
-  const targetCRatio = useAtomValue(targetCRatioAtom);
+  const targetRatio = useAtomValue(targetRatioAtom);
   const hznRate = useAtomValue(hznRateAtom);
   const {
     currentCRatio,
@@ -93,7 +93,7 @@ export default function Earn() {
         toBN(amount)
           .minus(burnAmountToFixCRatio)
           .div(hznRate)
-          .div(targetCRatio)
+          .div(targetRatio)
           .toString(),
     }),
     [
@@ -101,7 +101,7 @@ export default function Earn() {
       connected,
       debtBalance,
       hznRate,
-      targetCRatio,
+      targetRatio,
       zUSDBalance,
     ]
   );
@@ -120,14 +120,14 @@ export default function Earn() {
       toPairInput: (amount) => {
         const tmpAmount = toBN(amount)
           .multipliedBy(hznRate)
-          .multipliedBy(targetCRatio);
+          .multipliedBy(targetRatio);
         const toAmount = burnAmountToFixCRatio.gt(zeroBN)
           ? burnAmountToFixCRatio.minus(tmpAmount)
           : tmpAmount;
         return toAmount.toString();
       },
     }),
-    [burnAmountToFixCRatio, connected, hznRate, stakedCollateral, targetCRatio]
+    [burnAmountToFixCRatio, connected, hznRate, stakedCollateral, targetRatio]
   );
 
   const handleSelectPresetCRatio = useCallback(
@@ -159,19 +159,19 @@ export default function Earn() {
   const changedBalance: Omit<BalanceChangeProps, "changed"> = useMemo(() => {
     const changedDebt = debtBalance.minus(fromAmount);
 
-    const changedStaked = changedDebt.div(targetCRatio).div(hznRate);
+    const changedStaked = changedDebt.div(targetRatio).div(hznRate);
 
-    // debtBalance + (escrowedReward * hznRate * targetCRatio) - issuableSynths
+    // debtBalance + (escrowedReward * hznRate * targetRatio) - issuableSynths
     const debtEscrowBalance = maxBN(
       debtBalance
-        .plus(escrowedReward.multipliedBy(hznRate).multipliedBy(targetCRatio))
+        .plus(escrowedReward.multipliedBy(hznRate).multipliedBy(targetRatio))
         .minus(issuableSynths),
       zeroBN
     );
     const changedTransferable = getTransferableAmountFromBurn(
       fromAmount,
       debtEscrowBalance,
-      targetCRatio,
+      targetRatio,
       hznRate,
       transferable
     );
@@ -187,7 +187,7 @@ export default function Earn() {
     //   staked: staked.toNumber(),
     //   transferable: transferable.toNumber(),
     //   hznRate: hznRate.toString(),
-    //   targetCRatio: targetCRatio.toNumber(),
+    //   targetRatio: targetRatio.toNumber(),
     //   currentCRatio: currentCRatio.toString(),
     //   changedCRatio: changedCRatio.toString(),
     //   changedStaked: changedStaked.toNumber(),
@@ -215,7 +215,7 @@ export default function Earn() {
   }, [
     debtBalance,
     fromAmount,
-    targetCRatio,
+    targetRatio,
     hznRate,
     escrowedReward,
     issuableSynths,
@@ -233,7 +233,7 @@ export default function Earn() {
         utils,
       } = horizon.js!;
       setLoading(true);
-      const burnToTarget = changedBalance.cRatio.to.eq(targetCRatio);
+      const burnToTarget = changedBalance.cRatio.to.eq(targetRatio);
       const zUSDBytes = utils.formatBytes32String("zUSD");
       const isWaitingPeriod: boolean = await Synthetix.isWaitingPeriod(
         zUSDBytes
@@ -279,7 +279,7 @@ export default function Earn() {
     refresh,
     setState,
     state.fromInput,
-    targetCRatio,
+    targetRatio,
   ]);
 
   const burnDisabled = useMemo(() => {

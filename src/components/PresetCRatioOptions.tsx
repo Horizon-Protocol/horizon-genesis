@@ -2,7 +2,7 @@ import { useCallback, useMemo } from "react";
 import { Box, BoxProps, Typography } from "@material-ui/core";
 import { HelpOutline } from "@material-ui/icons";
 import { useAtomValue } from "jotai/utils";
-import { presetCRatioPercentsAtom, targetCRatioAtom } from "@atoms/app";
+import { presetCRatioPercentsAtom, targetRatioAtom } from "@atoms/app";
 import { cRatioToPercent } from "@utils/number";
 import PresetCRatioOption from "./CRatioOption";
 import { debtAtom } from "@atoms/debt";
@@ -23,7 +23,7 @@ export default function PresetCRatioOptions({
   ...props
 }: Props) {
   const { account } = useWallet();
-  const targetCRatio = useAtomValue(targetCRatioAtom);
+  const targetRatio = useAtomValue(targetRatioAtom);
   const { currentCRatio } = useAtomValue(debtAtom);
   const presetCRatioPercents = useAtomValue(presetCRatioPercentsAtom);
 
@@ -48,12 +48,12 @@ export default function PresetCRatioOptions({
   const checkActive = useCallback(
     (option: OptionItem) => {
       return (
-        !currentCRatio.eq(targetCRatio) &&
+        !currentCRatio.eq(targetRatio) &&
         changedCratioPercent > 0 &&
         option.cRatio.toFixed(6) === value.toFixed(6)
       );
     },
-    [changedCratioPercent, currentCRatio, targetCRatio, value]
+    [changedCratioPercent, currentCRatio, targetRatio, value]
   );
 
   if (!account) {

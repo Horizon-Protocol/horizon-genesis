@@ -1,5 +1,5 @@
 import { useMemo } from "react";
-import { targetCRatioAtom, totalIssuedZUSDExclEthAtom } from "@atoms/app";
+import { targetRatioAtom, totalIssuedZUSDExclEthAtom } from "@atoms/app";
 import { debtAtom } from "@atoms/debt";
 import { hznRateAtom, zUSDRateAtom } from "@atoms/exchangeRates";
 import { currentFeePeriodAtom, previoudFeePeriodAtom } from "@atoms/feePool";
@@ -9,7 +9,7 @@ import { useAtomValue } from "jotai/utils";
 
 export default function useUserStakingData() {
   const totalIssuedZUSDExclEth = useAtomValue(totalIssuedZUSDExclEthAtom);
-  const targetCRatio = useAtomValue(targetCRatioAtom);
+  const targetRatio = useAtomValue(targetRatioAtom);
   const hznRate = useAtomValue(hznRateAtom);
   const zUSDRate = useAtomValue(zUSDRateAtom);
   const { debtBalance, collateral, currentCRatio } = useAtomValue(debtAtom);
@@ -19,7 +19,7 @@ export default function useUserStakingData() {
   const stakedValue =
     collateral.gt(0) && currentCRatio.gt(0)
       ? collateral
-          .multipliedBy(minBN(1, currentCRatio.dividedBy(targetCRatio)))
+          .multipliedBy(minBN(1, currentCRatio.dividedBy(targetRatio)))
           .multipliedBy(hznRate)
       : zeroBN;
 

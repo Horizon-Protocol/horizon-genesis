@@ -2,7 +2,7 @@ import { atom } from "jotai";
 import { atomWithReset, selectAtom, RESET } from "jotai/utils";
 import { zeroBN, cRatioToPercent, maxBN, minBN, toBN } from "@utils/number";
 import { SynthBalancesMap } from "@utils/currencies";
-import { targetCRatioAtom } from "./app";
+import { targetRatioAtom } from "./app";
 
 export const debtAtom = atomWithReset({
   balance: zeroBN,
@@ -16,11 +16,11 @@ export const debtAtom = atomWithReset({
 
 export const currentCRatioPercentAtom = atom((get) => {
   const currentCRatio = get(debtAtom).currentCRatio;
-  // const targetCRatio = get(targetCRatioAtom);
+  // const targetRatio = get(targetRatioAtom);
 
   // const percentCurrentCRatioOfTarget = currentCRatio.isZero()
   //   ? toBN(0)
-  //   : toBN(100).multipliedBy(targetCRatio).div(currentCRatio);
+  //   : toBN(100).multipliedBy(targetRatio).div(currentCRatio);
 
   // return percentCurrentCRatioOfTarget.isNaN()
   //   ? 0
@@ -30,13 +30,13 @@ export const currentCRatioPercentAtom = atom((get) => {
 
 // HZN amount in different status
 export const collateralDataAtom = atom((get) => {
-  const targetCRatio = get(targetCRatioAtom);
+  const targetRatio = get(targetRatioAtom);
   const { collateral, currentCRatio, transferable } = get(debtAtom);
 
-  const stakedCollateral = targetCRatio.isZero()
+  const stakedCollateral = targetRatio.isZero()
     ? zeroBN
     : collateral.multipliedBy(
-        minBN(toBN(1), currentCRatio.dividedBy(targetCRatio))
+        minBN(toBN(1), currentCRatio.dividedBy(targetRatio))
       );
   const lockedCollateral = collateral.minus(transferable);
   const unstakedCollateral = collateral.minus(stakedCollateral);

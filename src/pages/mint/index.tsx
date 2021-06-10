@@ -19,7 +19,7 @@ import {
   getTransferableAmountFromMint,
 } from "@utils/helper";
 import useWallet from "@hooks/useWallet";
-import { targetCRatioAtom } from "@atoms/app";
+import { targetRatioAtom } from "@atoms/app";
 import { hznRateAtom } from "@atoms/exchangeRates";
 import { debtAtom, collateralDataAtom } from "@atoms/debt";
 import headerBg from "@assets/images/mint.svg";
@@ -44,7 +44,7 @@ export default function Earn() {
   const { connected } = useWallet();
   const { enqueueSnackbar } = useSnackbar();
 
-  const targetCRatio = useAtomValue(targetCRatioAtom);
+  const targetRatio = useAtomValue(targetRatioAtom);
   const hznRate = useAtomValue(hznRateAtom);
   const { currentCRatio, balance, collateral, transferable, debtBalance } =
     useAtomValue(debtAtom);
@@ -52,8 +52,8 @@ export default function Earn() {
     useAtomValue(collateralDataAtom);
 
   const unstakedCollateralUSD = useMemo(
-    () => getMintAmount(targetCRatio, unstakedCollateral, hznRate),
-    [hznRate, targetCRatio, unstakedCollateral]
+    () => getMintAmount(targetRatio, unstakedCollateral, hznRate),
+    [hznRate, targetRatio, unstakedCollateral]
   );
 
   const { state, setState } = useInputState();
@@ -70,9 +70,9 @@ export default function Earn() {
       color: THEME_COLOR,
       labelColor: THEME_COLOR,
       toPairInput: (amount) =>
-        getMintAmount(targetCRatio, amount, hznRate).toString(),
+        getMintAmount(targetRatio, amount, hznRate).toString(),
     }),
-    [connected, hznRate, targetCRatio, unstakedCollateral]
+    [connected, hznRate, targetRatio, unstakedCollateral]
   );
 
   const toToken: TokenProps = useMemo(
@@ -84,18 +84,18 @@ export default function Earn() {
       bgColor: "#0A1624",
       amount: toBN(0),
       max: unstakedCollateralUSD,
-      balanceLabel: `Minted at ${formatCRatioToPercent(targetCRatio)}% C-Ratio`,
+      balanceLabel: `Minted at ${formatCRatioToPercent(targetRatio)}% C-Ratio`,
       inputPrefix: "$",
       toPairInput: (amount) =>
-        getStakingAmount(targetCRatio, amount, hznRate).toString(),
+        getStakingAmount(targetRatio, amount, hznRate).toString(),
     }),
-    [connected, hznRate, targetCRatio, unstakedCollateralUSD]
+    [connected, hznRate, targetRatio, unstakedCollateralUSD]
   );
 
   const handleSelectPresetCRatio = useCallback(
     (presetCRatio: BN) => {
       console.log("preset c-ratio:", presetCRatio.toNumber());
-      const isMax = false; // presetCRatio.eq(targetCRatio);
+      const isMax = false; // presetCRatio.eq(targetRatio);
       const { toPairInput, max } = fromToken;
       let inputHZN: string;
       if (isMax) {
@@ -105,12 +105,12 @@ export default function Earn() {
           balance: balance.toString(),
           collateral: collateral.toString(),
           presetCRatio: presetCRatio.toString(),
-          targetCRatio: targetCRatio.toString(),
+          targetRatio: targetRatio.toString(),
           stakedCollateral: stakedCollateral.toString(),
         });
         inputHZN = collateral
           .multipliedBy(presetCRatio)
-          .div(targetCRatio)
+          .div(targetRatio)
           .minus(stakedCollateral)
           .toString();
         console.log("input HZN", inputHZN.toString());
@@ -123,7 +123,7 @@ export default function Earn() {
         error: "",
       }));
     },
-    [targetCRatio, fromToken, setState, balance, collateral, stakedCollateral]
+    [targetRatio, fromToken, setState, balance, collateral, stakedCollateral]
   );
 
   const fromAmount = useMemo(
@@ -135,7 +135,7 @@ export default function Earn() {
     const changedStaked = stakedCollateral.plus(fromAmount);
 
     const changedDebt = changedStaked
-      .multipliedBy(targetCRatio)
+      .multipliedBy(targetRatio)
       .multipliedBy(hznRate);
 
     const changedTransferable = transferable.isZero()
@@ -143,7 +143,7 @@ export default function Earn() {
       : getTransferableAmountFromMint(collateral, changedStaked);
 
     const changedCRatio = fromAmount.gt(0)
-      ? currentCRatio.isLessThan(targetCRatio)
+      ? currentCRatio.isLessThan(targetRatio)
         ? changedDebt.div(
             unstakedCollateral.plus(stakedCollateral).multipliedBy(hznRate)
           )
@@ -159,7 +159,7 @@ export default function Earn() {
     //   transferable: transferable.toNumber(),
     //   hznRate: hznRate.toString(),
     //   changedStaked: changedStaked.toString(),
-    //   targetCRatio: targetCRatio.toString(),
+    //   targetRatio: targetRatio.toString(),
     //   currentCRatio: currentCRatio.toString(),
     //   changedCRatio: changedCRatio.toString(),
     //   changedTransferable: changedTransferable.toNumber(),
@@ -186,7 +186,7 @@ export default function Earn() {
   }, [
     stakedCollateral,
     fromAmount,
-    targetCRatio,
+    targetRatio,
     hznRate,
     transferable,
     collateral,

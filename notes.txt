@@ -8,8 +8,8 @@ totalEscrowBalance = escrowedReward + tokenSaleEscrow
 
 issuableSynths = Synthetix.maxIssuableSynths(walletAddress)
 
-debtEscrowBalance = debtBalance + (totalEscrowBalance / hznRate / targetCRatio) - issuableSynths
+debtEscrowBalance = debtBalance + (totalEscrowBalance / hznRate / targetRatio) - issuableSynths
 
-addedTransferable = (amountToBurn - debtEscrowBalance) / hznRate / targetCRatio
+addedTransferable = (amountToBurn - debtEscrowBalance) / hznRate / targetRatio
 
 TransferableAmountFromBurn = transferable + addedTransferable

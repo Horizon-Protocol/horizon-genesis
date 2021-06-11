@@ -1,4 +1,4 @@
-name: Deploy Testnet
+name: Deploy Testnet Public
 
 on:
   push:

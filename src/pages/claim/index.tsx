@@ -41,7 +41,7 @@ export default function Earn() {
   const { nextFeePeriodStarts } = useAtomValue(feePeriodDatesAtom);
   const { formatted } = useClaimCountDown(nextFeePeriodStarts);
 
-  const mockInfoList: Info[] = [
+  const infoList: Info[] = [
     {
       label: "Next Reward Claim Period",
       value: formatted,
@@ -110,7 +110,7 @@ export default function Earn() {
         />
       </Box>
       <Box mt={3}>
-        <InfoList data={mockInfoList} />
+        <InfoList data={infoList} />
       </Box>
       <Box mt={3}>
         {connected && (

@@ -1,4 +1,4 @@
-import { useMemo } from "react";
+import { useEffect, useMemo } from "react";
 import { useTimer } from "react-compound-timer";
 import differenceInMilliseconds from "date-fns/differenceInMilliseconds";
 import isDate from "date-fns/isDate";
@@ -13,6 +13,7 @@ export default function useDateCountDown(targetDate?: Date) {
   );
 
   const {
+    controls: { setTime },
     value: { d, h, m, s, state },
   } = useTimer({
     initialTime: milliSeconds,
@@ -20,6 +21,11 @@ export default function useDateCountDown(targetDate?: Date) {
     timeToUpdate:
       milliSeconds > HOUR_MILLI_SECONDS ? MINUTE_MILLI_SECONDS : 1000,
   });
+
+  useEffect(() => {
+    console.log("setTime");
+    setTime(milliSeconds);
+  }, [milliSeconds, setTime]);
 
   const formatted = useMemo(() => {
     if (!isDate(targetDate)) {

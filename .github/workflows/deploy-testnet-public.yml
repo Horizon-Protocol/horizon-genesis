@@ -4,8 +4,6 @@ on:
   push:
     branches:
       - main
-    paths-ignore:
-      - '.github/workflows/deploy-testnet-public.yml'
 
 jobs:
   build:
@@ -30,9 +28,12 @@ jobs:
           key: ${{ runner.os }}-yarn-${{ hashFiles('**/yarn.lock') }}
       - name: Install dependencies
         run: yarn install --frozen-lockfile
+      - name: Install Beta Version @horizon-protocol/contracts-interface
+        run: yarn add @horizon-protocol/contracts-interface@2.45.7-beta.1
       - name: Build Bundle
         run: yarn build
         env:
+          VITE_APP_DISABLED: true
           VITE_APP_CHAIN_ID: 97
           VITE_APP_COMMIT_VERSION: ${{ steps.get-commit-time.outputs.commitTime }}
 
@@ -43,6 +44,6 @@ jobs:
         env:
           AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
           AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
-          AWS_S3_BUCKET: horizon-genesis-dev
+          AWS_S3_BUCKET: horizon-genesis-beta
           AWS_REGION: ap-southeast-1
           SOURCE_DIR: dist

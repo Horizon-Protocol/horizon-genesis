@@ -3,12 +3,12 @@ import { Box } from "@material-ui/core";
 import { ethers } from "ethers";
 import { useSnackbar } from "notistack";
 import { useAtomValue } from "jotai/utils";
-import { rewardsAtom, feePeriodDatesAtom } from "@atoms/feePool";
+import { rewardsAtom, nextClaimCountDownAtom } from "@atoms/feePool";
 import horizon from "@lib/horizon";
 import useWallet from "@hooks/useWallet";
 import { PAGE_COLOR } from "@utils/theme/constants";
 import headerBg from "@assets/images/claim.svg";
-import useClaimCountDown from "@hooks/useClaimCountDown";
+import useDateCountDown from "@hooks/useDateCountDown";
 import PageCard from "@components/PageCard";
 import RewardCard from "@components/Claim/RewardCard";
 import InfoList, { Info } from "@components/InfoList";
@@ -38,17 +38,16 @@ export default function Earn() {
     [claimable, totalRewards]
   );
 
-  const { nextFeePeriodStarts } = useAtomValue(feePeriodDatesAtom);
-  const { formatted } = useClaimCountDown(nextFeePeriodStarts);
+  const nextClaimCountDown = useAtomValue(nextClaimCountDownAtom);
 
   const infoList: Info[] = [
     {
       label: "Next Reward Claim Period",
-      value: formatted,
+      value: nextClaimCountDown,
     },
     {
       label: "Claim Period Ends",
-      value: formatted,
+      value: nextClaimCountDown,
     },
     {
       label: "Total Rewards",

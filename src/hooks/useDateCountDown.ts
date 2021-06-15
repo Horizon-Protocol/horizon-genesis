@@ -3,29 +3,35 @@ import { useTimer } from "react-compound-timer";
 import differenceInMilliseconds from "date-fns/differenceInMilliseconds";
 import isDate from "date-fns/isDate";
 
-const HOUR_MILLI_SECONDS = 1000 * 3600;
+const DAY_MILLI_SECONDS = 1000 * 3600 * 24;
 const MINUTE_MILLI_SECONDS = 1000 * 60;
 
 export default function useDateCountDown(targetDate?: Date) {
-  const milliSeconds = useMemo(
-    () => (targetDate ? differenceInMilliseconds(targetDate, new Date()) : 0),
-    [targetDate]
-  );
+  const milliSeconds = useMemo(() => {
+    if (!targetDate) {
+      return 0;
+    }
+    const diff = differenceInMilliseconds(targetDate, new Date());
+    if (diff < 0) {
+      return 0;
+    }
+    return diff;
+  }, [targetDate]);
 
   const {
-    controls: { setTime },
+    controls: { setTime, start },
     value: { d, h, m, s, state },
   } = useTimer({
     initialTime: milliSeconds,
     direction: "backward",
     timeToUpdate:
-      milliSeconds > HOUR_MILLI_SECONDS ? MINUTE_MILLI_SECONDS : 1000,
+      milliSeconds > DAY_MILLI_SECONDS ? MINUTE_MILLI_SECONDS : 1000,
   });
 
   useEffect(() => {
-    console.log("setTime");
     setTime(milliSeconds);
-  }, [milliSeconds, setTime]);
+    start();
+  }, [milliSeconds, setTime, start]);
 
   const formatted = useMemo(() => {
     if (!isDate(targetDate)) {

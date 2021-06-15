@@ -1,8 +1,8 @@
 import { Box, BoxProps, Typography } from "@material-ui/core";
 import { makeStyles } from "@material-ui/core/styles";
-import useClaimCountDown from "@hooks/useClaimCountDown";
 import { useAtomValue } from "jotai/utils";
-import { feePeriodDatesAtom } from "@atoms/feePool";
+import { nextClaimCountDownAtom } from "@atoms/feePool";
+import useNextClaimCountDown from "@hooks/useNextClaimTimer";
 
 const useStyles = makeStyles({
   title: {
@@ -24,8 +24,9 @@ const useStyles = makeStyles({
 export default function ClaimCountDown(props: BoxProps) {
   const classes = useStyles();
 
-  const { nextFeePeriodStarts } = useAtomValue(feePeriodDatesAtom);
-  const { formatted } = useClaimCountDown(nextFeePeriodStarts);
+  useNextClaimCountDown();
+
+  const nextClaimCountDown = useAtomValue(nextClaimCountDownAtom);
 
   return (
     <Box textAlign='center' {...props}>
@@ -33,7 +34,7 @@ export default function ClaimCountDown(props: BoxProps) {
         NEXT REWARD CLAIM
       </Typography>
       <Typography variant='h5' className={classes.value}>
-        {formatted}
+        {nextClaimCountDown}
       </Typography>
     </Box>
   );

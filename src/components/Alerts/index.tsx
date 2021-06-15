@@ -8,7 +8,7 @@ import { liquidationRatioAtom, targetRatioAtom } from "@atoms/app";
 import { collateralDataAtom, debtAtom } from "@atoms/debt";
 import { rewardsAtom, feePeriodDatesAtom } from "@atoms/feePool";
 import useWallet from "@hooks/useWallet";
-import useClaimCountDown from "@hooks/useClaimCountDown";
+import useDateCountDown from "@hooks/useDateCountDown";
 import Disconnected from "./Disconnected";
 import EmptyStaked from "./EmptyStaked";
 import AboveTarget from "./AboveTarget";
@@ -37,7 +37,7 @@ export default function Alert({ className, ...props }: BoxProps) {
   const { claimable } = useAtomValue(rewardsAtom);
 
   const { nextFeePeriodStarts } = useAtomValue(feePeriodDatesAtom);
-  const { formatted } = useClaimCountDown(nextFeePeriodStarts);
+  const { formatted } = useDateCountDown(nextFeePeriodStarts);
 
   const { color, component } = useMemo(() => {
     let color = COLOR.tip;

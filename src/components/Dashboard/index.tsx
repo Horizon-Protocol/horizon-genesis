@@ -7,6 +7,7 @@ import { debtAtom, collateralDataAtom, zUSDBalanceAtom } from "@atoms/debt";
 import { hznRateAtom } from "@atoms/exchangeRates";
 import useUserStakingData from "@hooks/useUserStakingData";
 import { formatNumber } from "@utils/number";
+import { formatPrice } from "@utils/formatters";
 import { BORDER_COLOR, COLOR } from "@utils/theme/constants";
 import CRatioRange from "./CRatioRange";
 import StakingApy from "./StakingApy";
@@ -46,7 +47,7 @@ export default function Dashboard({ className, ...props }: BoxProps) {
     () => [
       {
         label: "HZN Price",
-        value: `$${formatNumber(hznRate)}`,
+        value: `$${formatPrice(hznRate.toNumber(), { mantissa: 4 })}`,
         color: COLOR.safe,
       },
       {

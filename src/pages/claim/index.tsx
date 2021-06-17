@@ -90,7 +90,7 @@ export default function Earn() {
       description={
         <>
           Claim rewards from staking HZN and minting zUSD. Claimed rewards are
-          vested for 12 months from the clam date, but can be used to stake
+          vested for 12 months from the claim date, but can be used to stake
           again to compound rewards during that time.
         </>
       }

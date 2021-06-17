@@ -27,6 +27,11 @@ export const formatNumber = (value: number, format: numbro.Format = {}) => {
     ...format,
   });
 };
+export const formatPrice = (value: number, format: numbro.Format = {}) => {
+  return numbro(value).format({
+    ...format,
+  });
+};
 
 export const formatAddress = (address: string, size: number = 6) => {
   return `${address.slice(0, size)}...${address.slice(-size)}`;

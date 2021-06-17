@@ -95,7 +95,7 @@ export default function Earn() {
   const handleSelectPresetCRatio = useCallback(
     (presetCRatio: BN) => {
       console.log("preset c-ratio:", presetCRatio.toNumber());
-      const isMax = false; // presetCRatio.eq(targetRatio);
+      const isMax = presetCRatio.eq(targetRatio);
       const { toPairInput, max } = fromToken;
       let inputHZN: string;
       if (isMax) {

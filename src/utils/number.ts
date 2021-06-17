@@ -63,7 +63,7 @@ export const formatNumber = (
   formattedValue.push(
     toBN(value).toFormat(
       options?.decimals ?? DEFAULT_NUMBER_DECIMALS,
-      bignumber.ROUND_DOWN
+      bignumber.ROUND_HALF_EVEN
     )
   );
   if (suffix) {

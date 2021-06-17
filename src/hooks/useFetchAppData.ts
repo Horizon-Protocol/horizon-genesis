@@ -2,6 +2,7 @@ import { useCallback } from "react";
 import { useQuery, QueryFunction } from "react-query";
 import { useUpdateAtom } from "jotai/utils";
 import {
+  appDataReadyAtom,
   totalSupplyAtom,
   totalIssuedZUSDExclEthAtom,
   targetRatioAtom,
@@ -14,6 +15,7 @@ import { etherToBN } from "@utils/number";
 import { CONTRACT, PUBLIC } from "@utils/queryKeys";
 
 export default function useFetchAppData() {
+  const setAppDataReady = useUpdateAtom(appDataReadyAtom);
   const setTotalSupply = useUpdateAtom(totalSupplyAtom);
   const setTotalIssuedZUSDExclEth = useUpdateAtom(totalIssuedZUSDExclEthAtom);
   const setTargetCRatio = useUpdateAtom(targetRatioAtom);
@@ -55,6 +57,7 @@ export default function useFetchAppData() {
       //   totalIssuedZUSDExclEth: totalIssuedZUSDExclEth.toString(),
       //   // liquidationDelay: liquidationDelay,
       // });
+      setAppDataReady(true);
       setTotalSupply(totalSupply);
       setTotalIssuedZUSDExclEth(totalIssuedZUSDExclEth);
       setTargetCRatio(targetRatio);

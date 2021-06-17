@@ -11,13 +11,17 @@ import {
   ListItemText,
 } from "@material-ui/core";
 import { useAtom } from "jotai";
+import { useAtomValue } from "jotai/utils";
 import { makeStyles, withStyles } from "@material-ui/core/styles";
 import { Close, LinkOff } from "@material-ui/icons";
 import { SUPPORTED_WALLETS } from "@utils/constants";
-import { openAtom, detailAtom } from "@atoms/wallet";
+import { waitForGlobal } from "@utils/helper";
+import { appDataReadyAtom } from "@atoms/app";
+import { openAtom, detailAtom, prevWalletNameAtom } from "@atoms/wallet";
 import useWallet from "@hooks/useWallet";
+import { injectorByName } from "@utils/web3React";
 
-const useStyles = makeStyles(({ palette, typography }) => ({
+const useStyles = makeStyles(({ typography }) => ({
   header: {
     minWidth: 350,
     display: "flex",
@@ -62,7 +66,7 @@ const StyledListItem = withStyles(({ palette }) => ({
   },
 }))(ListItem);
 
-const StyledListItemText = withStyles(({ palette }) => ({
+const StyledListItemText = withStyles(() => ({
   root: {
     paddingRight: 48,
     whiteSpace: "nowrap",
@@ -81,23 +85,31 @@ export default function WalletsDialog(
   const classes = useStyles();
   const { connectWallet, connected, deactivate } = useWallet();
 
+  const appDataReady = useAtomValue(appDataReadyAtom);
+
   const [open, setOpen] = useAtom(openAtom);
   const [detail, setDetail] = useAtom(detailAtom);
 
   const handleClose = useCallback(() => setOpen(false), [setOpen]);
 
-  const handleSelectWallet = async (wallet: WalletDetail) => {
-    if (wallet.key === detail?.key && connected) {
-      setOpen(false);
-    } else {
-      // change wallet
-      deactivate();
-      setDetail(wallet);
-      setTimeout(() => {
-        connectWallet(wallet.connectorId);
-      }, 50);
-    }
-  };
+  const handleSelectWallet = useCallback(
+    async (wallet: WalletDetail) => {
+      if (wallet.key === detail?.key && connected) {
+        setOpen(false);
+      } else {
+        // change wallet
+        deactivate();
+        setDetail(wallet);
+        setTimeout(() => {
+          const injectorName = injectorByName[wallet.connectorId];
+          waitForGlobal(injectorName, () => {
+            connectWallet(wallet);
+          });
+        }, 50);
+      }
+    },
+    [connectWallet, connected, deactivate, detail?.key, setDetail, setOpen]
+  );
 
   const handleDisconnect = async () => {
     // change wallet
@@ -111,6 +123,24 @@ export default function WalletsDialog(
       setOpen(false);
     }
   }, [connected, setOpen]);
+
+  const prevWalletName = useAtomValue(prevWalletNameAtom);
+
+  // Auto connect last connected wallet.
+  useEffect(() => {
+    if (prevWalletName && appDataReady) {
+      const wallet = SUPPORTED_WALLETS.find(
+        (item) => item.key === prevWalletName
+      );
+      if (wallet) {
+        setDetail(wallet);
+        const injectorName = injectorByName[wallet.connectorId];
+        waitForGlobal(injectorName, () => {
+          connectWallet(wallet);
+        });
+      }
+    }
+  }, [appDataReady, connectWallet, prevWalletName, setDetail]);
 
   return (
     <StyledDialog open={open} onClose={handleClose} {...props}>

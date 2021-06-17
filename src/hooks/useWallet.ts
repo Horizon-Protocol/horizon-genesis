@@ -7,7 +7,9 @@ import {
   NoEthereumProviderError,
   UserRejectedRequestError as UserRejectedRequestErrorInjected,
 } from "@web3-react/injected-connector";
+import { useUpdateAtom } from "jotai/utils";
 
+import { prevWalletNameAtom } from "@atoms/wallet";
 import { connectorsByName } from "@utils/web3React";
 import { ChainName, ConnectorNames } from "@utils/constants";
 import { formatAddress } from "@utils/formatters";
@@ -15,6 +17,7 @@ import { setupNetwork } from "@utils/wallet";
 
 export default function useWallet() {
   const { enqueueSnackbar } = useSnackbar();
+  const setPrevWalletName = useUpdateAtom(prevWalletNameAtom);
 
   const { account, activate, chainId, deactivate, library, active } =
     useWeb3React<providers.Web3Provider>();
@@ -22,7 +25,7 @@ export default function useWallet() {
   const [connecting, setConnecting] = useState(false);
 
   const connectWallet = useCallback(
-    async (connectorId: ConnectorNames) => {
+    async ({ key, connectorId }: WalletDetail) => {
       const connector = connectorsByName[connectorId];
       const isInjected = connectorId === ConnectorNames.Injected;
       setConnecting(true);
@@ -62,8 +65,9 @@ export default function useWallet() {
       });
 
       setConnecting(false);
+      setPrevWalletName(key);
     },
-    [activate, enqueueSnackbar]
+    [activate, enqueueSnackbar, setPrevWalletName]
   );
 
   const shortAccount = useMemo(

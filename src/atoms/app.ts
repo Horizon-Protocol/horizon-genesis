@@ -5,6 +5,9 @@ import { zeroBN, toBN, cRatioToPercent } from "@utils/number";
 // app state
 export const readyAtom = atom(false);
 
+// static app variables loaded
+export const appDataReadyAtom = atom(false);
+
 // static variables from contract
 export const totalSupplyAtom = atomWithReset(zeroBN);
 export const totalIssuedZUSDExclEthAtom = atomWithReset(zeroBN); // total zUSD in pool

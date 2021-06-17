@@ -70,3 +70,22 @@ export function sanitiseValue(value: BN) {
     return value;
   }
 }
+
+export function waitForGlobal(
+  key: string,
+  callback: () => void,
+  maxWait: number = 10000,
+  waited: number = 0
+) {
+  if (Reflect.has(window, key)) {
+    callback();
+  } else {
+    if (waited > maxWait) {
+      return;
+    }
+    console.log("wait", key);
+    setTimeout(function () {
+      waitForGlobal(key, callback, maxWait, waited + 100);
+    }, 100);
+  }
+}

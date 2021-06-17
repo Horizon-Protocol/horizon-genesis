@@ -12,6 +12,11 @@ export const connectorsByName: { [connectorName in ConnectorNames]: any } = {
   [ConnectorNames.BSC]: bscConnector,
 };
 
+export const injectorByName: { [connectorName in ConnectorNames]: string } = {
+  [ConnectorNames.Injected]: "ethereum",
+  [ConnectorNames.BSC]: "BinanceChain",
+};
+
 // called when connectint to wallet.
 export const getLibrary = <T>(provider: T): providers.Web3Provider => {
   return new providers.Web3Provider(provider);

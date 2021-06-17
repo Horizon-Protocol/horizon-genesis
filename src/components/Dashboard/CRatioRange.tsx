@@ -158,8 +158,9 @@ export default function CRatioRange(props: BoxProps) {
             Your Current C-Ratio is based on your{" "}
             <code>HZN Balance * HZN Price / Debt</code>. Maintaining a C-Ratio
             of {targetCRatioPercent}% or more will allow you to claim rewards.
-            If your C-ratio goes below the liquidation ratio of 200% for more
-            than 3 days, your account will be at risk of liquidation.
+            If your C-ratio goes below the liquidation ratio of{" "}
+            {liquidationRatioPercent}% for more than 3 days, your account will
+            be at risk of liquidation.
           </>
         }
         placement='top'

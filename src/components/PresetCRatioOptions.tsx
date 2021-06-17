@@ -1,12 +1,13 @@
 import { useCallback, useMemo } from "react";
-import { Box, BoxProps, Tooltip, Typography } from "@material-ui/core";
+import { Box, BoxProps, Link, Typography } from "@material-ui/core";
 import { HelpOutline } from "@material-ui/icons";
 import { useAtomValue } from "jotai/utils";
 import { presetCRatioPercentsAtom, targetRatioAtom } from "@atoms/app";
 import { cRatioToPercent } from "@utils/number";
-import PresetCRatioOption from "./CRatioOption";
 import { debtAtom } from "@atoms/debt";
 import useWallet from "@hooks/useWallet";
+import Tooltip from "@components/Tooltip";
+import PresetCRatioOption from "./CRatioOption";
 
 interface Props extends Omit<BoxProps, "onChange"> {
   color: string;
@@ -62,7 +63,17 @@ export default function PresetCRatioOptions({
 
   return (
     <Box width='100%' {...props}>
-      <Tooltip title='Preset Strategies' placement='top'>
+      <Tooltip
+        title={
+          <>
+            Preset strategies help you manage your C-Ratio based on different
+            risk tolerances. Maintaining a higher C-Ratio will lower your risk
+            of liquidation, but also reduce your rewards from debt. To learn
+            more about staking strategies, click <Link href='#'>here</Link>
+          </>
+        }
+        placement='top'
+      >
         <Typography variant='subtitle2' component='div' align='center'>
           Preset Strategies
           <HelpOutline fontSize='inherit' />

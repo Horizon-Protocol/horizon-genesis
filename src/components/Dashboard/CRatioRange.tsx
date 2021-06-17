@@ -1,11 +1,5 @@
 import { useMemo } from "react";
-import {
-  Box,
-  Tooltip,
-  Typography,
-  LinearProgress,
-  BoxProps,
-} from "@material-ui/core";
+import { Box, Typography, LinearProgress, BoxProps } from "@material-ui/core";
 import { makeStyles, withStyles } from "@material-ui/core/styles";
 import { HelpOutline } from "@material-ui/icons";
 import { useAtomValue } from "jotai/utils";
@@ -13,6 +7,7 @@ import { ratiosPercentAtom } from "@atoms/app";
 import { currentCRatioPercentAtom } from "@atoms/debt";
 import { formatNumber } from "@utils/number";
 import { COLOR } from "@utils/theme/constants";
+import Tooltip from "@components/Tooltip";
 
 const getColorByRatioPercent = (
   ratioPercent: number,
@@ -157,7 +152,18 @@ export default function CRatioRange(props: BoxProps) {
       >
         {currentCRatioPercent ? formatNumber(currentCRatioPercent) : "--"}%
       </Typography>
-      <Tooltip title='Preset Strategies' placement='top'>
+      <Tooltip
+        title={
+          <>
+            Your Current C-Ratio is based on your{" "}
+            <code>HZN Balance * HZN Price / Debt</code>. Maintaining a C-Ratio
+            of 800% or more will allow you to claim rewards. If your C-ratio
+            goes below the liquidation ratio of 200% for more than 3 days, your
+            account will be at risk of liquidation.
+          </>
+        }
+        placement='top'
+      >
         <Typography variant='subtitle2' classes={{ root: classes.tip }}>
           Current C-Ratio
           <HelpOutline fontSize='inherit' />

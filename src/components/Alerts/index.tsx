@@ -52,7 +52,7 @@ export default function Alert({ className, ...props }: BoxProps) {
       alertComponent = <EmptyStaked unstaked={unstakedCollateral} />;
     }
     // below liquidation percent
-    else if (currentCRatio.gt(0) && currentCRatio.gte(liquidationRatio)) {
+    else if (currentCRatio.gt(0) && currentCRatio.gt(liquidationRatio)) {
       color = COLOR.danger;
       alertComponent = <BelowLiquidation color={COLOR.danger} />;
     }
@@ -62,7 +62,7 @@ export default function Alert({ className, ...props }: BoxProps) {
       alertComponent = <BelowTarget />;
     }
     // above targetRatio percent
-    else if (currentCRatio.gt(0) && currentCRatio.lte(targetRatio)) {
+    else if (currentCRatio.gt(0) && currentCRatio.lt(targetRatio)) {
       alertComponent = <AboveTarget />;
     }
     // claimable

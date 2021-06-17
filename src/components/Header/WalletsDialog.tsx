@@ -86,6 +86,7 @@ export default function WalletsDialog(
   const { connectWallet, connected, deactivate } = useWallet();
 
   const appDataReady = useAtomValue(appDataReadyAtom);
+  const [prevWalletName, setPrevWalletName] = useAtom(prevWalletNameAtom);
 
   const [open, setOpen] = useAtom(openAtom);
   const [detail, setDetail] = useAtom(detailAtom);
@@ -111,20 +112,19 @@ export default function WalletsDialog(
     [connectWallet, connected, deactivate, detail?.key, setDetail, setOpen]
   );
 
-  const handleDisconnect = async () => {
-    // change wallet
+  const handleDisconnect = useCallback(() => {
+    // disconnect wallet
     deactivate();
     setDetail(null);
     setOpen(false);
-  };
+    setPrevWalletName("");
+  }, [deactivate, setDetail, setOpen, setPrevWalletName]);
 
   useEffect(() => {
     if (connected) {
       setOpen(false);
     }
   }, [connected, setOpen]);
-
-  const prevWalletName = useAtomValue(prevWalletNameAtom);
 
   // Auto connect last connected wallet.
   useEffect(() => {

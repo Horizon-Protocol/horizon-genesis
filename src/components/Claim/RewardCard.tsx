@@ -4,10 +4,12 @@ import clsx from "clsx";
 import TokenLogo from "@components/TokenLogo";
 import { COLOR, BORDER_COLOR } from "@utils/theme/constants";
 import { formatNumber } from "@utils/number";
+import { Token } from "@utils/constants";
 
 interface Props {
   label: string;
   amount: BN;
+  token?: TokenEnum | zAssetsEnum;
   disabled?: boolean;
   help?: string | JSX.Element;
 }
@@ -53,6 +55,7 @@ const useStyles = makeStyles({
 export default function RewardCard({
   label = "reward",
   amount,
+  token = Token.HZN,
   disabled,
   help,
   className,
@@ -78,12 +81,12 @@ export default function RewardCard({
         borderColor={BORDER_COLOR}
         className={classes.wrap}
       >
-        <TokenLogo />
+        <TokenLogo token={token} />
         <span className={classes.label}>{label}</span>
         <span className={classes.amount}>
           {formatNumber(amount)}
           <br />
-          HZN
+          {token}
         </span>
       </Box>
       {help ? (

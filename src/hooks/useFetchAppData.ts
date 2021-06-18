@@ -22,28 +22,25 @@ export default function useFetchAppData() {
   const setLiquidationRatio = useUpdateAtom(liquidationRatioAtom);
   // const setLiquidationDelay = useUpdateAtom(liquidationDelayAtom);
 
-  const fetcher = useCallback<QueryFunction<BN[], string[]>>(
-    async ({ queryKey }) => {
-      const {
-        contracts: { SystemSettings, Synthetix, Liquidations },
-        utils,
-      } = horizon.js!;
-      const res = await Promise.all([
-        Synthetix.totalSupply(),
-        Synthetix.totalIssuedSynthsExcludeEtherCollateral(
-          utils.formatBytes32String("zUSD"),
-          {
-            blockTag: "latest",
-          }
-        ),
-        SystemSettings.issuanceRatio(),
-        Liquidations.liquidationRatio(),
-        // Liquidations.liquidationDelay(),
-      ]);
-      return res.map((item) => etherToBN(item));
-    },
-    []
-  );
+  const fetcher = useCallback<QueryFunction<BN[], string[]>>(async () => {
+    const {
+      contracts: { SystemSettings, Synthetix, Liquidations },
+      utils,
+    } = horizon.js!;
+    const res = await Promise.all([
+      Synthetix.totalSupply(),
+      Synthetix.totalIssuedSynthsExcludeEtherCollateral(
+        utils.formatBytes32String("zUSD"),
+        {
+          blockTag: "latest",
+        }
+      ),
+      SystemSettings.issuanceRatio(),
+      Liquidations.liquidationRatio(),
+      // Liquidations.liquidationDelay(),
+    ]);
+    return res.map((item) => etherToBN(item));
+  }, []);
 
   useQuery([CONTRACT, PUBLIC, "app"], fetcher, {
     onSuccess([
@@ -57,12 +54,13 @@ export default function useFetchAppData() {
       //   totalIssuedZUSDExclEth: totalIssuedZUSDExclEth.toString(),
       //   // liquidationDelay: liquidationDelay,
       // });
-      setAppDataReady(true);
       setTotalSupply(totalSupply);
       setTotalIssuedZUSDExclEth(totalIssuedZUSDExclEth);
       setTargetCRatio(targetRatio);
       setLiquidationRatio(liquidationRatio);
       // setLiquidationDelay(liquidationDelay);
+
+      setAppDataReady(true);
     },
   });
 

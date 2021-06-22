@@ -4,13 +4,13 @@ import { Staking } from "@abis/types";
 import useContract, { useRpcContract } from "../useContract";
 
 export default function useStaking(token: TokenEnum, writable = true) {
-  const contract = useContract(StakingAddresses[token], abi, writable);
+  const contract = useContract<Staking>(StakingAddresses[token], abi, writable);
 
-  return contract as Staking;
+  return contract;
 }
 
 export function useRpcStaking(token: TokenEnum) {
-  const contract = useRpcContract(StakingAddresses[token], abi);
+  const contract = useRpcContract<Staking>(StakingAddresses[token], abi);
 
-  return contract as Staking;
+  return contract;
 }

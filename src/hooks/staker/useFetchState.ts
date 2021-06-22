@@ -5,6 +5,7 @@ import { useSnackbar } from "notistack";
 import { loadingAllAtom } from "@atoms/staker/loading";
 import { availableAtomFamily } from "@atoms/staker/balance";
 import { Token } from "@utils/constants";
+import { etherToBN } from "@utils/number";
 import {
   usePHB,
   useHZN,
@@ -72,11 +73,11 @@ export default function useFetchState() {
         fetchLegacyLPStakingData(),
       ]);
 
-      setAvailablePHB(phb);
-      setAvailableHZN(hzn);
-      setAvailableLP(lp);
-      setAvailableDeprecatedLP(deprecatedLp);
-      setAvailableLegacyLP(legacyLp);
+      setAvailablePHB(etherToBN(phb));
+      setAvailableHZN(etherToBN(hzn));
+      setAvailableLP(etherToBN(lp));
+      setAvailableDeprecatedLP(etherToBN(deprecatedLp));
+      setAvailableLegacyLP(etherToBN(legacyLp));
     } catch (e) {
       console.log(e);
       enqueueSnackbar("Failed to loading balances", { variant: "error" });

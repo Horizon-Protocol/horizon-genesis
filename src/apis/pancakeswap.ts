@@ -25,8 +25,8 @@ const pairAddress = `${wBnbAddress}_${hznAddress}`;
 
 export async function fetchTotalLiquidity(): Promise<number> {
   try {
-    const res = await fetch(ENDPOINT);
-    const jsonData: { data: { [k: string]: Pair } } = await res.json();
+    // const res = await fetch(ENDPOINT);
+    const jsonData: { data: { [k: string]: Pair } } = {};
     const pair = jsonData.data[pairAddress];
 
     if (pair) {

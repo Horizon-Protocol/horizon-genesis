@@ -7,6 +7,7 @@ import {
   withdrawableAtomFamily,
 } from "@atoms/staker/balance";
 import { DEPRECATED_TOKENS } from "@utils/constants";
+import { etherToBN } from "@utils/number";
 import useWallet from "../useWallet";
 import useStaking from "./useStaking";
 
@@ -38,16 +39,11 @@ export default function useFetchStakingData(token: TokenEnum) {
         // stakingContract.rewardsDuration(), // rewardDuration in seconds
         stakingContract.lockDownDuration(), // lockDownDuration in seconds
       ]);
+      const [staked, earned, withdrawable] = res.map(etherToBN);
+      setStaked(staked);
+      setEarned(earned);
+      setWithdrawable(withdrawable);
     }
-    const [
-      staked = constants.Zero,
-      earned = constants.Zero,
-      withdrawable = constants.Zero,
-    ] = res;
-    setStaked(staked);
-    setEarned(earned);
-    setWithdrawable(withdrawable);
-    return constants.Zero;
   }, [
     account,
     isIgnore,

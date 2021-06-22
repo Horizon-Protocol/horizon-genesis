@@ -2,11 +2,10 @@ import { useCallback, useMemo, useRef } from "react";
 import { Box, Button, InputBase, Typography } from "@material-ui/core";
 import { makeStyles } from "@material-ui/core/styles";
 import NumberFormat from "react-number-format";
-import { BigNumber } from "ethers";
 import prettyMilliseconds from "pretty-ms";
 import PrimaryButton from "@components/PrimaryButton";
 import { TokenName } from "@utils/constants";
-import { formatBalance } from "@utils/formatters";
+import { formatNumber } from "@utils/number";
 
 const useStyles = makeStyles(({ palette }) => ({
   root: {},
@@ -50,9 +49,9 @@ interface Props {
   token: TokenEnum;
   input?: string;
   onInput: (v: string, max?: boolean) => void;
-  amount: BigNumber; // ehter BN format of input
-  max: BigNumber;
-  lockDownSeconds: BigNumber | null;
+  amount: BN; // ehter BN format of input
+  max: BN;
+  lockDownSeconds: BN | null;
   btnLabel: string;
   logo?: string;
   loading: boolean;
@@ -80,7 +79,7 @@ export default function AmountInput({
   const setMax = useCallback(() => {
     if (!amount.eq(max)) {
       maxRef.current = true;
-      onInput(formatBalance(max, { mantissa: 6, trimMantissa: true }), true);
+      onInput(formatNumber(max, { decimals: 6 }), true);
     }
   }, [amount, max, onInput]);
 
@@ -132,7 +131,7 @@ export default function AmountInput({
           color={amount.gt(max) ? "error" : "primary"}
           className={classes.maxLabel}
         >
-          {formatBalance(max)} Available
+          {formatNumber(max)} Available
         </Typography>
       </Box>
       <PrimaryButton

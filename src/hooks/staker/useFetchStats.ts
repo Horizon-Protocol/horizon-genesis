@@ -3,6 +3,7 @@ import { useUpdateAtom } from "jotai/utils";
 import { BigNumber, constants } from "ethers";
 import { tokenStatAtomFamily } from "@atoms/staker/stat";
 import { BSC_BLOCK_TIME, Token } from "@utils/constants";
+import { etherToBN } from "@utils/number";
 import { useRpcStaking } from "./useStaking";
 import useFetchPrice from "./useFetchPrice";
 
@@ -34,10 +35,10 @@ export function useFetchStat(token: TokenEnum) {
     const now = Date.now() / 1000;
     setStat({
       isRoundActive: finishTimestamp > 0 && now < finishTimestamp,
-      total: totalStaked,
-      rewardsPerBlock: rewardsPerSecond.mul(BSC_BLOCK_TIME),
+      total: etherToBN(totalStaked),
+      rewardsPerBlock: etherToBN(rewardsPerSecond).multipliedBy(BSC_BLOCK_TIME),
       // rewardsDurationSeconds,
-      lockDownSeconds,
+      lockDownSeconds: etherToBN(lockDownSeconds),
     });
     return constants.Zero;
   }, [setStat, stakingContract]);

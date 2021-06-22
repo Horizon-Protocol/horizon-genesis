@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import { BrowserRouter as Router, Switch, Route } from "react-router-dom";
+import { useLocation, Switch, Route } from "react-router-dom";
 import ReactGA from "react-ga";
 import { useAtomValue } from "jotai/utils";
 import {
@@ -21,11 +21,12 @@ import useRefresh from "@hooks/useRefresh";
 import Mint from "@pages/mint";
 import Burn from "@pages/burn";
 import Claim from "@pages/claim";
-// import Earn from "@pages/earn";
+import Earn from "@pages/earn";
 import Header from "@components/Header";
 import Dashboard from "@components/Dashboard";
 import Alerts from "@components/Alerts";
 import clsx from "clsx";
+import { useMemo } from "react";
 
 const AppDisabled = !!import.meta.env.VITE_APP_DISABLED;
 
@@ -65,6 +66,12 @@ const useStyles = makeStyles(({ breakpoints, palette }) => ({
     },
     [breakpoints.down("sm")]: {
       flex: "1 1 480px",
+      margin: "0 8px 150px",
+    },
+  },
+  pageEarn: {
+    margin: "0 24px",
+    [breakpoints.down("sm")]: {
       margin: "0 8px 150px",
     },
   },
@@ -117,6 +124,10 @@ function App() {
   const downSM = useMediaQuery(breakpoints.down("sm"));
   const classes = useStyles();
 
+  const { pathname } = useLocation();
+
+  const isEarnPage = useMemo(() => pathname === "/earn", [pathname]);
+
   const appReady = useAtomValue(readyAtom);
 
   const [expanded, setExpanded] = useState(false);
@@ -157,31 +168,32 @@ function App() {
         </Box>
       )}
       <Box className={classes.container}>
-        <Router>
-          <Header />
-          {/* TODO: use floating button to expand and collapse for mobile */}
+        <Header />
 
-          {downSM && <Alerts px={2} py={1} mb={2} className={classes.alerts} />}
-          <Box className={classes.body}>
-            <Hidden mdDown>
-              <Box className={classes.placeholder}></Box>
-            </Hidden>
-            <Box className={classes.page}>
-              <Switch>
-                <Route path='/burn'>
-                  <Burn />
-                </Route>
-                <Route path='/claim'>
-                  <Claim />
-                </Route>
-                {/* <Route path='/earn'>
-            <Earn />
-          </Route> */}
-                <Route path='/'>
-                  <Mint />
-                </Route>
-              </Switch>
-            </Box>
+        {!isEarnPage && downSM && (
+          <Alerts px={2} py={1} mb={2} className={classes.alerts} />
+        )}
+        <Box className={classes.body}>
+          <Hidden mdDown>
+            <Box className={classes.placeholder}></Box>
+          </Hidden>
+          <Box className={isEarnPage ? classes.pageEarn : classes.page}>
+            <Switch>
+              <Route path='/burn'>
+                <Burn />
+              </Route>
+              <Route path='/claim'>
+                <Claim />
+              </Route>
+              <Route path='/earn'>
+                <Earn />
+              </Route>
+              <Route path='/'>
+                <Mint />
+              </Route>
+            </Switch>
+          </Box>
+          {!isEarnPage && (
             <Box
               className={clsx(classes.dashboard, expanded ? "expanded" : "")}
             >
@@ -199,8 +211,8 @@ function App() {
                 </Button>
               )}
             </Box>
-          </Box>
-        </Router>
+          )}
+        </Box>
       </Box>
     </>
   );

@@ -1,5 +1,6 @@
 import { StrictMode } from "react";
 import ReactDOM from "react-dom";
+import { BrowserRouter as Router } from "react-router-dom";
 import { Provider as JotaiProvider } from "jotai";
 import { QueryClient, QueryClientProvider } from "react-query";
 import { ReactQueryDevtools } from "react-query/devtools";
@@ -39,7 +40,9 @@ ReactDOM.render(
               }}
               preventDuplicate
             >
-              <App />
+              <Router>
+                <App />
+              </Router>
             </SnackbarProvider>
           </ThemeProvider>
         </Web3ReactProvider>

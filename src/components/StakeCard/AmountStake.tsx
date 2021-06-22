@@ -1,5 +1,4 @@
 import { useCallback, useState, useMemo } from "react";
-import { BigNumber, constants, utils } from "ethers";
 import { Box, Button, Collapse, Typography } from "@material-ui/core";
 import { makeStyles, withStyles } from "@material-ui/core/styles";
 import { useSnackbar } from "notistack";
@@ -18,7 +17,7 @@ import {
 } from "@atoms/staker/balance";
 import { tokenStatAtomFamily } from "@atoms/staker/stat";
 import { TokenName } from "@utils/constants";
-import { formatBalance } from "@utils/formatters";
+import { BNToEther, toBN, zeroBN, formatNumber } from "@utils/number";
 import AmountInput from "./AmountInput";
 
 const useStyles = makeStyles(({ palette }) => ({
@@ -134,20 +133,17 @@ export default function AmountStake({ token, logo, disabledActions }: Props) {
     tokenStatAtomFamily(token)
   );
 
-  const inputMax: BigNumber = useMemo(() => {
+  const inputMax: BN = useMemo(() => {
     if (currentAction === Action.Stake) {
       return available;
     } else if (currentAction === Action.Unstake) {
       return withdrawable;
     }
-    return constants.Zero;
+    return zeroBN;
   }, [currentAction, available, withdrawable]);
 
-  const amount: BigNumber = useMemo(
-    () =>
-      isMax
-        ? inputMax
-        : utils.parseUnits((input || "0").replace(/[^0-9.]/g, "")),
+  const amount: BN = useMemo(
+    () => (isMax ? inputMax : toBN((input || "0").replace(/[^0-9.]/g, ""))),
     [input, isMax, inputMax]
   );
 
@@ -172,7 +168,7 @@ export default function AmountStake({ token, logo, disabledActions }: Props) {
 
   const handleStake = useCallback(async () => {
     await checkApprove(amount);
-    const tx = await stakingContract.stake(amount);
+    const tx = await stakingContract!.stake(BNToEther(amount));
     enqueueSnackbar(
       <>
         Transaction has been sent to blockchain,
@@ -183,7 +179,7 @@ export default function AmountStake({ token, logo, disabledActions }: Props) {
     );
     const res = await tx.wait(1);
     console.log("Stake:", res);
-    enqueueSnackbar(`Successfully staked ${formatBalance(amount)} ${token}`, {
+    enqueueSnackbar(`Successfully staked ${formatNumber(amount)} ${token}`, {
       variant: "success",
     });
     refresh();
@@ -199,7 +195,7 @@ export default function AmountStake({ token, logo, disabledActions }: Props) {
   ]);
 
   const handleUnstake = useCallback(async () => {
-    const tx = await stakingContract.withdraw(amount);
+    const tx = await stakingContract!.withdraw(BNToEther(amount));
     enqueueSnackbar(
       <>
         Transaction has been sent to blockchain,
@@ -210,7 +206,7 @@ export default function AmountStake({ token, logo, disabledActions }: Props) {
     );
     const res = await tx.wait(1);
     console.log("Unstake:", res);
-    enqueueSnackbar(`Successfully unstaked ${formatBalance(amount)} ${token}`, {
+    enqueueSnackbar(`Successfully unstaked ${formatNumber(amount)} ${token}`, {
       variant: "success",
     });
     refresh();
@@ -274,7 +270,7 @@ export default function AmountStake({ token, logo, disabledActions }: Props) {
             </AmountLabel>
             <Box className={classes.amountBox}>
               <Box className={classes.staked}>
-                <Amount variant='body1'>{formatBalance(staked)}</Amount>
+                <Amount variant='body1'>{formatNumber(staked)}</Amount>
               </Box>
               <Box className={classes.buttons}>
                 {actions.map(({ key, label, disabled }) =>

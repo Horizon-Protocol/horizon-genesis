@@ -1,5 +1,5 @@
 import { useCallback, useState } from "react";
-import { BigNumber, constants, utils } from "ethers";
+import { constants, utils } from "ethers";
 import { useUpdateAtom } from "jotai/utils";
 import { fetchPrice } from "@apis/coingecko";
 import { fetchTotalLiquidity } from "@apis/pancakeswap";
@@ -7,6 +7,7 @@ import { tokenPriceAtomFamily } from "@atoms/staker/price";
 import erc20Abi from "@abis/erc20.json";
 import { Erc20 } from "@abis/types";
 import { TokenAddresses, Token } from "@utils/constants";
+import { toBN } from "@utils/number";
 import { useRpcContract } from "../useContract";
 
 const lpDisabled = false;
@@ -20,7 +21,6 @@ export default function useFetchPrice() {
   ) as Erc20;
 
   const setPHBPrice = useUpdateAtom(tokenPriceAtomFamily(Token.PHB));
-  const setHZNPrice = useUpdateAtom(tokenPriceAtomFamily(Token.HZN));
   const setLpPrice = useUpdateAtom(tokenPriceAtomFamily(Token.HZN_BNB_LP));
 
   const run = useCallback(async () => {
@@ -30,7 +30,7 @@ export default function useFetchPrice() {
       return;
     }
     setTimestamp(now);
-    const [{ phb, hzn }, totalLiquidity, lpTotalSupply] = await Promise.all([
+    const [{ phb }, totalLiquidity, lpTotalSupply] = await Promise.all([
       fetchPrice(),
       lpDisabled ? 0 : fetchTotalLiquidity(),
       !lpDisabled && lpToken ? lpToken.totalSupply() : constants.Zero,
@@ -38,12 +38,11 @@ export default function useFetchPrice() {
 
     const lpPrice = lpTotalSupply.gt(0)
       ? utils.parseEther(totalLiquidity.toString()).div(lpTotalSupply)
-      : BigNumber.from(0);
+      : toBN(0);
 
     setPHBPrice(phb);
-    setHZNPrice(hzn);
     setLpPrice(lpPrice.toNumber());
-  }, [lpToken, setHZNPrice, setLpPrice, setPHBPrice, timestamp]);
+  }, [lpToken, setLpPrice, setPHBPrice, timestamp]);
 
   return run;
 }

@@ -58,7 +58,7 @@ const Amount = withStyles({
   root: {
     paddingRight: 8,
     fontSize: 22,
-    letterSpacing: "1.71px",
+    fontFamily: "Rawline",
     fontWeight: 500,
     textOverflow: "ellipsis",
     overflow: "hidden",

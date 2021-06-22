@@ -8,7 +8,7 @@ import { CARD_CONTENT } from "@utils/theme/constants";
 import useFetchState from "@hooks/staker/useFetchState";
 import PrimaryButton from "@components/PrimaryButton";
 import { earnedAtomFamily } from "@atoms/staker/balance";
-import { formatBalance } from "@utils/formatters";
+import { formatNumber } from "@utils/number";
 import useStaking from "@hooks/staker/useStaking";
 
 const useStyles = makeStyles({
@@ -35,7 +35,7 @@ const Amount = withStyles({
   root: {
     paddingRight: 8,
     fontSize: 22,
-    letterSpacing: "1.71px",
+    fontFamily: "Rawline",
     fontWeight: 500,
     textOverflow: "ellipsis",
     overflow: "hidden",
@@ -59,7 +59,7 @@ export default function Earned({ token }: Props) {
   const stakingContract = useStaking(token);
 
   const end = useMemo(
-    () => parseFloat(formatBalance(earned).replace(/,/g, "")),
+    () => parseFloat(formatNumber(earned).replace(/,/g, "")),
     [earned]
   );
 
@@ -78,7 +78,7 @@ export default function Earned({ token }: Props) {
         );
         const res = await tx.wait(1);
         console.log("Harvest:", res);
-        enqueueSnackbar(`Successfully harvested ${formatBalance(earned)} HZN`, {
+        enqueueSnackbar(`Successfully harvested ${formatNumber(earned)} HZN`, {
           variant: "success",
         });
         refresh();
@@ -104,6 +104,7 @@ export default function Earned({ token }: Props) {
           duration={end === 0 ? 0 : 2}
           decimals={2}
           preserveValue
+          separator=','
         >
           {({ countUpRef }) => (
             <Amount ref={countUpRef} variant='body1'></Amount>

@@ -174,9 +174,11 @@ function App() {
           <Alerts px={2} py={1} mb={2} className={classes.alerts} />
         )}
         <Box className={classes.body}>
-          <Hidden mdDown>
-            <Box className={classes.placeholder}></Box>
-          </Hidden>
+          {!isEarnPage && (
+            <Hidden mdDown>
+              <Box className={classes.placeholder}></Box>
+            </Hidden>
+          )}
           <Box className={isEarnPage ? classes.pageEarn : classes.page}>
             <Switch>
               <Route path='/burn'>

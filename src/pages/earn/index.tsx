@@ -1,10 +1,7 @@
-import { useEffect } from "react";
 import { makeStyles } from "@material-ui/core/styles";
 import { Link } from "@material-ui/core";
-import useRequest from "@ahooksjs/use-request";
 import StakeCard, { StakeCardProps } from "@components/StakeCard";
 import { Token, TOKEN_ADDRESS, Action } from "@utils/constants";
-import useWallet from "@hooks/useWallet";
 import useFetchPrice from "@hooks/staker/useFetchPrice";
 import useFetchStats from "@hooks/staker/useFetchStats";
 import useFetchState from "@hooks/staker/useFetchState";
@@ -156,8 +153,6 @@ const cards: StakeCardProps[] = [
 
 export default function Home() {
   const classes = useStyles();
-
-  const { connected } = useWallet();
 
   useFetchPrice();
   useFetchStats();

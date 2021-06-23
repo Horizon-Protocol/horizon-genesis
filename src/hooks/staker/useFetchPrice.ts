@@ -1,19 +1,24 @@
-import { useCallback, useState } from "react";
-import { constants, utils } from "ethers";
-import { useUpdateAtom } from "jotai/utils";
+import { useCallback, useEffect, useState } from "react";
+import { useQuery } from "react-query";
+import { useAtomValue, useUpdateAtom } from "jotai/utils";
 import { fetchPrice } from "@apis/coingecko";
-import { fetchTotalLiquidity } from "@apis/pancakeswap";
+import { hznRateAtom } from "@atoms/exchangeRates";
 import { tokenPriceAtomFamily } from "@atoms/staker/price";
 import erc20Abi from "@abis/erc20.json";
 import { Erc20 } from "@abis/types";
-import { TokenAddresses, Token } from "@utils/constants";
-import { toBN } from "@utils/number";
-import { useRpcContract } from "../useContract";
-
-const lpDisabled = false;
+import { TokenAddresses, Token, StakingAddresses } from "@utils/constants";
+import { etherToBN, zeroBN } from "@utils/number";
+import { EARN, PUBLIC } from "@utils/queryKeys";
+import { useRpcContract, useHZN } from "../useContract";
 
 export default function useFetchPrice() {
   const [timestamp, setTimestamp] = useState<number>(0);
+  const [hznInLp, setHZNInLp] = useState<BN>(zeroBN);
+  const [lpTotalSupply, setLpTotalSupply] = useState<BN>(zeroBN);
+
+  const hznRate = useAtomValue(hznRateAtom);
+
+  const HZN = useHZN();
 
   const lpToken = useRpcContract(
     TokenAddresses[Token.HZN_BNB_LP],
@@ -23,26 +28,44 @@ export default function useFetchPrice() {
   const setPHBPrice = useUpdateAtom(tokenPriceAtomFamily(Token.PHB));
   const setLpPrice = useUpdateAtom(tokenPriceAtomFamily(Token.HZN_BNB_LP));
 
-  const run = useCallback(async () => {
+  const fetcher = useCallback(async () => {
+    if (!hznRate) {
+      return;
+    }
     const now = Date.now() / 1000;
 
     if (now - timestamp < 5) {
       return;
     }
     setTimestamp(now);
-    const [{ phb }, totalLiquidity, lpTotalSupply] = await Promise.all([
+    const [{ phb }, hznInLp, lpTotalSupply] = await Promise.all([
       fetchPrice(),
-      lpDisabled ? 0 : fetchTotalLiquidity(),
-      !lpDisabled && lpToken ? lpToken.totalSupply() : constants.Zero,
+      HZN?.balanceOf(StakingAddresses[Token.HZN_BNB_LP]),
+      lpToken.totalSupply(),
     ]);
 
-    const lpPrice = lpTotalSupply.gt(0)
-      ? utils.parseEther(totalLiquidity.toString()).div(lpTotalSupply)
-      : toBN(0);
+    const hznInLpBN = hznInLp ? etherToBN(hznInLp) : zeroBN;
 
     setPHBPrice(phb);
-    setLpPrice(lpPrice.toNumber());
-  }, [lpToken, setLpPrice, setPHBPrice, timestamp]);
+    setHZNInLp(hznInLpBN);
+    setLpTotalSupply(etherToBN(lpTotalSupply));
+  }, [HZN, hznRate, lpToken, setPHBPrice, timestamp]);
 
-  return run;
+  useQuery([EARN, PUBLIC, "price"], fetcher);
+
+  useEffect(() => {
+    const overallValueOfLPToken = hznInLp.multipliedBy(2).multipliedBy(hznRate);
+    const lpTokenPrice = lpTotalSupply.gt(0)
+      ? overallValueOfLPToken.div(lpTotalSupply)
+      : zeroBN;
+
+    console.log({
+      hznRate: hznRate.toNumber(),
+      hznInLp: hznInLp.toNumber(),
+      lpTotalSupply: lpTotalSupply.toNumber(),
+      lpTokenPrice: lpTokenPrice.toNumber(),
+    });
+
+    setLpPrice(lpTokenPrice.toNumber());
+  }, [hznInLp, hznRate, lpTotalSupply, setLpPrice]);
 }

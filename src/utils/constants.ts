@@ -1,4 +1,3 @@
-import { BigNumber } from "ethers";
 import { DefaultOptions } from "react-query";
 import BinanceLogo from "@assets/wallets/binance.svg";
 import MetamaskLogo from "@assets/wallets/metamask.svg";

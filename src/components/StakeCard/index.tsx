@@ -53,7 +53,7 @@ const StyledHeader = withStyles({
   },
   title: {
     marginBottom: 8,
-    letterSpacing: "3px",
+    letterSpacing: "1px",
     textTransform: "uppercase",
   },
 })(CardHeader);

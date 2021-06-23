@@ -5,8 +5,7 @@ import { useSnackbar } from "notistack";
 import { useAtomValue } from "jotai/utils";
 import { DEPRECATED_TOKENS, StakingAddresses, Action } from "@utils/constants";
 import { CARD_CONTENT } from "@utils/theme/constants";
-import useFetchState from "@hooks/staker/useFetchState";
-import { useFetchStat } from "@hooks/staker/useFetchStats";
+import useRefresh from "@hooks/useRefreshEarn";
 import { useTokenAllowance } from "@hooks/useAllowance";
 import useStaking from "@hooks/staker/useStaking";
 import PrimaryButton from "@components/PrimaryButton";
@@ -113,13 +112,7 @@ export default function AmountStake({ token, logo, disabledActions }: Props) {
     return Actions;
   }, [disabledActions]);
 
-  const refreshState = useFetchState();
-  const refreshStat = useFetchStat(token);
-
-  const refresh = useCallback(() => {
-    refreshState();
-    refreshStat();
-  }, [refreshStat, refreshState]);
+  const refresh = useRefresh();
 
   const stakingContract = useStaking(token);
   const { loading, needApprove, handleApprove, checkApprove } =

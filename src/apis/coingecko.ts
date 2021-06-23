@@ -7,21 +7,22 @@ interface Result {
   "red-pulse": {
     usd: number;
   };
-  // "horizon-protocol"?: {
-  //   usd: number;
-  // };
+  wbnb: {
+    usd: number;
+  };
 }
 
-export async function fetchPrice(): Promise<{ phb: number /* hzn: number */ }> {
+export async function fetchPrice(): Promise<{
+  phb: number;
+}> {
   try {
     const res = await fetch(ENDPOINT);
     const data: Result = await res.json();
 
     return {
       phb: data["red-pulse"].usd,
-      // hzn: data["horizon-protocol"]?.usd || 0,
     };
   } catch (error) {
-    return { phb: 0 /* hzn: 0 */ };
+    return { phb: 0 };
   }
 }

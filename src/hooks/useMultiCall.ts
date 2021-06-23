@@ -1,13 +1,26 @@
+import { useCallback, useMemo } from "react";
+import { BaseContract } from "ethers";
 import { Contract, Provider } from "@horizon-protocol/ethcall";
+import { Call } from "@horizon-protocol/ethcall/lib/call";
 import useRpcProvider from "./useRpcProvider";
 
-export { Contract };
+export const useMultiCallContract = <T extends BaseContract>(
+  address: string,
+  abi: any[]
+) => {
+  const contract = useMemo(() => new Contract(address, abi), [abi, address]);
 
-export default async function useMultiCallProvider() {
+  return contract as Contract & { [k in keyof T["callStatic"]]: any };
+};
+
+export default function useMultiCall() {
   const rpcProvider = useRpcProvider();
 
-  const ethcallProvider = new Provider();
-  await ethcallProvider.init(rpcProvider);
+  const getMultiCallProvider = useCallback(async () => {
+    const ethcallProvider = new Provider();
+    await ethcallProvider.init(rpcProvider as any);
+    return ethcallProvider;
+  }, [rpcProvider]);
 
-  return ethcallProvider;
+  return getMultiCallProvider;
 }

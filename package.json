@@ -6,7 +6,8 @@
     "build": "tsc && vite build",
     "serve": "vite preview",
     "lint": "eslint 'src/**/*.{js,jsx,ts,tsx}'",
-    "generate-types": "typechain --target=ethers-v5 --out-dir=src/abis/types 'src/abis/*.json'"
+    "generate-types": "typechain --target=ethers-v5 --out-dir=src/abis/types 'src/abis/*.json'",
+    "postinstall": "yarn generate-types"
   },
   "dependencies": {
     "@binance-chain/bsc-connector": "^1.0.0",

@@ -1,10 +1,8 @@
-import { useCallback, useMemo } from "react";
+import { useCallback } from "react";
 import { useQuery } from "react-query";
 import { useUpdateAtom } from "jotai/utils";
 import { BigNumber } from "ethers";
-import { Contract } from "@horizon-protocol/ethcall";
 import { tokenStatAtomFamily } from "@atoms/staker/stat";
-import abi from "@abis/staking.json";
 import { BSC_BLOCK_TIME, Token } from "@utils/constants";
 import { etherToBN } from "@utils/number";
 import { EARN, PUBLIC } from "@utils/queryKeys";

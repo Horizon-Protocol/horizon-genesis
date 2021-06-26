@@ -6,10 +6,10 @@ import { hznRateAtom } from "@atoms/exchangeRates";
 import { tokenPriceAtomFamily } from "@atoms/staker/price";
 import erc20Abi from "@abis/erc20.json";
 import { Erc20 } from "@abis/types";
-import { TokenAddresses, Token, StakingAddresses } from "@utils/constants";
+import { TokenAddresses, Token } from "@utils/constants";
 import { etherToBN, zeroBN } from "@utils/number";
 import { EARN, PUBLIC } from "@utils/queryKeys";
-import { useRpcContract, useHZN } from "../useContract";
+import { useRpcContract } from "../useContract";
 
 export default function useFetchPrice() {
   const [timestamp, setTimestamp] = useState<number>(0);
@@ -18,7 +18,7 @@ export default function useFetchPrice() {
 
   const hznRate = useAtomValue(hznRateAtom);
 
-  const HZN = useHZN();
+  const hznToken = useRpcContract(TokenAddresses[Token.HZN], erc20Abi) as Erc20;
 
   const lpToken = useRpcContract(
     TokenAddresses[Token.HZN_BNB_LP],
@@ -40,7 +40,7 @@ export default function useFetchPrice() {
     setTimestamp(now);
     const [{ phb }, hznInLp, lpTotalSupply] = await Promise.all([
       fetchPrice(),
-      HZN?.balanceOf(StakingAddresses[Token.HZN_BNB_LP]),
+      hznToken.balanceOf(TokenAddresses[Token.HZN_BNB_LP]),
       lpToken.totalSupply(),
     ]);
 
@@ -49,7 +49,7 @@ export default function useFetchPrice() {
     setPHBPrice(phb);
     setHZNInLp(hznInLpBN);
     setLpTotalSupply(etherToBN(lpTotalSupply));
-  }, [HZN, hznRate, lpToken, setPHBPrice, timestamp]);
+  }, [hznToken, hznRate, lpToken, setPHBPrice, timestamp]);
 
   useQuery([EARN, PUBLIC, "price"], fetcher);
 

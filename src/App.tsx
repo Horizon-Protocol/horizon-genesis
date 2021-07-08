@@ -1,5 +1,6 @@
 import { useEffect, useState } from "react";
 import { BrowserRouter as Router, Switch, Route } from "react-router-dom";
+import ReactGA from "react-ga";
 import { useAtomValue } from "jotai/utils";
 import {
   Box,
@@ -27,6 +28,11 @@ import Alerts from "@components/Alerts";
 import clsx from "clsx";
 
 const AppDisabled = !!import.meta.env.VITE_APP_DISABLED;
+
+ReactGA.initialize("UA-199967475-1", {
+  // debug: true,
+});
+ReactGA.pageview(window.location.pathname + window.location.search);
 
 const useStyles = makeStyles(({ breakpoints, palette }) => ({
   container: {

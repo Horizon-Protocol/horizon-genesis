@@ -1,5 +1,6 @@
 import { useMemo } from "react";
 import { useLocation, useHistory } from "react-router-dom";
+import ReactGA from "react-ga";
 import { Tabs, Tab, TabProps } from "@material-ui/core";
 import { withStyles, fade } from "@material-ui/core/styles";
 import { PAGE_COLOR } from "@utils/theme/constants";
@@ -101,7 +102,10 @@ export default function NavTabs() {
       value={pathname}
       textColor='primary'
       onChange={(_, value) => {
-        history.push(value);
+        if (value !== pathname) {
+          history.push(value);
+          ReactGA.pageview(value);
+        }
       }}
     >
       {styledTabs.map(({ to, label, StyledTab }) => (

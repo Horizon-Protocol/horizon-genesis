@@ -1,11 +1,11 @@
-name: Deploy Testnet Public
+name: Deploy Public Beta
 
 on:
   push:
     branches:
       - main
     paths-ignore:
-      - '.github/workflows/deploy-testnet.yml'
+      - ".github/workflows/deploy.yml"
 
 jobs:
   build:

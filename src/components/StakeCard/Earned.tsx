@@ -5,7 +5,7 @@ import { makeStyles, withStyles } from "@material-ui/core/styles";
 import { useSnackbar } from "notistack";
 import CountUp from "react-countup";
 import { CARD_CONTENT } from "@utils/theme/constants";
-import useFetchState from "@hooks/staker/useFetchState";
+import useRefreshEarn from "@hooks/useRefreshEarn";
 import PrimaryButton from "@components/PrimaryButton";
 import { earnedAtomFamily } from "@atoms/staker/balance";
 import { formatNumber } from "@utils/number";
@@ -53,7 +53,7 @@ export default function Earned({ token }: Props) {
 
   const [loading, setLoading] = useState<boolean>(false);
 
-  const refresh = useFetchState();
+  const refresh = useRefreshEarn();
   const earned = useAtomValue(earnedAtomFamily(token));
 
   const stakingContract = useStaking(token);

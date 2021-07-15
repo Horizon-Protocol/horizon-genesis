@@ -20,7 +20,7 @@ const useStyles = makeStyles(({ breakpoints, palette }) =>
       opacity: ({ disabled }) => (disabled ? 0.2 : 1),
       cursor: ({ disabled }) => (disabled ? "not-allowed" : "pointer"),
       [breakpoints.down("xs")]: {
-        width: 105,
+        width: "30%",
       },
     },
     title: {

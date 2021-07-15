@@ -4,7 +4,7 @@ import { useUpdateAtom } from "jotai/utils";
 import { BigNumber } from "ethers";
 import { tokenStatAtomFamily } from "@atoms/staker/stat";
 import { BSC_BLOCK_TIME, Token } from "@utils/constants";
-import { etherToBN } from "@utils/number";
+import { etherToBN, toBN } from "@utils/number";
 import { EARN, PUBLIC } from "@utils/queryKeys";
 import { useMultiCallStaking } from "./useStaking";
 
@@ -42,7 +42,7 @@ export function useStatFetcher(token: TokenEnum) {
         rewardsPerBlock:
           etherToBN(rewardsPerSecond).multipliedBy(BSC_BLOCK_TIME),
         // rewardsDurationSeconds,
-        lockDownSeconds: etherToBN(lockDownSeconds),
+        lockDownSeconds: toBN(lockDownSeconds.toString()),
       });
     }
   }, [getMultiCallProvider, setStat, stakingContract]);

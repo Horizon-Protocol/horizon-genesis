@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import { useLocation, Switch, Route } from "react-router-dom";
+import { Switch, Route } from "react-router-dom";
 import ReactGA from "react-ga";
 import { useAtomValue } from "jotai/utils";
 import {
@@ -11,6 +11,7 @@ import {
 } from "@material-ui/core";
 import { ExpandLess, ExpandMore } from "@material-ui/icons";
 import { makeStyles, useTheme } from "@material-ui/core/styles";
+import clsx from "clsx";
 import { readyAtom } from "@atoms/app";
 import useSetupHorizonLib from "@hooks/useSetupHorizonLib";
 import useFetchAppData from "@hooks/useFetchAppData";
@@ -18,6 +19,7 @@ import useFetchDebtData from "@hooks/useFetchDebtData";
 import useFetchZAssets from "@hooks/useFetchZAssets";
 import useFetchFeePool from "@hooks/useFetchFeePool";
 import useRefresh from "@hooks/useRefresh";
+import useIsEarnPage from "@hooks/useIsEarnPage";
 import Mint from "@pages/mint";
 import Burn from "@pages/burn";
 import Claim from "@pages/claim";
@@ -25,8 +27,6 @@ import Earn from "@pages/earn";
 import Header from "@components/Header";
 import Dashboard from "@components/Dashboard";
 import Alerts from "@components/Alerts";
-import clsx from "clsx";
-import { useMemo } from "react";
 
 const AppDisabled = !!import.meta.env.VITE_APP_DISABLED;
 
@@ -124,9 +124,7 @@ function App() {
   const downSM = useMediaQuery(breakpoints.down("sm"));
   const classes = useStyles();
 
-  const { pathname } = useLocation();
-
-  const isEarnPage = useMemo(() => pathname === "/earn", [pathname]);
+  const isEarnPage = useIsEarnPage();
 
   const appReady = useAtomValue(readyAtom);
 

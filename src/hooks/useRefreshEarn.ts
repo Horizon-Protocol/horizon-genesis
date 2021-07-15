@@ -1,4 +1,4 @@
-import { EARN, PUBLIC } from "@utils/queryKeys";
+import { CONTRACT, EARN, PUBLIC } from "@utils/queryKeys";
 import { useCallback } from "react";
 import { useQueryClient } from "react-query";
 import useWallet from "./useWallet";
@@ -16,6 +16,9 @@ export default function useRefresh() {
   const refreshUser = useCallback(() => {
     if (account) {
       queryClient.refetchQueries([EARN, account], {
+        fetching: false,
+      });
+      queryClient.refetchQueries([CONTRACT, account], {
         fetching: false,
       });
     }

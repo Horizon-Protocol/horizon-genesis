@@ -2589,10 +2589,10 @@ cors@^2.8.1:
     object-assign "^4"
     vary "^1"
 
-countup.js@^1.9.3:
-  version "1.9.3"
-  resolved "https://registry.yarnpkg.com/countup.js/-/countup.js-1.9.3.tgz#ce3e50cd7160441e478f07da31895edcc0f1c9dd"
-  integrity sha1-zj5QzXFgRB5HjwfaMYle3MDxyd0=
+countup.js@^2.0.7:
+  version "2.0.7"
+  resolved "https://registry.yarnpkg.com/countup.js/-/countup.js-2.0.7.tgz#56b72a87fc0ee3cadb38356c246ccac88fb0a8cc"
+  integrity sha512-FO0nQdvG1iQwHp28wdvkErxnNUSbdkzztqZ6YNHKLHydngD2tdiKEW8dFrqpahF3tj+Ma70h0vyYrCBzxlVWdg==
 
 create-ecdh@^4.0.0:
   version "4.0.4"
@@ -5511,12 +5511,12 @@ react-compound-timer@^1.2.0:
   resolved "https://registry.yarnpkg.com/react-compound-timer/-/react-compound-timer-1.2.0.tgz#52df2980dce0b63ddaf5718235a51188cb223d1d"
   integrity sha512-BEFT0Z/+vusfAy4Ci1+G5lr8mI+dk3ddRJuu1DIYA5xGS+5P+M0o4krHmFMKgHuaIY9H3xx0KCvf3ilb1+HFWA==
 
-react-countup@^4.3.3:
-  version "4.3.3"
-  resolved "https://registry.yarnpkg.com/react-countup/-/react-countup-4.3.3.tgz#143a8d854d47290b73d6915eac20a12d839153c2"
-  integrity sha512-pWnxpwdPNRyJFha/YKKbyc4RLAw8PzmULdgCziGIgw6vxhT1VdccrvQgj38HBSoM2qF/MoLmn4M2klvDWVIdaw==
+react-countup-es@^4.4.3:
+  version "4.4.3"
+  resolved "https://registry.yarnpkg.com/react-countup-es/-/react-countup-es-4.4.3.tgz#ed68085995710060c0afdcb20ce10127747491ec"
+  integrity sha512-tyhyzbq7MOTrDnXfPBzRhGo7EqKqUxFgFvFSuvJKYYL8kJsqt0K8G+1iGzMXG9jxt6VrkOCcVIvvSWUubwqfvA==
   dependencies:
-    countup.js "^1.9.3"
+    countup.js "^2.0.7"
     prop-types "^15.7.2"
     warning "^4.0.3"
 

@@ -27,6 +27,7 @@ export default defineConfig({
     include: ["@horizon-protocol/contracts-interface"],
   },
   build: {
+    // sourcemap: true,
     commonjsOptions: {
       exclude: ["contracts-interface/*"],
     },

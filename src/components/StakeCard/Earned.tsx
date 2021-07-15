@@ -3,12 +3,12 @@ import { useAtomValue } from "jotai/utils";
 import { Box, Typography } from "@material-ui/core";
 import { makeStyles, withStyles } from "@material-ui/core/styles";
 import { useSnackbar } from "notistack";
-import CountUp from "react-countup";
+import CountUp from "react-countup-es";
 import { CARD_CONTENT } from "@utils/theme/constants";
 import useRefreshEarn from "@hooks/useRefreshEarn";
 import PrimaryButton from "@components/PrimaryButton";
 import { earnedAtomFamily } from "@atoms/staker/balance";
-import { formatNumber } from "@utils/number";
+import { formatNumber, toBN } from "@utils/number";
 import useStaking from "@hooks/staker/useStaking";
 
 const useStyles = makeStyles({
@@ -58,7 +58,7 @@ export default function Earned({ token }: Props) {
 
   const stakingContract = useStaking(token);
 
-  const end = useMemo(
+  const end: number = useMemo(
     () => parseFloat(formatNumber(earned).replace(/,/g, "")),
     [earned]
   );
@@ -104,7 +104,7 @@ export default function Earned({ token }: Props) {
           duration={end === 0 ? 0 : 2}
           decimals={2}
           preserveValue
-          separator=','
+          // separator=','
         >
           {({ countUpRef }) => (
             <Amount ref={countUpRef} variant='body1'></Amount>

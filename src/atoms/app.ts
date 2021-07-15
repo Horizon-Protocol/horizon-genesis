@@ -15,9 +15,6 @@ export const targetRatioAtom = atomWithReset(zeroBN);
 export const liquidationRatioAtom = atomWithReset(zeroBN);
 export const liquidationDelayAtom = atomWithReset(zeroBN);
 
-// HZN price
-export const hznPriceAtom = atomWithReset(0);
-
 export const ratiosPercentAtom = atom((get) => {
   const targetRatio = get(targetRatioAtom);
   const liquidationRatio = get(liquidationRatioAtom);

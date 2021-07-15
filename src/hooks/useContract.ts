@@ -7,7 +7,7 @@ import useWallet from "@hooks/useWallet";
 import { TokenAddresses, Token } from "@utils/constants";
 import useRpcProvider from "./useRpcProvider";
 
-const useContract = (
+const useContract = <T extends Contract>(
   address: string,
   abi: ContractInterface,
   writable: boolean = false
@@ -26,22 +26,24 @@ const useContract = (
     }
   }, [address, abi, provider, writable]);
 
-  return contract;
+  return contract as T | undefined;
 };
 
-export const useRpcContract = (address: string, abi: ContractInterface) => {
+export const useRpcContract = <T extends Contract>(
+  address: string,
+  abi: ContractInterface
+) => {
   const rpcProvider = useRpcProvider();
-  const contract = useMemo(() => new Contract(address, abi, rpcProvider), [
-    abi,
-    address,
-    rpcProvider,
-  ]);
+  const contract = useMemo(
+    () => new Contract(address, abi, rpcProvider),
+    [abi, address, rpcProvider]
+  );
 
-  return contract;
+  return contract as T;
 };
 
 export const useERC20 = (address: string, writable: boolean = false) => {
-  return useContract(address, erc20Abi, writable) as Erc20;
+  return useContract<Erc20>(address, erc20Abi, writable);
 };
 
 export const usePHB = (writable: boolean = false) => {
@@ -49,31 +51,19 @@ export const usePHB = (writable: boolean = false) => {
 };
 
 export const useHZN = (writable: boolean = false) => {
-  return useContract(TokenAddresses[Token.HZN], hznAbi, writable) as HZN;
+  return useContract<HZN>(TokenAddresses[Token.HZN], hznAbi, writable);
 };
 
 export const useLP = (writable: boolean = false) => {
-  return useContract(
-    TokenAddresses[Token.HZN_BNB_LP],
-    erc20Abi,
-    writable
-  ) as Erc20;
+  return useERC20(TokenAddresses[Token.HZN_BNB_LP], writable);
 };
 
 export const useDeprecatedLP = (writable: boolean = false) => {
-  return useContract(
-    TokenAddresses[Token.HZN_BNB_LP_DEPRECATED],
-    erc20Abi,
-    writable
-  ) as Erc20;
+  return useERC20(TokenAddresses[Token.HZN_BNB_LP_DEPRECATED], writable);
 };
 
 export const useLegacyLP = (writable: boolean = false) => {
-  return useContract(
-    TokenAddresses[Token.HZN_BNB_LP_LEGACY],
-    erc20Abi,
-    writable
-  ) as Erc20;
+  return useERC20(TokenAddresses[Token.HZN_BNB_LP_LEGACY], writable);
 };
 
 export default useContract;

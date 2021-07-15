@@ -1,72 +1,66 @@
 import { useCallback } from "react";
+import { useQuery } from "react-query";
 import { useUpdateAtom } from "jotai/utils";
-import { BigNumber, constants } from "ethers";
+import { BigNumber } from "ethers";
 import { tokenStatAtomFamily } from "@atoms/staker/stat";
 import { BSC_BLOCK_TIME, Token } from "@utils/constants";
-import { useRpcStaking } from "./useStaking";
-import useFetchPrice from "./useFetchPrice";
+import { etherToBN, toBN } from "@utils/number";
+import { EARN, PUBLIC } from "@utils/queryKeys";
+import { useMultiCallStaking } from "./useStaking";
 
-export function useFetchStat(token: TokenEnum) {
-  const stakingContract = useRpcStaking(token);
+export function useStatFetcher(token: TokenEnum) {
+  const { contract: stakingContract, getProvider: getMultiCallProvider } =
+    useMultiCallStaking(token);
 
   // stat
   const setStat = useUpdateAtom(tokenStatAtomFamily(token));
 
   const fetchData = useCallback(async () => {
-    let res: BigNumber[] = [];
     if (stakingContract) {
-      res = await Promise.all([
+      const multiCallProvider = await getMultiCallProvider();
+
+      const res = (await multiCallProvider.all([
         stakingContract.totalSupply(), // total staked
         stakingContract.periodFinish(), // finish time
         stakingContract.rewardRate(), // rewards per second
         // stakingContract.rewardsDuration(), // rewardDuration in seconds
         stakingContract.lockDownDuration(), // lockDownDuration in seconds
-      ]);
+      ])) as BigNumber[];
+
+      const [
+        totalStaked,
+        periodFinish,
+        rewardsPerSecond,
+        // rewardsDurationSeconds,
+        lockDownSeconds,
+      ] = res;
+      const finishTimestamp = periodFinish.toNumber();
+      const now = Date.now() / 1000;
+      setStat({
+        isRoundActive: finishTimestamp > 0 && now < finishTimestamp,
+        total: etherToBN(totalStaked),
+        rewardsPerBlock:
+          etherToBN(rewardsPerSecond).multipliedBy(BSC_BLOCK_TIME),
+        // rewardsDurationSeconds,
+        lockDownSeconds: toBN(lockDownSeconds.toString()),
+      });
     }
-    const [
-      totalStaked = constants.Zero,
-      periodFinish = constants.Zero,
-      rewardsPerSecond = constants.Zero,
-      // rewardsDurationSeconds = constants.Zero,
-      lockDownSeconds = constants.Zero,
-    ] = res;
-    const finishTimestamp = periodFinish.toNumber();
-    const now = Date.now() / 1000;
-    setStat({
-      isRoundActive: finishTimestamp > 0 && now < finishTimestamp,
-      total: totalStaked,
-      rewardsPerBlock: rewardsPerSecond.mul(BSC_BLOCK_TIME),
-      // rewardsDurationSeconds,
-      lockDownSeconds,
-    });
-    return constants.Zero;
-  }, [setStat, stakingContract]);
+  }, [getMultiCallProvider, setStat, stakingContract]);
 
   return fetchData;
 }
 
 export default function useFetchStats() {
-  const phb = useFetchStat(Token.PHB);
-  const hzn = useFetchStat(Token.HZN);
-  const lp = useFetchStat(Token.HZN_BNB_LP);
-  const lpDeprecated = useFetchStat(Token.HZN_BNB_LP_DEPRECATED);
-  const lpLegacy = useFetchStat(Token.HZN_BNB_LP_LEGACY);
+  const phb = useStatFetcher(Token.PHB);
+  const hzn = useStatFetcher(Token.HZN);
+  const lp = useStatFetcher(Token.HZN_BNB_LP);
+  const lpDeprecated = useStatFetcher(Token.HZN_BNB_LP_DEPRECATED);
+  const lpLegacy = useStatFetcher(Token.HZN_BNB_LP_LEGACY);
 
-  // price
-  const fetchPrice = useFetchPrice();
-
-  const fetch = useCallback(
-    () =>
-      Promise.all([
-        fetchPrice(),
-        phb(),
-        hzn(),
-        lp(),
-        lpDeprecated(),
-        lpLegacy(),
-      ]),
-    [fetchPrice, phb, hzn, lp, lpDeprecated, lpLegacy]
+  const fetcher = useCallback(
+    () => Promise.all([phb(), hzn(), lp(), lpDeprecated(), lpLegacy()]),
+    [hzn, lp, lpDeprecated, lpLegacy, phb]
   );
 
-  return fetch;
+  useQuery([EARN, PUBLIC, "stats"], fetcher);
 }

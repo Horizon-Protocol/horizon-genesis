@@ -1,10 +1,10 @@
 import { useCallback, useEffect, useMemo, useState } from "react";
 import { useAtom } from "jotai";
-import { BigNumber } from "ethers";
 import { useSnackbar } from "notistack";
 import { Erc20, HZN } from "@abis/types";
 import { tokenAllowanceAtomFamily } from "@atoms/staker/balance";
 import { Token } from "@utils/constants";
+import { etherToBN } from "@utils/number";
 import {
   usePHB,
   useHZN,
@@ -30,15 +30,15 @@ export const useTokenAllowance = (token: TokenEnum, spenderAddress: string) => {
   const tokenContract: Erc20 | HZN | null = useMemo(() => {
     switch (token) {
       case Token.PHB:
-        return phbContract;
+        return phbContract!;
       case Token.HZN:
-        return hznContract;
+        return hznContract!;
       case Token.HZN_BNB_LP:
-        return lpContract;
+        return lpContract!;
       case Token.HZN_BNB_LP_DEPRECATED:
-        return deprecatedLpContract;
+        return deprecatedLpContract!;
       case Token.HZN_BNB_LP_LEGACY:
-        return legacyLpContract;
+        return legacyLpContract!;
       default:
         break;
     }
@@ -57,7 +57,7 @@ export const useTokenAllowance = (token: TokenEnum, spenderAddress: string) => {
       setLoading(true);
       const allowance = await tokenContract.allowance(account, spenderAddress);
       console.log("allowance", token, allowance.toString());
-      setAllowance(allowance);
+      setAllowance(etherToBN(allowance));
       setLoading(false);
     }
   }, [account, tokenContract, setAllowance, spenderAddress, token]);
@@ -78,7 +78,7 @@ export const useTokenAllowance = (token: TokenEnum, spenderAddress: string) => {
         );
         const res = await tx.wait(1);
         console.log("approve", res);
-        setAllowance(total);
+        setAllowance(etherToBN(total));
       } catch (e) {
         enqueueSnackbar(e?.message || "Operation failed"!, {
           variant: "error",
@@ -89,7 +89,7 @@ export const useTokenAllowance = (token: TokenEnum, spenderAddress: string) => {
   }, [account, tokenContract, spenderAddress, enqueueSnackbar, setAllowance]);
 
   const checkApprove = useCallback(
-    async (amount: BigNumber) => {
+    async (amount: BN) => {
       if (amount.lte(allowance)) {
         console.log("already approved", allowance.toString());
         return;

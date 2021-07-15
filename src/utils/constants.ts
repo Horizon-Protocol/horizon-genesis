@@ -1,4 +1,3 @@
-import { BigNumber } from "ethers";
 import { DefaultOptions } from "react-query";
 import BinanceLogo from "@assets/wallets/binance.svg";
 import MetamaskLogo from "@assets/wallets/metamask.svg";
@@ -150,9 +149,7 @@ export const HZNBuyLink = `https://exchange.pancakeswap.finance/#/swap?outputCur
 export const BSC_BLOCK_TIME = 3;
 
 // BSC Blocks per year
-export const BLOCKS_PER_YEAR = BigNumber.from(
-  (60 / BSC_BLOCK_TIME) * 60 * 24 * 365
-); // 10512000
+export const BLOCKS_PER_YEAR = (60 / BSC_BLOCK_TIME) * 60 * 24 * 365; // 10512000
 
 export const DEPRECATED_TOKENS = [
   Token.HZN_BNB_LP_DEPRECATED,

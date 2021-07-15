@@ -1,4 +1,3 @@
-import { BigNumber, utils } from "ethers";
 import { BLOCKS_PER_YEAR } from "@utils/constants";
 
 /**
@@ -12,8 +11,8 @@ import { BLOCKS_PER_YEAR } from "@utils/constants";
 export const getApy = (
   stakingTokenPrice: number,
   rewardTokenPrice: number,
-  totalStaked: BigNumber,
-  rewardsPerBlock: BigNumber
+  totalStaked: BN,
+  rewardsPerBlock: BN
 ): number => {
   // console.log({
   //   stakingTokenPrice,
@@ -21,20 +20,19 @@ export const getApy = (
   //   totalStaked: utils.formatEther(totalStaked),
   //   rewardsPerBlock: utils.formatEther(rewardsPerBlock),
   // });
-  const totalRewardPricePerYear = utils
-    .parseEther(rewardTokenPrice.toString())
-    .mul(rewardsPerBlock)
-    .mul(BLOCKS_PER_YEAR);
+  const totalRewardPricePerYear = rewardsPerBlock
+    .multipliedBy(BLOCKS_PER_YEAR)
+    .multipliedBy(rewardTokenPrice);
 
-  const totalStakingTokenInPool = utils
-    .parseEther(stakingTokenPrice.toString())
-    .mul(totalStaked);
+  const totalStakingTokenInPool = totalStaked.multipliedBy(stakingTokenPrice);
 
   if (totalStakingTokenInPool.eq(0)) {
     return 0;
   }
-  const apy = totalRewardPricePerYear.mul(10000).div(totalStakingTokenInPool);
+  const apyPercent = totalRewardPricePerYear
+    .div(totalStakingTokenInPool)
+    .multipliedBy(100);
   // console.log("apy:", apy.toString(), formatBalance(apy));
 
-  return apy.toNumber() / 100;
+  return apyPercent.toNumber();
 };

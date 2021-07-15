@@ -1,7 +1,7 @@
 import { atom } from "jotai";
 import { atomFamily } from "jotai/utils";
-import { BigNumber, constants } from "ethers";
 import { Token } from "@utils/constants";
+import { zeroBN } from "@utils/number";
 
 export enum BalanceName {
   available = "available",
@@ -14,18 +14,18 @@ export enum BalanceName {
 interface Param {
   token: Token;
   name: BalanceName;
-  amount?: BigNumber; // total staked
+  amount?: BN; // total staked
 }
 
 export const amountAtomFamily = atomFamily(
-  ({ amount = constants.Zero }: Param) => atom(amount),
+  ({ amount = zeroBN }: Param) => atom(amount),
   (a, b) => a.token === b.token && a.name === b.name
 );
 
 export const availableAtomFamily = atomFamily((token: Token) =>
   atom(
     (get) => get(amountAtomFamily({ token, name: BalanceName.available })),
-    (get, set, amount: BigNumber) => {
+    (get, set, amount: BN) => {
       set(amountAtomFamily({ token, name: BalanceName.available }), amount);
     }
   )
@@ -34,7 +34,7 @@ export const availableAtomFamily = atomFamily((token: Token) =>
 export const stakedAtomFamily = atomFamily((token: Token) =>
   atom(
     (get) => get(amountAtomFamily({ token, name: BalanceName.staked })),
-    (get, set, amount: BigNumber) => {
+    (get, set, amount: BN) => {
       set(amountAtomFamily({ token, name: BalanceName.staked }), amount);
     }
   )
@@ -42,7 +42,7 @@ export const stakedAtomFamily = atomFamily((token: Token) =>
 export const earnedAtomFamily = atomFamily((token: Token) =>
   atom(
     (get) => get(amountAtomFamily({ token, name: BalanceName.earned })),
-    (get, set, amount: BigNumber) => {
+    (get, set, amount: BN) => {
       set(amountAtomFamily({ token, name: BalanceName.earned }), amount);
     }
   )
@@ -50,7 +50,7 @@ export const earnedAtomFamily = atomFamily((token: Token) =>
 export const withdrawableAtomFamily = atomFamily((token: Token) =>
   atom(
     (get) => get(amountAtomFamily({ token, name: BalanceName.withdrawable })),
-    (get, set, amount: BigNumber) => {
+    (get, set, amount: BN) => {
       set(amountAtomFamily({ token, name: BalanceName.withdrawable }), amount);
     }
   )
@@ -58,22 +58,22 @@ export const withdrawableAtomFamily = atomFamily((token: Token) =>
 export const totalSupplyAtomFamily = atomFamily((token: Token) =>
   atom(
     (get) => get(amountAtomFamily({ token, name: BalanceName.totalSupply })),
-    (get, set, amount: BigNumber) => {
+    (get, set, amount: BN) => {
       set(amountAtomFamily({ token, name: BalanceName.totalSupply }), amount);
     }
   )
 );
 
-type AllowanceParam = { token: Token; amount?: BigNumber };
+type AllowanceParam = { token: Token; amount?: BN };
 
 const allowanceAtomFamily = atomFamily(
-  ({ amount = constants.Zero }: AllowanceParam) => atom(amount),
+  ({ amount = zeroBN }: AllowanceParam) => atom(amount),
   (a, b) => a.token === b.token
 );
 
 export const tokenAllowanceAtomFamily = atomFamily((token: Token) =>
   atom(
     (get) => get(allowanceAtomFamily({ token })),
-    (get, set, amount: BigNumber) => set(allowanceAtomFamily({ token }), amount)
+    (get, set, amount: BN) => set(allowanceAtomFamily({ token }), amount)
   )
 );

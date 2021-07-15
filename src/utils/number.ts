@@ -42,6 +42,10 @@ export const toBN = (value: NumericValue) =>
 export const etherToBN = (value: ethers.BigNumber) =>
   toBN(utils.formatEther(value));
 
+export function BNToEther(value: BN): ethers.BigNumber {
+  return utils.parseUnits(value.toString());
+}
+
 export const zeroBN = toBN(0);
 
 export const maxBN = bignumber.maximum;
@@ -145,10 +149,6 @@ export function formatUnits(
   return formatNumber(toBN(value.toString()).dividedBy(toBN(10).pow(units)), {
     decimals: decimals,
   });
-}
-
-export function toEthersBig(a: any, b: number): ethers.BigNumber {
-  return ethers.utils.parseUnits(a.div(Math.pow(10, b)).toString(), b);
 }
 
 export function cRatioToPercent(cRatio: BN): number {

@@ -3,7 +3,7 @@ import { makeStyles } from "@material-ui/core/styles";
 import { useAtomValue } from "jotai/utils";
 import { CARD_CONTENT } from "@utils/theme/constants";
 import { Token, TokenShortName } from "@utils/constants";
-import { formatBalance, formatNumber } from "@utils/formatters";
+import { formatNumber } from "@utils/number";
 import { getApy } from "@utils/apy";
 import { tokenStatAtomFamily } from "@atoms/staker/stat";
 import { useMemo } from "react";
@@ -25,9 +25,11 @@ const useStyles = makeStyles({
   apy: {
     fontSize: 14,
     fontWeight: 700,
+    fontFamily: "Rawline",
   },
   total: {
     fontSize: 14,
+    fontFamily: "Rawline",
   },
 });
 
@@ -75,7 +77,7 @@ export default function Stats({ token }: { token: TokenEnum }) {
           Total Staked
         </Typography>
         <Typography variant='body1' classes={{ root: classes.total }}>
-          {`${formatBalance(total)} ${TokenShortName[token]}`}
+          {`${formatNumber(total)} ${TokenShortName[token]}`}
         </Typography>
       </div>
     </Box>

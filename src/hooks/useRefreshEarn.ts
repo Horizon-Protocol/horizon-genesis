@@ -1,25 +1,23 @@
-import { CONTRACT, PUBLIC } from "@utils/queryKeys";
+import { CONTRACT, EARN, PUBLIC } from "@utils/queryKeys";
 import { useCallback } from "react";
 import { useQueryClient } from "react-query";
 import useWallet from "./useWallet";
-import useIsEarnPage from "./useIsEarnPage";
-import useRefreshEarn from "./useRefreshEarn";
 
 export default function useRefresh() {
   const { account } = useWallet();
   const queryClient = useQueryClient();
-  const isEarnPage = useIsEarnPage();
-
-  const refreshEarnPage = useRefreshEarn();
 
   const refreshPublic = useCallback(() => {
-    queryClient.refetchQueries([CONTRACT, PUBLIC], {
+    queryClient.refetchQueries([EARN, PUBLIC], {
       fetching: false,
     });
   }, [queryClient]);
 
   const refreshUser = useCallback(() => {
     if (account) {
+      queryClient.refetchQueries([EARN, account], {
+        fetching: false,
+      });
       queryClient.refetchQueries([CONTRACT, account], {
         fetching: false,
       });
@@ -27,13 +25,9 @@ export default function useRefresh() {
   }, [account, queryClient]);
 
   const refresh = useCallback(() => {
-    if (isEarnPage) {
-      refreshEarnPage();
-    } else {
-      refreshPublic();
-      refreshUser();
-    }
-  }, [isEarnPage, refreshEarnPage, refreshPublic, refreshUser]);
+    refreshPublic();
+    refreshUser();
+  }, [refreshPublic, refreshUser]);
 
   return refresh;
 }

@@ -5,6 +5,7 @@ import { useSnackbar } from "notistack";
 import { loadingAllAtom } from "@atoms/staker/loading";
 import { availableAtomFamily } from "@atoms/staker/balance";
 import { Token } from "@utils/constants";
+import { etherToBN } from "@utils/number";
 import {
   usePHB,
   useHZN,
@@ -13,7 +14,9 @@ import {
   useLegacyLP,
 } from "../useContract";
 import useWallet from "../useWallet";
-import useFetchStakingData from "./useFetchStakingData";
+import useStakingDataFetcher from "./useStakingDataFetcher";
+import { useQuery } from "react-query";
+import { EARN } from "@utils/queryKeys";
 
 export default function useFetchState() {
   const { account } = useWallet();
@@ -42,15 +45,17 @@ export default function useFetchState() {
   );
 
   // fetch token staking data
-  const fetchPHBStakingData = useFetchStakingData(Token.PHB);
-  const fetchHZNStakingData = useFetchStakingData(Token.HZN);
-  const fetchLPStakingData = useFetchStakingData(Token.HZN_BNB_LP);
-  const fetchDeprecatedLPStakingData = useFetchStakingData(
+  const fetchPHBStakingData = useStakingDataFetcher(Token.PHB);
+  const fetchHZNStakingData = useStakingDataFetcher(Token.HZN);
+  const fetchLPStakingData = useStakingDataFetcher(Token.HZN_BNB_LP);
+  const fetchDeprecatedLPStakingData = useStakingDataFetcher(
     Token.HZN_BNB_LP_DEPRECATED
   );
-  const fetchLegacyLPStakingData = useFetchStakingData(Token.HZN_BNB_LP_LEGACY);
+  const fetchLegacyLPStakingData = useStakingDataFetcher(
+    Token.HZN_BNB_LP_LEGACY
+  );
 
-  const fetchBalances = useCallback(async () => {
+  const fetcher = useCallback(async () => {
     try {
       setLoading(true);
       const [phb, hzn, lp, deprecatedLp, legacyLp] = await Promise.all([
@@ -72,11 +77,11 @@ export default function useFetchState() {
         fetchLegacyLPStakingData(),
       ]);
 
-      setAvailablePHB(phb);
-      setAvailableHZN(hzn);
-      setAvailableLP(lp);
-      setAvailableDeprecatedLP(deprecatedLp);
-      setAvailableLegacyLP(legacyLp);
+      setAvailablePHB(etherToBN(phb));
+      setAvailableHZN(etherToBN(hzn));
+      setAvailableLP(etherToBN(lp));
+      setAvailableDeprecatedLP(etherToBN(deprecatedLp));
+      setAvailableLegacyLP(etherToBN(legacyLp));
     } catch (e) {
       console.log(e);
       enqueueSnackbar("Failed to loading balances", { variant: "error" });
@@ -103,5 +108,7 @@ export default function useFetchState() {
     enqueueSnackbar,
   ]);
 
-  return fetchBalances;
+  useQuery([EARN, account, "state"], fetcher, {
+    enabled: !!account,
+  });
 }

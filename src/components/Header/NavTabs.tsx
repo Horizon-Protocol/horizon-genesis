@@ -32,11 +32,11 @@ const tabs: LinkTabProps[] = [
     label: "Claim",
     color: PAGE_COLOR.claim,
   },
-  // {
-  //   to: "/earn",
-  //   label: "Earn",
-  //   color: PAGE_COLOR.earn,
-  // },
+  {
+    to: "/earn",
+    label: "Earn",
+    color: PAGE_COLOR.earn,
+  },
 ];
 
 const StyledTabs = withStyles({
@@ -96,10 +96,15 @@ export default function NavTabs() {
     []
   );
 
+  const currentTab = useMemo(
+    () => tabs.find(({ to }) => to === pathname)?.to || false,
+    [pathname]
+  );
+
   return (
     <StyledTabs
       variant='fullWidth'
-      value={pathname}
+      value={currentTab}
       textColor='primary'
       onChange={(_, value) => {
         if (value !== pathname) {

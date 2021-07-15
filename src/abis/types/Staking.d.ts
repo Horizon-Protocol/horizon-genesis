@@ -9,16 +9,15 @@ import {
   BigNumber,
   BigNumberish,
   PopulatedTransaction,
-} from "ethers";
-import {
-  Contract,
+  BaseContract,
   ContractTransaction,
   Overrides,
   CallOverrides,
-} from "@ethersproject/contracts";
+} from "ethers";
 import { BytesLike } from "@ethersproject/bytes";
 import { Listener, Provider } from "@ethersproject/providers";
 import { FunctionFragment, EventFragment, Result } from "@ethersproject/abi";
+import { TypedEventFilter, TypedEvent, TypedListener } from "./commons";
 
 interface StakingInterface extends ethers.utils.Interface {
   functions: {
@@ -216,164 +215,120 @@ interface StakingInterface extends ethers.utils.Interface {
   getEvent(nameOrSignatureOrTopic: "Withdrawn"): EventFragment;
 }
 
-export class Staking extends Contract {
+export class Staking extends BaseContract {
   connect(signerOrProvider: Signer | Provider | string): this;
   attach(addressOrName: string): this;
   deployed(): Promise<this>;
 
-  on(event: EventFilter | string, listener: Listener): this;
-  once(event: EventFilter | string, listener: Listener): this;
-  addListener(eventName: EventFilter | string, listener: Listener): this;
-  removeAllListeners(eventName: EventFilter | string): this;
-  removeListener(eventName: any, listener: Listener): this;
+  listeners<EventArgsArray extends Array<any>, EventArgsObject>(
+    eventFilter?: TypedEventFilter<EventArgsArray, EventArgsObject>
+  ): Array<TypedListener<EventArgsArray, EventArgsObject>>;
+  off<EventArgsArray extends Array<any>, EventArgsObject>(
+    eventFilter: TypedEventFilter<EventArgsArray, EventArgsObject>,
+    listener: TypedListener<EventArgsArray, EventArgsObject>
+  ): this;
+  on<EventArgsArray extends Array<any>, EventArgsObject>(
+    eventFilter: TypedEventFilter<EventArgsArray, EventArgsObject>,
+    listener: TypedListener<EventArgsArray, EventArgsObject>
+  ): this;
+  once<EventArgsArray extends Array<any>, EventArgsObject>(
+    eventFilter: TypedEventFilter<EventArgsArray, EventArgsObject>,
+    listener: TypedListener<EventArgsArray, EventArgsObject>
+  ): this;
+  removeListener<EventArgsArray extends Array<any>, EventArgsObject>(
+    eventFilter: TypedEventFilter<EventArgsArray, EventArgsObject>,
+    listener: TypedListener<EventArgsArray, EventArgsObject>
+  ): this;
+  removeAllListeners<EventArgsArray extends Array<any>, EventArgsObject>(
+    eventFilter: TypedEventFilter<EventArgsArray, EventArgsObject>
+  ): this;
+
+  listeners(eventName?: string): Array<Listener>;
+  off(eventName: string, listener: Listener): this;
+  on(eventName: string, listener: Listener): this;
+  once(eventName: string, listener: Listener): this;
+  removeListener(eventName: string, listener: Listener): this;
+  removeAllListeners(eventName?: string): this;
+
+  queryFilter<EventArgsArray extends Array<any>, EventArgsObject>(
+    event: TypedEventFilter<EventArgsArray, EventArgsObject>,
+    fromBlockOrBlockhash?: string | number | undefined,
+    toBlock?: string | number | undefined
+  ): Promise<Array<TypedEvent<EventArgsArray & EventArgsObject>>>;
 
   interface: StakingInterface;
 
   functions: {
     balanceOf(account: string, overrides?: CallOverrides): Promise<[BigNumber]>;
 
-    "balanceOf(address)"(
-      account: string,
-      overrides?: CallOverrides
-    ): Promise<[BigNumber]>;
-
     earned(account: string, overrides?: CallOverrides): Promise<[BigNumber]>;
 
-    "earned(address)"(
-      account: string,
-      overrides?: CallOverrides
-    ): Promise<[BigNumber]>;
-
-    exit(overrides?: Overrides): Promise<ContractTransaction>;
-
-    "exit()"(overrides?: Overrides): Promise<ContractTransaction>;
+    exit(
+      overrides?: Overrides & { from?: string | Promise<string> }
+    ): Promise<ContractTransaction>;
 
     feeCollector(overrides?: CallOverrides): Promise<[string]>;
 
-    "feeCollector()"(overrides?: CallOverrides): Promise<[string]>;
-
-    getReward(overrides?: Overrides): Promise<ContractTransaction>;
-
-    "getReward()"(overrides?: Overrides): Promise<ContractTransaction>;
+    getReward(
+      overrides?: Overrides & { from?: string | Promise<string> }
+    ): Promise<ContractTransaction>;
 
     getRewardForDuration(overrides?: CallOverrides): Promise<[BigNumber]>;
 
-    "getRewardForDuration()"(overrides?: CallOverrides): Promise<[BigNumber]>;
-
     lastTimeRewardApplicable(overrides?: CallOverrides): Promise<[BigNumber]>;
-
-    "lastTimeRewardApplicable()"(
-      overrides?: CallOverrides
-    ): Promise<[BigNumber]>;
 
     lockDownDuration(overrides?: CallOverrides): Promise<[BigNumber]>;
 
-    "lockDownDuration()"(overrides?: CallOverrides): Promise<[BigNumber]>;
-
     notifyRewardAmount(
       amount: BigNumberish,
-      overrides?: Overrides
-    ): Promise<ContractTransaction>;
-
-    "notifyRewardAmount(uint256)"(
-      amount: BigNumberish,
-      overrides?: Overrides
+      overrides?: Overrides & { from?: string | Promise<string> }
     ): Promise<ContractTransaction>;
 
     periodFinish(overrides?: CallOverrides): Promise<[BigNumber]>;
 
-    "periodFinish()"(overrides?: CallOverrides): Promise<[BigNumber]>;
-
     rewardPerToken(overrides?: CallOverrides): Promise<[BigNumber]>;
-
-    "rewardPerToken()"(overrides?: CallOverrides): Promise<[BigNumber]>;
 
     rewardRate(overrides?: CallOverrides): Promise<[BigNumber]>;
 
-    "rewardRate()"(overrides?: CallOverrides): Promise<[BigNumber]>;
-
     rewardsDistribution(overrides?: CallOverrides): Promise<[string]>;
-
-    "rewardsDistribution()"(overrides?: CallOverrides): Promise<[string]>;
 
     rewardsDuration(overrides?: CallOverrides): Promise<[BigNumber]>;
 
-    "rewardsDuration()"(overrides?: CallOverrides): Promise<[BigNumber]>;
-
     setFeeCollector(
       _feeCollector: string,
-      overrides?: Overrides
-    ): Promise<ContractTransaction>;
-
-    "setFeeCollector(address)"(
-      _feeCollector: string,
-      overrides?: Overrides
+      overrides?: Overrides & { from?: string | Promise<string> }
     ): Promise<ContractTransaction>;
 
     setLockDownDuration(
       _lockdownDuration: BigNumberish,
-      overrides?: Overrides
-    ): Promise<ContractTransaction>;
-
-    "setLockDownDuration(uint256)"(
-      _lockdownDuration: BigNumberish,
-      overrides?: Overrides
+      overrides?: Overrides & { from?: string | Promise<string> }
     ): Promise<ContractTransaction>;
 
     setRewardsDuration(
       _rewardsDuration: BigNumberish,
-      overrides?: Overrides
-    ): Promise<ContractTransaction>;
-
-    "setRewardsDuration(uint256)"(
-      _rewardsDuration: BigNumberish,
-      overrides?: Overrides
+      overrides?: Overrides & { from?: string | Promise<string> }
     ): Promise<ContractTransaction>;
 
     setWithdrawRate(
       _rate: BigNumberish,
-      overrides?: Overrides
-    ): Promise<ContractTransaction>;
-
-    "setWithdrawRate(uint256)"(
-      _rate: BigNumberish,
-      overrides?: Overrides
+      overrides?: Overrides & { from?: string | Promise<string> }
     ): Promise<ContractTransaction>;
 
     stake(
       amount: BigNumberish,
-      overrides?: Overrides
-    ): Promise<ContractTransaction>;
-
-    "stake(uint256)"(
-      amount: BigNumberish,
-      overrides?: Overrides
+      overrides?: Overrides & { from?: string | Promise<string> }
     ): Promise<ContractTransaction>;
 
     totalSupply(overrides?: CallOverrides): Promise<[BigNumber]>;
 
-    "totalSupply()"(overrides?: CallOverrides): Promise<[BigNumber]>;
-
     withdraw(
       amount: BigNumberish,
-      overrides?: Overrides
-    ): Promise<ContractTransaction>;
-
-    "withdraw(uint256)"(
-      amount: BigNumberish,
-      overrides?: Overrides
+      overrides?: Overrides & { from?: string | Promise<string> }
     ): Promise<ContractTransaction>;
 
     withdrawRate(overrides?: CallOverrides): Promise<[BigNumber]>;
 
-    "withdrawRate()"(overrides?: CallOverrides): Promise<[BigNumber]>;
-
     withdrawableAmount(
-      account: string,
-      overrides?: CallOverrides
-    ): Promise<[BigNumber]>;
-
-    "withdrawableAmount(address)"(
       account: string,
       overrides?: CallOverrides
     ): Promise<[BigNumber]>;
@@ -381,146 +336,74 @@ export class Staking extends Contract {
 
   balanceOf(account: string, overrides?: CallOverrides): Promise<BigNumber>;
 
-  "balanceOf(address)"(
-    account: string,
-    overrides?: CallOverrides
-  ): Promise<BigNumber>;
-
   earned(account: string, overrides?: CallOverrides): Promise<BigNumber>;
 
-  "earned(address)"(
-    account: string,
-    overrides?: CallOverrides
-  ): Promise<BigNumber>;
-
-  exit(overrides?: Overrides): Promise<ContractTransaction>;
-
-  "exit()"(overrides?: Overrides): Promise<ContractTransaction>;
+  exit(
+    overrides?: Overrides & { from?: string | Promise<string> }
+  ): Promise<ContractTransaction>;
 
   feeCollector(overrides?: CallOverrides): Promise<string>;
 
-  "feeCollector()"(overrides?: CallOverrides): Promise<string>;
-
-  getReward(overrides?: Overrides): Promise<ContractTransaction>;
-
-  "getReward()"(overrides?: Overrides): Promise<ContractTransaction>;
+  getReward(
+    overrides?: Overrides & { from?: string | Promise<string> }
+  ): Promise<ContractTransaction>;
 
   getRewardForDuration(overrides?: CallOverrides): Promise<BigNumber>;
 
-  "getRewardForDuration()"(overrides?: CallOverrides): Promise<BigNumber>;
-
   lastTimeRewardApplicable(overrides?: CallOverrides): Promise<BigNumber>;
-
-  "lastTimeRewardApplicable()"(overrides?: CallOverrides): Promise<BigNumber>;
 
   lockDownDuration(overrides?: CallOverrides): Promise<BigNumber>;
 
-  "lockDownDuration()"(overrides?: CallOverrides): Promise<BigNumber>;
-
   notifyRewardAmount(
     amount: BigNumberish,
-    overrides?: Overrides
-  ): Promise<ContractTransaction>;
-
-  "notifyRewardAmount(uint256)"(
-    amount: BigNumberish,
-    overrides?: Overrides
+    overrides?: Overrides & { from?: string | Promise<string> }
   ): Promise<ContractTransaction>;
 
   periodFinish(overrides?: CallOverrides): Promise<BigNumber>;
 
-  "periodFinish()"(overrides?: CallOverrides): Promise<BigNumber>;
-
   rewardPerToken(overrides?: CallOverrides): Promise<BigNumber>;
-
-  "rewardPerToken()"(overrides?: CallOverrides): Promise<BigNumber>;
 
   rewardRate(overrides?: CallOverrides): Promise<BigNumber>;
 
-  "rewardRate()"(overrides?: CallOverrides): Promise<BigNumber>;
-
   rewardsDistribution(overrides?: CallOverrides): Promise<string>;
-
-  "rewardsDistribution()"(overrides?: CallOverrides): Promise<string>;
 
   rewardsDuration(overrides?: CallOverrides): Promise<BigNumber>;
 
-  "rewardsDuration()"(overrides?: CallOverrides): Promise<BigNumber>;
-
   setFeeCollector(
     _feeCollector: string,
-    overrides?: Overrides
-  ): Promise<ContractTransaction>;
-
-  "setFeeCollector(address)"(
-    _feeCollector: string,
-    overrides?: Overrides
+    overrides?: Overrides & { from?: string | Promise<string> }
   ): Promise<ContractTransaction>;
 
   setLockDownDuration(
     _lockdownDuration: BigNumberish,
-    overrides?: Overrides
-  ): Promise<ContractTransaction>;
-
-  "setLockDownDuration(uint256)"(
-    _lockdownDuration: BigNumberish,
-    overrides?: Overrides
+    overrides?: Overrides & { from?: string | Promise<string> }
   ): Promise<ContractTransaction>;
 
   setRewardsDuration(
     _rewardsDuration: BigNumberish,
-    overrides?: Overrides
-  ): Promise<ContractTransaction>;
-
-  "setRewardsDuration(uint256)"(
-    _rewardsDuration: BigNumberish,
-    overrides?: Overrides
+    overrides?: Overrides & { from?: string | Promise<string> }
   ): Promise<ContractTransaction>;
 
   setWithdrawRate(
     _rate: BigNumberish,
-    overrides?: Overrides
-  ): Promise<ContractTransaction>;
-
-  "setWithdrawRate(uint256)"(
-    _rate: BigNumberish,
-    overrides?: Overrides
+    overrides?: Overrides & { from?: string | Promise<string> }
   ): Promise<ContractTransaction>;
 
   stake(
     amount: BigNumberish,
-    overrides?: Overrides
-  ): Promise<ContractTransaction>;
-
-  "stake(uint256)"(
-    amount: BigNumberish,
-    overrides?: Overrides
+    overrides?: Overrides & { from?: string | Promise<string> }
   ): Promise<ContractTransaction>;
 
   totalSupply(overrides?: CallOverrides): Promise<BigNumber>;
 
-  "totalSupply()"(overrides?: CallOverrides): Promise<BigNumber>;
-
   withdraw(
     amount: BigNumberish,
-    overrides?: Overrides
-  ): Promise<ContractTransaction>;
-
-  "withdraw(uint256)"(
-    amount: BigNumberish,
-    overrides?: Overrides
+    overrides?: Overrides & { from?: string | Promise<string> }
   ): Promise<ContractTransaction>;
 
   withdrawRate(overrides?: CallOverrides): Promise<BigNumber>;
 
-  "withdrawRate()"(overrides?: CallOverrides): Promise<BigNumber>;
-
   withdrawableAmount(
-    account: string,
-    overrides?: CallOverrides
-  ): Promise<BigNumber>;
-
-  "withdrawableAmount(address)"(
     account: string,
     overrides?: CallOverrides
   ): Promise<BigNumber>;
@@ -528,78 +411,36 @@ export class Staking extends Contract {
   callStatic: {
     balanceOf(account: string, overrides?: CallOverrides): Promise<BigNumber>;
 
-    "balanceOf(address)"(
-      account: string,
-      overrides?: CallOverrides
-    ): Promise<BigNumber>;
-
     earned(account: string, overrides?: CallOverrides): Promise<BigNumber>;
-
-    "earned(address)"(
-      account: string,
-      overrides?: CallOverrides
-    ): Promise<BigNumber>;
 
     exit(overrides?: CallOverrides): Promise<void>;
 
-    "exit()"(overrides?: CallOverrides): Promise<void>;
-
     feeCollector(overrides?: CallOverrides): Promise<string>;
-
-    "feeCollector()"(overrides?: CallOverrides): Promise<string>;
 
     getReward(overrides?: CallOverrides): Promise<void>;
 
-    "getReward()"(overrides?: CallOverrides): Promise<void>;
-
     getRewardForDuration(overrides?: CallOverrides): Promise<BigNumber>;
-
-    "getRewardForDuration()"(overrides?: CallOverrides): Promise<BigNumber>;
 
     lastTimeRewardApplicable(overrides?: CallOverrides): Promise<BigNumber>;
 
-    "lastTimeRewardApplicable()"(overrides?: CallOverrides): Promise<BigNumber>;
-
     lockDownDuration(overrides?: CallOverrides): Promise<BigNumber>;
-
-    "lockDownDuration()"(overrides?: CallOverrides): Promise<BigNumber>;
 
     notifyRewardAmount(
       amount: BigNumberish,
       overrides?: CallOverrides
     ): Promise<void>;
 
-    "notifyRewardAmount(uint256)"(
-      amount: BigNumberish,
-      overrides?: CallOverrides
-    ): Promise<void>;
-
     periodFinish(overrides?: CallOverrides): Promise<BigNumber>;
-
-    "periodFinish()"(overrides?: CallOverrides): Promise<BigNumber>;
 
     rewardPerToken(overrides?: CallOverrides): Promise<BigNumber>;
 
-    "rewardPerToken()"(overrides?: CallOverrides): Promise<BigNumber>;
-
     rewardRate(overrides?: CallOverrides): Promise<BigNumber>;
-
-    "rewardRate()"(overrides?: CallOverrides): Promise<BigNumber>;
 
     rewardsDistribution(overrides?: CallOverrides): Promise<string>;
 
-    "rewardsDistribution()"(overrides?: CallOverrides): Promise<string>;
-
     rewardsDuration(overrides?: CallOverrides): Promise<BigNumber>;
 
-    "rewardsDuration()"(overrides?: CallOverrides): Promise<BigNumber>;
-
     setFeeCollector(
-      _feeCollector: string,
-      overrides?: CallOverrides
-    ): Promise<void>;
-
-    "setFeeCollector(address)"(
       _feeCollector: string,
       overrides?: CallOverrides
     ): Promise<void>;
@@ -609,217 +450,147 @@ export class Staking extends Contract {
       overrides?: CallOverrides
     ): Promise<void>;
 
-    "setLockDownDuration(uint256)"(
-      _lockdownDuration: BigNumberish,
-      overrides?: CallOverrides
-    ): Promise<void>;
-
     setRewardsDuration(
       _rewardsDuration: BigNumberish,
       overrides?: CallOverrides
     ): Promise<void>;
 
-    "setRewardsDuration(uint256)"(
-      _rewardsDuration: BigNumberish,
-      overrides?: CallOverrides
-    ): Promise<void>;
-
     setWithdrawRate(
-      _rate: BigNumberish,
-      overrides?: CallOverrides
-    ): Promise<void>;
-
-    "setWithdrawRate(uint256)"(
       _rate: BigNumberish,
       overrides?: CallOverrides
     ): Promise<void>;
 
     stake(amount: BigNumberish, overrides?: CallOverrides): Promise<void>;
 
-    "stake(uint256)"(
-      amount: BigNumberish,
-      overrides?: CallOverrides
-    ): Promise<void>;
-
     totalSupply(overrides?: CallOverrides): Promise<BigNumber>;
-
-    "totalSupply()"(overrides?: CallOverrides): Promise<BigNumber>;
 
     withdraw(amount: BigNumberish, overrides?: CallOverrides): Promise<void>;
 
-    "withdraw(uint256)"(
-      amount: BigNumberish,
-      overrides?: CallOverrides
-    ): Promise<void>;
-
     withdrawRate(overrides?: CallOverrides): Promise<BigNumber>;
 
-    "withdrawRate()"(overrides?: CallOverrides): Promise<BigNumber>;
-
     withdrawableAmount(
-      account: string,
-      overrides?: CallOverrides
-    ): Promise<BigNumber>;
-
-    "withdrawableAmount(address)"(
       account: string,
       overrides?: CallOverrides
     ): Promise<BigNumber>;
   };
 
   filters: {
-    LockDownDurationUpdated(newLockDownDuration: null): EventFilter;
+    LockDownDurationUpdated(
+      newLockDownDuration?: null
+    ): TypedEventFilter<[BigNumber], { newLockDownDuration: BigNumber }>;
 
-    Recovered(token: null, amount: null): EventFilter;
+    Recovered(
+      token?: null,
+      amount?: null
+    ): TypedEventFilter<
+      [string, BigNumber],
+      { token: string; amount: BigNumber }
+    >;
 
-    RewardAdded(reward: null): EventFilter;
+    RewardAdded(
+      reward?: null
+    ): TypedEventFilter<[BigNumber], { reward: BigNumber }>;
 
-    RewardPaid(user: string | null, reward: null): EventFilter;
+    RewardPaid(
+      user?: string | null,
+      reward?: null
+    ): TypedEventFilter<
+      [string, BigNumber],
+      { user: string; reward: BigNumber }
+    >;
 
-    RewardsDurationUpdated(newDuration: null): EventFilter;
+    RewardsDurationUpdated(
+      newDuration?: null
+    ): TypedEventFilter<[BigNumber], { newDuration: BigNumber }>;
 
-    Staked(user: string | null, amount: null): EventFilter;
+    Staked(
+      user?: string | null,
+      amount?: null
+    ): TypedEventFilter<
+      [string, BigNumber],
+      { user: string; amount: BigNumber }
+    >;
 
-    Withdrawn(user: string | null, amount: null): EventFilter;
+    Withdrawn(
+      user?: string | null,
+      amount?: null
+    ): TypedEventFilter<
+      [string, BigNumber],
+      { user: string; amount: BigNumber }
+    >;
   };
 
   estimateGas: {
     balanceOf(account: string, overrides?: CallOverrides): Promise<BigNumber>;
 
-    "balanceOf(address)"(
-      account: string,
-      overrides?: CallOverrides
-    ): Promise<BigNumber>;
-
     earned(account: string, overrides?: CallOverrides): Promise<BigNumber>;
 
-    "earned(address)"(
-      account: string,
-      overrides?: CallOverrides
+    exit(
+      overrides?: Overrides & { from?: string | Promise<string> }
     ): Promise<BigNumber>;
-
-    exit(overrides?: Overrides): Promise<BigNumber>;
-
-    "exit()"(overrides?: Overrides): Promise<BigNumber>;
 
     feeCollector(overrides?: CallOverrides): Promise<BigNumber>;
 
-    "feeCollector()"(overrides?: CallOverrides): Promise<BigNumber>;
-
-    getReward(overrides?: Overrides): Promise<BigNumber>;
-
-    "getReward()"(overrides?: Overrides): Promise<BigNumber>;
+    getReward(
+      overrides?: Overrides & { from?: string | Promise<string> }
+    ): Promise<BigNumber>;
 
     getRewardForDuration(overrides?: CallOverrides): Promise<BigNumber>;
 
-    "getRewardForDuration()"(overrides?: CallOverrides): Promise<BigNumber>;
-
     lastTimeRewardApplicable(overrides?: CallOverrides): Promise<BigNumber>;
-
-    "lastTimeRewardApplicable()"(overrides?: CallOverrides): Promise<BigNumber>;
 
     lockDownDuration(overrides?: CallOverrides): Promise<BigNumber>;
 
-    "lockDownDuration()"(overrides?: CallOverrides): Promise<BigNumber>;
-
     notifyRewardAmount(
       amount: BigNumberish,
-      overrides?: Overrides
-    ): Promise<BigNumber>;
-
-    "notifyRewardAmount(uint256)"(
-      amount: BigNumberish,
-      overrides?: Overrides
+      overrides?: Overrides & { from?: string | Promise<string> }
     ): Promise<BigNumber>;
 
     periodFinish(overrides?: CallOverrides): Promise<BigNumber>;
 
-    "periodFinish()"(overrides?: CallOverrides): Promise<BigNumber>;
-
     rewardPerToken(overrides?: CallOverrides): Promise<BigNumber>;
-
-    "rewardPerToken()"(overrides?: CallOverrides): Promise<BigNumber>;
 
     rewardRate(overrides?: CallOverrides): Promise<BigNumber>;
 
-    "rewardRate()"(overrides?: CallOverrides): Promise<BigNumber>;
-
     rewardsDistribution(overrides?: CallOverrides): Promise<BigNumber>;
-
-    "rewardsDistribution()"(overrides?: CallOverrides): Promise<BigNumber>;
 
     rewardsDuration(overrides?: CallOverrides): Promise<BigNumber>;
 
-    "rewardsDuration()"(overrides?: CallOverrides): Promise<BigNumber>;
-
     setFeeCollector(
       _feeCollector: string,
-      overrides?: Overrides
-    ): Promise<BigNumber>;
-
-    "setFeeCollector(address)"(
-      _feeCollector: string,
-      overrides?: Overrides
+      overrides?: Overrides & { from?: string | Promise<string> }
     ): Promise<BigNumber>;
 
     setLockDownDuration(
       _lockdownDuration: BigNumberish,
-      overrides?: Overrides
-    ): Promise<BigNumber>;
-
-    "setLockDownDuration(uint256)"(
-      _lockdownDuration: BigNumberish,
-      overrides?: Overrides
+      overrides?: Overrides & { from?: string | Promise<string> }
     ): Promise<BigNumber>;
 
     setRewardsDuration(
       _rewardsDuration: BigNumberish,
-      overrides?: Overrides
-    ): Promise<BigNumber>;
-
-    "setRewardsDuration(uint256)"(
-      _rewardsDuration: BigNumberish,
-      overrides?: Overrides
+      overrides?: Overrides & { from?: string | Promise<string> }
     ): Promise<BigNumber>;
 
     setWithdrawRate(
       _rate: BigNumberish,
-      overrides?: Overrides
+      overrides?: Overrides & { from?: string | Promise<string> }
     ): Promise<BigNumber>;
 
-    "setWithdrawRate(uint256)"(
-      _rate: BigNumberish,
-      overrides?: Overrides
-    ): Promise<BigNumber>;
-
-    stake(amount: BigNumberish, overrides?: Overrides): Promise<BigNumber>;
-
-    "stake(uint256)"(
+    stake(
       amount: BigNumberish,
-      overrides?: Overrides
+      overrides?: Overrides & { from?: string | Promise<string> }
     ): Promise<BigNumber>;
 
     totalSupply(overrides?: CallOverrides): Promise<BigNumber>;
 
-    "totalSupply()"(overrides?: CallOverrides): Promise<BigNumber>;
-
-    withdraw(amount: BigNumberish, overrides?: Overrides): Promise<BigNumber>;
-
-    "withdraw(uint256)"(
+    withdraw(
       amount: BigNumberish,
-      overrides?: Overrides
+      overrides?: Overrides & { from?: string | Promise<string> }
     ): Promise<BigNumber>;
 
     withdrawRate(overrides?: CallOverrides): Promise<BigNumber>;
 
-    "withdrawRate()"(overrides?: CallOverrides): Promise<BigNumber>;
-
     withdrawableAmount(
-      account: string,
-      overrides?: CallOverrides
-    ): Promise<BigNumber>;
-
-    "withdrawableAmount(address)"(
       account: string,
       overrides?: CallOverrides
     ): Promise<BigNumber>;
@@ -831,38 +602,22 @@ export class Staking extends Contract {
       overrides?: CallOverrides
     ): Promise<PopulatedTransaction>;
 
-    "balanceOf(address)"(
-      account: string,
-      overrides?: CallOverrides
-    ): Promise<PopulatedTransaction>;
-
     earned(
       account: string,
       overrides?: CallOverrides
     ): Promise<PopulatedTransaction>;
 
-    "earned(address)"(
-      account: string,
-      overrides?: CallOverrides
+    exit(
+      overrides?: Overrides & { from?: string | Promise<string> }
     ): Promise<PopulatedTransaction>;
-
-    exit(overrides?: Overrides): Promise<PopulatedTransaction>;
-
-    "exit()"(overrides?: Overrides): Promise<PopulatedTransaction>;
 
     feeCollector(overrides?: CallOverrides): Promise<PopulatedTransaction>;
 
-    "feeCollector()"(overrides?: CallOverrides): Promise<PopulatedTransaction>;
-
-    getReward(overrides?: Overrides): Promise<PopulatedTransaction>;
-
-    "getReward()"(overrides?: Overrides): Promise<PopulatedTransaction>;
-
-    getRewardForDuration(
-      overrides?: CallOverrides
+    getReward(
+      overrides?: Overrides & { from?: string | Promise<string> }
     ): Promise<PopulatedTransaction>;
 
-    "getRewardForDuration()"(
+    getRewardForDuration(
       overrides?: CallOverrides
     ): Promise<PopulatedTransaction>;
 
@@ -870,128 +625,60 @@ export class Staking extends Contract {
       overrides?: CallOverrides
     ): Promise<PopulatedTransaction>;
 
-    "lastTimeRewardApplicable()"(
-      overrides?: CallOverrides
-    ): Promise<PopulatedTransaction>;
-
     lockDownDuration(overrides?: CallOverrides): Promise<PopulatedTransaction>;
-
-    "lockDownDuration()"(
-      overrides?: CallOverrides
-    ): Promise<PopulatedTransaction>;
 
     notifyRewardAmount(
       amount: BigNumberish,
-      overrides?: Overrides
-    ): Promise<PopulatedTransaction>;
-
-    "notifyRewardAmount(uint256)"(
-      amount: BigNumberish,
-      overrides?: Overrides
+      overrides?: Overrides & { from?: string | Promise<string> }
     ): Promise<PopulatedTransaction>;
 
     periodFinish(overrides?: CallOverrides): Promise<PopulatedTransaction>;
 
-    "periodFinish()"(overrides?: CallOverrides): Promise<PopulatedTransaction>;
-
     rewardPerToken(overrides?: CallOverrides): Promise<PopulatedTransaction>;
 
-    "rewardPerToken()"(
-      overrides?: CallOverrides
-    ): Promise<PopulatedTransaction>;
-
     rewardRate(overrides?: CallOverrides): Promise<PopulatedTransaction>;
-
-    "rewardRate()"(overrides?: CallOverrides): Promise<PopulatedTransaction>;
 
     rewardsDistribution(
       overrides?: CallOverrides
     ): Promise<PopulatedTransaction>;
 
-    "rewardsDistribution()"(
-      overrides?: CallOverrides
-    ): Promise<PopulatedTransaction>;
-
     rewardsDuration(overrides?: CallOverrides): Promise<PopulatedTransaction>;
-
-    "rewardsDuration()"(
-      overrides?: CallOverrides
-    ): Promise<PopulatedTransaction>;
 
     setFeeCollector(
       _feeCollector: string,
-      overrides?: Overrides
-    ): Promise<PopulatedTransaction>;
-
-    "setFeeCollector(address)"(
-      _feeCollector: string,
-      overrides?: Overrides
+      overrides?: Overrides & { from?: string | Promise<string> }
     ): Promise<PopulatedTransaction>;
 
     setLockDownDuration(
       _lockdownDuration: BigNumberish,
-      overrides?: Overrides
-    ): Promise<PopulatedTransaction>;
-
-    "setLockDownDuration(uint256)"(
-      _lockdownDuration: BigNumberish,
-      overrides?: Overrides
+      overrides?: Overrides & { from?: string | Promise<string> }
     ): Promise<PopulatedTransaction>;
 
     setRewardsDuration(
       _rewardsDuration: BigNumberish,
-      overrides?: Overrides
-    ): Promise<PopulatedTransaction>;
-
-    "setRewardsDuration(uint256)"(
-      _rewardsDuration: BigNumberish,
-      overrides?: Overrides
+      overrides?: Overrides & { from?: string | Promise<string> }
     ): Promise<PopulatedTransaction>;
 
     setWithdrawRate(
       _rate: BigNumberish,
-      overrides?: Overrides
-    ): Promise<PopulatedTransaction>;
-
-    "setWithdrawRate(uint256)"(
-      _rate: BigNumberish,
-      overrides?: Overrides
+      overrides?: Overrides & { from?: string | Promise<string> }
     ): Promise<PopulatedTransaction>;
 
     stake(
       amount: BigNumberish,
-      overrides?: Overrides
-    ): Promise<PopulatedTransaction>;
-
-    "stake(uint256)"(
-      amount: BigNumberish,
-      overrides?: Overrides
+      overrides?: Overrides & { from?: string | Promise<string> }
     ): Promise<PopulatedTransaction>;
 
     totalSupply(overrides?: CallOverrides): Promise<PopulatedTransaction>;
 
-    "totalSupply()"(overrides?: CallOverrides): Promise<PopulatedTransaction>;
-
     withdraw(
       amount: BigNumberish,
-      overrides?: Overrides
-    ): Promise<PopulatedTransaction>;
-
-    "withdraw(uint256)"(
-      amount: BigNumberish,
-      overrides?: Overrides
+      overrides?: Overrides & { from?: string | Promise<string> }
     ): Promise<PopulatedTransaction>;
 
     withdrawRate(overrides?: CallOverrides): Promise<PopulatedTransaction>;
 
-    "withdrawRate()"(overrides?: CallOverrides): Promise<PopulatedTransaction>;
-
     withdrawableAmount(
-      account: string,
-      overrides?: CallOverrides
-    ): Promise<PopulatedTransaction>;
-
-    "withdrawableAmount(address)"(
       account: string,
       overrides?: CallOverrides
     ): Promise<PopulatedTransaction>;

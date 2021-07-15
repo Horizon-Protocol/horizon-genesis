@@ -2,16 +2,9 @@
 /* tslint:disable */
 /* eslint-disable */
 
-import { Contract, Signer } from "ethers";
+import { Contract, Signer, utils } from "ethers";
 import { Provider } from "@ethersproject/providers";
-
-import type { HZN } from "../HZN";
-
-export class HZN__factory {
-  static connect(address: string, signerOrProvider: Signer | Provider): HZN {
-    return new Contract(address, _abi, signerOrProvider) as HZN;
-  }
-}
+import type { HZN, HZNInterface } from "../HZN";
 
 const _abi = [
   {
@@ -256,3 +249,13 @@ const _abi = [
     type: "function",
   },
 ];
+
+export class HZN__factory {
+  static readonly abi = _abi;
+  static createInterface(): HZNInterface {
+    return new utils.Interface(_abi) as HZNInterface;
+  }
+  static connect(address: string, signerOrProvider: Signer | Provider): HZN {
+    return new Contract(address, _abi, signerOrProvider) as HZN;
+  }
+}

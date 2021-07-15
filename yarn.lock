@@ -1338,6 +1338,17 @@
     lodash "4.17.19"
     web3-utils "1.2.11"
 
+"@horizon-protocol/ethcall@^3.5.0":
+  version "3.5.0"
+  resolved "https://registry.yarnpkg.com/@horizon-protocol/ethcall/-/ethcall-3.5.0.tgz#d5352d924a3093abcb4f782381e0f688596ccb58"
+  integrity sha512-21LnuG9yeYCmGfEOolP6maWmMZw4Wf/WLhO+rSwriyuuYWEkDz2KQRpPrdj51vPlF3euYROthYRx6m6+RcXUqQ==
+  dependencies:
+    "@ethersproject/abi" "^5.0.0"
+    "@ethersproject/contracts" "^5.0.0"
+    "@ethersproject/providers" "^5.0.0"
+    "@types/node" "^14.11.5"
+    js-sha3 "^0.8.0"
+
 "@horizon-protocol/smart-contract@^2.33.14":
   version "2.33.14"
   resolved "https://registry.yarnpkg.com/@horizon-protocol/smart-contract/-/smart-contract-2.33.14.tgz#1c4367b3d3f8d3ee39c14489208a6c060d2b4d67"
@@ -1610,6 +1621,11 @@
   version "12.20.13"
   resolved "https://registry.yarnpkg.com/@types/node/-/node-12.20.13.tgz#e743bae112bd779ac9650f907197dd2caa7f0364"
   integrity sha512-1x8W5OpxPq+T85OUsHRP6BqXeosKmeXRtjoF39STcdf/UWLqUsoehstZKOi0CunhVqHG17AyZgpj20eRVooK6A==
+
+"@types/node@^14.11.5":
+  version "14.17.3"
+  resolved "https://registry.yarnpkg.com/@types/node/-/node-14.17.3.tgz#6d327abaa4be34a74e421ed6409a0ae2f47f4c3d"
+  integrity sha512-e6ZowgGJmTuXa3GyaPbTGxX17tnThl2aSSizrFthQ7m9uLGZBXiGhgE55cjRZTF5kjZvYn9EOPOMljdjwbflxw==
 
 "@types/pbkdf2@^3.0.0":
   version "3.1.0"

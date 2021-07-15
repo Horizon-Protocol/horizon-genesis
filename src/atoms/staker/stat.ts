@@ -1,13 +1,13 @@
 import { atom } from "jotai";
 import { atomFamily } from "jotai/utils";
-import { BigNumber, constants } from "ethers";
 import { Token } from "@utils/constants";
+import { zeroBN } from "@utils/number";
 
 interface Data {
-  total: BigNumber; // total staked
-  rewardsPerBlock: BigNumber; // tokens per BSC block
-  // rewardsDurationSeconds: BigNumber; // rewardsDuration in seconds
-  lockDownSeconds: BigNumber; // lockdown period in seconds
+  total: BN; // total staked
+  rewardsPerBlock: BN; // tokens per BSC block
+  // rewardsDurationSeconds: BN; // rewardsDuration in seconds
+  lockDownSeconds: BN; // lockdown period in seconds
   isRoundActive: boolean; // if the round is open
 }
 
@@ -17,10 +17,10 @@ interface Param {
 }
 
 const defaultData: Data = {
-  total: constants.Zero,
-  rewardsPerBlock: constants.Zero,
-  // rewardsDurationSeconds: constants.Zero,
-  lockDownSeconds: constants.Zero,
+  total: zeroBN,
+  rewardsPerBlock: zeroBN,
+  // rewardsDurationSeconds: zeroBN,
+  lockDownSeconds: zeroBN,
   isRoundActive: false,
 };
 

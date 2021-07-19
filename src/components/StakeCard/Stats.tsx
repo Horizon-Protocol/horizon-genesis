@@ -5,6 +5,7 @@ import { CARD_CONTENT } from "@utils/theme/constants";
 import { Token, TokenShortName } from "@utils/constants";
 import { formatNumber } from "@utils/number";
 import { getApy } from "@utils/apy";
+import { hznRateAtom } from "@atoms/exchangeRates";
 import { tokenStatAtomFamily } from "@atoms/staker/stat";
 import { useMemo } from "react";
 import { tokenPriceAtomFamily } from "@atoms/staker/price";
@@ -36,7 +37,7 @@ const useStyles = makeStyles({
 export default function Stats({ token }: { token: TokenEnum }) {
   const classes = useStyles();
 
-  const hznPrice = useAtomValue(tokenPriceAtomFamily(Token.HZN));
+  const hznRate = useAtomValue(hznRateAtom);
   const stakeTokenPrice = useAtomValue(tokenPriceAtomFamily(token));
   const { total, rewardsPerBlock, isRoundActive } = useAtomValue(
     tokenStatAtomFamily(token)
@@ -51,8 +52,9 @@ export default function Stats({ token }: { token: TokenEnum }) {
       return getApy(1, 1, total, rewardsPerBlock);
     }
 
+    const hznPrice = hznRate.toNumber();
     return getApy(stakeTokenPrice, hznPrice, total, rewardsPerBlock);
-  }, [isRoundActive, token, stakeTokenPrice, hznPrice, total, rewardsPerBlock]);
+  }, [isRoundActive, token, stakeTokenPrice, hznRate, total, rewardsPerBlock]);
 
   return (
     <Box className={classes.root}>

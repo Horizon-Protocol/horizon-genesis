@@ -7,9 +7,6 @@ interface Result {
   "red-pulse": {
     usd: number;
   };
-  wbnb: {
-    usd: number;
-  };
 }
 
 export async function fetchPrice(): Promise<{

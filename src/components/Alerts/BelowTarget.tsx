@@ -2,10 +2,10 @@ import { useMemo } from "react";
 import fromUnixTime from "date-fns/fromUnixTime";
 import { HZNBuyLink } from "@utils/constants";
 import { COLOR } from "@utils/theme/constants";
+import { formatCRatioToPercent } from "@utils/number";
+import useDateCountDown from "@hooks/useDateCountDown";
 import ActionLink from "./ActionLink";
 import BaseAlert from "./Base";
-import useDateCountDown from "@hooks/useDateCountDown";
-import { formatCRatioToPercent } from "@utils/number";
 
 interface Props {
   currentCRatio: BN;
@@ -24,15 +24,22 @@ export default function BelowTarget({
     () => fromUnixTime(liquidationDeadline),
     [liquidationDeadline]
   );
-  const { formatted } = useDateCountDown(deadlineDate);
+  const { formatted, stopped } = useDateCountDown(deadlineDate);
 
   const { color, content } = useMemo(() => {
     if (liquidationDeadline > 0) {
+      if (stopped) {
+        return {
+          color: COLOR.danger,
+          content:
+            "Your account will be liquidated imminently.  Restore your c-ratio ASAP to avoid liquidation.",
+        };
+      }
       return {
         color: COLOR.danger,
-        content: `Your account has flagged for liquidation. You have ${formatted} left to restore your c-ratio to ${formatCRatioToPercent(
+        content: `Your account is flagged for liquidation. You have ${formatted} to restore your c-ratio to ${formatCRatioToPercent(
           targetRatio
-        )}% or you may be liquidated.`,
+        )}% and clear your liquidation flag or you may be liquidated.`,
       };
     }
 
@@ -54,6 +61,7 @@ export default function BelowTarget({
     formatted,
     liquidationDeadline,
     liquidationRatio,
+    stopped,
     targetRatio,
   ]);
 

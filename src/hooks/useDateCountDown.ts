@@ -28,6 +28,8 @@ export default function useDateCountDown(targetDate?: Date) {
       milliSeconds > DAY_MILLI_SECONDS ? MINUTE_MILLI_SECONDS : 1000,
   });
 
+  const stopped = useMemo(() => state === "STOPPED", [state]);
+
   useEffect(() => {
     setTime(milliSeconds);
     start();
@@ -57,5 +59,6 @@ export default function useDateCountDown(targetDate?: Date) {
   return {
     state,
     formatted,
+    stopped,
   };
 }

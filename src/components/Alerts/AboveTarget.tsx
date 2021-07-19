@@ -1,11 +1,13 @@
 import { useCallback, useMemo } from "react";
 import { useSnackbar } from "notistack";
+import fromUnixTime from "date-fns/fromUnixTime";
 import horizon from "@lib/horizon";
 import useWallet from "@hooks/useWallet";
 import useRefresh from "@hooks/useRefresh";
+import useDateCountDown from "@hooks/useDateCountDown";
+import { formatCRatioToPercent } from "@utils/number";
 import ActionLink from "./ActionLink";
 import BaseAlert from "./Base";
-import { formatCRatioToPercent } from "@utils/number";
 
 interface Props {
   targetRatio: BN;
@@ -20,19 +22,32 @@ export default function AboveTarget({
   const { enqueueSnackbar } = useSnackbar();
   const refresh = useRefresh();
 
+  const deadlineDate = useMemo(
+    () => fromUnixTime(liquidationDeadline),
+    [liquidationDeadline]
+  );
+  const { formatted, stopped } = useDateCountDown(deadlineDate);
+
   const { content } = useMemo(() => {
     if (liquidationDeadline > 0) {
+      if (stopped) {
+        return {
+          content: `Your account will be liquidated immediately if you drop below ${formatCRatioToPercent(
+            targetRatio
+          )}% c-ratio. Clear your liquidation flag ASAP to avoid liquidation.`,
+        };
+      }
       return {
-        content: `Your account has flagged for liquidation, but you will not be liquidated at current c-ratio. Once your c-ratio is below ${formatCRatioToPercent(
+        content: `Your account is flagged for liquidation. You have ${formatted} to clear this flag or you may be at risk of liquidation if your c-ratio drops below ${formatCRatioToPercent(
           targetRatio
-        )}%, you may be liquidated.`,
+        )}%.`,
       };
     }
     return {
       content:
         "Your C-Ratio is above the target. You can mint more zUSD to lower your C-ratio and earn more rewards, but increase your risk from the volatility of HZN.  Maintaining a C-Ratio higher than the target will reduce your risk from volatility.",
     };
-  }, [liquidationDeadline, targetRatio]);
+  }, [formatted, liquidationDeadline, stopped, targetRatio]);
 
   // const [loading, setLoading] = useState<boolean>(false);
   const clearLiquidationFlag = useCallback(async () => {

@@ -8,7 +8,7 @@ import { CARD_CONTENT } from "@utils/theme/constants";
 import useRefreshEarn from "@hooks/useRefreshEarn";
 import PrimaryButton from "@components/PrimaryButton";
 import { earnedAtomFamily } from "@atoms/staker/balance";
-import { formatNumber, toBN } from "@utils/number";
+import { formatNumber } from "@utils/number";
 import useStaking from "@hooks/staker/useStaking";
 
 const useStyles = makeStyles({

@@ -38,7 +38,7 @@ const useStyles = makeStyles(({ breakpoints }) => ({
     justifyContent: "flex-end",
     [breakpoints.down("xs")]: {
       marginBottom: 8,
-      justifyContent: "flex-start",
+      // justifyContent: "flex-start",
     },
   },
   value: {

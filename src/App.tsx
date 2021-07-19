@@ -77,6 +77,7 @@ const useStyles = makeStyles(({ breakpoints, palette }) => ({
   },
   alerts: {
     [breakpoints.down("sm")]: {
+      margin: "16px 20px 0",
       // position: "fixed",
       // right: 0,
       // zIndex: 3,

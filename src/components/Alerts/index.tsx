@@ -63,7 +63,7 @@ export default function Alert({ className, ...props }: BoxProps) {
       );
     }
     // above targetRatio percent
-    else if (currentCRatio.gt(0) && currentCRatio.lte(targetRatio)) {
+    else if (currentCRatio.gt(0) && currentCRatio.lt(targetRatio)) {
       alertComponent = (
         <AboveTarget
           targetRatio={targetRatio}

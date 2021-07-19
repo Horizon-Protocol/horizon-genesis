@@ -40,7 +40,7 @@ import useRefresh from "@hooks/useRefresh";
 
 const THEME_COLOR = PAGE_COLOR.mint;
 
-export default function Earn() {
+export default function Mint() {
   const { connected } = useWallet();
   const { enqueueSnackbar } = useSnackbar();
 

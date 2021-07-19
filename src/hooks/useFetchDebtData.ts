@@ -1,4 +1,5 @@
 import { useCallback } from "react";
+import { BigNumber } from "ethers";
 import { useQuery } from "react-query";
 import { useResetAtom, useUpdateAtom } from "jotai/utils";
 import horizon from "@lib/horizon";
@@ -16,14 +17,15 @@ export default function useFetchDebtData() {
 
   useDisconnected(resetDebtData);
 
-  const fetcher = useCallback(async () => {
+  const fetcher = useCallback<() => Promise<[number, BN[]]>>(async () => {
     const {
       contracts: { Synthetix, RewardEscrow, Liquidations },
       utils,
     } = horizon.js!;
 
     const zUSDBytes = utils.formatBytes32String("zUSD");
-    const res = await Promise.all([
+    const [deadline, ...values] = (await Promise.all([
+      Liquidations.getLiquidationDeadlineForAccount(account),
       Synthetix.collateral(account),
       Synthetix.collateralisationRatio(account),
       Synthetix.transferableSynthetix(account),
@@ -31,32 +33,33 @@ export default function useFetchDebtData() {
       Synthetix.maxIssuableSynths(account),
       Synthetix.balanceOf(account),
       RewardEscrow.balanceOf(account),
-      Liquidations.getLiquidationDeadlineForAccount(account),
-    ]);
-    return res.map((item) => etherToBN(item));
+    ])) as BigNumber[];
+    return [deadline.toNumber(), values.map((item) => etherToBN(item))];
   }, [account]);
 
   useQuery([CONTRACT, account, "debt"], fetcher, {
     enabled: !!account && !!horizon.js,
     onSuccess([
-      collateral,
-      currentCRatio,
-      transferable,
-      debtBalance,
-      issuableSynths,
-      balance,
-      escrowedReward,
-      // liquidationDeadline,
+      liquidationDeadline,
+      [
+        collateral,
+        currentCRatio,
+        transferable,
+        debtBalance,
+        issuableSynths,
+        balance,
+        escrowedReward,
+      ],
     ]) {
       // console.log({
-      //   currentCRatio,
+      //   currentCRatio: currentCRatio.toNumber(),
       //   transferable,
       //   debtBalance,
       //   collateral,
       //   issuableSynths,
       //   balance,
       //   escrowedReward,
-      //   liquidationDeadline: liquidationDeadline.toString(),
+      //   liquidationDeadline,
       // });
       setDebtData({
         currentCRatio,
@@ -66,6 +69,7 @@ export default function useFetchDebtData() {
         issuableSynths,
         balance,
         escrowedReward,
+        liquidationDeadline,
       });
     },
   });

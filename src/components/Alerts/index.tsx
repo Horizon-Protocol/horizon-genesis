@@ -14,7 +14,6 @@ import EmptyStaked from "./EmptyStaked";
 import AboveTarget from "./AboveTarget";
 import BelowTarget from "./BelowTarget";
 import Claimable from "./Claimable";
-import BelowLiquidation from "./BelowLiquidation";
 
 const useStyles = makeStyles({
   container: {
@@ -31,7 +30,7 @@ export default function Alert({ className, ...props }: BoxProps) {
   const { account } = useWallet();
   const targetRatio = useAtomValue(targetRatioAtom);
   const liquidationRatio = useAtomValue(liquidationRatioAtom);
-  const { currentCRatio } = useAtomValue(debtAtom);
+  const { currentCRatio, liquidationDeadline } = useAtomValue(debtAtom);
   const { stakedCollateral, unstakedCollateral } =
     useAtomValue(collateralDataAtom);
   const { claimable } = useAtomValue(rewardsAtom);
@@ -51,19 +50,26 @@ export default function Alert({ className, ...props }: BoxProps) {
     else if (stakedCollateral.eq(0)) {
       alertComponent = <EmptyStaked unstaked={unstakedCollateral} />;
     }
-    // below liquidation percent
-    else if (currentCRatio.gt(0) && currentCRatio.gte(liquidationRatio)) {
-      color = COLOR.danger;
-      alertComponent = <BelowLiquidation color={COLOR.danger} />;
-    }
     // below targetRatio percent
     else if (currentCRatio.gt(0) && currentCRatio.gt(targetRatio)) {
       color = COLOR.warning;
-      alertComponent = <BelowTarget />;
+      alertComponent = (
+        <BelowTarget
+          currentCRatio={currentCRatio}
+          targetRatio={targetRatio}
+          liquidationRatio={liquidationRatio}
+          liquidationDeadline={liquidationDeadline}
+        />
+      );
     }
     // above targetRatio percent
     else if (currentCRatio.gt(0) && currentCRatio.lte(targetRatio)) {
-      alertComponent = <AboveTarget />;
+      alertComponent = (
+        <AboveTarget
+          targetRatio={targetRatio}
+          liquidationDeadline={liquidationDeadline}
+        />
+      );
     }
     // claimable
     else if (claimable) {
@@ -74,10 +80,11 @@ export default function Alert({ className, ...props }: BoxProps) {
     account,
     stakedCollateral,
     currentCRatio,
-    liquidationRatio,
     targetRatio,
     claimable,
     unstakedCollateral,
+    liquidationRatio,
+    liquidationDeadline,
     formatted,
   ]);
 

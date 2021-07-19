@@ -19,7 +19,7 @@ import { zAssets } from "@utils/zAssets";
 
 const THEME_COLOR = PAGE_COLOR.claim;
 
-export default function Earn() {
+export default function Claim() {
   const { connected } = useWallet();
   useFetchRewards();
 

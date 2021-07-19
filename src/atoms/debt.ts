@@ -12,6 +12,7 @@ export const debtAtom = atomWithReset({
   collateral: zeroBN, // all total HZN amount
   issuableSynths: zeroBN,
   escrowedReward: zeroBN,
+  liquidationDeadline: 0, // deadline timestamp(seconds) for liquidation
 });
 
 export const currentCRatioPercentAtom = atom((get) => {

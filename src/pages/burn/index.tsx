@@ -38,7 +38,7 @@ import { toFutureDate } from "@utils/date";
 
 const THEME_COLOR = PAGE_COLOR.burn;
 
-export default function Earn() {
+export default function Burn() {
   const { account, connected } = useWallet();
   const { enqueueSnackbar } = useSnackbar();
 

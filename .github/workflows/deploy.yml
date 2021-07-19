@@ -68,3 +68,17 @@ jobs:
           AWS_S3_BUCKET: ${{ matrix.type[1] }}
           AWS_REGION: ap-southeast-1
           SOURCE_DIR: dist
+
+  notify:
+    runs-on: ubuntu-latest
+    needs: build
+
+    steps:
+      - name: Bark Notification
+        uses: lxzxl/bark-action@2.0.2
+        with:
+          host: https://bark.etcd.run
+          key: ${{ secrets.BARK_KEY }} # Your secret key
+          title: "[Horizon] Genesis"
+          body: "Mainnet | Testnet"
+          category: Horizon

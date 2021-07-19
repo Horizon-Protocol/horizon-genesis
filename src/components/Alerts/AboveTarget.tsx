@@ -72,9 +72,11 @@ export default function AboveTarget({
 
   return (
     <BaseAlert title='Tip' content={content}>
-      <ActionLink onClick={clearLiquidationFlag}>
-        Clear Liquidation Flag
-      </ActionLink>
+      {liquidationDeadline > 0 && (
+        <ActionLink onClick={clearLiquidationFlag}>
+          Clear Liquidation Flag
+        </ActionLink>
+      )}
     </BaseAlert>
   );
 }

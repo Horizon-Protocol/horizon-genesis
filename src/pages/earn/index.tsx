@@ -68,7 +68,7 @@ const cards: StakeCardProps[] = [
     desc: (
       <>
         This staking pool is no longer active, please unstake your HZN. You may
-        stake your HZN HZN by minting zUSD in the 'Mint' tab.
+        stake your HZN by minting zUSD in the 'Mint' tab.
       </>
     ),
     links: [

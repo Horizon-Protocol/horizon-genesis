@@ -9,6 +9,7 @@ import {
 } from "@material-ui/core";
 import { useAtomValue } from "jotai/utils";
 import {
+  earnedAtomFamily,
   stakedAtomFamily,
   withdrawableAtomFamily,
 } from "@atoms/staker/balance";
@@ -106,17 +107,18 @@ export default function StakeCard({
   const classes = useStyles();
   const { connected } = useWallet();
 
+  const earned = useAtomValue(earnedAtomFamily(token));
   const staked = useAtomValue(stakedAtomFamily(token));
   const withdrawable = useAtomValue(withdrawableAtomFamily(token));
 
-  const cardEnabled = useMemo(() => {
+  const cardDisabled = useMemo(() => {
     if (DEPRECATED_TOKENS.indexOf(token) > -1) {
-      return !staked.isZero() || !withdrawable.isZero();
+      return earned.isZero() && staked.isZero() && withdrawable.isZero();
     }
-    return true;
-  }, [staked, token, withdrawable]);
+    return false;
+  }, [earned, staked, token, withdrawable]);
 
-  if (!cardEnabled) {
+  if (cardDisabled) {
     return null;
   }
 

@@ -69,7 +69,13 @@ export default function PresetCRatioOptions({
             Preset strategies help you manage your C-Ratio based on different
             risk tolerances. Maintaining a higher C-Ratio will lower your risk
             of liquidation, but also reduce your rewards from debt. To learn
-            more about staking strategies, click <Link href='#'>here</Link>
+            more about staking strategies, click{" "}
+            <Link
+              href='https://docs.horizonprotocol.com/#strategies'
+              target='_blank'
+            >
+              here
+            </Link>
           </>
         }
         placement='top'

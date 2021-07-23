@@ -55,11 +55,20 @@ const cards: StakeCardProps[] = [
   {
     token: Token.HZN,
     bg: hznBg,
-    color: "#2AD4B7",
+    // color: "#2AD4B7",
+    // desc: (
+    //   <>
+    //     <br />
+    //     Stake BEP-20 HZN to earn HZN. <br />
+    //   </>
+    // ),
+    color: "#FF325F",
+    cardTitle: "Please Unstake",
+    disabledActions: [Action.Stake],
     desc: (
       <>
-        <br />
-        Stake BEP-20 HZN to earn HZN. <br />
+        This staking pool is no longer active, please unstake your HZN. You may
+        stake your HZN HZN by minting zUSD in the 'Mint' tab.
       </>
     ),
     links: [

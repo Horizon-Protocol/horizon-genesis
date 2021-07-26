@@ -1,6 +1,7 @@
 import { useEffect, useState } from "react";
 import { Switch, Route } from "react-router-dom";
 import ReactGA from "react-ga";
+import { hotjar } from "react-hotjar";
 import { useAtomValue } from "jotai/utils";
 import {
   Box,
@@ -144,6 +145,12 @@ function App() {
       refresh();
     }
   }, [appReady, refresh]);
+
+  useEffect(() => {
+    if (import.meta.env.PROD) {
+      hotjar.initialize(2506984, 6);
+    }
+  }, []);
 
   return (
     <>

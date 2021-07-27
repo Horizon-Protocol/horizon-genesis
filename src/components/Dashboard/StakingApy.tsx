@@ -18,9 +18,15 @@ const useStyles = makeStyles(({ palette }) => ({
 
 interface Props extends BoxProps {
   percent: number;
+  isEstimate: boolean;
 }
 
-export default function StakingApy({ percent, className, ...props }: Props) {
+export default function StakingApy({
+  percent,
+  isEstimate,
+  className,
+  ...props
+}: Props) {
   const classes = useStyles();
 
   return (
@@ -36,6 +42,11 @@ export default function StakingApy({ percent, className, ...props }: Props) {
         variant='subtitle1'
         className={classes.percent}
       >
+        {isEstimate && (
+          <Typography variant='overline' gutterBottom>
+            &#8776;{" "}
+          </Typography>
+        )}
         <span className={classes.percentValue}>
           {percent ? formatNumber(percent) : "--"}
         </span>

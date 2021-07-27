@@ -28,6 +28,7 @@ export default function useUserStakingData() {
     .plus(hznRate.multipliedBy(previousFeePeriod.rewardsToDistribute));
 
   let stakingAPR = 0;
+  let isEstimateAPR = true;
   // compute APR based on the user staked SNX
   if (stakedValue.gt(0) && debtBalance.gt(0)) {
     stakingAPR = weeklyRewards
@@ -38,24 +39,16 @@ export default function useUserStakingData() {
       )
       .dividedBy(stakedValue)
       .toNumber();
+    isEstimateAPR = false;
+  } else if (hznRate.gt(0) && totalIssuedZUSDExclEth.gt(0)) {
+    stakingAPR = zUSDRate
+      .multipliedBy(currentFeePeriod.feesToDistribute)
+      .plus(hznRate.multipliedBy(currentFeePeriod.rewardsToDistributeBN))
+      .multipliedBy(WEEKS_IN_YEAR)
+      .dividedBy(totalIssuedZUSDExclEth.dividedBy(targetRatio))
+      .toNumber();
+    isEstimateAPR = true;
   }
-  // estimate apr by top 100 holders
-  // else if (
-  //   hznRate != null &&
-  //   zUSDRate != null &&
-  //   previousFeePeriod != null &&
-  //   currentFeePeriod.data != null &&
-  //   useSNXLockedValue.data != null &&
-  //   debtData.data != null
-  // ) {
-  //   // compute APR based using useSNXLockedValueQuery (top 1000 holders)
-  //   stakingAPR = zUSDRate
-  //         .multipliedBy(currentFeePeriod.data.feesToDistribute)
-  //         .plus(hznRate.multipliedBy(currentFeePeriod.data.rewardsToDistribute))
-  //         .multipliedBy(WEEKS_IN_YEAR)
-  //         .dividedBy(useSNXLockedValue.data)
-  //         .toNumber();
-  // }
 
   const { currentFeePeriodStarts, nextFeePeriodStarts } = useMemo(() => {
     return {
@@ -73,6 +66,7 @@ export default function useUserStakingData() {
 
   return {
     stakingAPR,
+    isEstimateAPR,
     currentFeePeriodStarts,
     nextFeePeriodStarts,
   };

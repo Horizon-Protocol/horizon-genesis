@@ -41,7 +41,7 @@ export default function Dashboard({ className, ...props }: BoxProps) {
 
   const hznRate = useAtomValue(hznRateAtom);
 
-  const { stakingAPR } = useUserStakingData();
+  const { stakingAPR, isEstimateAPR } = useUserStakingData();
 
   const balances = useMemo(
     () => [
@@ -107,7 +107,11 @@ export default function Dashboard({ className, ...props }: BoxProps) {
           textAlign='center'
           className={classes.stats}
         >
-          <StakingApy percent={stakingAPR * 100} className={classes.apy} />
+          <StakingApy
+            percent={stakingAPR * 100}
+            isEstimate={isEstimateAPR}
+            className={classes.apy}
+          />
           <Box p={1} className={classes.balance}>
             <Balance data={balances} />
           </Box>

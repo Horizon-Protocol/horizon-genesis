@@ -24,37 +24,31 @@ const additionalCurrencies = [CryptoCurrency.HZN].map(
 export default function useFetchExchangeRates() {
   const setRates = useUpdateAtom(ratesAtom);
 
-  const fetcher = useCallback<QueryFunction<Rates, string[]>>(
-    async ({ queryKey }) => {
-      const exchangeRates: Rates = {};
-      const {
-        contracts: { SynthUtil, ExchangeRates },
-      } = horizon.js!;
-      const [synthsRates, ratesForCurrencies] = (await Promise.all([
-        SynthUtil.synthsRates(),
-        ExchangeRates.ratesForCurrencies(additionalCurrencies),
-      ])) as [SynthRatesTuple, CurrencyRate[]];
+  const fetcher = useCallback<QueryFunction<Rates, string[]>>(async () => {
+    const exchangeRates: Rates = {};
+    const {
+      contracts: { SynthUtil, ExchangeRates },
+    } = horizon.js!;
+    const [synthsRates, ratesForCurrencies] = (await Promise.all([
+      SynthUtil.synthsRates(),
+      ExchangeRates.ratesForCurrencies(additionalCurrencies),
+    ])) as [SynthRatesTuple, CurrencyRate[]];
 
-      const synths = [...synthsRates[0], ...additionalCurrencies] as string[];
-      const rates = [
-        ...synthsRates[1],
-        ...ratesForCurrencies,
-      ] as CurrencyRate[];
+    const synths = [...synthsRates[0], ...additionalCurrencies] as string[];
+    const rates = [...synthsRates[1], ...ratesForCurrencies] as CurrencyRate[];
 
-      synths.forEach((currencyKeyBytes32: CurrencyKey, idx: number) => {
-        const currencyKey = utils.parseBytes32String(currencyKeyBytes32);
-        const rate = Number(utils.formatEther(rates[idx]));
-        exchangeRates[currencyKey] = rate;
-        // only interested in the standard synths (zETH -> ETH, etc)
-        if (iStandardSynth(currencyKey)) {
-          exchangeRates[synthToAsset(currencyKey)] = rate;
-        }
-      });
+    synths.forEach((currencyKeyBytes32: CurrencyKey, idx: number) => {
+      const currencyKey = utils.parseBytes32String(currencyKeyBytes32);
+      const rate = Number(utils.formatEther(rates[idx]));
+      exchangeRates[currencyKey] = rate;
+      // only interested in the standard synths (zETH -> ETH, etc)
+      if (iStandardSynth(currencyKey)) {
+        exchangeRates[synthToAsset(currencyKey)] = rate;
+      }
+    });
 
-      return exchangeRates;
-    },
-    []
-  );
+    return exchangeRates;
+  }, []);
 
   useQuery([CONTRACT, PUBLIC, "exchangeRates"], fetcher, {
     onSuccess(rates) {

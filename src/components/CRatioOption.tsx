@@ -1,6 +1,6 @@
 import { Box, ButtonBase, ButtonBaseProps } from "@material-ui/core";
 import { makeStyles, createStyles } from "@material-ui/core/styles";
-import { fade } from "@material-ui/core/styles/colorManipulator";
+import { alpha } from "@material-ui/core/styles/colorManipulator";
 
 interface StyleProps {
   color: string;
@@ -26,7 +26,7 @@ const useStyles = makeStyles(({ breakpoints, palette }) =>
     title: {
       lineHeight: "24px",
       background: ({ active, color }: StyleProps) =>
-        active ? color : fade(palette.divider, 0.5),
+        active ? color : alpha(palette.divider, 0.5),
       color: ({ active, disabled }: StyleProps) =>
         !disabled && active ? "#0A1624" : "#62B5DB",
       textTransform: "uppercase",

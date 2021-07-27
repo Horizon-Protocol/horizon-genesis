@@ -1,4 +1,4 @@
-import { createMuiTheme } from "@material-ui/core/styles";
+import { createTheme } from "@material-ui/core/styles";
 // import Rawline from "@assets/fonts/rawline-400.woff";
 
 // const rawline = {
@@ -12,7 +12,7 @@ import { createMuiTheme } from "@material-ui/core/styles";
 //   `,
 // };
 
-const theme = createMuiTheme({
+const theme = createTheme({
   palette: {
     // type: "dark",
     primary: {

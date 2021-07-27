@@ -63,7 +63,7 @@ export default function Header() {
           xs={12}
           sm={12}
           md={8}
-          justify='center'
+          justifyContent='center'
           className={classes.nav}
         >
           <NavTabs />
@@ -74,7 +74,7 @@ export default function Header() {
           xs={12}
           sm={6}
           md={2}
-          justify='flex-end'
+          justifyContent='flex-end'
           className={classes.wallet}
         >
           {connected ? (

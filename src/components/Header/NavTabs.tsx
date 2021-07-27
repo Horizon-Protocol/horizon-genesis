@@ -2,7 +2,7 @@ import { useMemo } from "react";
 import { useLocation, useHistory } from "react-router-dom";
 import ReactGA from "react-ga";
 import { Tabs, Tab, TabProps } from "@material-ui/core";
-import { withStyles, fade } from "@material-ui/core/styles";
+import { withStyles, alpha } from "@material-ui/core/styles";
 import { PAGE_COLOR } from "@utils/theme/constants";
 
 type StyledTabType = (props: TabProps) => JSX.Element;
@@ -76,7 +76,7 @@ const getStyledTab: (color: string) => any = (color) =>
       },
       "&$selected": {
         color,
-        textShadow: `0 0 4px ${fade(color, 0.5)}`,
+        textShadow: `0 0 4px ${alpha(color, 0.5)}`,
       },
     },
     selected: {},

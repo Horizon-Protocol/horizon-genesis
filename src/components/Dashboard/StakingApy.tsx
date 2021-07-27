@@ -42,11 +42,11 @@ export default function StakingApy({
         variant='subtitle1'
         className={classes.percent}
       >
-        {isEstimate && (
+        {percent && isEstimate ? (
           <Typography variant='overline' gutterBottom>
             &#8776;{" "}
           </Typography>
-        )}
+        ) : null}
         <span className={classes.percentValue}>
           {percent ? formatNumber(percent) : "--"}
         </span>

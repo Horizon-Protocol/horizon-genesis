@@ -1,16 +1,16 @@
 import { createTheme } from "@material-ui/core/styles";
-// import Rawline from "@assets/fonts/rawline-400.woff";
+import Rawline from "@assets/fonts/rawline-400.woff";
 
-// const rawline = {
-//   fontFamily: "Rawline",
-//   fontStyle: "normal",
-//   fontWeight: 400,
-//   src: `
-//     local('Rawline'),
-//     local('Rawline-Regular'),
-//     url(${Rawline}) format('woff')
-//   `,
-// };
+const rawline = {
+  fontFamily: "Rawline",
+  fontStyle: "normal",
+  fontWeight: 400,
+  src: `
+    local('Rawline'),
+    local('Rawline-Regular'),
+    url(${Rawline}) format('woff')
+  `,
+};
 
 const theme = createTheme({
   palette: {
@@ -45,13 +45,13 @@ const theme = createTheme({
       '"Segoe UI Symbol"',
     ].join(","),
   },
-  // overrides: {
-  //   MuiCssBaseline: {
-  //     "@global": {
-  //       "@font-face": [rawline],
-  //     },
-  //   },
-  // },
+  overrides: {
+    MuiCssBaseline: {
+      "@global": {
+        "@font-face": [rawline],
+      },
+    },
+  },
 });
 
 export default theme;

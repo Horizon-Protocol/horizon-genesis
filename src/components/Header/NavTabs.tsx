@@ -1,9 +1,12 @@
 import { useMemo } from "react";
 import { useLocation, useHistory } from "react-router-dom";
 import ReactGA from "react-ga";
-import { Tabs, Tab, TabProps } from "@material-ui/core";
+import { useAtomValue } from "jotai/utils";
+import { Badge, Tabs, Tab, TabProps } from "@material-ui/core";
+import { PriorityHigh } from "@material-ui/icons";
 import { withStyles, alpha } from "@material-ui/core/styles";
 import { PAGE_COLOR } from "@utils/theme/constants";
+import { canClaimAtom } from "@atoms/feePool";
 
 type StyledTabType = (props: TabProps) => JSX.Element;
 
@@ -14,6 +17,7 @@ interface LinkTabProps {
 }
 interface StyledTabProps extends LinkTabProps {
   StyledTab: StyledTabType;
+  hasAlert: boolean;
 }
 
 const tabs: LinkTabProps[] = [
@@ -45,6 +49,10 @@ const StyledTabs = withStyles({
     padding: 1,
     borderRadius: 4,
     border: `1px solid rgba(55,133,185,0.25)`,
+    overflow: "visible",
+  },
+  scroller: {
+    overflow: "visible !important",
   },
   indicator: {
     top: 0,
@@ -68,6 +76,7 @@ const getStyledTab: (color: string) => any = (color) =>
       textTransform: "none",
       letterSpacing: "0.57px",
       fontWeight: 500,
+      overflow: "visible",
       "&:hover": {
         color,
       },
@@ -82,9 +91,23 @@ const getStyledTab: (color: string) => any = (color) =>
     selected: {},
   }))(Tab);
 
+const StyledBadge = withStyles({
+  badge: {
+    top: 0,
+    right: -8,
+    borderRadius: 4,
+  },
+  colorPrimary: {
+    background: "#FA9916",
+    color: "white",
+  },
+})(Badge);
+
 export default function NavTabs() {
   const history = useHistory();
   const { pathname } = useLocation();
+
+  const canClaim = useAtomValue(canClaimAtom);
 
   const styledTabs = useMemo<StyledTabProps[]>(
     () =>
@@ -92,8 +115,9 @@ export default function NavTabs() {
         ...item,
         color,
         StyledTab: getStyledTab(color) as StyledTabType,
+        hasAlert: item.label === "Claim" && canClaim,
       })),
-    []
+    [canClaim]
   );
 
   const currentTab = useMemo(
@@ -113,8 +137,24 @@ export default function NavTabs() {
         }
       }}
     >
-      {styledTabs.map(({ to, label, StyledTab }) => (
-        <StyledTab key={to} value={to} label={label} disableRipple />
+      {styledTabs.map(({ to, label, StyledTab, hasAlert }) => (
+        <StyledTab
+          key={to}
+          value={to}
+          label={
+            hasAlert ? (
+              <StyledBadge
+                color='primary'
+                badgeContent={<PriorityHigh fontSize='inherit' />}
+              >
+                {label}
+              </StyledBadge>
+            ) : (
+              label
+            )
+          }
+          disableRipple
+        />
       ))}
     </StyledTabs>
   );

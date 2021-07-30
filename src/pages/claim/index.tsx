@@ -3,7 +3,11 @@ import { Box } from "@material-ui/core";
 import { ethers } from "ethers";
 import { useSnackbar } from "notistack";
 import { useAtomValue } from "jotai/utils";
-import { rewardsAtom, nextClaimCountDownAtom } from "@atoms/feePool";
+import {
+  rewardsAtom,
+  nextClaimCountDownAtom,
+  canClaimAtom,
+} from "@atoms/feePool";
 import horizon from "@lib/horizon";
 import useWallet from "@hooks/useWallet";
 import { PAGE_COLOR } from "@utils/theme/constants";
@@ -25,17 +29,12 @@ export default function Claim() {
 
   const { enqueueSnackbar } = useSnackbar();
 
-  const { claimable, stakingReward, exchangeReward } =
-    useAtomValue(rewardsAtom);
+  const { stakingReward, exchangeReward } = useAtomValue(rewardsAtom);
+  const canClaim = useAtomValue(canClaimAtom);
 
   const totalRewards = useMemo(
     () => stakingReward.plus(exchangeReward),
     [stakingReward, exchangeReward]
-  );
-
-  const canClaim = useMemo(
-    () => claimable && totalRewards.isGreaterThan(0),
-    [claimable, totalRewards]
   );
 
   const nextClaimCountDown = useAtomValue(nextClaimCountDownAtom);

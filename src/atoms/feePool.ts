@@ -1,5 +1,5 @@
 import { atom } from "jotai";
-import { atomWithReset, RESET } from "jotai/utils";
+import { atomWithReset, RESET, selectAtom } from "jotai/utils";
 import { zeroBN } from "@utils/number";
 
 interface FeePoolAtom {
@@ -48,6 +48,15 @@ export const rewardsAtom = atomWithReset({
   stakingReward: zeroBN,
   exchangeReward: zeroBN,
 });
+
+export const canClaimAtom = selectAtom(
+  rewardsAtom,
+  ({ claimable, stakingReward, exchangeReward }) => {
+    const totalRewards = stakingReward.plus(exchangeReward);
+
+    return claimable && totalRewards.isGreaterThan(0);
+  }
+);
 
 // reset user rewards
 export const resetAtom = atom(null, (get, set) => {

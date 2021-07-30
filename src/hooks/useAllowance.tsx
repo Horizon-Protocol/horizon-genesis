@@ -5,13 +5,7 @@ import { Erc20, HZN } from "@abis/types";
 import { tokenAllowanceAtomFamily } from "@atoms/staker/balance";
 import { Token } from "@utils/constants";
 import { etherToBN } from "@utils/number";
-import {
-  usePHB,
-  useHZN,
-  useLP,
-  useDeprecatedLP,
-  useLegacyLP,
-} from "./useContract";
+import { usePHB, useHZN, useLP, useLegacyLP, useZUSDLP } from "./useContract";
 import useWallet from "./useWallet";
 
 export const useTokenAllowance = (token: TokenEnum, spenderAddress: string) => {
@@ -23,8 +17,8 @@ export const useTokenAllowance = (token: TokenEnum, spenderAddress: string) => {
 
   const phbContract = usePHB(true);
   const hznContract = useHZN(true);
+  const zUSDLpContract = useZUSDLP(true);
   const lpContract = useLP(true);
-  const deprecatedLpContract = useDeprecatedLP(true);
   const legacyLpContract = useLegacyLP(true);
 
   const tokenContract: Erc20 | HZN | null = useMemo(() => {
@@ -33,10 +27,10 @@ export const useTokenAllowance = (token: TokenEnum, spenderAddress: string) => {
         return phbContract!;
       case Token.HZN:
         return hznContract!;
+      case Token.ZUSD_BUSD_LP:
+        return zUSDLpContract!;
       case Token.HZN_BNB_LP:
         return lpContract!;
-      case Token.HZN_BNB_LP_DEPRECATED:
-        return deprecatedLpContract!;
       case Token.HZN_BNB_LP_LEGACY:
         return legacyLpContract!;
       default:
@@ -47,8 +41,8 @@ export const useTokenAllowance = (token: TokenEnum, spenderAddress: string) => {
     token,
     phbContract,
     hznContract,
+    zUSDLpContract,
     lpContract,
-    deprecatedLpContract,
     legacyLpContract,
   ]);
 

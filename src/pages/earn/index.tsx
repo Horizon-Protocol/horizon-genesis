@@ -53,6 +53,46 @@ const cards: StakeCardProps[] = [
     ),
   },
   {
+    token: Token.HZN_BNB_LP,
+    bg: bnbBg,
+    color: "#D2884F",
+    // open: false,
+    // disabledActions: [Action.Stake],
+    desc: (
+      <>
+        Stake HZN-BNB LPs to earn HZN. <br />
+        You can provide liquidity on Pancakeswap to get HZN-BNB LP tokens.
+      </>
+    ),
+    links: [
+      {
+        href: `https://pancakeswap.finance/add/BNB/${
+          TOKEN_ADDRESS[56][Token.HZN]
+        }`,
+        logo: cakeLogo,
+        text: "GET HZN-BNB LP TOKENS",
+      },
+    ],
+  },
+  {
+    token: Token.ZUSD_BUSD_LP,
+    bg: bnbBg,
+    color: "#2AD4B7",
+    desc: (
+      <>
+        Stake zUSD-BUSD LPs to earn HZN. <br />
+        You can provide liquidity on Pancakeswap to get zUSD-BUSD LP tokens.
+      </>
+    ),
+    links: [
+      {
+        href: "https://pancakeswap.finance/add/0xe9e7CEA3DedcA5984780Bafc599bD69ADd087D56/0xF0186490B18CB74619816CfC7FeB51cdbe4ae7b9",
+        logo: cakeLogo,
+        text: "GET zUSD-BUSD LP TOKENS",
+      },
+    ],
+  },
+  {
     token: Token.HZN,
     bg: hznBg,
     // color: "#2AD4B7",
@@ -79,56 +119,6 @@ const cards: StakeCardProps[] = [
         logo: cakeLogo,
         text: "Buy HZN",
       },
-    ],
-  },
-  {
-    token: Token.HZN_BNB_LP,
-    bg: bnbBg,
-    color: "#D2884F",
-    // open: false,
-    // disabledActions: [Action.Stake],
-    desc: (
-      <>
-        Stake HZN-BNB LPs to earn HZN. <br />
-        You can provide liquidity on Pancakeswap to get HZN-BNB LP tokens.
-      </>
-    ),
-    links: [
-      {
-        href: `https://exchange.pancakeswap.finance/#/add/BNB/${
-          TOKEN_ADDRESS[56][Token.HZN]
-        }`,
-        logo: cakeLogo,
-        text: "GET HZN-BNB LP TOKENS",
-      },
-    ],
-  },
-  {
-    token: Token.HZN_BNB_LP_DEPRECATED,
-    bg: bnbBg,
-    color: "#FF325F",
-    // open: false,
-    cardTitle: "Please Unstake",
-    disabledActions: [Action.Stake],
-    desc: (
-      <>
-        This pool is disabled, please unstake immediately. To transfer your
-        discontinued LP to the updated LP, click here.
-      </>
-    ),
-    links: [
-      {
-        href: "https://pancakeswap.medium.com/the-great-migration-vote-4093cb3edf23",
-        logo: cakeLogo,
-        text: "Pancakeswap v2 Migration",
-      },
-      // {
-      //   href: `https://exchange.pancakeswap.finance/#/add/BNB/${
-      //     TOKEN_ADDRESS[56][Token.HZN]
-      //   }`,
-      //   logo: cakeLogo,
-      //   text: "GET HZN-BNB LP TOKENS",
-      // },
     ],
   },
   {

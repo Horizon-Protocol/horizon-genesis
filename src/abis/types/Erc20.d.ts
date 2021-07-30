@@ -4,7 +4,8 @@
 
 import {
   ethers,
-  EventFilter,
+  providers,
+  Contract,
   Signer,
   BigNumber,
   BigNumberish,
@@ -15,7 +16,7 @@ import {
   CallOverrides,
 } from "ethers";
 import { BytesLike } from "@ethersproject/bytes";
-import { Listener, Provider } from "@ethersproject/providers";
+import { Listener } from "@ethersproject/providers";
 import { FunctionFragment, EventFragment, Result } from "@ethersproject/abi";
 import { TypedEventFilter, TypedEvent, TypedListener } from "./commons";
 
@@ -83,9 +84,9 @@ interface Erc20Interface extends ethers.utils.Interface {
 }
 
 export class Erc20 extends BaseContract {
-  connect(signerOrProvider: Signer | Provider | string): this;
-  attach(addressOrName: string): this;
-  deployed(): Promise<this>;
+  connect(signerOrProvider: Signer | providers.Provider | string): Contract;
+  attach(addressOrName: string): Contract;
+  deployed(): Promise<Contract>;
 
   listeners<EventArgsArray extends Array<any>, EventArgsObject>(
     eventFilter?: TypedEventFilter<EventArgsArray, EventArgsObject>

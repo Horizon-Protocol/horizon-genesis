@@ -2,8 +2,7 @@
 /* tslint:disable */
 /* eslint-disable */
 
-import { Contract, Signer, utils } from "ethers";
-import { Provider } from "@ethersproject/providers";
+import { Contract, Signer, utils, providers } from "ethers";
 import type { Staking, StakingInterface } from "../Staking";
 
 const _abi = [
@@ -436,7 +435,7 @@ export class Staking__factory {
   }
   static connect(
     address: string,
-    signerOrProvider: Signer | Provider
+    signerOrProvider: Signer | providers.Provider
   ): Staking {
     return new Contract(address, _abi, signerOrProvider) as Staking;
   }

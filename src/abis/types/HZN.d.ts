@@ -4,7 +4,8 @@
 
 import {
   ethers,
-  EventFilter,
+  providers,
+  Contract,
   Signer,
   BigNumber,
   BigNumberish,
@@ -92,9 +93,9 @@ interface HZNInterface extends ethers.utils.Interface {
 }
 
 export class HZN extends BaseContract {
-  connect(signerOrProvider: Signer | Provider | string): this;
-  attach(addressOrName: string): this;
-  deployed(): Promise<this>;
+  connect(signerOrProvider: Signer | providers.Provider | string): Contract;
+  attach(addressOrName: string): Contract;
+  deployed(): Promise<Contract>;
 
   listeners<EventArgsArray extends Array<any>, EventArgsObject>(
     eventFilter?: TypedEventFilter<EventArgsArray, EventArgsObject>

@@ -53,13 +53,13 @@ export function useStatFetcher(token: TokenEnum) {
 export default function useFetchStats() {
   const phb = useStatFetcher(Token.PHB);
   const hzn = useStatFetcher(Token.HZN);
+  const zUSDlp = useStatFetcher(Token.ZUSD_BUSD_LP);
   const lp = useStatFetcher(Token.HZN_BNB_LP);
-  const lpDeprecated = useStatFetcher(Token.HZN_BNB_LP_DEPRECATED);
   const lpLegacy = useStatFetcher(Token.HZN_BNB_LP_LEGACY);
 
   const fetcher = useCallback(
-    () => Promise.all([phb(), hzn(), lp(), lpDeprecated(), lpLegacy()]),
-    [hzn, lp, lpDeprecated, lpLegacy, phb]
+    () => Promise.all([phb(), hzn(), zUSDlp(), lp(), lpLegacy()]),
+    [hzn, zUSDlp, lp, lpLegacy, phb]
   );
 
   useQuery([EARN, PUBLIC, "stats"], fetcher);

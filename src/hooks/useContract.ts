@@ -7,7 +7,7 @@ import useWallet from "@hooks/useWallet";
 import { TokenAddresses, Token } from "@utils/constants";
 import useRpcProvider from "./useRpcProvider";
 
-const useContract = <T extends Contract>(
+const useContract = <T>(
   address: string,
   abi: ContractInterface,
   writable: boolean = false
@@ -29,17 +29,14 @@ const useContract = <T extends Contract>(
   return contract as T | undefined;
 };
 
-export const useRpcContract = <T extends Contract>(
-  address: string,
-  abi: ContractInterface
-) => {
+export const useRpcContract = <T>(address: string, abi: ContractInterface) => {
   const rpcProvider = useRpcProvider();
   const contract = useMemo(
     () => new Contract(address, abi, rpcProvider),
     [abi, address, rpcProvider]
   );
 
-  return contract as T;
+  return contract as unknown as T;
 };
 
 export const useERC20 = (address: string, writable: boolean = false) => {
@@ -54,12 +51,12 @@ export const useHZN = (writable: boolean = false) => {
   return useContract<HZN>(TokenAddresses[Token.HZN], hznAbi, writable);
 };
 
-export const useLP = (writable: boolean = false) => {
-  return useERC20(TokenAddresses[Token.HZN_BNB_LP], writable);
+export const useZUSDLP = (writable: boolean = false) => {
+  return useERC20(TokenAddresses[Token.ZUSD_BUSD_LP], writable);
 };
 
-export const useDeprecatedLP = (writable: boolean = false) => {
-  return useERC20(TokenAddresses[Token.HZN_BNB_LP_DEPRECATED], writable);
+export const useLP = (writable: boolean = false) => {
+  return useERC20(TokenAddresses[Token.HZN_BNB_LP], writable);
 };
 
 export const useLegacyLP = (writable: boolean = false) => {

@@ -53,6 +53,10 @@ export default function Stats({ token }: { token: TokenEnum }) {
     }
 
     const hznPrice = hznRate.toNumber();
+    if (token === Token.ZUSD_BUSD_LP) {
+      // a zUSD/BUSD lp token price is always $2
+      return getApy(2, hznPrice, total, rewardsPerBlock);
+    }
     return getApy(stakeTokenPrice, hznPrice, total, rewardsPerBlock);
   }, [isRoundActive, token, stakeTokenPrice, hznRate, total, rewardsPerBlock]);
 

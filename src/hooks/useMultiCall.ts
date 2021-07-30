@@ -1,9 +1,8 @@
 import { useCallback, useMemo } from "react";
-import { BaseContract } from "ethers";
 import { Contract, Provider } from "@horizon-protocol/ethcall";
 import useRpcProvider from "./useRpcProvider";
 
-export const useMultiCallContract = <T extends BaseContract>(
+export const useMultiCallContract = <T extends { callStatic: any }>(
   address: string,
   abi: any[]
 ) => {

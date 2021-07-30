@@ -42,8 +42,8 @@ export default function useUserStakingData() {
     isEstimateAPR = false;
   } else if (hznRate.gt(0) && totalIssuedZUSDExclEth.gt(0)) {
     stakingAPR = zUSDRate
-      .multipliedBy(currentFeePeriod.feesToDistribute)
-      .plus(hznRate.multipliedBy(currentFeePeriod.rewardsToDistributeBN))
+      .multipliedBy(previousFeePeriod.feesToDistribute)
+      .plus(hznRate.multipliedBy(previousFeePeriod.rewardsToDistributeBN))
       .multipliedBy(WEEKS_IN_YEAR)
       .dividedBy(totalIssuedZUSDExclEth.dividedBy(targetRatio))
       .toNumber();

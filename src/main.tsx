@@ -7,6 +7,7 @@ import { ReactQueryDevtools } from "react-query/devtools";
 import { ThemeProvider } from "@material-ui/styles";
 import { SnackbarProvider } from "notistack";
 import "@fontsource/raleway";
+import "@assets/fonts/rawline-400.woff2";
 import { Web3ReactProvider } from "@web3-react/core";
 import theme from "@utils/theme";
 import { getLibrary } from "@utils/web3React";

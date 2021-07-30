@@ -16,3 +16,9 @@ code {
   font-family: source-code-pro, Menlo, Monaco, Consolas, "Courier New",
     monospace;
 }
+
+@font-face {
+  font-family: Rawline;
+  src: local("Rawline"), local("Rawline-Regular"),
+    url(./assets/fonts/rawline-400.woff2) format("woff2");
+}

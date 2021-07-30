@@ -6,7 +6,7 @@ import { Badge, Tabs, Tab, TabProps } from "@material-ui/core";
 import { PriorityHigh } from "@material-ui/icons";
 import { withStyles, alpha } from "@material-ui/core/styles";
 import { PAGE_COLOR } from "@utils/theme/constants";
-import { canClaimAtom } from "@atoms/feePool";
+import { hasRewardsAtom } from "@atoms/feePool";
 
 type StyledTabType = (props: TabProps) => JSX.Element;
 
@@ -107,7 +107,7 @@ export default function NavTabs() {
   const history = useHistory();
   const { pathname } = useLocation();
 
-  const canClaim = useAtomValue(canClaimAtom);
+  const hasRewards = useAtomValue(hasRewardsAtom);
 
   const styledTabs = useMemo<StyledTabProps[]>(
     () =>
@@ -115,9 +115,9 @@ export default function NavTabs() {
         ...item,
         color,
         StyledTab: getStyledTab(color) as StyledTabType,
-        hasAlert: item.label === "Claim" && canClaim,
+        hasAlert: item.label === "Claim" && hasRewards,
       })),
-    [canClaim]
+    [hasRewards]
   );
 
   const currentTab = useMemo(

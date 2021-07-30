@@ -11,7 +11,7 @@ export enum Action {
 export enum Token {
   PHB = "PHB",
   HZN = "HZN",
-  ZUSD_BUSD_LP = "zUSD_BUSD LP",
+  ZUSD_BUSD_LP = "zUSD-BUSD LP",
   HZN_BNB_LP = "HZN-BNB LP",
   HZN_BNB_LP_LEGACY = "HZN-BNB LP Legacy",
 }

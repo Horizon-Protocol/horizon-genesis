@@ -87,7 +87,7 @@ export default function AmountInput({
     () =>
       lockDownSeconds
         ? prettyMilliseconds(lockDownSeconds.toNumber() * 1000, {
-            verbose: true,
+            verbose: false,
           })
         : null,
     [lockDownSeconds]

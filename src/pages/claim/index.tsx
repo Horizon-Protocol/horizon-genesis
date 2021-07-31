@@ -16,7 +16,6 @@ import PageCard from "@components/PageCard";
 import RewardCard from "@components/Claim/RewardCard";
 import InfoList, { Info } from "@components/InfoList";
 import PrimaryButton from "@components/PrimaryButton";
-import useFetchRewards from "@hooks/useFetchRewards";
 import useRefresh from "@hooks/useRefresh";
 import { formatNumber } from "@utils/number";
 import { zAssets } from "@utils/zAssets";
@@ -25,7 +24,6 @@ const THEME_COLOR = PAGE_COLOR.claim;
 
 export default function Claim() {
   const { connected } = useWallet();
-  useFetchRewards();
 
   const { enqueueSnackbar } = useSnackbar();
 

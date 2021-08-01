@@ -1,4 +1,4 @@
-import { useCallback } from "react";
+import { useCallback, useMemo } from "react";
 import { useQuery } from "react-query";
 import { BigNumber } from "ethers";
 import { useUpdateAtom } from "jotai/utils";
@@ -30,9 +30,14 @@ export default function useFetchState(token: TokenEnum) {
     StakingAddresses[token],
     StakingAbi
   );
+
+  const tokenABI = useMemo(
+    () => (token === Token.HZN ? hznAbi : erc20Abi),
+    [token]
+  );
   const tokenContract = useMultiCallContract<Erc20 & HZN>(
     TokenAddresses[token],
-    token === Token.HZN ? hznAbi : erc20Abi
+    tokenABI
   );
 
   // available atoms
@@ -93,15 +98,18 @@ export default function useFetchState(token: TokenEnum) {
         token === Token.HZN ? "transferableSynthetix" : "balanceOf";
       const res = (await multiCallProvider.all([
         tokenContract[availableFunc](account),
+        tokenContract.allowance(account, StakingAddresses[token]),
         stakingContract.balanceOf(account), // user staked
         stakingContract.earned(account), // user staked
         stakingContract.withdrawableAmount(account), // user withdrawable Amount
       ])) as BigNumber[];
 
-      const [available, staked, earned, withdrawable] = res.map(etherToBN);
+      const [available, allowance, staked, earned, withdrawable] =
+        res.map(etherToBN);
 
       console.log("account", token, {
         available: available.toNumber(),
+        allowance: allowance.toNumber(),
         staked: staked.toNumber(),
         earned: earned.toNumber(),
         withdrawable: withdrawable.toNumber(),
@@ -109,6 +117,7 @@ export default function useFetchState(token: TokenEnum) {
 
       setPoolData({
         available,
+        allowance,
         staked,
         earned,
         withdrawable,

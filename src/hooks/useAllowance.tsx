@@ -65,7 +65,7 @@ export default function useTokenAllowance(token: TokenEnum) {
 
   return {
     loading: loading || !allowance,
-    needApprove: allowance && allowance.lte(0),
+    needApprove: !allowance || allowance.lte(0),
     allowance,
     handleApprove,
     checkApprove,

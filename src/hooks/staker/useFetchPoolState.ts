@@ -107,13 +107,13 @@ export default function useFetchState(token: TokenEnum) {
       const [available, allowance, staked, earned, withdrawable] =
         res.map(etherToBN);
 
-      console.log("account", token, {
-        available: available.toNumber(),
-        allowance: allowance.toNumber(),
-        staked: staked.toNumber(),
-        earned: earned.toNumber(),
-        withdrawable: withdrawable.toNumber(),
-      });
+      // console.log("account", token, {
+      //   available: available.toNumber(),
+      //   allowance: allowance.toNumber(),
+      //   staked: staked.toNumber(),
+      //   earned: earned.toNumber(),
+      //   withdrawable: withdrawable.toNumber(),
+      // });
 
       setPoolData({
         available,

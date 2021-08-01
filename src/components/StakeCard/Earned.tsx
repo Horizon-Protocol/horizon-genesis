@@ -1,5 +1,4 @@
 import { useCallback, useState, useMemo } from "react";
-import { useAtomValue } from "jotai/utils";
 import { Box, Typography } from "@material-ui/core";
 import { makeStyles, withStyles } from "@material-ui/core/styles";
 import { useSnackbar } from "notistack";
@@ -7,7 +6,6 @@ import CountUp from "react-countup-es";
 import { CARD_CONTENT } from "@utils/theme/constants";
 import useRefreshEarn from "@hooks/useRefreshEarn";
 import PrimaryButton from "@components/PrimaryButton";
-import { earnedAtomFamily } from "@atoms/staker/balance";
 import { formatNumber } from "@utils/number";
 import useStaking from "@hooks/staker/useStaking";
 
@@ -44,9 +42,10 @@ const Amount = withStyles({
 
 interface Props {
   token: TokenEnum;
+  earned: BN;
 }
 
-export default function Earned({ token }: Props) {
+export default function Earned({ token, earned }: Props) {
   const classes = useStyles();
 
   const { enqueueSnackbar } = useSnackbar();
@@ -54,7 +53,6 @@ export default function Earned({ token }: Props) {
   const [loading, setLoading] = useState<boolean>(false);
 
   const refresh = useRefreshEarn();
-  const earned = useAtomValue(earnedAtomFamily(token));
 
   const stakingContract = useStaking(token);
 

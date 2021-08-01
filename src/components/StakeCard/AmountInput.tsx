@@ -51,7 +51,7 @@ interface Props {
   onInput: (v: string, max?: boolean) => void;
   amount: BN; // ehter BN format of input
   max: BN;
-  lockDownSeconds: BN | null;
+  lockDownSeconds: number;
   btnLabel: string;
   logo?: string;
   loading: boolean;
@@ -86,7 +86,7 @@ export default function AmountInput({
   const lockDownTime = useMemo(
     () =>
       lockDownSeconds
-        ? prettyMilliseconds(lockDownSeconds.toNumber() * 1000, {
+        ? prettyMilliseconds(lockDownSeconds * 1000, {
             verbose: false,
           })
         : null,

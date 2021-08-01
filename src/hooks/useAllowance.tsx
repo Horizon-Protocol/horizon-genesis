@@ -1,19 +1,17 @@
 import { useCallback, useEffect, useMemo, useState } from "react";
-import { useAtom } from "jotai";
 import { useSnackbar } from "notistack";
 import { Erc20, HZN } from "@abis/types";
-import { tokenAllowanceAtomFamily } from "@atoms/staker/balance";
-import { Token } from "@utils/constants";
-import { etherToBN } from "@utils/number";
+import { Token, StakingAddresses } from "@utils/constants";
+import { etherToBN, zeroBN } from "@utils/number";
 import { usePHB, useHZN, useLP, useLegacyLP, useZUSDLP } from "./useContract";
 import useWallet from "./useWallet";
 
-export const useTokenAllowance = (token: TokenEnum, spenderAddress: string) => {
+export default function useTokenAllowance(token: TokenEnum) {
   const { account } = useWallet();
   const [loading, setLoading] = useState<boolean>(false);
   const { enqueueSnackbar } = useSnackbar();
 
-  const [allowance, setAllowance] = useAtom(tokenAllowanceAtomFamily(token));
+  const [allowance, setAllowance] = useState(zeroBN);
 
   const phbContract = usePHB(true);
   const hznContract = useHZN(true);
@@ -49,19 +47,22 @@ export const useTokenAllowance = (token: TokenEnum, spenderAddress: string) => {
   const fetchAllowance = useCallback(async () => {
     if (account && tokenContract) {
       setLoading(true);
-      const allowance = await tokenContract.allowance(account, spenderAddress);
+      const allowance = await tokenContract.allowance(
+        account,
+        StakingAddresses[token]
+      );
       console.log("allowance", token, allowance.toString());
       setAllowance(etherToBN(allowance));
       setLoading(false);
     }
-  }, [account, tokenContract, setAllowance, spenderAddress, token]);
+  }, [account, tokenContract, setAllowance, token]);
 
   const handleApprove = useCallback(async () => {
     if (account && tokenContract) {
       setLoading(true);
       try {
         const total = await tokenContract.totalSupply();
-        const tx = await tokenContract.approve(spenderAddress, total);
+        const tx = await tokenContract.approve(StakingAddresses[token], total);
         enqueueSnackbar(
           <>
             Approval request has been sent to blockchain,
@@ -80,7 +81,7 @@ export const useTokenAllowance = (token: TokenEnum, spenderAddress: string) => {
       }
       setLoading(false);
     }
-  }, [account, tokenContract, spenderAddress, enqueueSnackbar, setAllowance]);
+  }, [account, tokenContract, token, enqueueSnackbar]);
 
   const checkApprove = useCallback(
     async (amount: BN) => {
@@ -105,4 +106,4 @@ export const useTokenAllowance = (token: TokenEnum, spenderAddress: string) => {
     handleApprove,
     checkApprove,
   };
-};
+}

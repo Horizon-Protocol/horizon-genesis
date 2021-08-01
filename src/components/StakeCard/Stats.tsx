@@ -1,14 +1,14 @@
+import { useMemo } from "react";
+import { useAtomValue } from "jotai/utils";
 import { Box, Typography } from "@material-ui/core";
 import { makeStyles } from "@material-ui/core/styles";
-import { useAtomValue } from "jotai/utils";
 import { CARD_CONTENT } from "@utils/theme/constants";
 import { Token, TokenShortName } from "@utils/constants";
 import { formatNumber } from "@utils/number";
 import { getApy } from "@utils/apy";
 import { hznRateAtom } from "@atoms/exchangeRates";
-import { tokenStatAtomFamily } from "@atoms/staker/stat";
-import { useMemo } from "react";
 import { tokenPriceAtomFamily } from "@atoms/staker/price";
+import { poolStateAtomFamily } from "@atoms/staker/pool";
 
 const useStyles = makeStyles({
   root: {
@@ -39,8 +39,8 @@ export default function Stats({ token }: { token: TokenEnum }) {
 
   const hznRate = useAtomValue(hznRateAtom);
   const stakeTokenPrice = useAtomValue(tokenPriceAtomFamily(token));
-  const { total, rewardsPerBlock, isRoundActive } = useAtomValue(
-    tokenStatAtomFamily(token)
+  const { totalStaked, rewardsPerBlock, isRoundActive } = useAtomValue(
+    poolStateAtomFamily(token)
   );
 
   const apy = useMemo(() => {
@@ -49,16 +49,23 @@ export default function Stats({ token }: { token: TokenEnum }) {
     }
 
     if (token === Token.HZN) {
-      return getApy(1, 1, total, rewardsPerBlock);
+      return getApy(1, 1, totalStaked, rewardsPerBlock);
     }
 
     const hznPrice = hznRate.toNumber();
     if (token === Token.ZUSD_BUSD_LP) {
       // a zUSD/BUSD lp token price is always $2
-      return getApy(2, hznPrice, total, rewardsPerBlock);
+      return getApy(2, hznPrice, totalStaked, rewardsPerBlock);
     }
-    return getApy(stakeTokenPrice, hznPrice, total, rewardsPerBlock);
-  }, [isRoundActive, token, stakeTokenPrice, hznRate, total, rewardsPerBlock]);
+    return getApy(stakeTokenPrice, hznPrice, totalStaked, rewardsPerBlock);
+  }, [
+    isRoundActive,
+    token,
+    stakeTokenPrice,
+    hznRate,
+    totalStaked,
+    rewardsPerBlock,
+  ]);
 
   return (
     <Box className={classes.root}>
@@ -83,7 +90,7 @@ export default function Stats({ token }: { token: TokenEnum }) {
           Total Staked
         </Typography>
         <Typography variant='body1' classes={{ root: classes.total }}>
-          {`${formatNumber(total)} ${TokenShortName[token]}`}
+          {`${formatNumber(totalStaked)} ${TokenShortName[token]}`}
         </Typography>
       </div>
     </Box>

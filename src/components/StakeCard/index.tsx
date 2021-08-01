@@ -1,3 +1,4 @@
+import { useMemo } from "react";
 import { makeStyles, withStyles } from "@material-ui/core/styles";
 import {
   Typography,
@@ -8,14 +9,11 @@ import {
   CardContent,
 } from "@material-ui/core";
 import { useAtomValue } from "jotai/utils";
-import {
-  earnedAtomFamily,
-  stakedAtomFamily,
-  withdrawableAtomFamily,
-} from "@atoms/staker/balance";
+import { poolStateAtomFamily } from "@atoms/staker/pool";
 import defaultTheme from "@utils/theme";
 import { DEPRECATED_TOKENS } from "@utils/constants";
 import useWallet from "@hooks/useWallet";
+import useFetchPoolState from "@hooks/staker/useFetchPoolState";
 import ExternalLink from "@components/Staker/ExternalLink";
 import ConnectButton from "../ConnectButton";
 import CardSection from "./CardSection";
@@ -23,7 +21,6 @@ import Pending from "./Pending";
 import Stats from "./Stats";
 import Earned from "./Earned";
 import AmountStake from "./AmountStake";
-import { useMemo } from "react";
 
 const useStyles = makeStyles(() => ({
   desc: {
@@ -107,9 +104,11 @@ export default function StakeCard({
   const classes = useStyles();
   const { connected } = useWallet();
 
-  const earned = useAtomValue(earnedAtomFamily(token));
-  const staked = useAtomValue(stakedAtomFamily(token));
-  const withdrawable = useAtomValue(withdrawableAtomFamily(token));
+  useFetchPoolState(token);
+
+  const { earned, staked, withdrawable } = useAtomValue(
+    poolStateAtomFamily(token)
+  );
 
   const cardDisabled = useMemo(() => {
     if (DEPRECATED_TOKENS.indexOf(token) > -1) {
@@ -150,7 +149,7 @@ export default function StakeCard({
         }}
       >
         <StyledContent>
-          <Earned token={token} />
+          <Earned token={token} earned={earned} />
           {connected ? (
             <AmountStake
               logo={logo}

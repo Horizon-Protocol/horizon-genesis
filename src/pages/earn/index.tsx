@@ -3,8 +3,6 @@ import { Link } from "@material-ui/core";
 import StakeCard, { StakeCardProps } from "@components/StakeCard";
 import { Token, TOKEN_ADDRESS, Action } from "@utils/constants";
 import useFetchPrice from "@hooks/staker/useFetchPrice";
-import useFetchStats from "@hooks/staker/useFetchStats";
-import useFetchState from "@hooks/staker/useFetchState";
 import phbBg from "@assets/bgs/phb.png";
 import hznBg from "@assets/bgs/hzn.png";
 import bnbBg from "@assets/bgs/bnb.png";
@@ -154,8 +152,6 @@ export default function Home() {
   const classes = useStyles();
 
   useFetchPrice();
-  useFetchStats();
-  useFetchState();
 
   return (
     <div className={classes.container}>

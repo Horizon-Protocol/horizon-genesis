@@ -3,18 +3,13 @@ import { Box, Button, Collapse, Typography } from "@material-ui/core";
 import { makeStyles, withStyles } from "@material-ui/core/styles";
 import { useSnackbar } from "notistack";
 import { useAtomValue } from "jotai/utils";
-import { DEPRECATED_TOKENS, StakingAddresses, Action } from "@utils/constants";
+import { DEPRECATED_TOKENS, Action } from "@utils/constants";
 import { CARD_CONTENT } from "@utils/theme/constants";
 import useRefresh from "@hooks/useRefreshEarn";
-import { useTokenAllowance } from "@hooks/useAllowance";
+import useTokenAllowance from "@hooks/useAllowance";
 import useStaking from "@hooks/staker/useStaking";
 import PrimaryButton from "@components/PrimaryButton";
-import {
-  availableAtomFamily,
-  stakedAtomFamily,
-  withdrawableAtomFamily,
-} from "@atoms/staker/balance";
-import { tokenStatAtomFamily } from "@atoms/staker/stat";
+import { poolStateAtomFamily } from "@atoms/staker/pool";
 import { TokenName } from "@utils/constants";
 import { BNToEther, toBN, zeroBN, formatNumber } from "@utils/number";
 import AmountInput from "./AmountInput";
@@ -116,15 +111,10 @@ export default function AmountStake({ token, logo, disabledActions }: Props) {
 
   const stakingContract = useStaking(token);
   const { loading, needApprove, handleApprove, checkApprove } =
-    useTokenAllowance(token, StakingAddresses[token]);
+    useTokenAllowance(token);
 
-  const available = useAtomValue(availableAtomFamily(token));
-  const staked = useAtomValue(stakedAtomFamily(token));
-  const withdrawable = useAtomValue(withdrawableAtomFamily(token));
-
-  const { lockDownSeconds, isRoundActive } = useAtomValue(
-    tokenStatAtomFamily(token)
-  );
+  const { lockDownSeconds, isRoundActive, available, staked, withdrawable } =
+    useAtomValue(poolStateAtomFamily(token));
 
   const inputMax: BN = useMemo(() => {
     if (currentAction === Action.Stake) {

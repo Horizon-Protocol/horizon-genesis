@@ -53,15 +53,15 @@ export default function useFetchState(token: TokenEnum) {
         tokenContract.totalSupply(),
       ])) as BigNumber[];
 
-      console.log("static", token, {
-        totalStaked: etherToBN(totalStaked).toNumber(),
-        periodFinish: periodFinish.toNumber(),
-        rewardsPerBlock: etherToBN(rewardsPerSecond)
-          .multipliedBy(BSC_BLOCK_TIME)
-          .toNumber(),
-        lockDownSeconds: lockDownSeconds.toNumber(),
-        totalSupply: etherToBN(totalSupply).toNumber(),
-      });
+      // console.log("static", token, {
+      //   totalStaked: etherToBN(totalStaked).toNumber(),
+      //   periodFinish: periodFinish.toNumber(),
+      //   rewardsPerBlock: etherToBN(rewardsPerSecond)
+      //     .multipliedBy(BSC_BLOCK_TIME)
+      //     .toNumber(),
+      //   lockDownSeconds: lockDownSeconds.toNumber(),
+      //   totalSupply: etherToBN(totalSupply).toNumber(),
+      // });
 
       const finishTimestamp = periodFinish.toNumber();
       const now = Date.now() / 1000;
@@ -98,12 +98,12 @@ export default function useFetchState(token: TokenEnum) {
 
       const [available, staked, earned, withdrawable] = res.map(etherToBN);
 
-      console.log("account", token, {
-        available: available.toNumber(),
-        staked: staked.toNumber(),
-        earned: earned.toNumber(),
-        withdrawable: withdrawable.toNumber(),
-      });
+      // console.log("account", token, {
+      //   available: available.toNumber(),
+      //   staked: staked.toNumber(),
+      //   earned: earned.toNumber(),
+      //   withdrawable: withdrawable.toNumber(),
+      // });
 
       setPoolData({
         available,

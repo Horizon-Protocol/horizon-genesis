@@ -7,7 +7,14 @@ import horizon from "@lib/horizon";
 import { PAGE_COLOR } from "@utils/theme/constants";
 import { Token } from "@utils/constants";
 import { zAssets } from "@utils/zAssets";
-import { formatNumber, maxBN, minBN, toBN, zeroBN } from "@utils/number";
+import {
+  BNToEther,
+  formatNumber,
+  maxBN,
+  minBN,
+  toBN,
+  zeroBN,
+} from "@utils/number";
 import { targetRatioAtom } from "@atoms/app";
 import { hznRateAtom } from "@atoms/exchangeRates";
 import {
@@ -252,8 +259,11 @@ export default function Burn() {
         console.log("burn to target");
         tx = await Synthetix.burnSynthsToTarget();
       } else {
-        console.log("burn amount:", state.fromInput);
-        tx = await Synthetix.burnSynths(utils.parseEther(state.fromInput));
+        const burnAmount = state.isMax
+          ? BNToEther(fromToken.max!)
+          : utils.parseEther(state.fromInput);
+        console.log("burn amount:", burnAmount.toString());
+        tx = await Synthetix.burnSynths(burnAmount);
       }
       const res = await tx.wait(1);
       console.log("res", res);
@@ -276,9 +286,11 @@ export default function Burn() {
     account,
     changedBalance.cRatio.to,
     enqueueSnackbar,
+    fromToken.max,
     refresh,
     setState,
     state.fromInput,
+    state.isMax,
     targetRatio,
   ]);
 

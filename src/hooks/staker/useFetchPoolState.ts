@@ -1,4 +1,5 @@
 import { useCallback } from "react";
+import { useQuery } from "react-query";
 import { BigNumber, constants } from "ethers";
 import { useUpdateAtom } from "jotai/utils";
 import { Erc20, HZN, Staking } from "@abis/types";
@@ -10,10 +11,13 @@ import {
   TokenAddresses,
 } from "@utils/constants";
 import { etherToBN } from "@utils/number";
-import useWallet from "../useWallet";
-import { useQuery } from "react-query";
 import { EARN } from "@utils/queryKeys";
-import { poolStateAtomFamily } from "@atoms/staker/pool";
+import useDisconnected from "@hooks/useDisconnected";
+import {
+  poolStateAtomFamily,
+  resetPoolStateAtomFamily,
+} from "@atoms/staker/pool";
+import useWallet from "../useWallet";
 import useMultiCall, { useMultiCallContract } from "../useMultiCall";
 
 export default function useFetchState(token: TokenEnum) {
@@ -31,6 +35,9 @@ export default function useFetchState(token: TokenEnum) {
 
   // available atoms
   const setPoolData = useUpdateAtom(poolStateAtomFamily(token));
+  const resetPoolData = useUpdateAtom(resetPoolStateAtomFamily(token));
+
+  useDisconnected(resetPoolData);
 
   const staticFetcher = useCallback(async () => {
     if (tokenContract && stakingContract) {
@@ -74,13 +81,7 @@ export default function useFetchState(token: TokenEnum) {
         totalSupply: etherToBN(totalSupply),
       });
     }
-  }, [
-    token,
-    getMultiCallProvider,
-    setPoolData,
-    stakingContract,
-    tokenContract,
-  ]);
+  }, [getMultiCallProvider, setPoolData, stakingContract, tokenContract]);
 
   const accountFetcher = useCallback(async () => {
     if (account && tokenContract && stakingContract) {

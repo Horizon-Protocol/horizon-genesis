@@ -1,8 +1,10 @@
 import { useCallback } from "react";
 import { useQuery } from "react-query";
-import { BigNumber, constants } from "ethers";
+import { BigNumber } from "ethers";
 import { useUpdateAtom } from "jotai/utils";
 import { Erc20, HZN, Staking } from "@abis/types";
+import erc20Abi from "@abis/erc20.json";
+import hznAbi from "@abis/HZN.json";
 import StakingAbi from "@abis/staking.json";
 import {
   BSC_BLOCK_TIME,
@@ -30,7 +32,7 @@ export default function useFetchState(token: TokenEnum) {
   );
   const tokenContract = useMultiCallContract<Erc20 & HZN>(
     TokenAddresses[token],
-    StakingAbi
+    token === Token.HZN ? hznAbi : erc20Abi
   );
 
   // available atoms
@@ -89,9 +91,8 @@ export default function useFetchState(token: TokenEnum) {
 
       const availableFunc =
         token === Token.HZN ? "transferableSynthetix" : "balanceOf";
-      // console.log(`[${token}]`, "availableFunc", availableFunc);
       const res = (await multiCallProvider.all([
-        tokenContract[availableFunc]?.(account) || constants.Zero,
+        tokenContract[availableFunc](account),
         stakingContract.balanceOf(account), // user staked
         stakingContract.earned(account), // user staked
         stakingContract.withdrawableAmount(account), // user withdrawable Amount
@@ -99,12 +100,12 @@ export default function useFetchState(token: TokenEnum) {
 
       const [available, staked, earned, withdrawable] = res.map(etherToBN);
 
-      // console.log("account", token, {
-      //   available: available.toNumber(),
-      //   staked: staked.toNumber(),
-      //   earned: earned.toNumber(),
-      //   withdrawable: withdrawable.toNumber(),
-      // });
+      console.log("account", token, {
+        available: available.toNumber(),
+        staked: staked.toNumber(),
+        earned: earned.toNumber(),
+        withdrawable: withdrawable.toNumber(),
+      });
 
       setPoolData({
         available,

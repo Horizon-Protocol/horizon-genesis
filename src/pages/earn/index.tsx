@@ -5,6 +5,7 @@ import { Token, TOKEN_ADDRESS, Action } from "@utils/constants";
 import useFetchPrice from "@hooks/staker/useFetchPrice";
 import phbBg from "@assets/bgs/phb.png";
 import hznBg from "@assets/bgs/hzn.png";
+import busdBg from "@assets/bgs/busd.png";
 import bnbBg from "@assets/bgs/bnb.png";
 import phbLogo from "@assets/tokens/phb.png";
 import bnbLogo from "@assets/tokens/bnb.png";
@@ -74,8 +75,8 @@ const cards: StakeCardProps[] = [
   },
   {
     token: Token.ZUSD_BUSD_LP,
-    bg: bnbBg,
-    color: "#2AD4B7",
+    bg: busdBg,
+    color: "#D2884F",
     desc: (
       <>
         Stake zUSD-BUSD LPs to earn HZN. <br />

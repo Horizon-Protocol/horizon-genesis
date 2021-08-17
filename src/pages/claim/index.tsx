@@ -3,6 +3,7 @@ import { Box } from "@material-ui/core";
 import { ethers } from "ethers";
 import { useSnackbar } from "notistack";
 import { useAtomValue } from "jotai/utils";
+import { debtAtom } from "@atoms/debt";
 import {
   rewardsAtom,
   nextClaimCountDownAtom,
@@ -27,10 +28,11 @@ export default function Claim() {
 
   const { enqueueSnackbar } = useSnackbar();
 
+  const { escrowedReward } = useAtomValue(debtAtom);
   const { stakingReward, exchangeReward } = useAtomValue(rewardsAtom);
   const canClaim = useAtomValue(canClaimAtom);
 
-  const totalRewards = useMemo(
+  const currentTotalRewards = useMemo(
     () => stakingReward.plus(exchangeReward),
     [stakingReward, exchangeReward]
   );
@@ -47,8 +49,12 @@ export default function Claim() {
       value: nextClaimCountDown,
     },
     {
-      label: "Total Rewards",
-      value: `${formatNumber(totalRewards)} HZN`,
+      label: "Total Rewards this Period",
+      value: `${formatNumber(currentTotalRewards)} HZN`,
+    },
+    {
+      label: "Total Claimed Rewards",
+      value: `${formatNumber(escrowedReward)} HZN`,
     },
     // {
     //   label: "Lifetime Rewards",

@@ -23,7 +23,7 @@ const useStyles = makeStyles(({ breakpoints }) => ({
     padding: "16px 24px",
     background: "#091320",
     [breakpoints.down("xs")]: {
-      padding: "16px 0",
+      padding: "16px 8px",
     },
   },
   listItem: {

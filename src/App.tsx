@@ -38,7 +38,7 @@ if (import.meta.env.PROD) {
   });
   ReactGA.pageview(window.location.pathname + window.location.search);
 }
-const useStyles = makeStyles(({ breakpoints, palette }) => ({
+const useStyles = makeStyles(({ breakpoints, palette, spacing }) => ({
   container: {
     filter: AppDisabled ? "blur(2px)" : undefined,
   },
@@ -80,7 +80,13 @@ const useStyles = makeStyles(({ breakpoints, palette }) => ({
   },
   alerts: {
     [breakpoints.down("sm")]: {
-      margin: "16px 20px 0",
+      margin: spacing(2, 2, 0),
+      // position: "fixed",
+      // right: 0,
+      // zIndex: 3,
+    },
+    [breakpoints.down("xs")]: {
+      margin: spacing(2, 1, 0),
       // position: "fixed",
       // right: 0,
       // zIndex: 3,

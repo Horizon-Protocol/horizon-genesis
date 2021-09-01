@@ -14,10 +14,14 @@ import StakingApy from "./StakingApy";
 import Balance from "./Balance";
 import ClaimCountDown from "./ClaimCountDown";
 
-const useStyles = makeStyles(({ palette }) => ({
+const useStyles = makeStyles(({ breakpoints }) => ({
   container: {
     width: "100%",
     background: "#0C111D",
+    borderRadius: 10,
+    [breakpoints.down("sm")]: {
+      borderRadius: 0,
+    },
   },
   stats: {
     background: "rgba(16,38,55,0.3)",
@@ -93,7 +97,6 @@ export default function Dashboard({ className, ...props }: BoxProps) {
     <>
       <Box
         border={1}
-        borderRadius={10}
         borderColor={BORDER_COLOR}
         className={clsx(classes.container, className)}
         {...props}
@@ -112,7 +115,7 @@ export default function Dashboard({ className, ...props }: BoxProps) {
             isEstimate={isEstimateAPR}
             className={classes.apy}
           />
-          <Box p={1} className={classes.balance}>
+          <Box p={2} className={classes.balance}>
             <Balance data={balances} />
           </Box>
         </Box>

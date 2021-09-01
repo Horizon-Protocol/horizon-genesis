@@ -32,11 +32,12 @@ import Alerts from "@components/Alerts";
 
 const AppDisabled = !!import.meta.env.VITE_APP_DISABLED;
 
-ReactGA.initialize("UA-199967475-1", {
-  // debug: true,
-});
-ReactGA.pageview(window.location.pathname + window.location.search);
-
+if (import.meta.env.PROD) {
+  ReactGA.initialize("UA-199967475-1", {
+    // debug: true,
+  });
+  ReactGA.pageview(window.location.pathname + window.location.search);
+}
 const useStyles = makeStyles(({ breakpoints, palette }) => ({
   container: {
     filter: AppDisabled ? "blur(2px)" : undefined,

@@ -18,17 +18,20 @@ const useStyles = makeStyles(() => ({
   },
 }));
 
+const gapSize = 12;
+const arrowSize = 50;
+
 export default function InputGap({ img }: Props) {
   const classes = useStyles({ img });
 
   return (
-    <Box position='relative' height={12}>
+    <Box position='relative' height={gapSize}>
       <Box
         position='absolute'
         left={"50%"}
-        top={-20}
-        height={40}
-        width={40}
+        top={-(arrowSize - gapSize) / 2}
+        height={arrowSize}
+        width={arrowSize}
         border={5}
         borderRadius={10}
         borderColor='#0F1B2C'

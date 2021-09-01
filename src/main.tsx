@@ -4,6 +4,7 @@ import { BrowserRouter as Router } from "react-router-dom";
 import { Provider as JotaiProvider } from "jotai";
 import { QueryClient, QueryClientProvider } from "react-query";
 import { ReactQueryDevtools } from "react-query/devtools";
+import { CssBaseline } from "@material-ui/core";
 import { ThemeProvider } from "@material-ui/styles";
 import { SnackbarProvider } from "notistack";
 import "@fontsource/raleway";
@@ -34,6 +35,7 @@ ReactDOM.render(
       <QueryClientProvider client={queryClient}>
         <Web3ReactProvider getLibrary={getLibrary}>
           <ThemeProvider theme={theme}>
+            <CssBaseline />
             <SnackbarProvider
               anchorOrigin={{
                 horizontal: "right",

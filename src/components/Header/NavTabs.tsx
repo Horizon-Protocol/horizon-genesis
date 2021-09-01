@@ -133,7 +133,9 @@ export default function NavTabs() {
       onChange={(_, value) => {
         if (value !== pathname) {
           history.push(value);
-          ReactGA.pageview(value);
+          if (import.meta.env.PROD) {
+            ReactGA.pageview(value);
+          }
         }
       }}
     >

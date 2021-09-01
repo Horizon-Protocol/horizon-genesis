@@ -33,7 +33,7 @@ const useStyles = makeStyles(() => ({
 
 const StyledCard = withStyles(({ palette }) => ({
   root: {
-    width: 340,
+    maxWidth: 340,
     flex: "0 0 340px",
     borderRadius: 20,
     backgroundColor: "transparent",

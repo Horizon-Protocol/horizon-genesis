@@ -1,15 +1,17 @@
 import { useCallback, useMemo } from "react";
 import { useSnackbar } from "notistack";
 import fromUnixTime from "date-fns/fromUnixTime";
+import { BoxProps } from "@material-ui/core";
 import horizon from "@lib/horizon";
 import useWallet from "@hooks/useWallet";
 import useRefresh from "@hooks/useRefresh";
 import useDateCountDown from "@hooks/useDateCountDown";
 import { formatCRatioToPercent } from "@utils/number";
+import { COLOR } from "@utils/theme/constants";
 import ActionLink from "./ActionLink";
 import BaseAlert from "./Base";
 
-interface Props {
+interface Props extends BoxProps {
   targetRatio: BN;
   liquidationDeadline: number;
 }
@@ -17,6 +19,7 @@ interface Props {
 export default function AboveTarget({
   targetRatio,
   liquidationDeadline,
+  ...props
 }: Props) {
   const { account } = useWallet();
   const { enqueueSnackbar } = useSnackbar();
@@ -28,16 +31,24 @@ export default function AboveTarget({
   );
   const { formatted, stopped } = useDateCountDown(deadlineDate);
 
-  const { content } = useMemo(() => {
+  const {
+    color,
+    title = "Tip",
+    content,
+  } = useMemo(() => {
     if (liquidationDeadline > 0) {
       if (stopped) {
         return {
+          color: COLOR.danger,
+          title: "Attention Required",
           content: `Your account will be liquidated immediately if you drop below ${formatCRatioToPercent(
             targetRatio
           )}% c-ratio. Clear your liquidation flag ASAP to avoid liquidation.`,
         };
       }
       return {
+        color: COLOR.danger,
+        title: "Attention Required",
         content: `Your account is flagged for liquidation. You have ${formatted} to clear this flag or you may be at risk of liquidation if your c-ratio drops below ${formatCRatioToPercent(
           targetRatio
         )}%.`,
@@ -60,7 +71,7 @@ export default function AboveTarget({
       const res = await tx.wait(1);
       console.log("res", res);
       refresh();
-    } catch (e) {
+    } catch (e: any) {
       console.log(e);
       console.log(e.error);
       const detail = `${e.error?.code}: ${e.error?.reason}`;
@@ -71,7 +82,7 @@ export default function AboveTarget({
   }, [account, enqueueSnackbar, refresh]);
 
   return (
-    <BaseAlert title='Tip' content={content}>
+    <BaseAlert color={color} title={title} content={content} {...props}>
       {liquidationDeadline > 0 && (
         <ActionLink onClick={clearLiquidationFlag}>
           Clear Liquidation Flag

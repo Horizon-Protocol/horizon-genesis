@@ -1,5 +1,6 @@
 import { useMemo } from "react";
 import fromUnixTime from "date-fns/fromUnixTime";
+import { BoxProps } from "@material-ui/core";
 import { HZNBuyLink } from "@utils/constants";
 import { COLOR } from "@utils/theme/constants";
 import { formatCRatioToPercent } from "@utils/number";
@@ -7,7 +8,7 @@ import useDateCountDown from "@hooks/useDateCountDown";
 import ActionLink from "./ActionLink";
 import BaseAlert from "./Base";
 
-interface Props {
+interface Props extends BoxProps {
   currentCRatio: BN;
   targetRatio: BN;
   liquidationRatio: BN;
@@ -19,6 +20,7 @@ export default function BelowTarget({
   targetRatio,
   liquidationRatio,
   liquidationDeadline,
+  ...props
 }: Props) {
   const deadlineDate = useMemo(
     () => fromUnixTime(liquidationDeadline),
@@ -66,7 +68,12 @@ export default function BelowTarget({
   ]);
 
   return (
-    <BaseAlert title='Attention Required' content={content} color={color}>
+    <BaseAlert
+      color={color}
+      title='Attention Required'
+      content={content}
+      {...props}
+    >
       <ActionLink href={HZNBuyLink} target='_blank'>
         Buy HZN
       </ActionLink>

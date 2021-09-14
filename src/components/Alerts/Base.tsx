@@ -1,5 +1,6 @@
 import { ReactNode } from "react";
-import { Box, Typography } from "@material-ui/core";
+import clsx from "clsx";
+import { Box, BoxProps, Typography } from "@material-ui/core";
 import { ErrorOutline } from "@material-ui/icons";
 import { makeStyles, withStyles } from "@material-ui/core/styles";
 import { COLOR } from "@utils/theme/constants";
@@ -7,9 +8,10 @@ import { COLOR } from "@utils/theme/constants";
 const useStyles = makeStyles(({ palette }) => ({
   container: {
     borderRadius: 4,
-    borderTop: `2px solid ${COLOR.tip}`,
+    borderTop: ({ color = COLOR.tip }: { color?: string }) =>
+      `2px solid ${color}`,
     backgroundColor: "#102637",
-    color: ({ color }: { color?: string }) => color,
+    color: ({ color = COLOR.tip }: { color?: string }) => color,
   },
   title: {
     fontSize: 12,
@@ -40,7 +42,7 @@ const AlertIcon = withStyles({
   },
 })(ErrorOutline);
 
-interface Props {
+export interface AlertProps extends Omit<BoxProps, "title"> {
   color?: string;
   title: ReactNode;
   content: ReactNode;
@@ -48,15 +50,21 @@ interface Props {
 }
 
 export default function BaseAlert({
-  color = COLOR.tip,
+  color,
   title,
   content,
   children,
-}: Props) {
+  className,
+  ...props
+}: AlertProps) {
   const classes = useStyles({ color });
 
   return (
-    <>
+    <Box
+      display='flex'
+      className={clsx(className, classes.container)}
+      {...props}
+    >
       <Box mr={1}>
         <AlertIcon color='inherit' />
       </Box>
@@ -67,6 +75,6 @@ export default function BaseAlert({
           {children}
         </Box>
       </Box>
-    </>
+    </Box>
   );
 }

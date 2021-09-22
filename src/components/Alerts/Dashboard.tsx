@@ -20,7 +20,7 @@ export default function Dashboard(props: BoxProps) {
       onClose={() => setDismissed(true)}
       {...props}
     >
-      <ActionLink to='https://dashboard.horizonprotocol.com/' target='_blank'>
+      <ActionLink href='https://dashboard.horizonprotocol.com/' target='_blank'>
         View Now
       </ActionLink>
     </BaseAlert>

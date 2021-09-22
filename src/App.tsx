@@ -9,6 +9,7 @@ import {
   useMediaQuery,
   Button,
   Typography,
+  BoxProps,
 } from "@material-ui/core";
 import { ExpandLess, ExpandMore } from "@material-ui/icons";
 import { makeStyles, useTheme } from "@material-ui/core/styles";
@@ -30,6 +31,7 @@ import Earn from "@pages/earn";
 import Header from "@components/Header";
 import Dashboard from "@components/Dashboard";
 import Alerts from "@components/Alerts";
+import AlertDashboard from "@components/Alerts/Dashboard";
 
 const AppDisabled = !!import.meta.env.VITE_APP_DISABLED;
 
@@ -163,6 +165,13 @@ function App() {
     }
   }, []);
 
+  const alertProps: BoxProps = {
+    px: 2,
+    py: 1,
+    mb: 2,
+    className: classes.alerts,
+  };
+
   return (
     <>
       {AppDisabled && (
@@ -186,9 +195,11 @@ function App() {
       )}
       <Box className={classes.container}>
         <Header />
-
         {!isEarnPage && downSM && (
-          <Alerts px={2} py={1} mb={2} className={classes.alerts} />
+          <>
+            <Alerts {...alertProps} />
+            <AlertDashboard {...alertProps} />
+          </>
         )}
         <Box className={classes.body}>
           {!isEarnPage && (
@@ -217,7 +228,10 @@ function App() {
               className={clsx(classes.dashboard, expanded ? "expanded" : "")}
             >
               {!downSM && (
-                <Alerts px={2} py={1} mb={2} className={classes.alerts} />
+                <>
+                  <Alerts {...alertProps} />
+                  <AlertDashboard {...alertProps} />
+                </>
               )}
               <Dashboard />
               {downSM && (

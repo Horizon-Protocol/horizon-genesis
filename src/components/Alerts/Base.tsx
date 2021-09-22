@@ -1,12 +1,13 @@
 import { ReactNode } from "react";
 import clsx from "clsx";
 import { Box, BoxProps, Typography } from "@material-ui/core";
-import { ErrorOutline } from "@material-ui/icons";
+import { Close, ErrorOutline } from "@material-ui/icons";
 import { makeStyles, withStyles } from "@material-ui/core/styles";
 import { COLOR } from "@utils/theme/constants";
 
 const useStyles = makeStyles(({ palette }) => ({
   container: {
+    position: "relative",
     borderRadius: 4,
     borderTop: ({ color = COLOR.tip }: { color?: string }) =>
       `2px solid ${color}`,
@@ -34,6 +35,17 @@ const useStyles = makeStyles(({ palette }) => ({
       marginLeft: 0,
     },
   },
+  close: {
+    position: "absolute",
+    right: 6,
+    top: 6,
+    cursor: "pointer",
+    fontSize: 16,
+    color: palette.text.secondary,
+    "&:hover": {
+      color: palette.text.primary,
+    },
+  },
 }));
 
 const AlertIcon = withStyles({
@@ -47,6 +59,7 @@ export interface AlertProps extends Omit<BoxProps, "title"> {
   title: ReactNode;
   content: ReactNode;
   children?: ReactNode;
+  onClose?: () => void;
 }
 
 export default function BaseAlert({
@@ -55,6 +68,7 @@ export default function BaseAlert({
   content,
   children,
   className,
+  onClose,
   ...props
 }: AlertProps) {
   const classes = useStyles({ color });
@@ -75,6 +89,7 @@ export default function BaseAlert({
           {children}
         </Box>
       </Box>
+      {onClose && <Close onClick={onClose} className={classes.close} />}
     </Box>
   );
 }

@@ -10,8 +10,8 @@ import useRefresh from "@hooks/useRefresh";
 const StyledChip = withStyles(({ palette }) => ({
   root: {
     marginRight: 10,
-    paddingLeft: 8,
-    paddingRight: 8,
+    paddingLeft: 4,
+    paddingRight: 4,
     color: palette.text.primary,
     textTransform: "none",
     borderRadius: 4,

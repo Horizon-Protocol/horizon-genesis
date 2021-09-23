@@ -3,6 +3,7 @@ import { useQuery, QueryFunction } from "react-query";
 import { useUpdateAtom } from "jotai/utils";
 import {
   appDataReadyAtom,
+  lastDebtLedgerEntryAtom,
   totalSupplyAtom,
   totalIssuedZUSDExclEthAtom,
   targetRatioAtom,
@@ -11,11 +12,13 @@ import {
 } from "@atoms/app";
 import horizon from "@lib/horizon";
 import useFetchExchangeRates from "./useFetchExchangeRates";
-import { etherToBN } from "@utils/number";
+import { etherToBN, toBN } from "@utils/number";
 import { CONTRACT, PUBLIC } from "@utils/queryKeys";
 
 export default function useFetchAppData() {
   const setAppDataReady = useUpdateAtom(appDataReadyAtom);
+
+  const setLastDebtLedgerEntry = useUpdateAtom(lastDebtLedgerEntryAtom);
   const setTotalSupply = useUpdateAtom(totalSupplyAtom);
   const setTotalIssuedZUSDExclEth = useUpdateAtom(totalIssuedZUSDExclEthAtom);
   const setTargetCRatio = useUpdateAtom(targetRatioAtom);
@@ -24,10 +27,11 @@ export default function useFetchAppData() {
 
   const fetcher = useCallback<QueryFunction<BN[], string[]>>(async () => {
     const {
-      contracts: { SystemSettings, Synthetix, Liquidations },
+      contracts: { SystemSettings, Synthetix, SynthetixState, Liquidations },
       utils,
     } = horizon.js!;
     const res = await Promise.all([
+      SynthetixState.lastDebtLedgerEntry(),
       Synthetix.totalSupply(),
       Synthetix.totalIssuedSynthsExcludeEtherCollateral(
         utils.formatBytes32String("zUSD"),
@@ -39,21 +43,28 @@ export default function useFetchAppData() {
       Liquidations.liquidationRatio(),
       // Liquidations.liquidationDelay(),
     ]);
-    return res.map((item) => etherToBN(item));
+
+    return [
+      toBN(utils.formatUnits(res[0], 27)),
+      ...res.slice(1).map((item) => etherToBN(item)),
+    ];
   }, []);
 
   useQuery([CONTRACT, PUBLIC, "app"], fetcher, {
     onSuccess([
+      lastDebtLedgerEntry,
       totalSupply,
       totalIssuedZUSDExclEth,
       targetRatio,
       liquidationRatio,
       // liquidationDelay,
     ]) {
-      // console.log({
-      //   totalIssuedZUSDExclEth: totalIssuedZUSDExclEth.toString(),
-      //   // liquidationDelay: liquidationDelay,
-      // });
+      console.log({
+        lastDebtLedgerEntry: lastDebtLedgerEntry.toString(),
+        totalIssuedZUSDExclEth: totalIssuedZUSDExclEth.toString(),
+        // liquidationDelay: liquidationDelay,
+      });
+      setLastDebtLedgerEntry(lastDebtLedgerEntry);
       setTotalSupply(totalSupply);
       setTotalIssuedZUSDExclEth(totalIssuedZUSDExclEth);
       setTargetCRatio(targetRatio);

@@ -20,6 +20,7 @@ import useFetchDebtData from "@hooks/useFetchDebtData";
 import useFetchZAssets from "@hooks/useFetchZAssets";
 import useFetchFeePool from "@hooks/useFetchFeePool";
 import useFetchRewards from "@hooks/useFetchRewards";
+import useFetchHorizonData from "@hooks/useFetchHorizonData";
 import useRefresh from "@hooks/useRefresh";
 import useIsEarnPage from "@hooks/useIsEarnPage";
 import Mint from "@pages/mint";
@@ -146,6 +147,7 @@ function App() {
   useFetchZAssets();
   useFetchFeePool();
   useFetchRewards();
+  useFetchHorizonData();
 
   const refresh = useRefresh();
 

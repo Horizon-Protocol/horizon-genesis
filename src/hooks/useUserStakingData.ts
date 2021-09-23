@@ -2,10 +2,11 @@ import { useMemo } from "react";
 import { targetRatioAtom, totalIssuedZUSDExclEthAtom } from "@atoms/app";
 import { debtAtom } from "@atoms/debt";
 import { hznRateAtom, zUSDRateAtom } from "@atoms/exchangeRates";
-import { currentFeePeriodAtom, previoudFeePeriodAtom } from "@atoms/feePool";
+import { currentFeePeriodAtom, previousFeePeriodAtom } from "@atoms/feePool";
 import { minBN, zeroBN } from "@utils/number";
 import { WEEKS_IN_YEAR } from "@utils/date";
 import { useAtomValue } from "jotai/utils";
+import { estimateAprAtom } from "@atoms/summary";
 
 export default function useUserStakingData() {
   const totalIssuedZUSDExclEth = useAtomValue(totalIssuedZUSDExclEthAtom);
@@ -14,7 +15,7 @@ export default function useUserStakingData() {
   const zUSDRate = useAtomValue(zUSDRateAtom);
   const { debtBalance, collateral, currentCRatio } = useAtomValue(debtAtom);
   const currentFeePeriod = useAtomValue(currentFeePeriodAtom);
-  const previousFeePeriod = useAtomValue(previoudFeePeriodAtom);
+  const previousFeePeriod = useAtomValue(previousFeePeriodAtom);
 
   const stakedValue =
     collateral.gt(0) && currentCRatio.gt(0)
@@ -26,6 +27,8 @@ export default function useUserStakingData() {
   const weeklyRewards = zUSDRate
     .multipliedBy(previousFeePeriod.feesToDistribute)
     .plus(hznRate.multipliedBy(previousFeePeriod.rewardsToDistribute));
+
+  const estimateAPR = useAtomValue(estimateAprAtom);
 
   let stakingAPR = 0;
   let isEstimateAPR = true;
@@ -40,15 +43,19 @@ export default function useUserStakingData() {
       .dividedBy(stakedValue)
       .toNumber();
     isEstimateAPR = false;
-  } else if (hznRate.gt(0) && totalIssuedZUSDExclEth.gt(0)) {
-    stakingAPR = zUSDRate
-      .multipliedBy(previousFeePeriod.feesToDistribute)
-      .plus(hznRate.multipliedBy(previousFeePeriod.rewardsToDistributeBN))
-      .multipliedBy(WEEKS_IN_YEAR)
-      .dividedBy(totalIssuedZUSDExclEth.dividedBy(targetRatio))
-      .toNumber();
+  } else if (estimateAPR) {
+    stakingAPR = estimateAPR;
     isEstimateAPR = true;
   }
+  // else if (hznRate.gt(0) && totalIssuedZUSDExclEth.gt(0)) {
+  //   stakingAPR = zUSDRate
+  //     .multipliedBy(previousFeePeriod.feesToDistribute)
+  //     .plus(hznRate.multipliedBy(previousFeePeriod.rewardsToDistributeBN))
+  //     .multipliedBy(WEEKS_IN_YEAR)
+  //     .dividedBy(totalIssuedZUSDExclEth.dividedBy(targetRatio))
+  //     .toNumber();
+  //   isEstimateAPR = true;
+  // }
 
   const { currentFeePeriodStarts, nextFeePeriodStarts } = useMemo(() => {
     return {

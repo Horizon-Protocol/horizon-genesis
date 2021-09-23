@@ -3,7 +3,7 @@ import { useQuery, QueryFunction } from "react-query";
 import { useUpdateAtom } from "jotai/utils";
 import { ethers, utils } from "ethers";
 import horizon from "@lib/horizon";
-import { currentFeePeriodAtom, previoudFeePeriodAtom } from "@atoms/feePool";
+import { currentFeePeriodAtom, previousFeePeriodAtom } from "@atoms/feePool";
 import { etherToBN } from "@utils/number";
 import { CONTRACT, PUBLIC } from "@utils/queryKeys";
 
@@ -26,7 +26,7 @@ type Results = { [k in keyof FeePeriod]: number } & {
 
 export default function useFetchFeePool() {
   const setCurrentFeePeriod = useUpdateAtom(currentFeePeriodAtom);
-  const setPreviousFeePeriod = useUpdateAtom(previoudFeePeriodAtom);
+  const setPreviousFeePeriod = useUpdateAtom(previousFeePeriodAtom);
 
   const fetchData = useCallback<
     QueryFunction<Results, [string, string, string, Period]>

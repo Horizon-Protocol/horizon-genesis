@@ -9,6 +9,7 @@ export const readyAtom = atom(false);
 export const appDataReadyAtom = atom(false);
 
 // static variables from contract
+export const lastDebtLedgerEntryAtom = atom(zeroBN);
 export const totalSupplyAtom = atomWithReset(zeroBN);
 export const totalIssuedZUSDExclEthAtom = atomWithReset(zeroBN); // total zUSD in pool
 export const targetRatioAtom = atomWithReset(zeroBN);

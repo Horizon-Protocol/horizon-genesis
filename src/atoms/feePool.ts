@@ -22,7 +22,7 @@ export const currentFeePeriodAtom = atom<FeePoolAtom>({
   rewardsClaimed: 0,
 });
 
-export const previoudFeePeriodAtom = atom<FeePoolAtom>({
+export const previousFeePeriodAtom = atom<FeePoolAtom>({
   feePeriodDuration: 0,
   startTime: 0,
   feesToDistribute: 0,

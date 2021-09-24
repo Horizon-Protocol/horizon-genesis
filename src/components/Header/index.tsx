@@ -6,6 +6,7 @@ import useWallet from "@hooks/useWallet";
 import NavTabs from "./NavTabs";
 import WalletInfo from "./WalletInfo";
 import WalletsDialog from "./WalletsDialog";
+import DashboardLink from "./DashboardLink";
 
 const useStyles = makeStyles(({ breakpoints }) => ({
   container: {
@@ -28,6 +29,7 @@ const useStyles = makeStyles(({ breakpoints }) => ({
   wallet: {
     height: 40,
     order: 2,
+    flexWrap: "nowrap",
     [breakpoints.down("sm")]: {
       order: 2,
       margin: "8px 0",
@@ -54,7 +56,7 @@ export default function Header() {
         alignItems='center'
         classes={{ container: classes.container }}
       >
-        <Grid container item xs={12} sm={6} md={2}>
+        <Grid container item xs={12} sm={5} md={3} lg={5}>
           <img src={logo} alt='Horizon Mintr' className={classes.logo} />
         </Grid>
         <Grid
@@ -62,7 +64,8 @@ export default function Header() {
           item
           xs={12}
           sm={12}
-          md={8}
+          md={4}
+          lg={2}
           justifyContent='center'
           className={classes.nav}
         >
@@ -72,11 +75,14 @@ export default function Header() {
           container
           item
           xs={12}
-          sm={6}
-          md={2}
+          sm={7}
+          md={5}
+          lg={5}
+          alignItems='center'
           justifyContent='flex-end'
           className={classes.wallet}
         >
+          <DashboardLink />
           {connected ? (
             <>
               <WalletInfo />

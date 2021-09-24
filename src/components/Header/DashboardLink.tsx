@@ -18,6 +18,15 @@ const useStyles = makeStyles(({ palette }) => ({
     height: 16,
     width: 16,
   },
+  new: {
+    position: "absolute",
+    top: -10,
+    right: 0,
+    fontSize: 12,
+    fontWeight: "bold",
+    transform: "scale(0.8)",
+    color: "#FCB000",
+  },
 }));
 
 export default function DashboardLink() {
@@ -31,6 +40,7 @@ export default function DashboardLink() {
       classes={classes}
     >
       Dashboard
+      <span className={classes.new}>NEW!</span>
     </Button>
   );
 }

@@ -27,7 +27,7 @@ const useStyles = makeStyles(({ breakpoints }) => ({
     },
   },
   wallet: {
-    height: 40,
+    minHeight: 40,
     order: 2,
     flexWrap: "nowrap",
     [breakpoints.down("sm")]: {
@@ -36,6 +36,7 @@ const useStyles = makeStyles(({ breakpoints }) => ({
     },
     [breakpoints.down("xs")]: {
       justifyContent: "center",
+      flexWrap: "wrap",
     },
   },
   connect: {

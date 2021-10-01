@@ -14,7 +14,7 @@ const useStyles = makeStyles(({ breakpoints, palette }) => ({
     backgroundColor: "#091620",
     border: "1px solid rgba(55,133,185,0.25)",
     [breakpoints.down("xs")]: {
-      marginBottom: 8,
+      marginRight: 0,
     },
   },
   startIcon: {

@@ -1,4 +1,4 @@
-import { Grid } from "@material-ui/core";
+import { Box, Grid, Hidden } from "@material-ui/core";
 import { makeStyles } from "@material-ui/core/styles";
 import ConnectButton from "@components/ConnectButton";
 import logo from "@assets/logo.png";
@@ -84,6 +84,9 @@ export default function Header() {
           className={classes.wallet}
         >
           <DashboardLink />
+          <Hidden smUp>
+            <Box width='100%' height={8} />
+          </Hidden>
           {connected ? (
             <>
               <WalletInfo />

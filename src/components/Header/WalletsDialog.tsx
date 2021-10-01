@@ -21,9 +21,9 @@ import { openAtom, detailAtom, prevWalletNameAtom } from "@atoms/wallet";
 import useWallet from "@hooks/useWallet";
 import { injectorByName } from "@utils/web3React";
 
-const useStyles = makeStyles(({ typography }) => ({
+const useStyles = makeStyles(({ breakpoints, typography }) => ({
   header: {
-    minWidth: 350,
+    width: "100%",
     display: "flex",
     justifyContent: "space-between",
     alignItems: "center",
@@ -34,6 +34,9 @@ const useStyles = makeStyles(({ typography }) => ({
     letterSpacing: "3px",
     textTransform: "uppercase",
     lineHeight: "28px",
+    [breakpoints.down("sm")]: {
+      fontSize: 18,
+    },
   },
   closeIcon: {
     padding: 4,
@@ -41,6 +44,10 @@ const useStyles = makeStyles(({ typography }) => ({
   logo: {
     width: 32,
     height: 32,
+    [breakpoints.down("sm")]: {
+      width: 28,
+      height: 28,
+    },
   },
 }));
 
@@ -66,7 +73,7 @@ const StyledListItem = withStyles(({ palette }) => ({
   },
 }))(ListItem);
 
-const StyledListItemText = withStyles(() => ({
+const StyledListItemText = withStyles(({ breakpoints }) => ({
   root: {
     paddingRight: 48,
     whiteSpace: "nowrap",
@@ -76,6 +83,9 @@ const StyledListItemText = withStyles(() => ({
     fontWeight: 700,
     textTransform: "uppercase",
     letterSpacing: 0.88,
+    [breakpoints.down("sm")]: {
+      fontSize: 14,
+    },
   },
 }))(ListItemText);
 

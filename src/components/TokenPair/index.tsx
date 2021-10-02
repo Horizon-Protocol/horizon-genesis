@@ -1,6 +1,5 @@
 import { useCallback, useEffect, useMemo } from "react";
-import { Box, BoxProps, Typography } from "@material-ui/core";
-import { withStyles } from "@material-ui/core/styles";
+import { Box, BoxProps, Typography } from "@mui/material";
 import { useSetState } from "ahooks";
 import numbro from "numbro";
 import { toBN } from "@utils/number";
@@ -82,18 +81,6 @@ const isExceedMax = (stringAmount: string, max?: BN) => {
   return false;
 };
 
-const InputError = withStyles({
-  root: {
-    minHeight: 24,
-    color: COLOR.danger,
-    fontSize: 10,
-    fontWeight: 500,
-    letterSpacing: "0.36px",
-    lineHeight: "14px",
-    textAlign: "center",
-  },
-})(Typography);
-
 export default function TokenPair({
   fromToken,
   toToken,
@@ -146,7 +133,17 @@ export default function TokenPair({
 
   return (
     <Box {...props}>
-      <InputError>{state.error}</InputError>
+      <Typography
+        minHeight={24}
+        color={COLOR.danger}
+        fontSize={10}
+        fontWeight={500}
+        letterSpacing='0.36px'
+        lineHeight='14px'
+        textAlign='center'
+      >
+        {state.error}
+      </Typography>
       <TokenInput
         {...fromToken}
         amount={fromAmount}

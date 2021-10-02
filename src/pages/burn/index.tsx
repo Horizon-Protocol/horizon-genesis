@@ -1,6 +1,6 @@
 import { useMemo, useCallback, useState, useEffect } from "react";
 import { useAtomValue } from "jotai/utils";
-import { Box, Typography } from "@material-ui/core";
+import { Box, Typography } from "@mui/material";
 import { ethers } from "ethers";
 import { useSnackbar } from "notistack";
 import horizon from "@lib/horizon";
@@ -273,7 +273,7 @@ export default function Burn() {
         isMax: false,
       }));
       refresh();
-    } catch (e) {
+    } catch (e: any) {
       console.log(e);
       console.log(e.error);
       const detail = `${e.error?.code}: ${e.error?.reason}`;

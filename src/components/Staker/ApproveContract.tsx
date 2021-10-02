@@ -1,5 +1,6 @@
-import CardSection from "@components/StakeCard/CardSection";
+import { Box } from "@mui/material";
 import PrimaryButton from "@components/PrimaryButton";
+import { CARD_CONTENT } from "@utils/theme/constants";
 
 interface Props {
   token: TokenEnum;
@@ -7,10 +8,10 @@ interface Props {
 
 export default function ApproveContract({ token }: Props) {
   return (
-    <CardSection style={{ minHeight: 54 }}>
+    <Box {...CARD_CONTENT} minHeight={54}>
       <PrimaryButton size='large' fullWidth>
         Approve Contract
       </PrimaryButton>
-    </CardSection>
+    </Box>
   );
 }

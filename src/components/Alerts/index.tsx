@@ -1,5 +1,5 @@
 import { useAtomValue } from "jotai/utils";
-import { BoxProps } from "@material-ui/core";
+import { BoxProps } from "@mui/material";
 import { liquidationRatioAtom, targetRatioAtom } from "@atoms/app";
 import { collateralDataAtom, debtAtom } from "@atoms/debt";
 import { rewardsAtom, feePeriodDatesAtom } from "@atoms/feePool";

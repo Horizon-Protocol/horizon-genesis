@@ -1,6 +1,5 @@
 import { useCallback, useRef, SyntheticEvent } from "react";
-import { Box, Link, InputBase, Typography } from "@material-ui/core";
-import { makeStyles } from "@material-ui/core/styles";
+import { Box, Link, InputBase, Typography } from "@mui/material";
 import NumberFormat from "react-number-format";
 import { formatNumber, NumericValue } from "@utils/number";
 import { BORDER_COLOR, COLOR } from "@utils/theme/constants";
@@ -28,71 +27,6 @@ declare global {
   }
 }
 
-const useStyles = makeStyles(({ breakpoints }) => ({
-  root: {
-    padding: "16px 24px",
-    background: "#091320",
-    [breakpoints.down("xs")]: {
-      padding: "16px 8px",
-    },
-  },
-  inputBox: {},
-  tokenNameTip: {
-    fontSize: 12,
-    letterSpacing: "0.43px",
-    lineHeight: "14px",
-  },
-  tokenName: {
-    color: "#B4E0FF",
-    fontSize: 24,
-    fontWeight: 700,
-    letterSpacing: "0.86px",
-    lineHeight: "28px",
-    [breakpoints.down("xs")]: {
-      fontSize: 18,
-    },
-  },
-  label: {
-    padding: 12,
-    display: " inline-flex",
-    alignItems: "center",
-  },
-  inputLabel: {
-    padding: "10px 12px",
-    fontSize: 24,
-  },
-  input: {},
-  innerInput: {
-    // fontFamily: "Rawline",
-    color: ({ invalid = false }: { invalid: boolean }) =>
-      invalid ? COLOR.danger : "#B4E0FF",
-    fontFamily: "Rawline",
-    fontSize: 24,
-    fontWeight: 700,
-    lineHeight: "26px",
-    textAlign: "right",
-  },
-  amountLabel: {
-    [breakpoints.down("sm")]: {
-      flexWrap: "wrap",
-    },
-  },
-  balanceLabel: {
-    fontSize: 12,
-    fontWeight: 700,
-    color: "#6E89A6",
-  },
-  balanceLabelError: {
-    color: "red",
-  },
-  maxButton: {
-    padding: "0 0 0 4px",
-    fontSize: 12,
-    fontWeight: 700,
-    textTransform: "none",
-  },
-}));
-
 export default function TokenInput({
   disabled = false,
   token,
@@ -111,10 +45,6 @@ export default function TokenInput({
   inputPrefix,
   invalid = false,
 }: TokenInputProps) {
-  const classes = useStyles({
-    invalid,
-  });
-
   const maxRef = useRef<boolean>();
 
   const handleClickMax = useCallback(
@@ -143,34 +73,42 @@ export default function TokenInput({
     <Box
       display='flex'
       border={1}
-      borderRadius={4}
+      borderRadius={1}
       borderColor={BORDER_COLOR}
-      className={classes.root}
-      style={{ backgroundColor: bgColor }}
+      p='16px 24px'
+      py={2}
+      px={{
+        xs: 1,
+        sm: 3,
+      }}
+      bgcolor={bgColor || "#091320"}
     >
       <Box display='flex' alignItems='center'>
         <TokenLogo token={token} logo={logo} />
-        <Box
-          display='flex'
-          flexDirection='column'
-          className={classes.inputLabel}
-        >
+        <Box display='flex' flexDirection='column' p='10px 12px' fontSize={24}>
           <Typography
-            className={classes.tokenNameTip}
-            style={{ color: labelColor }}
+            fontSize={12}
+            letterSpacing='0.43px'
+            lineHeight='14px'
+            color={labelColor}
           >
             {label}
           </Typography>
-          <Typography className={classes.tokenName}>{token}</Typography>
+          <Typography
+            color='#B4E0FF'
+            fontSize={{
+              xs: 18,
+              sm: 24,
+            }}
+            fontWeight={700}
+            letterSpacing='0.86px'
+            lineHeight='28px'
+          >
+            {token}
+          </Typography>
         </Box>
       </Box>
-      <Box
-        display='flex'
-        flexDirection='column'
-        flexGrow={1}
-        flexShrink={1}
-        className={classes.inputBox}
-      >
+      <Box display='flex' flexDirection='column' flexGrow={1} flexShrink={1}>
         <NumberFormat
           value={input}
           onValueChange={(values) => {
@@ -195,21 +133,36 @@ export default function TokenInput({
           placeholder='0.0'
           disabled={disabled}
           customInput={InputBase}
-          className={classes.input}
-          classes={{ input: classes.innerInput }}
+          inputProps={{
+            inputMode: "decimal",
+          }}
+          sx={{
+            ".MuiInputBase-input": {
+              color: invalid ? COLOR.danger : "#B4E0FF",
+              fontFamily: "Rawline",
+              fontSize: 24,
+              fontWeight: 700,
+              lineHeight: "26px",
+              textAlign: "right",
+              "&.Mui-disabled": {
+                WebkitTextFillColor: "initial",
+              },
+            },
+          }}
         />
         <Box
           display='flex'
           justifyContent='flex-end'
-          className={classes.amountLabel}
+          flexWrap={{
+            xs: "wrap",
+            md: "nowrap",
+          }}
         >
           <Typography
             component='span'
-            classes={{
-              root: classes.balanceLabel,
-              colorError: classes.balanceLabelError,
-            }}
-            // className={classes.balanceLabel}
+            fontSize={12}
+            fontWeight={700}
+            color='#6E89A6'
           >
             {balanceLabel
               ? balanceLabel
@@ -223,8 +176,13 @@ export default function TokenInput({
               underline='none'
               color='inherit'
               onClick={handleClickMax}
-              classes={{ root: classes.maxButton }}
-              style={{ color: color }}
+              sx={{
+                p: "0 0 0 4px",
+                fontSize: 12,
+                fontWeight: 700,
+                textTransform: "none",
+                color,
+              }}
             >
               ({maxButtonLabel})
             </Link>

@@ -1,5 +1,4 @@
-import { makeStyles } from "@material-ui/core/styles";
-import { Link } from "@material-ui/core";
+import { Box, Link } from "@mui/material";
 import StakeCard, { StakeCardProps } from "@components/StakeCard";
 import { Token, TOKEN_ADDRESS, Action } from "@utils/constants";
 import useFetchPrice from "@hooks/staker/useFetchPrice";
@@ -10,19 +9,6 @@ import bnbBg from "@assets/bgs/bnb.png";
 import phbLogo from "@assets/tokens/phb.png";
 import bnbLogo from "@assets/tokens/bnb.png";
 import cakeLogo from "@assets/tokens/cake.png";
-
-const useStyles = makeStyles({
-  container: {
-    padding: "0 24px",
-    display: "flex",
-    flexWrap: "wrap",
-    justifyContent: "center",
-    alignItems: "flex-start",
-  },
-  card: {
-    margin: 10,
-  },
-});
 
 const cards: StakeCardProps[] = [
   {
@@ -150,15 +136,25 @@ const cards: StakeCardProps[] = [
 ];
 
 export default function Home() {
-  const classes = useStyles();
-
   useFetchPrice();
 
   return (
-    <div className={classes.container}>
+    <Box
+      p='0 24px'
+      display='flex'
+      flexWrap='wrap'
+      justifyContent='center'
+      alignItems='flex-start'
+    >
       {cards.map((card) => (
-        <StakeCard key={card.token} {...card} className={classes.card} />
+        <StakeCard
+          key={card.token}
+          {...card}
+          sx={{
+            m: "10px",
+          }}
+        />
       ))}
-    </div>
+    </Box>
   );
 }

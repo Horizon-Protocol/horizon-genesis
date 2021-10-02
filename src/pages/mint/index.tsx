@@ -1,6 +1,6 @@
 import { useMemo, useCallback, useState } from "react";
 import { useAtomValue } from "jotai/utils";
-import { Box } from "@material-ui/core";
+import { Box } from "@mui/material";
 import { ethers, utils } from "ethers";
 import { useSnackbar } from "notistack";
 import horizon from "@lib/horizon";
@@ -219,7 +219,7 @@ export default function Mint() {
         isMax: false,
       }));
       refresh();
-    } catch (e) {
+    } catch (e: any) {
       console.log(e);
       console.log(e.error);
       const detail = `${e.error?.code}: ${e.error?.reason}`;

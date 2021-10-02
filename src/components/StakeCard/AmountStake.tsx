@@ -1,6 +1,5 @@
 import { useCallback, useState, useMemo } from "react";
-import { Box, Button, Collapse, Typography } from "@material-ui/core";
-import { makeStyles, withStyles } from "@material-ui/core/styles";
+import { Box, Button, Collapse, Typography } from "@mui/material";
 import { useSnackbar } from "notistack";
 import { useAtomValue } from "jotai/utils";
 import { DEPRECATED_TOKENS, Action } from "@utils/constants";
@@ -13,61 +12,6 @@ import { poolStateAtomFamily } from "@atoms/staker/pool";
 import { TokenName } from "@utils/constants";
 import { BNToEther, toBN, zeroBN, formatNumber } from "@utils/number";
 import AmountInput from "./AmountInput";
-
-const useStyles = makeStyles(({ palette }) => ({
-  root: {
-    ...CARD_CONTENT,
-    minHeight: 54,
-  },
-  amountBox: {
-    display: "flex",
-    alignItems: "center",
-  },
-  staked: {
-    flex: 1,
-    overflow: "hidden",
-  },
-  buttons: {
-    flex: "0 0 120px",
-    display: "flex",
-    justifyContent: "space-between",
-    color: palette.text.primary,
-  },
-  inputBox: {
-    position: "relative",
-    padding: CARD_CONTENT.padding,
-  },
-}));
-
-const AmountLabel = withStyles({
-  root: {
-    fontSize: 12,
-    fontWeight: 900,
-    letterSpacing: "1px",
-    textTransform: "uppercase",
-  },
-})(Typography);
-
-const Amount = withStyles({
-  root: {
-    paddingRight: 8,
-    fontSize: 22,
-    fontFamily: "Rawline",
-    fontWeight: 500,
-    textOverflow: "ellipsis",
-    overflow: "hidden",
-  },
-})(Typography);
-
-const InputButton = withStyles(({ palette }) => ({
-  root: {
-    width: 50,
-    minWidth: 50,
-    fontWeight: 700,
-    color: palette.text.primary,
-    boxShadow: "none",
-  },
-}))(Button);
 
 interface Props {
   token: TokenEnum;
@@ -89,7 +33,6 @@ const Actions = [
 ];
 
 export default function AmountStake({ token, logo, disabledActions }: Props) {
-  const classes = useStyles();
   const [submitting, setSubmitting] = useState<boolean>(false);
   const [currentAction, setCurrentAction] = useState<Action>();
   const [input, setInput] = useState<string>();
@@ -206,7 +149,7 @@ export default function AmountStake({ token, logo, disabledActions }: Props) {
           await handleUnstake();
         }
       }
-    } catch (e) {
+    } catch (e: any) {
       console.log(e.error);
       enqueueSnackbar(e.error ?? "Operation Failed", { variant: "error" });
     }
@@ -235,7 +178,7 @@ export default function AmountStake({ token, logo, disabledActions }: Props) {
 
   return (
     <>
-      <Box className={classes.root}>
+      <Box {...CARD_CONTENT} minHeight={54}>
         {needApprove ? (
           <PrimaryButton
             size='large'
@@ -248,28 +191,57 @@ export default function AmountStake({ token, logo, disabledActions }: Props) {
           </PrimaryButton>
         ) : (
           <>
-            <AmountLabel variant='caption' color='primary'>
+            <Typography
+              variant='caption'
+              color='primary'
+              fontSize={12}
+              fontWeight={900}
+              letterSpacing='1px'
+              sx={{ textTransform: "uppercase" }}
+            >
               {TokenName[token]} Staked
-            </AmountLabel>
-            <Box className={classes.amountBox}>
-              <Box className={classes.staked}>
-                <Amount variant='body1'>{formatNumber(staked)}</Amount>
+            </Typography>
+            <Box display='flex' alignItems='center'>
+              <Box flex='1' overflow='hidden'>
+                <Typography
+                  variant='body1'
+                  pr={1}
+                  fontSize={22}
+                  fontFamily='Rawline'
+                  fontWeight={500}
+                  textOverflow='ellipsis'
+                  overflow='hidden'
+                >
+                  {formatNumber(staked)}
+                </Typography>
               </Box>
-              <Box className={classes.buttons}>
+              <Box
+                flex='0 0 120px'
+                display='flex'
+                justifyContent='space-between'
+                color='text.primary'
+              >
                 {actions.map(({ key, label, disabled }) =>
                   disabled ? (
                     <i key={key} />
                   ) : (
-                    <InputButton
+                    <Button
                       key={key}
                       disabled={disabled}
                       variant='contained'
                       color={currentAction === key ? "primary" : "secondary"}
                       size='small'
                       onClick={() => handleAction(key)}
+                      sx={{
+                        width: 50,
+                        minWidth: 50,
+                        fontWeight: 700,
+                        color: "text.primary",
+                        boxShadow: "none",
+                      }}
                     >
                       {label}
-                    </InputButton>
+                    </Button>
                   )
                 )}
               </Box>
@@ -278,7 +250,7 @@ export default function AmountStake({ token, logo, disabledActions }: Props) {
         )}
       </Box>
       <Collapse in={!!currentAction}>
-        <Box className={classes.inputBox}>
+        <Box position='relative' p={CARD_CONTENT.padding}>
           <AmountInput
             token={token}
             logo={logo}

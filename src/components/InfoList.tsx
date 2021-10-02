@@ -5,36 +5,7 @@ import {
   ListItem,
   ListItemIcon,
   ListItemText,
-} from "@material-ui/core";
-import { makeStyles, withStyles } from "@material-ui/core";
-import clsx from "clsx";
-
-const Label = withStyles({
-  root: {
-    color: "#5897C1",
-    fontSize: 14,
-  },
-})(ListItemIcon);
-
-const Value = withStyles(() => ({
-  root: {
-    textAlign: "right",
-    color: "#88ABC3",
-  },
-}))(ListItemText);
-
-const useStyles = makeStyles(({ breakpoints }) => ({
-  container: {
-    padding: "16px 24px",
-    background: "#091320",
-    [breakpoints.down("xs")]: {
-      padding: "16px 0",
-    },
-  },
-  listItem: {
-    padding: 0,
-  },
-}));
+} from "@mui/material";
 
 export interface Info {
   label: string;
@@ -50,19 +21,35 @@ export default function InfoList({
   className,
   ...props
 }: Props & BoxProps) {
-  const classes = useStyles();
-
   return (
-    <Box {...props} className={clsx(classes.container, className)}>
+    <Box
+      py={2}
+      px={{
+        xs: 0,
+        sm: 3,
+      }}
+      bgcolor='#091320'
+      {...props}
+    >
       <List dense disablePadding>
         {data.map(({ label, value }) => (
           <ListItem
             key={label}
             disableGutters
-            classes={{ root: classes.listItem }}
+            sx={{
+              p: 0,
+            }}
           >
-            <Label>{label}</Label>
-            <Value primary={value} />
+            <ListItemIcon sx={{ color: "#5897C1", fontSize: 14 }}>
+              {label}
+            </ListItemIcon>
+            <ListItemText
+              primary={value}
+              sx={{
+                textAlign: "right",
+                color: "#88ABC3",
+              }}
+            />
           </ListItem>
         ))}
       </List>

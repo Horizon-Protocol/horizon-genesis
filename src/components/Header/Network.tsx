@@ -1,32 +1,10 @@
 import { useAtomValue } from "jotai/utils";
-import { Avatar, Chip, ChipProps, CircularProgress } from "@material-ui/core";
-import { withStyles } from "@material-ui/core/styles";
+import { Avatar, Chip, ChipProps, CircularProgress } from "@mui/material";
 import { detailAtom } from "@atoms/wallet";
 import { ChainName } from "@utils/constants";
 import { useIsFetching } from "react-query";
 import { CONTRACT } from "@utils/queryKeys";
 import useRefresh from "@hooks/useRefresh";
-
-const StyledChip = withStyles(({ palette }) => ({
-  root: {
-    marginRight: 10,
-    paddingLeft: 4,
-    paddingRight: 4,
-    color: palette.text.primary,
-    textTransform: "none",
-    borderRadius: 4,
-    backgroundColor: "#091620",
-    border: "1px solid rgba(55,133,185,0.25)",
-  },
-}))(Chip);
-
-const StyledAvatar = withStyles(({ palette }) => ({
-  img: {
-    width: 18,
-    height: 18,
-    objectFit: "contain",
-  },
-}))(Avatar);
 
 export default function WalletIndicator(props: ChipProps) {
   const wallet = useAtomValue(detailAtom);
@@ -41,21 +19,37 @@ export default function WalletIndicator(props: ChipProps) {
 
   return (
     // <Tooltip title='refresh' placement='top'>
-    <StyledChip
+    <Chip
       variant='outlined'
       avatar={
         isFetching > 0 ? (
           <CircularProgress color='primary' size={20} />
         ) : (
-          <StyledAvatar
+          <Avatar
             variant='circular'
             src={wallet.logo}
             alt={wallet.label}
+            sx={{
+              ".MuiAvatar-img": {
+                width: 18,
+                height: 18,
+                objectFit: "contain",
+              },
+            }}
           />
         )
       }
       label={ChainName}
       onClick={() => refresh()}
+      sx={{
+        marginRight: "10px",
+        px: "4px",
+        color: "text.primary",
+        textTransform: "none",
+        borderRadius: 1,
+        bgcolor: "#091620",
+        border: "1px solid rgba(55,133,185,0.25)",
+      }}
       {...props}
     />
     // </Tooltip>

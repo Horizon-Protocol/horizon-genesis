@@ -1,7 +1,5 @@
 import { BORDER_COLOR } from "@utils/theme/constants";
-import { Box, BoxProps } from "@material-ui/core";
-import { makeStyles } from "@material-ui/core/styles";
-import clsx from "clsx";
+import { Box, BoxProps } from "@mui/material";
 import Header from "./Header";
 
 declare global {
@@ -13,35 +11,6 @@ declare global {
   }
 }
 
-const useStyles = makeStyles(({ breakpoints }) => ({
-  container: {
-    overflow: "hidden",
-    backgroundColor: "rgba(16,38,55,0.3)",
-  },
-  headerWrap: {
-    overflow: "hidden",
-    position: "relative",
-    backgroundColor: "#0C111D",
-    backgroundRepeat: "no-repeat",
-    backgroundSize: "auto 180px",
-    backgroundPosition: "top -18px left -18px",
-    // backgroundImage: ({ bg }: { bg?: string }) => `url(${bg})`,
-  },
-  headerBg: {
-    opacity: 0.1,
-    position: "absolute",
-    left: -8,
-    top: -8,
-    height: "100%",
-  },
-  contentWrap: {
-    padding: "24px 56px 32px",
-    [breakpoints.down("xs")]: {
-      padding: "24px 8px",
-    },
-  },
-}));
-
 export default function PageCard({
   color,
   headerBg,
@@ -51,24 +20,41 @@ export default function PageCard({
   children,
   ...props
 }: BoxProps & CardProps) {
-  const classes = useStyles({ bg: headerBg });
-
   return (
     <Box
       width='100%'
       maxWidth={640}
       border={1}
-      borderRadius={10}
+      borderRadius={2.5}
       borderColor={BORDER_COLOR}
-      className={clsx(classes.container, className)}
+      overflow='hidden'
+      bgcolor='rgba(16,38,55,0.3)'
       {...props}
     >
       <Box
         display='flex'
         justifyContent='center'
-        className={classes.headerWrap}
+        overflow='hidden'
+        position='relative'
+        bgcolor='#0C111D'
+        sx={{
+          backgroundRepeat: "no-repeat",
+          backgroundSize: "auto 180px",
+          backgroundPosition: "top -18px left -18px",
+        }}
       >
-        <img src={headerBg} alt='' className={classes.headerBg} />
+        <Box
+          component='img'
+          src={headerBg}
+          alt=''
+          position='absolute'
+          height='100%'
+          left={-8}
+          top={-8}
+          sx={{
+            opacity: 0.1,
+          }}
+        />
         <Header
           color={color}
           title={title}
@@ -78,12 +64,14 @@ export default function PageCard({
         />
       </Box>
       <Box
-        py={3}
         display='flex'
         justifyContent='center'
         alignItems='stretch'
         flexDirection='column'
-        className={classes.contentWrap}
+        p={{
+          xs: "24px 8px",
+          sm: "24px 56px 32px",
+        }}
       >
         {children}
       </Box>

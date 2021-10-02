@@ -1,4 +1,4 @@
-import { BoxProps } from "@material-ui/core";
+import { BoxProps } from "@mui/material";
 import ActionLink from "./ActionLink";
 import BaseAlert from "./Base";
 

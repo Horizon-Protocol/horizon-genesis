@@ -1,7 +1,7 @@
 import { useCallback, useMemo } from "react";
 import { useSnackbar } from "notistack";
 import fromUnixTime from "date-fns/fromUnixTime";
-import { BoxProps } from "@material-ui/core";
+import { BoxProps } from "@mui/material";
 import horizon from "@lib/horizon";
 import useWallet from "@hooks/useWallet";
 import useRefresh from "@hooks/useRefresh";
@@ -82,7 +82,7 @@ export default function AboveTarget({
   }, [account, enqueueSnackbar, refresh]);
 
   return (
-    <BaseAlert color={color} title={title} content={content} {...props}>
+    <BaseAlert baseColor={color} title={title} content={content} {...props}>
       {liquidationDeadline > 0 && (
         <ActionLink onClick={clearLiquidationFlag}>
           Clear Liquidation Flag

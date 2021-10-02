@@ -1,5 +1,5 @@
 import { useCallback, useMemo, useState } from "react";
-import { Box } from "@material-ui/core";
+import { Box } from "@mui/material";
 import { ethers } from "ethers";
 import { useSnackbar } from "notistack";
 import { useAtomValue } from "jotai/utils";
@@ -73,7 +73,7 @@ export default function Claim() {
       const tx: ethers.ContractTransaction = await FeePool.claimFees();
       await tx.wait(1);
       refresh();
-    } catch (e) {
+    } catch (e: any) {
       console.log(e);
       console.log(e.error);
       const detail = `${e.error?.code}: ${e.error?.reason}`;

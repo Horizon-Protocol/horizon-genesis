@@ -1,49 +1,10 @@
 import { useCallback, useMemo, useRef } from "react";
-import { Box, Button, InputBase, Typography } from "@material-ui/core";
-import { makeStyles } from "@material-ui/core/styles";
+import { Box, Button, InputBase, Typography } from "@mui/material";
 import NumberFormat from "react-number-format";
 import prettyMilliseconds from "pretty-ms";
 import PrimaryButton from "@components/PrimaryButton";
 import { TokenName } from "@utils/constants";
 import { formatNumber } from "@utils/number";
-
-const useStyles = makeStyles(({ palette }) => ({
-  root: {},
-  inputBox: {
-    display: "flex",
-    alignItems: "center",
-    borderRadius: 10,
-    border: `1px solid ${palette.divider}`,
-    overflow: "hidden",
-  },
-  token: {
-    padding: 12,
-    display: " inline-flex",
-    alignItems: "center",
-  },
-  logo: {
-    height: 22,
-    marginRight: 8,
-  },
-  input: {
-    flex: 1,
-    padding: "10px 12px",
-    borderLeft: `1px solid ${palette.divider}`,
-    fontSize: 24,
-  },
-  max: {
-    fontWeight: 700,
-  },
-  maxLabelBox: {
-    display: "flex",
-    justifyContent: "space-between",
-    marginBottom: 20,
-  },
-  maxLabel: {
-    fontSize: 10,
-    fontWeight: 700,
-  },
-}));
 
 interface Props {
   token: TokenEnum;
@@ -72,8 +33,6 @@ export default function AmountInput({
   disabled = false,
   onSubmit,
 }: Props) {
-  const classes = useStyles();
-
   const maxRef = useRef<boolean>();
 
   const setMax = useCallback(() => {
@@ -94,12 +53,26 @@ export default function AmountInput({
   );
 
   return (
-    <Box className={classes.root}>
-      <Box className={classes.inputBox}>
-        <span className={classes.token}>
-          {logo ? <img src={logo} alt={""} className={classes.logo} /> : null}
+    <Box>
+      <Box
+        display='flex'
+        alignItems='center'
+        borderRadius={2.5}
+        border={1}
+        borderColor='divider'
+        overflow='hidden'
+      >
+        <Box
+          component='span'
+          padding={1.5}
+          display=' inline-flex'
+          alignItems='center'
+        >
+          {logo ? (
+            <Box component='img' src={logo} alt={""} mr={1} height={22} />
+          ) : null}
           <Typography>{TokenName[token]}</Typography>
-        </span>
+        </Box>
         <NumberFormat
           value={input}
           onValueChange={(values) => {
@@ -111,25 +84,32 @@ export default function AmountInput({
           isNumericString
           placeholder='0.0'
           customInput={InputBase}
-          className={classes.input}
+          sx={{
+            flex: 1,
+            p: "10px 12px",
+            borderLeft: 1,
+            borderColor: "palette.divider",
+            fontSize: 24,
+          }}
         />
         <Button
           variant='text'
           color='primary'
-          className={classes.max}
+          sx={{ fontWeight: 700 }}
           onClick={setMax}
         >
           Max
         </Button>
       </Box>
-      <Box className={classes.maxLabelBox}>
+      <Box display='flex' justifyContent='space-between' mb={2.5}>
         <Typography variant='overline' color='textSecondary'>
           {lockDownTime && `Lock: ${lockDownTime}`}
         </Typography>
         <Typography
           variant='overline'
           color={amount.gt(max) ? "error" : "primary"}
-          className={classes.maxLabel}
+          fontSize={10}
+          fontWeight={700}
         >
           {formatNumber(max)} Available
         </Typography>

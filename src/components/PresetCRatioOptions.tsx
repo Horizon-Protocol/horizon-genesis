@@ -1,6 +1,6 @@
 import { useCallback, useMemo } from "react";
-import { Box, BoxProps, Link, Typography } from "@material-ui/core";
-import { HelpOutline } from "@material-ui/icons";
+import { Box, BoxProps, Link, Typography } from "@mui/material";
+import { HelpOutline } from "@mui/icons-material";
 import { useAtomValue } from "jotai/utils";
 import { presetCRatioPercentsAtom, targetRatioAtom } from "@atoms/app";
 import { cRatioToPercent } from "@utils/number";

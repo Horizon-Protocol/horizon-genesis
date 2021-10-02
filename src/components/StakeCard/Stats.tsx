@@ -1,7 +1,6 @@
 import { useMemo } from "react";
 import { useAtomValue } from "jotai/utils";
-import { Box, Typography } from "@material-ui/core";
-import { makeStyles } from "@material-ui/core/styles";
+import { Box, BoxProps, Typography } from "@mui/material";
 import { CARD_CONTENT } from "@utils/theme/constants";
 import { Token, TokenShortName } from "@utils/constants";
 import { formatNumber } from "@utils/number";
@@ -10,33 +9,14 @@ import { hznRateAtom } from "@atoms/exchangeRates";
 import { tokenPriceAtomFamily } from "@atoms/staker/price";
 import { poolStateAtomFamily } from "@atoms/staker/pool";
 
-const useStyles = makeStyles({
-  root: {
-    padding: CARD_CONTENT.padding,
-  },
-  item: {
-    padding: "4px 0",
-    display: "flex",
-    justifyContent: "space-between",
-    alignItems: "center",
-  },
-  label: {
-    fontSize: 14,
-  },
-  apy: {
-    fontSize: 14,
-    fontWeight: 700,
-    fontFamily: "Rawline",
-  },
-  total: {
-    fontSize: 14,
-    fontFamily: "Rawline",
-  },
-});
+const ItemProps: BoxProps = {
+  p: "4px 0",
+  display: "flex",
+  justifyContent: "space-between",
+  alignItems: "center",
+};
 
 export default function Stats({ token }: { token: TokenEnum }) {
-  const classes = useStyles();
-
   const hznRate = useAtomValue(hznRateAtom);
   const stakeTokenPrice = useAtomValue(tokenPriceAtomFamily(token));
   const { totalStaked, rewardsPerBlock, isRoundActive } = useAtomValue(
@@ -68,31 +48,28 @@ export default function Stats({ token }: { token: TokenEnum }) {
   ]);
 
   return (
-    <Box className={classes.root}>
-      <div className={classes.item}>
-        <Typography
-          variant='body1'
-          color='primary'
-          classes={{ root: classes.label }}
-        >
+    <Box p={CARD_CONTENT.padding}>
+      <Box {...ItemProps}>
+        <Typography variant='body1' color='primary' fontSize={14}>
           APY
         </Typography>
-        <Typography variant='body1' classes={{ root: classes.apy }}>
-          {apy ? `${formatNumber(apy)} %` : "- -"}
-        </Typography>
-      </div>
-      <div className={classes.item}>
         <Typography
           variant='body1'
-          color='primary'
-          classes={{ root: classes.label }}
+          fontSize={14}
+          fontWeight={700}
+          fontFamily='Rawline'
         >
+          {apy ? `${formatNumber(apy)} %` : "- -"}
+        </Typography>
+      </Box>
+      <Box {...ItemProps}>
+        <Typography variant='body1' color='primary' fontSize={14}>
           Total Staked
         </Typography>
-        <Typography variant='body1' classes={{ root: classes.total }}>
+        <Typography variant='body1' fontSize={14} fontFamily='Rawline'>
           {`${formatNumber(totalStaked)} ${TokenShortName[token]}`}
         </Typography>
-      </div>
+      </Box>
     </Box>
   );
 }

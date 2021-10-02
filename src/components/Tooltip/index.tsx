@@ -1,23 +1,22 @@
-import { Tooltip, TooltipProps } from "@material-ui/core";
-import { withStyles } from "@material-ui/core/styles";
+import { Tooltip, TooltipProps, tooltipClasses } from "@mui/material";
+import { styled } from "@mui/material/styles";
 import { COLOR } from "@utils/theme/constants";
 
-const StyledTooltip = withStyles(({ typography, palette, spacing }) => ({
-  tooltip: {
-    padding: spacing(1),
+const BaseTooltip = styled(({ className, ...props }: TooltipProps) => (
+  <Tooltip {...props} arrow classes={{ popper: className }} />
+))(({ theme }) => ({
+  [`& .${tooltipClasses.arrow}`]: {
+    color: COLOR.tip,
+  },
+  [`& .${tooltipClasses.tooltip}`]: {
+    padding: theme.spacing(1),
     backgroundColor: "#102637",
     maxWidth: 300,
     border: `1px solid ${COLOR.tip}`,
-    fontSize: typography.pxToRem(12),
+    fontSize: 12,
     lineHeight: "18px",
-    color: palette.text.secondary,
+    color: theme.palette.text.secondary,
   },
-}))(Tooltip);
+}));
 
-export default function BaseTooltip({ children, ...props }: TooltipProps) {
-  return (
-    <StyledTooltip placement='top' interactive {...props}>
-      {children}
-    </StyledTooltip>
-  );
-}
+export default BaseTooltip;

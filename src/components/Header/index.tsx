@@ -15,6 +15,7 @@ export default function Header() {
       <Grid
         container
         alignItems='center'
+        flexWrap='wrap'
         sx={{
           "&.MuiGrid-container": {
             padding: 2, // 16px
@@ -22,14 +23,14 @@ export default function Header() {
           },
         }}
       >
-        <Grid container item xs={12} sm={5} md={3} lg={5}>
+        <Grid container item xs={12} md={5} lg={4}>
           <Box
             component='img'
             src={logo}
-            alt='Horizon Mintr'
+            alt='Horizon Genesis'
             m={{
               xs: "auto",
-              sm: "initial",
+              md: "initial",
             }}
             height={40}
           />
@@ -38,15 +39,14 @@ export default function Header() {
           container
           item
           xs={12}
-          sm={12}
-          md={4}
-          lg={2}
+          md={12}
+          lg={4}
           sx={{
             justifyContent: "center",
             height: 40,
             order: {
               xs: 3,
-              md: "initial",
+              lg: 2,
             },
           }}
         >
@@ -56,23 +56,22 @@ export default function Header() {
           container
           item
           xs={12}
-          sm={7}
-          md={5}
-          lg={5}
+          md={7}
+          lg={4}
           sx={{
             m: {
               xs: "8px 0",
-              md: "initial",
+              lg: "initial",
             },
             minHeight: 40,
             order: {
               xs: 2,
-              md: "initial",
+              lg: 3,
             },
             alignItems: "center",
             justifyContent: {
               xs: "center",
-              sm: "flex-end",
+              md: "flex-end",
             },
             flexWrap: { xs: "wrap", sm: "nowrap" },
           }}

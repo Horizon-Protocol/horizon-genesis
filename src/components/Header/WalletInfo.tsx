@@ -18,10 +18,10 @@ export default function WalletInfo(props: BoxProps) {
     >
       <Network />
       <Button
-        variant='text'
         size='small'
         onClick={() => setOpen(true)}
         sx={{
+          color: "text.primary",
           borderRadius: 1,
           p: "4px 12px",
           border: "1px solid rgba(55,133,185,0.25)",

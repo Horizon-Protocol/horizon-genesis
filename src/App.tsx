@@ -178,9 +178,9 @@ function App() {
                 ? undefined
                 : {
                     xs: 480,
-                    sm: 540,
-                    lg: 600,
-                    xl: 600,
+                    sm: 600,
+                    lg: 640,
+                    xl: 640,
                   }
             }
           >
@@ -203,8 +203,9 @@ function App() {
             <Box
               pr={{
                 xs: 0,
-                md: 2,
-                // lg: 2,
+                sm: 1,
+                md: 0,
+                lg: 2,
               }}
               position={{
                 xs: "fixed",

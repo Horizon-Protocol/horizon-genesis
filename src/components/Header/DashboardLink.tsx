@@ -4,7 +4,6 @@ import logo from "@assets/tokens/hzn.png";
 export default function DashboardLink() {
   return (
     <Button
-      variant='outlined'
       startIcon={<img src={logo} alt='' />}
       href='https://dashboard.horizonprotocol.com'
       target='_blank'

@@ -1,4 +1,5 @@
-import { Box, Link } from "@mui/material";
+import { useCallback, useState } from "react";
+import { Box, Link, ToggleButtonGroup, ToggleButton } from "@mui/material";
 import StakeCard, { StakeCardProps } from "@components/StakeCard";
 import { Token, TOKEN_ADDRESS, Action } from "@utils/constants";
 import useFetchPrice from "@hooks/staker/useFetchPrice";
@@ -138,6 +139,13 @@ const cards: StakeCardProps[] = [
 export default function Home() {
   useFetchPrice();
 
+  const [finished, setFinished] = useState(false);
+
+  const handleChange = useCallback((_, v) => {
+    console.log(v);
+    setFinished(v);
+  }, []);
+
   return (
     <Box
       p='0 24px'
@@ -146,6 +154,24 @@ export default function Home() {
       justifyContent='center'
       alignItems='flex-start'
     >
+      <Box>
+        <ToggleButtonGroup
+          color='primary'
+          value={finished}
+          exclusive
+          onChange={handleChange}
+        >
+          <ToggleButton
+            value={false}
+            sx={{
+              bgcolor: "#102637",
+            }}
+          >
+            Live
+          </ToggleButton>
+          <ToggleButton value={true}>Finished</ToggleButton>
+        </ToggleButtonGroup>
+      </Box>
       {cards.map((card) => (
         <StakeCard
           key={card.token}

@@ -13,12 +13,7 @@ import { useAtomValue } from "jotai/utils";
 import { detailAtom } from "@atoms/wallet";
 import { poolStateAtomFamily } from "@atoms/staker/pool";
 import defaultTheme from "@utils/theme";
-import {
-  ConnectorNames,
-  DEPRECATED_TOKENS,
-  TokenAddresses,
-  TokenName,
-} from "@utils/constants";
+import { ConnectorNames, DEPRECATED_TOKENS, TokenName } from "@utils/constants";
 import { registerToken, RegisterTokenConf } from "@utils/wallet";
 import useWallet from "@hooks/useWallet";
 import useFetchPoolState from "@hooks/staker/useFetchPoolState";

@@ -1,6 +1,7 @@
 import { useMemo } from "react";
 import {
   Box,
+  Avatar,
   Card,
   CardProps,
   CardHeader,
@@ -9,9 +10,16 @@ import {
   Typography,
 } from "@mui/material";
 import { useAtomValue } from "jotai/utils";
+import { detailAtom } from "@atoms/wallet";
 import { poolStateAtomFamily } from "@atoms/staker/pool";
 import defaultTheme from "@utils/theme";
-import { DEPRECATED_TOKENS, TokenName } from "@utils/constants";
+import {
+  ConnectorNames,
+  DEPRECATED_TOKENS,
+  TokenAddresses,
+  TokenName,
+} from "@utils/constants";
+import { registerToken, RegisterTokenConf } from "@utils/wallet";
 import useWallet from "@hooks/useWallet";
 import useFetchPoolState from "@hooks/staker/useFetchPoolState";
 import ExternalLink from "@components/Staker/ExternalLink";
@@ -56,6 +64,13 @@ export default function StakeCard({
   ...props
 }: StakeCardProps) {
   const { connected } = useWallet();
+  const wallet = useAtomValue(detailAtom);
+  const canRegisterToken = useMemo(
+    () =>
+      wallet?.connectorId === ConnectorNames.Injected &&
+      !!RegisterTokenConf[token],
+    [wallet?.connectorId]
+  );
 
   useFetchPoolState(token);
 
@@ -104,8 +119,35 @@ export default function StakeCard({
             {desc}
           </Typography>
         }
+        action={
+          wallet &&
+          canRegisterToken && (
+            <Avatar
+              component='span'
+              variant='circular'
+              src={wallet.logo}
+              alt={wallet.label}
+              sx={{
+                ml: 0.5,
+                position: "absolute",
+                top: 18,
+                right: 18,
+                display: "inline-block",
+                width: 18,
+                height: 18,
+                cursor: "pointer",
+              }}
+              onClick={() => {
+                if (canRegisterToken) {
+                  registerToken(RegisterTokenConf[token]!);
+                }
+              }}
+            />
+          )
+        }
         sx={{
           pt: 4,
+          position: "relative",
           color,
           ".MuiCardHeader-title": {
             mb: 1,

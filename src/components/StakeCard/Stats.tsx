@@ -4,7 +4,7 @@ import { Box, BoxProps, Typography } from "@mui/material";
 import { alpha } from "@mui/material/styles";
 import { CARD_CONTENT, COLOR } from "@utils/theme/constants";
 import { Token, TokenShortName, TokenName } from "@utils/constants";
-import { formatNumber, toBN } from "@utils/number";
+import { formatNumber } from "@utils/number";
 import { formatPrice } from "@utils/formatters";
 import { getApy } from "@utils/apy";
 import { hznRateAtom } from "@atoms/exchangeRates";

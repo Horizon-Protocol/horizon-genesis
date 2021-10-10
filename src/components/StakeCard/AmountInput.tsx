@@ -5,6 +5,7 @@ import prettyMilliseconds from "pretty-ms";
 import PrimaryButton from "@components/PrimaryButton";
 import { TokenName } from "@utils/constants";
 import { formatNumber } from "@utils/number";
+import { COLOR } from "@utils/theme/constants";
 
 interface Props {
   token: TokenEnum;
@@ -86,16 +87,20 @@ export default function AmountInput({
           customInput={InputBase}
           sx={{
             flex: 1,
-            p: "10px 12px",
+            px: 1,
+            py: 0.5,
             borderLeft: 1,
-            borderColor: "palette.divider",
+            borderColor: "divider",
             fontSize: 24,
           }}
         />
         <Button
-          variant='text'
-          color='primary'
-          sx={{ fontWeight: 700 }}
+          size='small'
+          sx={{
+            minWidth: 48,
+            fontWeight: 700,
+            color: COLOR.text,
+          }}
           onClick={setMax}
         >
           Max
@@ -107,7 +112,7 @@ export default function AmountInput({
         </Typography>
         <Typography
           variant='overline'
-          color={amount.gt(max) ? "error" : "primary"}
+          color={amount.gt(max) ? "error" : COLOR.text}
           fontSize={10}
           fontWeight={700}
         >

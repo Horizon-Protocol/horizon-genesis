@@ -19,7 +19,7 @@ export enum Token {
 
 export const TokenName = {
   [Token.PHB]: "PHB",
-  [Token.PHB_LEGACY]: "PHB Legacy",
+  [Token.PHB_LEGACY]: "PHB",
   [Token.HZN]: "HZN",
   [Token.ZUSD_BUSD_LP]: "zUSD-BUSD",
   [Token.HZN_BNB_LP]: "HZN-BNB",

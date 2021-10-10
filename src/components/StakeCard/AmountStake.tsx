@@ -1,9 +1,10 @@
 import { useCallback, useState, useMemo } from "react";
 import { Box, Button, Collapse, Typography } from "@mui/material";
+import { alpha } from "@mui/material/styles";
 import { useSnackbar } from "notistack";
 import { useAtomValue } from "jotai/utils";
 import { DEPRECATED_TOKENS, Action } from "@utils/constants";
-import { CARD_CONTENT } from "@utils/theme/constants";
+import { CARD_CONTENT, COLOR } from "@utils/theme/constants";
 import useRefresh from "@hooks/useRefreshEarn";
 import useTokenAllowance from "@hooks/useAllowance";
 import useStaking from "@hooks/staker/useStaking";
@@ -15,6 +16,7 @@ import AmountInput from "./AmountInput";
 
 interface Props {
   token: TokenEnum;
+  finished?: boolean;
   logo?: string;
   disabledActions?: ActionEnum[];
 }
@@ -32,7 +34,12 @@ const Actions = [
   },
 ];
 
-export default function AmountStake({ token, logo, disabledActions }: Props) {
+export default function AmountStake({
+  token,
+  finished,
+  logo,
+  disabledActions,
+}: Props) {
   const [submitting, setSubmitting] = useState<boolean>(false);
   const [currentAction, setCurrentAction] = useState<Action>();
   const [input, setInput] = useState<string>();
@@ -40,6 +47,9 @@ export default function AmountStake({ token, logo, disabledActions }: Props) {
   const { enqueueSnackbar } = useSnackbar();
 
   const actions = useMemo(() => {
+    if (finished) {
+      return [];
+    }
     if (disabledActions) {
       return Actions.map(({ key, ...item }) => ({
         ...item,
@@ -48,7 +58,7 @@ export default function AmountStake({ token, logo, disabledActions }: Props) {
       }));
     }
     return Actions;
-  }, [disabledActions]);
+  }, [finished, disabledActions]);
 
   const refresh = useRefresh();
 
@@ -92,61 +102,69 @@ export default function AmountStake({ token, logo, disabledActions }: Props) {
     setInput("0");
   }, []);
 
-  const handleStake = useCallback(async () => {
-    await checkApprove(amount);
-    const tx = await stakingContract!.stake(BNToEther(amount));
-    enqueueSnackbar(
-      <>
-        Transaction has been sent to blockchain,
-        <br />
-        waiting for confirmation...
-      </>,
-      { variant: "info" }
-    );
-    const res = await tx.wait(1);
-    console.log("Stake:", res);
-    enqueueSnackbar(`Successfully staked ${formatNumber(amount)} ${token}`, {
-      variant: "success",
-    });
-    refresh();
-    resetInput();
-  }, [
-    checkApprove,
-    amount,
-    stakingContract,
-    enqueueSnackbar,
-    token,
-    refresh,
-    resetInput,
-  ]);
+  const handleStake = useCallback(
+    async (amount: BN) => {
+      await checkApprove(amount);
+      const tx = await stakingContract!.stake(BNToEther(amount));
+      enqueueSnackbar(
+        <>
+          Transaction has been sent to blockchain,
+          <br />
+          waiting for confirmation...
+        </>,
+        { variant: "info" }
+      );
+      const res = await tx.wait(1);
+      console.log("Stake:", res);
+      enqueueSnackbar(`Successfully staked ${formatNumber(amount)} ${token}`, {
+        variant: "success",
+      });
+      refresh();
+      resetInput();
+    },
+    [checkApprove, stakingContract, enqueueSnackbar, token, refresh, resetInput]
+  );
 
-  const handleUnstake = useCallback(async () => {
-    const tx = await stakingContract!.withdraw(BNToEther(amount));
-    enqueueSnackbar(
-      <>
-        Transaction has been sent to blockchain,
-        <br />
-        waiting for confirmation...
-      </>,
-      { variant: "info" }
-    );
-    const res = await tx.wait(1);
-    console.log("Unstake:", res);
-    enqueueSnackbar(`Successfully unstaked ${formatNumber(amount)} ${token}`, {
-      variant: "success",
-    });
-    refresh();
-    resetInput();
-  }, [stakingContract, amount, enqueueSnackbar, token, refresh, resetInput]);
+  const handleUnstake = useCallback(
+    async (amount: BN) => {
+      const tx = await stakingContract!.withdraw(BNToEther(amount));
+      enqueueSnackbar(
+        <>
+          Transaction has been sent to blockchain,
+          <br />
+          waiting for confirmation...
+        </>,
+        { variant: "info" }
+      );
+      const res = await tx.wait(1);
+      console.log("Unstake:", res);
+      enqueueSnackbar(
+        `Successfully unstaked ${formatNumber(amount)} ${token}`,
+        {
+          variant: "success",
+        }
+      );
+      refresh();
+      resetInput();
+    },
+    [stakingContract, enqueueSnackbar, token, refresh, resetInput]
+  );
 
   const handleSubmit = useCallback(async () => {
     try {
-      if (currentAction && token && stakingContract && amount.gt(0)) {
+      if (token && stakingContract) {
         setSubmitting(true);
-        if (currentAction === Action.Stake) {
-          await handleStake();
-        } else if (currentAction === Action.Unstake) {
-          await handleUnstake();
+        if (finished && withdrawable.gt(0)) {
+          console.log("Unstake all", withdrawable.toNumber());
+          await handleUnstake(withdrawable);
+        } else if (currentAction && amount.gt(0)) {
+          if (currentAction === Action.Stake) {
+            console.log("Stake", amount.toNumber());
+            await handleStake(amount);
+          } else if (currentAction === Action.Unstake) {
+            console.log("Unstake", amount.toNumber());
+            await handleUnstake(amount);
+          }
         }
       }
     } catch (e: any) {
@@ -155,12 +173,14 @@ export default function AmountStake({ token, logo, disabledActions }: Props) {
     }
     setSubmitting(false);
   }, [
-    currentAction,
     token,
     stakingContract,
+    finished,
+    withdrawable,
+    currentAction,
     amount,
-    handleStake,
     handleUnstake,
+    handleStake,
     enqueueSnackbar,
   ]);
 
@@ -196,7 +216,7 @@ export default function AmountStake({ token, logo, disabledActions }: Props) {
           <>
             <Typography
               variant='caption'
-              color='primary'
+              color={alpha(COLOR.text, 0.5)}
               fontSize={12}
               fontWeight={900}
               letterSpacing='1px'
@@ -222,7 +242,7 @@ export default function AmountStake({ token, logo, disabledActions }: Props) {
                 flex='0 0 120px'
                 display='flex'
                 justifyContent='space-between'
-                color='text.primary'
+                color='primary'
               >
                 {actions.map(({ key, label, disabled }) =>
                   disabled ? (
@@ -231,16 +251,23 @@ export default function AmountStake({ token, logo, disabledActions }: Props) {
                     <Button
                       key={key}
                       disabled={disabled}
-                      variant='contained'
                       color={currentAction === key ? "primary" : "secondary"}
                       size='small'
                       onClick={() => handleAction(key)}
                       sx={{
+                        p: "0 20px",
                         width: 50,
                         minWidth: 50,
+                        lineHeight: "30px",
+                        fontSize: 24,
                         fontWeight: 700,
-                        color: "text.primary",
+                        color: COLOR.text,
                         boxShadow: "none",
+                        bgcolor: "rgba(16, 38, 55, 0.6)",
+                        "&.MuiButton-textPrimary": {
+                          bgcolor: COLOR.safe,
+                          color: "#1E1F25",
+                        },
                       }}
                     >
                       {label}
@@ -249,6 +276,20 @@ export default function AmountStake({ token, logo, disabledActions }: Props) {
                 )}
               </Box>
             </Box>
+            {finished && (
+              <PrimaryButton
+                size='large'
+                fullWidth
+                loading={loading}
+                onClick={handleSubmit}
+                disabled={withdrawable.eq(0)}
+                sx={{
+                  mt: 2,
+                }}
+              >
+                UNSTAKE ALL
+              </PrimaryButton>
+            )}
           </>
         )}
       </Box>

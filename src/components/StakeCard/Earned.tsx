@@ -1,8 +1,9 @@
 import { useCallback, useState, useMemo } from "react";
 import { Box, Typography } from "@mui/material";
+import { alpha } from "@mui/material/styles";
 import { useSnackbar } from "notistack";
 import CountUp from "react-countup-es";
-import { CARD_CONTENT } from "@utils/theme/constants";
+import { CARD_CONTENT, COLOR } from "@utils/theme/constants";
 import useRefreshEarn from "@hooks/useRefreshEarn";
 import PrimaryButton from "@components/PrimaryButton";
 import { formatNumber } from "@utils/number";
@@ -59,7 +60,7 @@ export default function Earned({ token, earned }: Props) {
       <Box flex='1' overflow='hidden'>
         <Typography
           variant='caption'
-          color='primary'
+          color={alpha(COLOR.text, 0.5)}
           fontSize={12}
           fontWeight={900}
           letterSpacing='1px'

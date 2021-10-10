@@ -1,6 +1,5 @@
 export const CARD_CONTENT = {
   padding: "16px 16px",
-  backgroundColor: "rgba(16, 38, 55, 0.3)",
 };
 
 export const COLOR = {

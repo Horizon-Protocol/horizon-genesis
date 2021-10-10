@@ -11,7 +11,7 @@ import {
 import { useAtomValue } from "jotai/utils";
 import { poolStateAtomFamily } from "@atoms/staker/pool";
 import defaultTheme from "@utils/theme";
-import { DEPRECATED_TOKENS } from "@utils/constants";
+import { DEPRECATED_TOKENS, TokenName } from "@utils/constants";
 import useWallet from "@hooks/useWallet";
 import useFetchPoolState from "@hooks/staker/useFetchPoolState";
 import ExternalLink from "@components/Staker/ExternalLink";
@@ -80,7 +80,7 @@ export default function StakeCard({
       sx={{
         maxWidth: 340,
         flex: "0 0 340px",
-        bgcolor: "transparent",
+        bgcolor: "rgba(16, 38, 55, 0.3)",
         backgroundRepeat: "no-repeat",
         backgroundSize: "auto 160px",
         backgroundPosition: "top -12px right -12px",
@@ -92,7 +92,7 @@ export default function StakeCard({
       {...props}
     >
       <CardHeader
-        title={cardTitle || `Stake ${token}`}
+        title={cardTitle || `Stake ${TokenName[token]}`}
         subheader={
           <Typography
             color={COLOR.text}
@@ -106,7 +106,6 @@ export default function StakeCard({
         }
         sx={{
           pt: 4,
-          bgcolor: "rgba(16, 38, 55, 0.3)",
           color,
           ".MuiCardHeader-title": {
             mb: 1,
@@ -123,12 +122,13 @@ export default function StakeCard({
           position: open ? undefined : "relative",
         }}
       >
-        <CardContent sx={{ p: 0, bgcolor: "rgba(16, 38, 55, 0.3)" }}>
+        <CardContent sx={{ p: 0 }}>
           <Earned token={token} earned={earned} />
           {connected ? (
             <AmountStake
               logo={logo}
               token={token}
+              finished={finished}
               disabledActions={disabledActions}
             />
           ) : (
@@ -139,8 +139,7 @@ export default function StakeCard({
         </CardContent>
         <CardActions
           sx={{
-            p: 2,
-            bgcolor: "rgba(16, 38, 55, 0.3)",
+            p: links?.length ? 2 : 0.5,
           }}
         >
           {links?.map(({ href, logo, text }) => (

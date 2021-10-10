@@ -1,6 +1,6 @@
 export const CARD_CONTENT = {
   padding: "16px 16px",
-  backgroundColor: "rgba(28,57,95,0.25)",
+  backgroundColor: "rgba(16, 38, 55, 0.3)",
 };
 
 export const COLOR = {
@@ -9,6 +9,7 @@ export const COLOR = {
   warning: "#FFA539",
   safe: "#2AD4B7",
   tip: "#62B5DB",
+  text: "#B4E0FF",
 };
 
 export const PAGE_COLOR = {

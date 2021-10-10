@@ -55,7 +55,7 @@ export default function RewardCard({
         <Box
           component='span'
           fontFamily='Rawline'
-          color='#B4E0FF'
+          color={COLOR.text}
           fontSize={24}
           fontWeight={700}
           letterSpacing='0.86px'

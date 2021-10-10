@@ -2,6 +2,7 @@ import { Box, BoxProps, Typography } from "@mui/material";
 import { useAtomValue } from "jotai/utils";
 import { nextClaimCountDownAtom } from "@atoms/feePool";
 import useNextClaimCountDown from "@hooks/useNextClaimTimer";
+import { COLOR } from "@utils/theme/constants";
 
 export default function ClaimCountDown(props: BoxProps) {
   useNextClaimCountDown();
@@ -21,7 +22,7 @@ export default function ClaimCountDown(props: BoxProps) {
       <Typography
         variant='h5'
         mt={1}
-        color='#B4E0FF'
+        color={COLOR.text}
         fontFamily='Rawline'
         fontSize='24px'
         fontWeight={700}

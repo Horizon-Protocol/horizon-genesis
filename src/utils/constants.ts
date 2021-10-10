@@ -10,6 +10,7 @@ export enum Action {
 
 export enum Token {
   PHB = "PHB",
+  PHB_LEGACY = "PHB Legacy",
   HZN = "HZN",
   ZUSD_BUSD_LP = "zUSD-BUSD LP",
   HZN_BNB_LP = "HZN-BNB LP",
@@ -18,6 +19,7 @@ export enum Token {
 
 export const TokenName = {
   [Token.PHB]: "PHB",
+  [Token.PHB_LEGACY]: "PHB Legacy",
   [Token.HZN]: "HZN",
   [Token.ZUSD_BUSD_LP]: "zUSD-BUSD",
   [Token.HZN_BNB_LP]: "HZN-BNB",
@@ -26,6 +28,7 @@ export const TokenName = {
 
 export const TokenShortName = {
   [Token.PHB]: "PHB",
+  [Token.PHB_LEGACY]: "PHB",
   [Token.HZN]: "HZN",
   [Token.ZUSD_BUSD_LP]: "LP",
   [Token.HZN_BNB_LP]: "LP",
@@ -98,6 +101,7 @@ export const TOKEN_ADDRESS: {
 } = {
   56: {
     [Token.PHB]: "0xdff88a0a43271344b760b58a35076bf05524195c",
+    [Token.PHB_LEGACY]: "0xdff88a0a43271344b760b58a35076bf05524195c",
     [Token.HZN]: "0xc0eff7749b125444953ef89682201fb8c6a917cd",
     [Token.ZUSD_BUSD_LP]: "0xc3bf4e0ea6b76c8edd838e14be2116c862c88bdf",
     [Token.HZN_BNB_LP]: "0xDc9a574b9B341D4a98cE29005b614e1E27430E74",
@@ -106,6 +110,7 @@ export const TOKEN_ADDRESS: {
   },
   97: {
     [Token.PHB]: "0xf09f5e21f86692c614d2d7b47e3b9729dc1c436f",
+    [Token.PHB_LEGACY]: "0xf09f5e21f86692c614d2d7b47e3b9729dc1c436f",
     [Token.HZN]: "0x74ba52975dd4f0a9cde1b8d4d54b808ef9d0a3f8",
     [Token.ZUSD_BUSD_LP]: "0x74ba52975dd4f0a9cde1b8d4d54b808ef9d0a3f8",
     [Token.HZN_BNB_LP]: "0x74ba52975dd4f0a9cde1b8d4d54b808ef9d0a3f8",
@@ -121,6 +126,7 @@ export const STAKING_CONTRACT_ADDRESS: {
 } = {
   56: {
     [Token.PHB]: "0xD4552F3e19B91BeD5EF2c76a67ABdbFfeD5caEEC",
+    [Token.PHB_LEGACY]: "0xD4552F3e19B91BeD5EF2c76a67ABdbFfeD5caEEC",
     [Token.HZN]: "0x67D5a94F444DF4bBA254645065a4137fc665Bf98",
     [Token.ZUSD_BUSD_LP]: "0x5646aA2F9408C7c2eE1dC7db813C8B687A959a85",
     [Token.HZN_BNB_LP]: "0x84838d0AB37857fAd5979Fcf6BDDf8ddb1cC1dA8",
@@ -129,6 +135,7 @@ export const STAKING_CONTRACT_ADDRESS: {
   },
   97: {
     [Token.PHB]: "0x04f8bd779921F3df6EF0E98e4D2fb00D77ae051B",
+    [Token.PHB_LEGACY]: "0x04f8bd779921F3df6EF0E98e4D2fb00D77ae051B",
     [Token.HZN]: "0x19b0E3B2413104b48Dc543A036CF808D5Fcb9d6F",
     [Token.ZUSD_BUSD_LP]: "0x19b0E3B2413104b48Dc543A036CF808D5Fcb9d6F",
     [Token.HZN_BNB_LP]: "0x19b0E3B2413104b48Dc543A036CF808D5Fcb9d6F",

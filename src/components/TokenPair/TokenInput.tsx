@@ -95,7 +95,7 @@ export default function TokenInput({
             {label}
           </Typography>
           <Typography
-            color='#B4E0FF'
+            color={COLOR.text}
             fontSize={{
               xs: 18,
               sm: 24,
@@ -138,7 +138,7 @@ export default function TokenInput({
           }}
           sx={{
             ".MuiInputBase-input": {
-              color: invalid ? COLOR.danger : "#B4E0FF",
+              color: invalid ? COLOR.danger : COLOR.text,
               fontFamily: "Rawline",
               fontSize: 24,
               fontWeight: 700,

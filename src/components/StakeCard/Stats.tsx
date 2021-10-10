@@ -1,8 +1,9 @@
 import { useMemo } from "react";
 import { useAtomValue } from "jotai/utils";
 import { Box, BoxProps, Typography } from "@mui/material";
-import { CARD_CONTENT } from "@utils/theme/constants";
-import { Token, TokenShortName } from "@utils/constants";
+import { alpha } from "@mui/material/styles";
+import { CARD_CONTENT, COLOR } from "@utils/theme/constants";
+import { Token, TokenShortName, TokenName } from "@utils/constants";
 import { formatNumber } from "@utils/number";
 import { getApy } from "@utils/apy";
 import { hznRateAtom } from "@atoms/exchangeRates";
@@ -16,7 +17,13 @@ const ItemProps: BoxProps = {
   alignItems: "center",
 };
 
-export default function Stats({ token }: { token: TokenEnum }) {
+export default function Stats({
+  token,
+  finished,
+}: {
+  token: TokenEnum;
+  finished?: boolean;
+}) {
   const hznRate = useAtomValue(hznRateAtom);
   const stakeTokenPrice = useAtomValue(tokenPriceAtomFamily(token));
   const { totalStaked, rewardsPerBlock, isRoundActive } = useAtomValue(
@@ -49,25 +56,69 @@ export default function Stats({ token }: { token: TokenEnum }) {
 
   return (
     <Box p={CARD_CONTENT.padding}>
+      {!finished && (
+        <Box {...ItemProps}>
+          <Typography
+            variant='body1'
+            color={alpha(COLOR.text, 0.5)}
+            fontSize={14}
+          >
+            APY
+          </Typography>
+          <Typography
+            variant='body1'
+            fontSize={14}
+            fontWeight={700}
+            fontFamily='Rawline'
+            color={COLOR.safe}
+          >
+            {apy ? `${formatNumber(apy)} %` : "- -"}
+          </Typography>
+        </Box>
+      )}
+      {!finished && (
+        <Box {...ItemProps}>
+          <Typography
+            variant='body1'
+            color={alpha(COLOR.text, 0.5)}
+            fontSize={14}
+          >
+            {TokenName[token]} Value
+          </Typography>
+          <Typography
+            variant='body1'
+            fontSize={14}
+            fontWeight={700}
+            fontFamily='Rawline'
+            color={COLOR.text}
+          >
+            $0.01
+          </Typography>
+        </Box>
+      )}
       <Box {...ItemProps}>
-        <Typography variant='body1' color='primary' fontSize={14}>
-          APY
+        <Typography
+          variant='body1'
+          color={alpha(COLOR.text, 0.5)}
+          fontSize={14}
+        >
+          Total Staked
         </Typography>
         <Typography
           variant='body1'
           fontSize={14}
-          fontWeight={700}
           fontFamily='Rawline'
+          color={COLOR.text}
         >
-          {apy ? `${formatNumber(apy)} %` : "- -"}
-        </Typography>
-      </Box>
-      <Box {...ItemProps}>
-        <Typography variant='body1' color='primary' fontSize={14}>
-          Total Staked
-        </Typography>
-        <Typography variant='body1' fontSize={14} fontFamily='Rawline'>
-          {`${formatNumber(totalStaked)} ${TokenShortName[token]}`}
+          {formatNumber(totalStaked)}
+          <Typography
+            component='span'
+            fontSize={14}
+            color={alpha(COLOR.text, 0.5)}
+          >
+            {" "}
+            {TokenShortName[token]}
+          </Typography>
         </Typography>
       </Box>
     </Box>

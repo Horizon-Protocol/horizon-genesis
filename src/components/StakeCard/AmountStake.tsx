@@ -178,7 +178,7 @@ export default function AmountStake({ token, logo, disabledActions }: Props) {
 
   return (
     <>
-      <Box {...CARD_CONTENT} minHeight={54}>
+      <Box {...CARD_CONTENT}>
         {needApprove ? (
           <PrimaryButton
             size='large'
@@ -186,6 +186,9 @@ export default function AmountStake({ token, logo, disabledActions }: Props) {
             loading={loading}
             onClick={handleApprove}
             disabled={DEPRECATED_TOKENS.indexOf(token) > -1}
+            sx={{
+              my: 0.75,
+            }}
           >
             Approve Contract
           </PrimaryButton>

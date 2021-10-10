@@ -15,7 +15,7 @@ import { DEPRECATED_TOKENS } from "@utils/constants";
 import useWallet from "@hooks/useWallet";
 import useFetchPoolState from "@hooks/staker/useFetchPoolState";
 import ExternalLink from "@components/Staker/ExternalLink";
-import { CARD_CONTENT } from "@utils/theme/constants";
+import { CARD_CONTENT, COLOR } from "@utils/theme/constants";
 import ConnectButton from "../ConnectButton";
 import Pending from "./Pending";
 import Stats from "./Stats";
@@ -30,6 +30,7 @@ interface LinkProps {
 
 export interface StakeCardProps extends CardProps {
   token: TokenEnum;
+  finished?: boolean;
   cardTitle?: string | React.ReactNode;
   desc: string | React.ReactNode;
   bg: string;
@@ -42,6 +43,7 @@ export interface StakeCardProps extends CardProps {
 
 export default function StakeCard({
   token,
+  finished,
   bg,
   color = defaultTheme.palette.primary.main,
   cardTitle,
@@ -78,13 +80,12 @@ export default function StakeCard({
       sx={{
         maxWidth: 340,
         flex: "0 0 340px",
-        backgroundColor: "transparent",
+        bgcolor: "transparent",
         backgroundRepeat: "no-repeat",
-        backgroundSize: "auto 180px",
+        backgroundSize: "auto 160px",
         backgroundPosition: "top -12px right -12px",
-        borderRadius: 5,
-        border: 1,
-        borderColor: "divider",
+        borderRadius: 2.5,
+        border: 0,
         backgroundImage: `url(${bg})`,
         ...sx,
       }}
@@ -94,17 +95,18 @@ export default function StakeCard({
         title={cardTitle || `Stake ${token}`}
         subheader={
           <Typography
-            color='#C1D3E0'
+            color={COLOR.text}
             fontSize={14}
             lineHeight='22px'
             minHeight={22 * 3}
+            letterSpacing='0.5px'
           >
             {desc}
           </Typography>
         }
         sx={{
           pt: 4,
-          bgcolor: "rgba(28,57,95,0.25)",
+          bgcolor: "rgba(16, 38, 55, 0.3)",
           color,
           ".MuiCardHeader-title": {
             mb: 1,
@@ -113,15 +115,15 @@ export default function StakeCard({
           },
         }}
       />
-      <CardContent sx={{ p: 0, bgcolor: "rgba(12,17,29,0.5)" }}>
-        <Stats token={token} />
+      <CardContent sx={{ p: 0, bgcolor: "rgba(8, 12, 22, 0.5)" }}>
+        <Stats token={token} finished={finished} />
       </CardContent>
       <div
         style={{
           position: open ? undefined : "relative",
         }}
       >
-        <CardContent sx={{ p: 0, bgcolor: "rgba(12,17,29,0.5)" }}>
+        <CardContent sx={{ p: 0, bgcolor: "rgba(16, 38, 55, 0.3)" }}>
           <Earned token={token} earned={earned} />
           {connected ? (
             <AmountStake
@@ -131,16 +133,14 @@ export default function StakeCard({
             />
           ) : (
             <Box {...CARD_CONTENT}>
-              <ConnectButton fullWidth rounded size='large' />
+              <ConnectButton fullWidth size='large' />
             </Box>
           )}
         </CardContent>
         <CardActions
           sx={{
             p: 2,
-            bgcolor: "rgba(28,57,95,0.25)",
-            borderTop: 1,
-            borderColor: "divider",
+            bgcolor: "rgba(16, 38, 55, 0.3)",
           }}
         >
           {links?.map(({ href, logo, text }) => (

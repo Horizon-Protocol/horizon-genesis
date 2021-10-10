@@ -32,7 +32,7 @@ export default function ExternalLink({
           color: "primary.main",
           height: 32,
           borderRadius: 4,
-          bgcolor: "secondary.main",
+          bgcolor: "rgba(16, 38, 55, 0.3)",
           boxShadow: "none",
         }}
         {...props}

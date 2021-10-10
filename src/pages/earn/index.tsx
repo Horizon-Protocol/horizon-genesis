@@ -1,140 +1,24 @@
-import { useCallback, useState } from "react";
-import { Box, Link, ToggleButtonGroup, ToggleButton } from "@mui/material";
-import StakeCard, { StakeCardProps } from "@components/StakeCard";
-import { Token, TOKEN_ADDRESS, Action } from "@utils/constants";
+import { useCallback, useMemo, useState } from "react";
+import {
+  Box,
+  Typography,
+  ToggleButtonGroup,
+  ToggleButton,
+} from "@mui/material";
+import StakeCard from "@components/StakeCard";
+import { COLOR } from "@utils/theme/constants";
 import useFetchPrice from "@hooks/staker/useFetchPrice";
-import phbBg from "@assets/bgs/phb.png";
-import hznBg from "@assets/bgs/hzn.png";
-import busdBg from "@assets/bgs/busd.png";
-import bnbBg from "@assets/bgs/bnb.png";
-import phbLogo from "@assets/tokens/phb.png";
-import bnbLogo from "@assets/tokens/bnb.png";
-import cakeLogo from "@assets/tokens/cake.png";
+import { AllPools } from "./utils";
 
-const cards: StakeCardProps[] = [
-  {
-    token: Token.PHB,
-    bg: phbBg,
-    color: "#FC4C07",
-    logo: phbLogo,
-    links: [
-      {
-        href: "https://www.binance.com/en/trade/PHB_BTC",
-        logo: bnbLogo,
-        text: "Buy PHB",
-      },
-    ],
-    desc: (
-      <>
-        Stake BEP-20 PHB to earn HZN. <br />
-        To convert your existing PHX or BEP-2 PHB to BEP-20 PHB, click{" "}
-        <Link
-          href='https://horizonprotocol.medium.com/swap-guide-phx-nep5-phb-bep2-and-phb-bep20-f79c0d12135c'
-          target='_blank'
-        >
-          here
-        </Link>
-        .
-      </>
-    ),
-  },
-  {
-    token: Token.HZN_BNB_LP,
-    bg: bnbBg,
-    color: "#D2884F",
-    // open: false,
-    // disabledActions: [Action.Stake],
-    desc: (
-      <>
-        Stake HZN-BNB LPs to earn HZN. <br />
-        You can provide liquidity on Pancakeswap to get HZN-BNB LP tokens.
-      </>
-    ),
-    links: [
-      {
-        href: `https://pancakeswap.finance/add/BNB/${
-          TOKEN_ADDRESS[56][Token.HZN]
-        }`,
-        logo: cakeLogo,
-        text: "GET HZN-BNB LP TOKENS",
-      },
-    ],
-  },
-  {
-    token: Token.ZUSD_BUSD_LP,
-    bg: busdBg,
-    color: "#D2884F",
-    desc: (
-      <>
-        Stake zUSD-BUSD LPs to earn HZN. <br />
-        You can provide liquidity on Pancakeswap to get zUSD-BUSD LP tokens.
-      </>
-    ),
-    links: [
-      {
-        href: "https://pancakeswap.finance/add/0xe9e7CEA3DedcA5984780Bafc599bD69ADd087D56/0xF0186490B18CB74619816CfC7FeB51cdbe4ae7b9",
-        logo: cakeLogo,
-        text: "GET zUSD-BUSD LP TOKENS",
-      },
-    ],
-  },
-  {
-    token: Token.HZN,
-    bg: hznBg,
-    // color: "#2AD4B7",
-    // desc: (
-    //   <>
-    //     <br />
-    //     Stake BEP-20 HZN to earn HZN. <br />
-    //   </>
-    // ),
-    color: "#FF325F",
-    cardTitle: "Please Unstake",
-    disabledActions: [Action.Stake],
-    desc: (
-      <>
-        This staking pool is no longer active, please unstake your HZN. You may
-        stake your HZN by minting zUSD in the 'Mint' tab.
-      </>
-    ),
-    links: [
-      {
-        href: `https://exchange.pancakeswap.finance/#/swap?outputCurrency=${
-          TOKEN_ADDRESS[56][Token.HZN]
-        }`,
-        logo: cakeLogo,
-        text: "Buy HZN",
-      },
-    ],
-  },
-  {
-    token: Token.HZN_BNB_LP_LEGACY,
-    bg: bnbBg,
-    color: "#FF325F",
-    cardTitle: "Please Unstake",
-    disabledActions: [Action.Stake],
-    desc: (
-      <>
-        Due to the Pancakeswap migration, this pool is no longer active. Please
-        unstake your tokens and go through the LP migration process{" "}
-        <Link
-          href='https://v1exchange.pancakeswap.finance/#/migrate'
-          target='_blank'
-        >
-          here
-        </Link>
-        .
-      </>
-    ),
-    links: [
-      {
-        href: "https://pancakeswap.medium.com/the-great-migration-vote-4093cb3edf23",
-        logo: cakeLogo,
-        text: "Pancakeswap v2 Migration",
-      },
-    ],
-  },
-];
+const toggleSx = {
+  p: "8px 12px",
+  border: "none",
+  bgcolor: "#102637",
+  color: COLOR.text,
+  opacity: 0.4,
+  textTransform: "none",
+  letterSpacing: "1px",
+} as const;
 
 export default function Home() {
   useFetchPrice();
@@ -146,6 +30,12 @@ export default function Home() {
     setFinished(v);
   }, []);
 
+  const pools = useMemo(
+    () =>
+      AllPools.filter(({ finished: _finished }) => !!_finished === finished),
+    [finished]
+  );
+
   return (
     <Box
       p='0 24px'
@@ -154,7 +44,13 @@ export default function Home() {
       justifyContent='center'
       alignItems='flex-start'
     >
-      <Box>
+      <Box
+        width='100%'
+        mb={2}
+        display='flex'
+        flexDirection='column'
+        alignItems='center'
+      >
         <ToggleButtonGroup
           color='primary'
           value={finished}
@@ -164,18 +60,45 @@ export default function Home() {
           <ToggleButton
             value={false}
             sx={{
-              bgcolor: "#102637",
+              ...toggleSx,
+              "&.Mui-selected": {
+                color: "#2AD4B7",
+                fontWeight: 700,
+                opacity: 1,
+              },
             }}
           >
             Live
           </ToggleButton>
-          <ToggleButton value={true}>Finished</ToggleButton>
+          <ToggleButton
+            value={true}
+            sx={{
+              ...toggleSx,
+              "&.Mui-selected": {
+                fontWeight: 700,
+                opacity: 1,
+              },
+            }}
+          >
+            Finished
+          </ToggleButton>
         </ToggleButtonGroup>
+        {finished && (
+          <Typography
+            mt={3}
+            fontSize={14}
+            fontWeight='bold'
+            color='#FA2256'
+            letterSpacing='0.5px'
+          >
+            These pools are no longer active. Please unstake your tokens.
+          </Typography>
+        )}
       </Box>
-      {cards.map((card) => (
+      {pools.map((pool) => (
         <StakeCard
-          key={card.token}
-          {...card}
+          key={pool.token}
+          {...pool}
           sx={{
             m: "10px",
           }}

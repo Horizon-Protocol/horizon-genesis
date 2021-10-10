@@ -128,16 +128,24 @@ export default function NavTabs() {
           label={
             hasAlert ? (
               <Badge
-                color='primary'
-                badgeContent={<PriorityHigh fontSize='inherit' />}
+                overlap='circular'
+                badgeContent={
+                  <PriorityHigh
+                    sx={{
+                      fontSize: 10,
+                    }}
+                  />
+                }
                 sx={{
                   ".MuiBadge-badge": {
-                    top: 0,
+                    display: "flex",
+                    minWidth: 16,
+                    width: 16,
+                    height: 16,
+                    p: 0,
+                    top: -6,
                     right: -8,
-                    borderRadius: 1,
-                  },
-                  ".MuiBadge-colorPrimary": {
-                    bgcolor: "#FA9916",
+                    bgcolor: "#F5841F",
                     color: "white",
                   },
                 }}

@@ -1,10 +1,12 @@
 import { useCallback, useMemo, useState } from "react";
 import {
   Box,
+  Badge,
   Typography,
   ToggleButtonGroup,
   ToggleButton,
 } from "@mui/material";
+import { PriorityHigh } from "@mui/icons-material";
 import StakeCard from "@components/StakeCard";
 import { COLOR } from "@utils/theme/constants";
 import useFetchPrice from "@hooks/staker/useFetchPrice";
@@ -16,6 +18,7 @@ const toggleSx = {
   bgcolor: "#102637",
   color: COLOR.text,
   opacity: 0.4,
+  fontWeight: 700,
   textTransform: "none",
   letterSpacing: "1px",
 } as const;
@@ -51,38 +54,60 @@ export default function Home() {
         flexDirection='column'
         alignItems='center'
       >
-        <ToggleButtonGroup
-          color='primary'
-          value={finished}
-          exclusive
-          onChange={handleChange}
+        <Badge
+          overlap='circular'
+          badgeContent={
+            <PriorityHigh
+              sx={{
+                fontSize: 10,
+              }}
+            />
+          }
+          sx={{
+            ".MuiBadge-badge": {
+              display: "flex",
+              minWidth: 16,
+              width: 16,
+              height: 16,
+              p: 0,
+              top: 0,
+              right: 8,
+              bgcolor: "#F5841F",
+              color: "white",
+            },
+          }}
         >
-          <ToggleButton
-            value={false}
-            sx={{
-              ...toggleSx,
-              "&.Mui-selected": {
-                color: "#2AD4B7",
-                fontWeight: 700,
-                opacity: 1,
-              },
-            }}
+          <ToggleButtonGroup
+            color='primary'
+            value={finished}
+            exclusive
+            onChange={handleChange}
           >
-            Live
-          </ToggleButton>
-          <ToggleButton
-            value={true}
-            sx={{
-              ...toggleSx,
-              "&.Mui-selected": {
-                fontWeight: 700,
-                opacity: 1,
-              },
-            }}
-          >
-            Finished
-          </ToggleButton>
-        </ToggleButtonGroup>
+            <ToggleButton
+              value={false}
+              sx={{
+                ...toggleSx,
+                "&.Mui-selected": {
+                  color: "#2AD4B7",
+                  opacity: 1,
+                },
+              }}
+            >
+              Live
+            </ToggleButton>
+            <ToggleButton
+              value={true}
+              sx={{
+                ...toggleSx,
+                "&.Mui-selected": {
+                  opacity: 1,
+                },
+              }}
+            >
+              Finished
+            </ToggleButton>
+          </ToggleButtonGroup>
+        </Badge>
         {finished && (
           <Typography
             mt={3}

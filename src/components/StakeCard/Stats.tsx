@@ -4,7 +4,8 @@ import { Box, BoxProps, Typography } from "@mui/material";
 import { alpha } from "@mui/material/styles";
 import { CARD_CONTENT, COLOR } from "@utils/theme/constants";
 import { Token, TokenShortName, TokenName } from "@utils/constants";
-import { formatNumber } from "@utils/number";
+import { formatNumber, toBN } from "@utils/number";
+import { formatPrice } from "@utils/formatters";
 import { getApy } from "@utils/apy";
 import { hznRateAtom } from "@atoms/exchangeRates";
 import { tokenPriceAtomFamily } from "@atoms/staker/price";
@@ -29,6 +30,14 @@ export default function Stats({
   const { totalStaked, rewardsPerBlock, isRoundActive } = useAtomValue(
     poolStateAtomFamily(token)
   );
+
+  const priceUSD = useMemo(() => {
+    console.log("====", token, stakeTokenPrice);
+    if (token === Token.ZUSD_BUSD_LP) {
+      return "2.00";
+    }
+    return formatPrice(stakeTokenPrice, { mantissa: 4 });
+  }, [stakeTokenPrice, token]);
 
   const apy = useMemo(() => {
     if (!isRoundActive) {
@@ -88,11 +97,10 @@ export default function Stats({
           <Typography
             variant='body1'
             fontSize={14}
-            fontWeight={700}
             fontFamily='Rawline'
             color={COLOR.text}
           >
-            $0.01
+            ${priceUSD}
           </Typography>
         </Box>
       )}

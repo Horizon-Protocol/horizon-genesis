@@ -64,7 +64,7 @@ export default function StakeCard({
     () =>
       wallet?.connectorId === ConnectorNames.Injected &&
       !!RegisterTokenConf[token],
-    [wallet?.connectorId]
+    [token, wallet?.connectorId]
   );
 
   useFetchPoolState(token);

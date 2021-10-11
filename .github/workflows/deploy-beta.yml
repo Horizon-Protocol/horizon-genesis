@@ -3,7 +3,8 @@ name: Deploy Public Beta
 on:
   push:
     branches:
-      - main
+      - dev
+      - mui
     paths-ignore:
       - ".github/workflows/deploy.yml"
 

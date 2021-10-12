@@ -7,6 +7,8 @@ import {
   ToggleButton,
 } from "@mui/material";
 import { PriorityHigh } from "@mui/icons-material";
+import isBoolean from "lodash/isBoolean";
+import some from "lodash/some";
 import StakeCard from "@components/StakeCard";
 import { COLOR } from "@utils/theme/constants";
 import useFetchPrice from "@hooks/staker/useFetchPrice";
@@ -26,18 +28,28 @@ const toggleSx = {
 export default function Home() {
   useFetchPrice();
 
-  const [finished, setFinished] = useState(false);
+  const [showFinish, setShowFinish] = useState(true);
+  const [finishAlert, setFinishAlert] = useState<
+    { [t in TokenEnum]?: boolean }
+  >({});
 
   const handleChange = useCallback((_, v) => {
-    console.log(v);
-    setFinished(v);
+    if (isBoolean(v)) {
+      setShowFinish(v);
+    }
   }, []);
 
-  const pools = useMemo(
-    () =>
-      AllPools.filter(({ finished: _finished }) => !!_finished === finished),
-    [finished]
+  const handleFinishAlertChange = useCallback(
+    (t: TokenEnum, hasAlert: boolean) => {
+      setFinishAlert((prev) => ({
+        ...prev,
+        [t]: hasAlert,
+      }));
+    },
+    []
   );
+
+  const hasAnyFinishAlert = useMemo(() => some(finishAlert), [finishAlert]);
 
   return (
     <Box
@@ -57,11 +69,13 @@ export default function Home() {
         <Badge
           overlap='circular'
           badgeContent={
-            <PriorityHigh
-              sx={{
-                fontSize: 10,
-              }}
-            />
+            hasAnyFinishAlert && (
+              <PriorityHigh
+                sx={{
+                  fontSize: 10,
+                }}
+              />
+            )
           }
           sx={{
             ".MuiBadge-badge": {
@@ -79,7 +93,7 @@ export default function Home() {
         >
           <ToggleButtonGroup
             color='primary'
-            value={finished}
+            value={showFinish}
             exclusive
             onChange={handleChange}
           >
@@ -108,7 +122,7 @@ export default function Home() {
             </ToggleButton>
           </ToggleButtonGroup>
         </Badge>
-        {finished && (
+        {showFinish && (
           <Typography
             mt={3}
             fontSize={14}
@@ -120,9 +134,11 @@ export default function Home() {
           </Typography>
         )}
       </Box>
-      {pools.map((pool) => (
+      {AllPools.map((pool) => (
         <StakeCard
           key={pool.token}
+          showFinish={showFinish}
+          setFinishAlert={handleFinishAlertChange}
           {...pool}
           sx={{
             m: "10px",

@@ -1,4 +1,4 @@
-import { useMemo } from "react";
+import { useEffect, useMemo } from "react";
 import {
   Box,
   Avatar,
@@ -13,7 +13,7 @@ import { useAtomValue } from "jotai/utils";
 import { detailAtom } from "@atoms/wallet";
 import { poolStateAtomFamily } from "@atoms/staker/pool";
 import defaultTheme from "@utils/theme";
-import { ConnectorNames, DEPRECATED_TOKENS, TokenName } from "@utils/constants";
+import { ConnectorNames, TokenName } from "@utils/constants";
 import { registerToken, RegisterTokenConf } from "@utils/wallet";
 import useWallet from "@hooks/useWallet";
 import useFetchPoolState from "@hooks/staker/useFetchPoolState";
@@ -32,6 +32,8 @@ interface LinkProps {
 }
 
 export interface StakeCardProps extends CardProps {
+  showFinish?: boolean;
+  setFinishAlert?: (t: TokenEnum, hasAlert: boolean) => void;
   token: TokenEnum;
   finished?: boolean;
   cardTitle?: string | React.ReactNode;
@@ -45,6 +47,8 @@ export interface StakeCardProps extends CardProps {
 }
 
 export default function StakeCard({
+  showFinish = false,
+  setFinishAlert,
   token,
   finished,
   bg,
@@ -73,15 +77,23 @@ export default function StakeCard({
     poolStateAtomFamily(token)
   );
 
-  const cardDisabled = useMemo(() => {
-    if (DEPRECATED_TOKENS.indexOf(token) > -1) {
-      return earned.isZero() && staked.isZero() && withdrawable.isZero();
+  useEffect(() => {
+    if (finished) {
+      setFinishAlert?.(
+        token,
+        !(earned.eq(0) && staked.eq(0) && withdrawable.eq(0))
+      );
     }
-    return false;
-  }, [earned, staked, token, withdrawable]);
+  }, [earned, finished, setFinishAlert, staked, token, withdrawable]);
 
-  if (cardDisabled) {
-    return null;
+  if (showFinish) {
+    if (!finished) {
+      return null;
+    }
+  } else {
+    if (finished) {
+      return null;
+    }
   }
 
   return (

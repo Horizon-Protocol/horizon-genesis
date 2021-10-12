@@ -3,7 +3,7 @@ import { Box, Button, Collapse, Typography } from "@mui/material";
 import { alpha } from "@mui/material/styles";
 import { useSnackbar } from "notistack";
 import { useAtomValue } from "jotai/utils";
-import { DEPRECATED_TOKENS, Action } from "@utils/constants";
+import { Action } from "@utils/constants";
 import { CARD_CONTENT, COLOR } from "@utils/theme/constants";
 import useRefresh from "@hooks/useRefreshEarn";
 import useTokenAllowance from "@hooks/useAllowance";
@@ -205,7 +205,6 @@ export default function AmountStake({
             fullWidth
             loading={loading}
             onClick={handleApprove}
-            disabled={DEPRECATED_TOKENS.indexOf(token) > -1}
             sx={{
               my: 0.75,
             }}

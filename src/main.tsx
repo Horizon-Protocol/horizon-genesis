@@ -9,7 +9,7 @@ import { ThemeProvider, StyledEngineProvider } from "@mui/material/styles";
 import { SnackbarProvider } from "notistack";
 import { Web3ReactProvider } from "@web3-react/core";
 import "@fontsource/raleway";
-import "@assets/fonts/rawline-400.woff2";
+import "@fontsource/raleway/700.css";
 import theme from "@utils/theme";
 import { getLibrary } from "@utils/web3React";
 import { REACT_QUERY_DEFAULT_OPTIONS } from "@utils/constants";

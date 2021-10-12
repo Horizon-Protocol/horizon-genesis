@@ -17,6 +17,9 @@ export default function PrimaryButton({
     <Button
       disabled={loading || disabled}
       sx={{
+        px: 2.75,
+        py: 1.25,
+        fontSize: "0.875rem",
         fontWeight: 700,
         color: "#1E1F25",
         borderRadius: 1,

@@ -88,9 +88,12 @@ export default function Header() {
             <ConnectButton
               sx={{
                 px: 2,
-                py: 0.875,
+                py: 0,
+                height: 32,
+                display: "flex",
+                alignItems: "center",
                 fontSize: 12,
-                lineHeight: "inherit",
+                lineHeight: "22px",
               }}
             />
           )}

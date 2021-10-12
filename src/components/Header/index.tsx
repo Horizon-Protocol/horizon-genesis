@@ -85,7 +85,14 @@ export default function Header() {
               <WalletInfo />
             </>
           ) : (
-            <ConnectButton size='small' sx={{ fontSize: 14, px: 2 }} />
+            <ConnectButton
+              sx={{
+                px: 2,
+                py: 0.875,
+                fontSize: 12,
+                lineHeight: "inherit",
+              }}
+            />
           )}
         </Grid>
       </Grid>

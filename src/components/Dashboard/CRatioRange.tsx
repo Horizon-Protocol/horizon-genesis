@@ -139,7 +139,7 @@ export default function CRatioRange(props: BoxProps) {
           valueBuffer={currentCRatioPercent}
           sx={{
             height: 24,
-            borderRadius: 4,
+            borderRadius: 1,
             border: `1px solid ${COLOR.border}`,
             "&.MuiLinearProgress-colorPrimary": {
               bgcolor: "transparent",

@@ -40,7 +40,10 @@ import BalanceChange, {
   Props as BalanceChangeProps,
 } from "@components/BalanceChange";
 import PrimaryButton from "@components/PrimaryButton";
-import { getTransferableAmountFromBurn } from "@utils/helper";
+import {
+  getTransferableAmountFromBurn,
+  getWalletErrorMsg,
+} from "@utils/helper";
 import { toFutureDate } from "@utils/date";
 
 const THEME_COLOR = PAGE_COLOR.burn;
@@ -274,10 +277,7 @@ export default function Burn() {
       }));
       refresh();
     } catch (e: any) {
-      console.log(e);
-      console.log(e.error);
-      const detail = `${e.error?.code}: ${e.error?.reason}`;
-      enqueueSnackbar(e.error ? detail : "Operation Failed", {
+      enqueueSnackbar(getWalletErrorMsg(e), {
         variant: "error",
       });
     }

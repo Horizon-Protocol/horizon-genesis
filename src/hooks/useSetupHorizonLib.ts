@@ -41,7 +41,7 @@ export default function useSetupHorizonLib() {
         },
       });
       setAppReady(!!horizon.js);
-    } catch (error) {
+    } catch (e) {
       enqueueSnackbar("Failed to initiate horizon.js sdk!", {
         variant: "error",
       });

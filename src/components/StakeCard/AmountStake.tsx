@@ -12,6 +12,7 @@ import PrimaryButton from "@components/PrimaryButton";
 import { poolStateAtomFamily } from "@atoms/staker/pool";
 import { TokenName } from "@utils/constants";
 import { BNToEther, toBN, zeroBN, formatNumber } from "@utils/number";
+import { getWalletErrorMsg } from "@utils/helper";
 import AmountInput from "./AmountInput";
 
 interface Props {
@@ -168,8 +169,7 @@ export default function AmountStake({
         }
       }
     } catch (e: any) {
-      console.log(e.error);
-      enqueueSnackbar(e.error ?? "Operation Failed", { variant: "error" });
+      enqueueSnackbar(getWalletErrorMsg(e), { variant: "error" });
     }
     setSubmitting(false);
   }, [

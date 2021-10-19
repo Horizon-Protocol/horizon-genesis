@@ -7,6 +7,7 @@ import { CARD_CONTENT, COLOR } from "@utils/theme/constants";
 import useRefreshEarn from "@hooks/useRefreshEarn";
 import PrimaryButton from "@components/PrimaryButton";
 import { formatNumber } from "@utils/number";
+import { getWalletErrorMsg } from "@utils/helper";
 import useStaking from "@hooks/staker/useStaking";
 
 interface Props {
@@ -48,8 +49,7 @@ export default function Earned({ token, earned }: Props) {
         });
         refresh();
       } catch (e: any) {
-        console.log(e);
-        enqueueSnackbar(e.error ?? "Operation Failed", { variant: "error" });
+        enqueueSnackbar(getWalletErrorMsg(e), { variant: "error" });
       }
       setLoading(false);
     }

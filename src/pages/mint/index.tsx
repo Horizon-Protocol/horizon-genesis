@@ -17,6 +17,7 @@ import {
   getStakingAmount,
   getMintAmount,
   getTransferableAmountFromMint,
+  getWalletErrorMsg,
 } from "@utils/helper";
 import useWallet from "@hooks/useWallet";
 import { targetRatioAtom } from "@atoms/app";
@@ -220,10 +221,7 @@ export default function Mint() {
       }));
       refresh();
     } catch (e: any) {
-      console.log(e);
-      console.log(e.error);
-      const detail = `${e.error?.code}: ${e.error?.reason}`;
-      enqueueSnackbar(e.error ? detail : "Operation Failed", {
+      enqueueSnackbar(getWalletErrorMsg(e), {
         variant: "error",
       });
     }

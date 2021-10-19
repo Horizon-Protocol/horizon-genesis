@@ -203,8 +203,8 @@ function App() {
             <Box
               pr={{
                 xs: 0,
-                sm: 1,
-                md: 0,
+                sm: 0,
+                md: 1,
                 lg: 2,
               }}
               position={{

@@ -30,8 +30,6 @@ jobs:
           key: ${{ runner.os }}-yarn-${{ hashFiles('**/yarn.lock') }}
       - name: Install dependencies
         run: yarn install --frozen-lockfile
-      - name: Install Beta Version @horizon-protocol/contracts-interface
-        run: yarn add @horizon-protocol/contracts-interface@2.45.7-beta.1
       - name: Build Bundle
         run: yarn build
         env:

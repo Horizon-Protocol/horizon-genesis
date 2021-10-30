@@ -1,6 +1,7 @@
 {
   "name": "horizon-genesis",
   "version": "1.1.0",
+  "license": "MIT",
   "scripts": {
     "dev": "vite",
     "build": "tsc && vite build",

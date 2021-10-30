@@ -74,7 +74,7 @@ export const formatInputValue = (inputValue: string): string => {
   );
 };
 
-const isExceedMax = (stringAmount: string, max?: BN) => {
+export const isExceedMax = (stringAmount: string, max?: BN) => {
   if (stringAmount && max) {
     return toBN(stringAmount).gt(max);
   }
@@ -115,16 +115,20 @@ export default function TokenPair({
   const setToInput = useCallback<TokenInputProps["onInput"]>(
     (input, isMax = false) => {
       const { toPairInput, max } = toToken;
+      const { max: maxFrom } = fromToken;
       const stringAmount = (isMax ? max?.toString() : input) || "";
       // console.log("setToInput", isMax, input, stringAmount);
+      const fromStringAmount = toPairInput(stringAmount);
       setState(() => ({
         toInput: stringAmount && formatInputValue(stringAmount),
-        fromInput: stringAmount && formatInputValue(toPairInput(stringAmount)),
+        fromInput: stringAmount && formatInputValue(fromStringAmount),
         isMax,
-        error: isExceedMax(stringAmount, max) ? "Insufficient balance" : "",
+        error: isExceedMax(fromStringAmount, maxFrom)
+          ? "Insufficient balance"
+          : "",
       }));
     },
-    [setState, toToken]
+    [setState, fromToken, toToken]
   );
 
   const handleUserInput = useCallback(() => {

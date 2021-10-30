@@ -35,6 +35,7 @@ import TokenPair, {
   useInputState,
   formatInputValue,
   TokenProps,
+  isExceedMax,
 } from "@components/TokenPair";
 import BalanceChange, {
   Props as BalanceChangeProps,
@@ -147,12 +148,12 @@ export default function Burn() {
           debtBalance.minus(collateralUSD.multipliedBy(presetCRatio)),
           zeroBN
         ).toString() || "0";
-      const { toPairInput } = fromToken;
+      const { toPairInput, max } = fromToken;
       setState(() => ({
         fromInput: formatInputValue(fromInput),
         toInput: formatInputValue(toPairInput(fromInput)),
         isMax: false,
-        error: "",
+        error: isExceedMax(fromInput, max) ? "Insufficient balance" : "",
       }));
     },
     [debtBalance, collateralUSD, fromToken, setState]

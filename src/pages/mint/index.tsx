@@ -32,6 +32,7 @@ import TokenPair, {
   useInputState,
   formatInputValue,
   TokenProps,
+  isExceedMax,
 } from "@components/TokenPair";
 import BalanceChange, {
   Props as BalanceChangeProps,
@@ -118,10 +119,10 @@ export default function Mint() {
       }
 
       setState(() => ({
-        fromInput: formatInputValue(inputHZN.toString()),
+        fromInput: formatInputValue(inputHZN),
         toInput: formatInputValue(toPairInput(inputHZN)),
         isMax,
-        error: "",
+        error: isExceedMax(inputHZN, max) ? "Insufficient balance" : "",
       }));
     },
     [targetRatio, fromToken, setState, balance, collateral, stakedCollateral]

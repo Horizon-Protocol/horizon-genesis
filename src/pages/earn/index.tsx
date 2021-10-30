@@ -9,6 +9,7 @@ import {
 import { PriorityHigh } from "@mui/icons-material";
 import isBoolean from "lodash/isBoolean";
 import some from "lodash/some";
+import values from "lodash/values";
 import StakeCard from "@components/StakeCard";
 import { COLOR } from "@utils/theme/constants";
 import useFetchPrice from "@hooks/staker/useFetchPrice";
@@ -28,7 +29,7 @@ const toggleSx = {
 export default function Home() {
   useFetchPrice();
 
-  const [showFinish, setShowFinish] = useState(true);
+  const [showFinish, setShowFinish] = useState(false);
   const [finishAlert, setFinishAlert] = useState<
     { [t in TokenEnum]?: boolean }
   >({});
@@ -49,7 +50,10 @@ export default function Home() {
     []
   );
 
-  const hasAnyFinishAlert = useMemo(() => some(finishAlert), [finishAlert]);
+  const hasAnyFinishAlert = useMemo(
+    () => some(values(finishAlert)),
+    [finishAlert]
+  );
 
   return (
     <Box
@@ -67,15 +71,14 @@ export default function Home() {
         alignItems='center'
       >
         <Badge
+          invisible={!hasAnyFinishAlert}
           overlap='circular'
           badgeContent={
-            hasAnyFinishAlert && (
-              <PriorityHigh
-                sx={{
-                  fontSize: 10,
-                }}
-              />
-            )
+            <PriorityHigh
+              sx={{
+                fontSize: 10,
+              }}
+            />
           }
           sx={{
             ".MuiBadge-badge": {

@@ -31,13 +31,10 @@ export default function Stats({
     poolStateAtomFamily(token)
   );
 
-  const priceUSD = useMemo(() => {
-    console.log("====", token, stakeTokenPrice);
-    if (token === Token.ZUSD_BUSD_LP) {
-      return "2.00";
-    }
-    return formatPrice(stakeTokenPrice, { mantissa: 4 });
-  }, [stakeTokenPrice, token]);
+  const priceUSD = useMemo(
+    () => formatPrice(stakeTokenPrice, { mantissa: 4 }),
+    [stakeTokenPrice]
+  );
 
   const apy = useMemo(() => {
     if (!isRoundActive) {
@@ -49,10 +46,7 @@ export default function Stats({
     }
 
     const hznPrice = hznRate.toNumber();
-    if (token === Token.ZUSD_BUSD_LP) {
-      // a zUSD/BUSD lp token price is always $2
-      return getApy(2, hznPrice, totalStaked, rewardsPerBlock);
-    }
+
     return getApy(stakeTokenPrice, hznPrice, totalStaked, rewardsPerBlock);
   }, [
     isRoundActive,

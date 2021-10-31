@@ -13,7 +13,7 @@ import {
   TokenAddresses,
 } from "@utils/constants";
 import { etherToBN } from "@utils/number";
-import { EARN } from "@utils/queryKeys";
+import { CONTRACT } from "@utils/queryKeys";
 import useDisconnected from "@hooks/useDisconnected";
 import {
   poolStateAtomFamily,
@@ -67,7 +67,7 @@ export default function useFetchState(token: TokenEnum) {
         tokenContract.totalSupply(),
       ])) as BigNumber[];
 
-      // console.log("static", token, {
+      // console.log("====pool static", token, {
       //   totalStaked: etherToBN(totalStaked).toNumber(),
       //   periodFinish: periodFinish.toNumber(),
       //   rewardsPerBlock: etherToBN(rewardsPerSecond)
@@ -132,8 +132,8 @@ export default function useFetchState(token: TokenEnum) {
     tokenContract,
   ]);
 
-  useQuery([EARN, account, "pool-static", token], staticFetcher);
-  useQuery([EARN, account, "pool-account", token], accountFetcher, {
+  useQuery([CONTRACT, "pool-static", token], staticFetcher);
+  useQuery([CONTRACT, "pool-account", token, account], accountFetcher, {
     enabled: !!account,
   });
 }

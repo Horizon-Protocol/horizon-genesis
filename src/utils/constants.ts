@@ -163,6 +163,6 @@ export const BLOCKS_PER_YEAR = (60 / BSC_BLOCK_TIME) * 60 * 24 * 365; // 1051200
 
 // react query default options
 export const REACT_QUERY_DEFAULT_OPTIONS: Partial<DefaultOptions["queries"]> = {
-  staleTime: Infinity,
+  // staleTime: 15000,
   refetchInterval: 15000, // 15s,
 };

@@ -206,7 +206,7 @@ export default function AmountStake({
             loading={loading}
             onClick={handleApprove}
             sx={{
-              my: 0.75,
+              my: 0.7,
             }}
           >
             Approve Contract
@@ -228,11 +228,10 @@ export default function AmountStake({
                 <Typography
                   variant='body1'
                   pr={1}
-                  fontSize={22}
+                  fontSize={24}
                   fontFamily='Rawline'
                   fontWeight={500}
-                  textOverflow='ellipsis'
-                  overflow='hidden'
+                  lineHeight='32px'
                 >
                   {formatNumber(staked)}
                 </Typography>
@@ -259,7 +258,7 @@ export default function AmountStake({
                         minWidth: 50,
                         lineHeight: "30px",
                         fontSize: 24,
-                        fontWeight: 700,
+                        fontWeight: 400,
                         color: COLOR.text,
                         boxShadow: "none",
                         bgcolor: "rgba(16, 38, 55, 0.6)",

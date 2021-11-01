@@ -22,6 +22,7 @@ const toggleSx = {
   color: COLOR.text,
   opacity: 0.4,
   fontWeight: 700,
+  fontSize: 16,
   textTransform: "none",
   letterSpacing: "1px",
 } as const;
@@ -30,9 +31,9 @@ export default function Home() {
   useFetchPrice();
 
   const [showFinish, setShowFinish] = useState(false);
-  const [finishAlert, setFinishAlert] = useState<
-    { [t in TokenEnum]?: boolean }
-  >({});
+  const [finishAlert, setFinishAlert] = useState<{
+    [t in TokenEnum]?: boolean;
+  }>({});
 
   const handleChange = useCallback((_, v) => {
     if (isBoolean(v)) {

@@ -82,11 +82,12 @@ export default function Earned({ token, earned }: Props) {
               ref={countUpRef}
               variant='body1'
               paddingRight={8}
-              fontSize={22}
+              fontSize={24}
               fontFamily='Rawline'
               fontWeight={500}
               textOverflow='ellipsis'
               overflow='hidden'
+              color={earned.isZero() ? undefined : COLOR.safe}
             />
           )}
         </CountUp>

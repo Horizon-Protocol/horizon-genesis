@@ -1,46 +1,39 @@
 import { useMemo } from "react";
 import { useAtomValue } from "jotai/utils";
-import { Box, Typography } from "@material-ui/core";
-import { makeStyles } from "@material-ui/core/styles";
-import { CARD_CONTENT } from "@utils/theme/constants";
-import { Token, TokenShortName } from "@utils/constants";
+import { Box, BoxProps, Typography } from "@mui/material";
+import { alpha } from "@mui/material/styles";
+import { CARD_CONTENT, COLOR } from "@utils/theme/constants";
+import { Token, TokenShortName, TokenName } from "@utils/constants";
 import { formatNumber } from "@utils/number";
+import { formatPrice } from "@utils/formatters";
 import { getApy } from "@utils/apy";
 import { hznRateAtom } from "@atoms/exchangeRates";
 import { tokenPriceAtomFamily } from "@atoms/staker/price";
 import { poolStateAtomFamily } from "@atoms/staker/pool";
 
-const useStyles = makeStyles({
-  root: {
-    padding: CARD_CONTENT.padding,
-  },
-  item: {
-    padding: "4px 0",
-    display: "flex",
-    justifyContent: "space-between",
-    alignItems: "center",
-  },
-  label: {
-    fontSize: 14,
-  },
-  apy: {
-    fontSize: 14,
-    fontWeight: 700,
-    fontFamily: "Rawline",
-  },
-  total: {
-    fontSize: 14,
-    fontFamily: "Rawline",
-  },
-});
+const ItemProps: BoxProps = {
+  p: "4px 0",
+  display: "flex",
+  justifyContent: "space-between",
+  alignItems: "center",
+};
 
-export default function Stats({ token }: { token: TokenEnum }) {
-  const classes = useStyles();
-
+export default function Stats({
+  token,
+  finished,
+}: {
+  token: TokenEnum;
+  finished?: boolean;
+}) {
   const hznRate = useAtomValue(hznRateAtom);
   const stakeTokenPrice = useAtomValue(tokenPriceAtomFamily(token));
   const { totalStaked, rewardsPerBlock, isRoundActive } = useAtomValue(
     poolStateAtomFamily(token)
+  );
+
+  const priceUSD = useMemo(
+    () => formatPrice(stakeTokenPrice, { mantissa: 4 }),
+    [stakeTokenPrice]
   );
 
   const apy = useMemo(() => {
@@ -53,10 +46,7 @@ export default function Stats({ token }: { token: TokenEnum }) {
     }
 
     const hznPrice = hznRate.toNumber();
-    if (token === Token.ZUSD_BUSD_LP) {
-      // a zUSD/BUSD lp token price is always $2
-      return getApy(2, hznPrice, totalStaked, rewardsPerBlock);
-    }
+
     return getApy(stakeTokenPrice, hznPrice, totalStaked, rewardsPerBlock);
   }, [
     isRoundActive,
@@ -68,31 +58,71 @@ export default function Stats({ token }: { token: TokenEnum }) {
   ]);
 
   return (
-    <Box className={classes.root}>
-      <div className={classes.item}>
+    <Box p={CARD_CONTENT.padding}>
+      {!finished && (
+        <Box {...ItemProps}>
+          <Typography
+            variant='body1'
+            color={alpha(COLOR.text, 0.5)}
+            fontSize={14}
+          >
+            APY
+          </Typography>
+          <Typography
+            variant='body1'
+            fontSize={14}
+            fontWeight={700}
+            fontFamily='Rawline'
+            color={COLOR.safe}
+          >
+            {apy ? `${formatNumber(apy)} %` : "- -"}
+          </Typography>
+        </Box>
+      )}
+      {!finished && (
+        <Box {...ItemProps}>
+          <Typography
+            variant='body1'
+            color={alpha(COLOR.text, 0.5)}
+            fontSize={14}
+          >
+            {TokenName[token]} Value
+          </Typography>
+          <Typography
+            variant='body1'
+            fontSize={14}
+            fontFamily='Rawline'
+            color={COLOR.text}
+          >
+            ${priceUSD}
+          </Typography>
+        </Box>
+      )}
+      <Box {...ItemProps}>
         <Typography
           variant='body1'
-          color='primary'
-          classes={{ root: classes.label }}
-        >
-          APY
-        </Typography>
-        <Typography variant='body1' classes={{ root: classes.apy }}>
-          {apy ? `${formatNumber(apy)} %` : "- -"}
-        </Typography>
-      </div>
-      <div className={classes.item}>
-        <Typography
-          variant='body1'
-          color='primary'
-          classes={{ root: classes.label }}
+          color={alpha(COLOR.text, 0.5)}
+          fontSize={14}
         >
           Total Staked
         </Typography>
-        <Typography variant='body1' classes={{ root: classes.total }}>
-          {`${formatNumber(totalStaked)} ${TokenShortName[token]}`}
+        <Typography
+          variant='body1'
+          fontSize={14}
+          fontFamily='Rawline'
+          color={COLOR.text}
+        >
+          {formatNumber(totalStaked)}
+          <Typography
+            component='span'
+            fontSize={14}
+            color={alpha(COLOR.text, 0.5)}
+          >
+            {" "}
+            {TokenShortName[token]}
+          </Typography>
         </Typography>
-      </div>
+      </Box>
     </Box>
   );
 }

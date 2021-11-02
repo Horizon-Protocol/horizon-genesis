@@ -1,21 +1,6 @@
-import { Box } from "@material-ui/core";
-import { makeStyles } from "@material-ui/core/styles";
+import { Box } from "@mui/material";
 import { Token } from "@utils/constants";
 import hznLogo from "@assets/tokens/hzn.png";
-
-const useStyles = makeStyles(() => ({
-  container: {
-    background: "rgba(55,133,185,0.08)",
-    textAlign: "center",
-  },
-  label: {
-    marginTop: 4,
-    fontSize: 9,
-    fontWeight: 700,
-    letterSpacing: "1.08px",
-    transform: "scale(0.75)",
-  },
-}));
 
 interface Props {
   token?: TokenEnum | zAssetsEnum;
@@ -23,8 +8,6 @@ interface Props {
 }
 
 export default function TokenLogo({ token = Token.HZN, logo }: Props) {
-  const classes = useStyles();
-
   const isHZN = token === Token.HZN;
 
   return (
@@ -36,7 +19,8 @@ export default function TokenLogo({ token = Token.HZN, logo }: Props) {
       justifyContent='center'
       alignItems='center'
       borderRadius='50%'
-      className={classes.container}
+      bgcolor='rgba(55,133,185,0.08)'
+      textAlign='center'
     >
       <img
         src={logo || hznLogo}
@@ -46,7 +30,20 @@ export default function TokenLogo({ token = Token.HZN, logo }: Props) {
           height: isHZN ? 26 : 18,
         }}
       />
-      {!isHZN && <span className={classes.label}>{token}</span>}
+      {!isHZN && (
+        <Box
+          component='span'
+          mt={0.5}
+          fontSize={9}
+          fontWeight={700}
+          letterSpacing='1.08px'
+          sx={{
+            transform: "scale(0.75)",
+          }}
+        >
+          {token}
+        </Box>
+      )}
     </Box>
   );
 }

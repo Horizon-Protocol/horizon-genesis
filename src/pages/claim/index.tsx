@@ -1,5 +1,5 @@
 import { useCallback, useMemo, useState } from "react";
-import { Box } from "@material-ui/core";
+import { Box } from "@mui/material";
 import { ethers } from "ethers";
 import { useSnackbar } from "notistack";
 import { useAtomValue } from "jotai/utils";
@@ -19,6 +19,7 @@ import InfoList, { Info } from "@components/InfoList";
 import PrimaryButton from "@components/PrimaryButton";
 import useRefresh from "@hooks/useRefresh";
 import { formatNumber } from "@utils/number";
+import { getWalletErrorMsg } from "@utils/helper";
 import { zAssets } from "@utils/zAssets";
 
 const THEME_COLOR = PAGE_COLOR.claim;
@@ -73,11 +74,8 @@ export default function Claim() {
       const tx: ethers.ContractTransaction = await FeePool.claimFees();
       await tx.wait(1);
       refresh();
-    } catch (e) {
-      console.log(e);
-      console.log(e.error);
-      const detail = `${e.error?.code}: ${e.error?.reason}`;
-      enqueueSnackbar(e.error ? detail : "Operation Failed", {
+    } catch (e: any) {
+      enqueueSnackbar(getWalletErrorMsg(e), {
         variant: "error",
       });
     }

@@ -1,6 +1,5 @@
 import { useCallback, useEffect, useMemo } from "react";
-import { Box, BoxProps, Typography } from "@material-ui/core";
-import { withStyles } from "@material-ui/core/styles";
+import { Box, BoxProps, Typography } from "@mui/material";
 import { useSetState } from "ahooks";
 import numbro from "numbro";
 import { toBN } from "@utils/number";
@@ -75,24 +74,12 @@ export const formatInputValue = (inputValue: string): string => {
   );
 };
 
-const isExceedMax = (stringAmount: string, max?: BN) => {
+export const isExceedMax = (stringAmount: string, max?: BN) => {
   if (stringAmount && max) {
     return toBN(stringAmount).gt(max);
   }
   return false;
 };
-
-const InputError = withStyles({
-  root: {
-    minHeight: 24,
-    color: COLOR.danger,
-    fontSize: 10,
-    fontWeight: 500,
-    letterSpacing: "0.36px",
-    lineHeight: "14px",
-    textAlign: "center",
-  },
-})(Typography);
 
 export default function TokenPair({
   fromToken,
@@ -128,16 +115,20 @@ export default function TokenPair({
   const setToInput = useCallback<TokenInputProps["onInput"]>(
     (input, isMax = false) => {
       const { toPairInput, max } = toToken;
+      const { max: maxFrom } = fromToken;
       const stringAmount = (isMax ? max?.toString() : input) || "";
       // console.log("setToInput", isMax, input, stringAmount);
+      const fromStringAmount = toPairInput(stringAmount);
       setState(() => ({
         toInput: stringAmount && formatInputValue(stringAmount),
-        fromInput: stringAmount && formatInputValue(toPairInput(stringAmount)),
+        fromInput: stringAmount && formatInputValue(fromStringAmount),
         isMax,
-        error: isExceedMax(stringAmount, max) ? "Insufficient balance" : "",
+        error: isExceedMax(fromStringAmount, maxFrom)
+          ? "Insufficient balance"
+          : "",
       }));
     },
-    [setState, toToken]
+    [setState, fromToken, toToken]
   );
 
   const handleUserInput = useCallback(() => {
@@ -146,7 +137,17 @@ export default function TokenPair({
 
   return (
     <Box {...props}>
-      <InputError>{state.error}</InputError>
+      <Typography
+        minHeight={24}
+        color={COLOR.danger}
+        fontSize={10}
+        fontWeight={500}
+        letterSpacing='0.36px'
+        lineHeight='14px'
+        textAlign='center'
+      >
+        {state.error}
+      </Typography>
       <TokenInput
         {...fromToken}
         amount={fromAmount}

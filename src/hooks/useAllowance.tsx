@@ -3,6 +3,7 @@ import { useAtom } from "jotai";
 import { useSnackbar } from "notistack";
 import { StakingAddresses, TokenAddresses } from "@utils/constants";
 import { BNToEther, etherToBN, toBN } from "@utils/number";
+import { getWalletErrorMsg } from "@utils/helper";
 import { poolStateAtomFamily } from "@atoms/staker/pool";
 import useWallet from "./useWallet";
 import { useERC20 } from "./useContract";
@@ -42,8 +43,8 @@ export default function useTokenAllowance(token: TokenEnum) {
         const res = await tx.wait(1);
         console.log("approve", res);
         setPoolState({ allowance: etherToBN(total) });
-      } catch (e) {
-        enqueueSnackbar(e?.message || "Operation failed"!, {
+      } catch (e: any) {
+        enqueueSnackbar(getWalletErrorMsg(e), {
           variant: "error",
         });
       }

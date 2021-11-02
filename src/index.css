@@ -19,6 +19,14 @@ code {
 
 @font-face {
   font-family: Rawline;
+  font-weight: 400;
   src: local("Rawline"), local("Rawline-Regular"),
     url(./assets/fonts/rawline-400.woff2) format("woff2");
+}
+
+@font-face {
+  font-family: Rawline;
+  font-weight: bold;
+  src: local("Rawline"), local("Rawline-Bold"),
+    url(./assets/fonts/rawline-700.woff2) format("woff2");
 }

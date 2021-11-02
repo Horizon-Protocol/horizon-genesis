@@ -1,4 +1,5 @@
 import { NumericValue, toBN, zeroBN, maxBN } from "@utils/number";
+import { isString } from "lodash";
 
 /**
  * to mint zUSD amount
@@ -88,4 +89,18 @@ export function waitForGlobal(
       waitForGlobal(key, callback, maxWait, waited + 100);
     }, 100);
   }
+}
+
+export function getWalletErrorMsg(e: any, defaultMsg = "Operation Failed") {
+  // Binance Wallet
+  if (isString(e?.error)) {
+    return e.error;
+  }
+
+  // Metamask like Wallet
+  if (isString(e?.message)) {
+    return e.message;
+  }
+
+  return defaultMsg;
 }

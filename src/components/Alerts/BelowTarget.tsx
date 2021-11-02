@@ -1,6 +1,6 @@
 import { useMemo } from "react";
 import fromUnixTime from "date-fns/fromUnixTime";
-import { BoxProps } from "@material-ui/core";
+import { BoxProps } from "@mui/material";
 import { HZNBuyLink } from "@utils/constants";
 import { COLOR } from "@utils/theme/constants";
 import { formatCRatioToPercent } from "@utils/number";
@@ -69,7 +69,7 @@ export default function BelowTarget({
 
   return (
     <BaseAlert
-      color={color}
+      baseColor={color}
       title='Attention Required'
       content={content}
       {...props}

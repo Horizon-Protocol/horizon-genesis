@@ -2,9 +2,9 @@ import { useMemo } from "react";
 import { useLocation, useHistory } from "react-router-dom";
 import ReactGA from "react-ga";
 import { useAtomValue } from "jotai/utils";
-import { Badge, Tabs, Tab, TabProps } from "@material-ui/core";
-import { PriorityHigh } from "@material-ui/icons";
-import { withStyles, alpha } from "@material-ui/core/styles";
+import { Badge, Tabs, Tab, TabProps } from "@mui/material";
+import { alpha, styled } from "@mui/material/styles";
+import { PriorityHigh } from "@mui/icons-material";
 import { PAGE_COLOR } from "@utils/theme/constants";
 import { hasRewardsAtom } from "@atoms/feePool";
 
@@ -43,65 +43,30 @@ const tabs: LinkTabProps[] = [
   },
 ];
 
-const StyledTabs = withStyles({
-  root: {
-    minHeight: 32,
-    padding: 1,
-    borderRadius: 4,
-    border: `1px solid rgba(55,133,185,0.25)`,
-    overflow: "visible",
-  },
-  scroller: {
-    overflow: "visible !important",
-  },
-  indicator: {
-    top: 0,
-    bottom: 0,
-    height: "100%",
-    borderRadius: 4,
-    backgroundColor: "#1A2E47",
-  },
-})(Tabs);
-
 const getStyledTab: (color: string) => any = (color) =>
-  withStyles(({ typography }) => ({
-    root: {
-      zIndex: 1,
-      minHeight: 32,
-      minWidth: 72,
-      padding: "4px 10px",
-      borderRadius: 4,
-      backgroundColor: "transparent",
-      ...typography.subtitle1,
-      textTransform: "none",
-      letterSpacing: "0.57px",
-      fontWeight: 500,
-      overflow: "visible",
-      "&:hover": {
-        color,
-      },
-      "&:focus": {
-        color,
-      },
-      "&$selected": {
-        color,
-        textShadow: `0 0 4px ${alpha(color, 0.5)}`,
-      },
+  styled(Tab)(({ theme: { typography } }) => ({
+    zIndex: 1,
+    minHeight: 32,
+    minWidth: 72,
+    padding: "4px 10px",
+    borderRadius: 1,
+    bgcolor: "transparent",
+    ...typography.subtitle1,
+    textTransform: "none",
+    letterSpacing: "0.57px",
+    fontWeight: 500,
+    overflow: "visible",
+    ":hover": {
+      color,
     },
-    selected: {},
-  }))(Tab);
-
-const StyledBadge = withStyles({
-  badge: {
-    top: 0,
-    right: -8,
-    borderRadius: 4,
-  },
-  colorPrimary: {
-    background: "#FA9916",
-    color: "white",
-  },
-})(Badge);
+    ":focus": {
+      color,
+    },
+    "&.Mui-selected	": {
+      color,
+      textShadow: `0 0 4px ${alpha(color, 0.5)}`,
+    },
+  }));
 
 export default function NavTabs() {
   const history = useHistory();
@@ -126,7 +91,7 @@ export default function NavTabs() {
   );
 
   return (
-    <StyledTabs
+    <Tabs
       variant='fullWidth'
       value={currentTab}
       textColor='primary'
@@ -138,6 +103,23 @@ export default function NavTabs() {
           }
         }
       }}
+      sx={{
+        minHeight: 32,
+        p: "1px",
+        borderRadius: 1,
+        border: `1px solid rgba(55,133,185,0.25)`,
+        overflow: "visible",
+        ".MuiTabs-scroller": {
+          overflow: "visible !important",
+        },
+        ".MuiTabs-indicator": {
+          top: 0,
+          bottom: 0,
+          height: "100%",
+          borderRadius: 1,
+          backgroundColor: "#1A2E47",
+        },
+      }}
     >
       {styledTabs.map(({ to, label, StyledTab, hasAlert }) => (
         <StyledTab
@@ -145,12 +127,31 @@ export default function NavTabs() {
           value={to}
           label={
             hasAlert ? (
-              <StyledBadge
-                color='primary'
-                badgeContent={<PriorityHigh fontSize='inherit' />}
+              <Badge
+                overlap='circular'
+                badgeContent={
+                  <PriorityHigh
+                    sx={{
+                      fontSize: 10,
+                    }}
+                  />
+                }
+                sx={{
+                  ".MuiBadge-badge": {
+                    display: "flex",
+                    minWidth: 16,
+                    width: 16,
+                    height: 16,
+                    p: 0,
+                    top: -6,
+                    right: -8,
+                    bgcolor: "#F5841F",
+                    color: "white",
+                  },
+                }}
               >
                 {label}
-              </StyledBadge>
+              </Badge>
             ) : (
               label
             )
@@ -158,6 +159,6 @@ export default function NavTabs() {
           disableRipple
         />
       ))}
-    </StyledTabs>
+    </Tabs>
   );
 }

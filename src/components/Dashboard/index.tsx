@@ -1,8 +1,6 @@
 import { useMemo } from "react";
 import { useAtomValue } from "jotai/utils";
-import { Box, BoxProps } from "@material-ui/core";
-import { makeStyles } from "@material-ui/core/styles";
-import clsx from "clsx";
+import { Box, BoxProps } from "@mui/material";
 import { debtAtom, collateralDataAtom, zUSDBalanceAtom } from "@atoms/debt";
 import { hznRateAtom } from "@atoms/exchangeRates";
 import useUserStakingData from "@hooks/useUserStakingData";
@@ -14,30 +12,7 @@ import StakingApy from "./StakingApy";
 import Balance from "./Balance";
 import ClaimCountDown from "./ClaimCountDown";
 
-const useStyles = makeStyles(({ breakpoints }) => ({
-  container: {
-    width: "100%",
-    background: "#0C111D",
-    borderRadius: 10,
-    [breakpoints.down("sm")]: {
-      borderRadius: 0,
-    },
-  },
-  stats: {
-    background: "rgba(16,38,55,0.3)",
-  },
-  apy: {
-    background: "#091620",
-    transform: "translateY(-50%)",
-  },
-  balance: {
-    background: "rgba(12, 17, 29, 0.5)",
-  },
-}));
-
-export default function Dashboard({ className, ...props }: BoxProps) {
-  const classes = useStyles();
-
+export default function Dashboard(props: BoxProps) {
   const { collateral, transferable, debtBalance } = useAtomValue(debtAtom);
   const { stakedCollateral, dashboardEscrowed } =
     useAtomValue(collateralDataAtom);
@@ -98,7 +73,12 @@ export default function Dashboard({ className, ...props }: BoxProps) {
       <Box
         border={1}
         borderColor={BORDER_COLOR}
-        className={clsx(classes.container, className)}
+        width='100%'
+        bgcolor='#0C111D'
+        borderRadius={{
+          xs: 0,
+          md: 2.5, // 10px
+        }}
         {...props}
       >
         <CRatioRange px={2} />
@@ -108,14 +88,17 @@ export default function Dashboard({ className, ...props }: BoxProps) {
           pt={0}
           pb={3}
           textAlign='center'
-          className={classes.stats}
+          bgcolor='rgba(16,38,55,0.3)'
         >
           <StakingApy
             percent={stakingAPR * 100}
             isEstimate={isEstimateAPR}
-            className={classes.apy}
+            bgcolor='#091620'
+            sx={{
+              transform: "translateY(-50%)",
+            }}
           />
-          <Box p={2} className={classes.balance}>
+          <Box p={2} bgcolor='rgba(12, 17, 29, 0.5)'>
             <Balance data={balances} />
           </Box>
         </Box>

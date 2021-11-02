@@ -1,75 +1,29 @@
-import { useMemo } from "react";
-import { makeStyles, withStyles } from "@material-ui/core/styles";
+import { useEffect, useMemo } from "react";
 import {
-  Typography,
+  Box,
+  Avatar,
   Card,
   CardProps,
   CardHeader,
   CardActions,
   CardContent,
-} from "@material-ui/core";
+  Typography,
+} from "@mui/material";
 import { useAtomValue } from "jotai/utils";
+import { detailAtom } from "@atoms/wallet";
 import { poolStateAtomFamily } from "@atoms/staker/pool";
 import defaultTheme from "@utils/theme";
-import { DEPRECATED_TOKENS } from "@utils/constants";
+import { ConnectorNames, TokenName } from "@utils/constants";
+import { registerToken, RegisterTokenConf } from "@utils/wallet";
 import useWallet from "@hooks/useWallet";
 import useFetchPoolState from "@hooks/staker/useFetchPoolState";
 import ExternalLink from "@components/Staker/ExternalLink";
+import { CARD_CONTENT, COLOR } from "@utils/theme/constants";
 import ConnectButton from "../ConnectButton";
-import CardSection from "./CardSection";
 import Pending from "./Pending";
 import Stats from "./Stats";
 import Earned from "./Earned";
 import AmountStake from "./AmountStake";
-
-const useStyles = makeStyles(() => ({
-  desc: {
-    color: "#C1D3E0",
-    fontSize: "14px",
-    lineHeight: "22px",
-    minHeight: 22 * 3,
-  },
-}));
-
-const StyledCard = withStyles(({ palette }) => ({
-  root: {
-    maxWidth: 340,
-    flex: "0 0 340px",
-    borderRadius: 20,
-    backgroundColor: "transparent",
-    backgroundRepeat: "no-repeat",
-    backgroundSize: "auto 180px",
-    backgroundPosition: "top -12px right -12px",
-    border: `1px solid ${palette.divider}`,
-  },
-}))(Card);
-
-const StyledHeader = withStyles({
-  root: {
-    paddingTop: 32,
-    backgroundColor: "rgba(28,57,95,0.25)",
-  },
-  title: {
-    marginBottom: 8,
-    letterSpacing: "1px",
-    textTransform: "uppercase",
-  },
-})(CardHeader);
-
-const StyledContent = withStyles(() => ({
-  root: {
-    padding: 0,
-    backgroundColor: "rgba(12,17,29,0.5)",
-  },
-}))(CardContent);
-
-const StyledLinks = withStyles(({ palette }) => ({
-  root: {
-    padding: 16,
-    backgroundColor: "rgba(28,57,95,0.25)",
-    borderTop: `1px solid ${palette.divider}`,
-  },
-}))(CardActions);
 
 interface LinkProps {
   href: string;
@@ -78,7 +32,10 @@ interface LinkProps {
 }
 
 export interface StakeCardProps extends CardProps {
+  showFinish?: boolean;
+  setFinishAlert?: (t: TokenEnum, hasAlert: boolean) => void;
   token: TokenEnum;
+  finished?: boolean;
   cardTitle?: string | React.ReactNode;
   desc: string | React.ReactNode;
   bg: string;
@@ -90,7 +47,10 @@ export interface StakeCardProps extends CardProps {
 }
 
 export default function StakeCard({
+  showFinish = false,
+  setFinishAlert,
   token,
+  finished,
   bg,
   color = defaultTheme.palette.primary.main,
   cardTitle,
@@ -99,10 +59,17 @@ export default function StakeCard({
   links,
   open = true,
   disabledActions,
+  sx,
   ...props
 }: StakeCardProps) {
-  const classes = useStyles();
   const { connected } = useWallet();
+  const wallet = useAtomValue(detailAtom);
+  const canRegisterToken = useMemo(
+    () =>
+      wallet?.connectorId === ConnectorNames.Injected &&
+      !!RegisterTokenConf[token],
+    [token, wallet?.connectorId]
+  );
 
   useFetchPoolState(token);
 
@@ -110,67 +77,128 @@ export default function StakeCard({
     poolStateAtomFamily(token)
   );
 
-  const cardDisabled = useMemo(() => {
-    if (DEPRECATED_TOKENS.indexOf(token) > -1) {
-      return earned.isZero() && staked.isZero() && withdrawable.isZero();
+  useEffect(() => {
+    if (finished) {
+      setFinishAlert?.(
+        token,
+        !(earned.eq(0) && staked.eq(0) && withdrawable.eq(0))
+      );
     }
-    return false;
-  }, [earned, staked, token, withdrawable]);
+  }, [earned, finished, setFinishAlert, staked, token, withdrawable]);
 
-  if (cardDisabled) {
-    return null;
+  if (showFinish) {
+    if (!finished) {
+      return null;
+    }
+  } else {
+    if (finished) {
+      return null;
+    }
   }
 
   return (
-    <StyledCard
+    <Card
       variant='outlined'
-      style={{
+      sx={{
+        maxWidth: 340,
+        flex: "0 0 340px",
+        bgcolor: "rgba(16, 38, 55, 0.3)",
+        backgroundRepeat: "no-repeat",
+        backgroundSize: "auto 160px",
+        backgroundPosition: "top -12px right -12px",
+        borderRadius: 2.5,
+        border: 0,
         backgroundImage: `url(${bg})`,
+        ...sx,
       }}
       {...props}
     >
-      <StyledHeader
-        title={cardTitle || `Stake ${token}`}
+      <CardHeader
+        title={cardTitle || `Stake ${TokenName[token]}`}
         subheader={
-          <Typography className={classes.desc} color='textSecondary'>
+          <Typography
+            color={COLOR.text}
+            fontSize={14}
+            lineHeight='22px'
+            minHeight={22 * 3}
+            letterSpacing='0.5px'
+          >
             {desc}
           </Typography>
         }
-        style={{
+        action={
+          wallet &&
+          canRegisterToken && (
+            <Avatar
+              component='span'
+              variant='circular'
+              src={wallet.logo}
+              alt={wallet.label}
+              sx={{
+                ml: 0.5,
+                position: "absolute",
+                top: 18,
+                right: 18,
+                display: "inline-block",
+                width: 18,
+                height: 18,
+                cursor: "pointer",
+              }}
+              onClick={() => {
+                if (canRegisterToken) {
+                  registerToken(RegisterTokenConf[token]!);
+                }
+              }}
+            />
+          )
+        }
+        sx={{
+          pt: 4,
+          position: "relative",
           color,
+          ".MuiCardHeader-title": {
+            mb: 1,
+            letterSpacing: "1px",
+            textTransform: "uppercase",
+          },
         }}
       />
-      <StyledContent>
-        <Stats token={token} />
-      </StyledContent>
+      <CardContent sx={{ p: 0, bgcolor: "rgba(8, 12, 22, 0.5)" }}>
+        <Stats token={token} finished={finished} />
+      </CardContent>
       <div
         style={{
           position: open ? undefined : "relative",
         }}
       >
-        <StyledContent>
+        <CardContent sx={{ p: 0 }}>
           <Earned token={token} earned={earned} />
           {connected ? (
             <AmountStake
               logo={logo}
               token={token}
+              finished={finished}
               disabledActions={disabledActions}
             />
           ) : (
-            <CardSection>
-              <ConnectButton fullWidth rounded size='large' />
-            </CardSection>
+            <Box {...CARD_CONTENT}>
+              <ConnectButton fullWidth size='large' />
+            </Box>
           )}
-        </StyledContent>
-        <StyledLinks>
+        </CardContent>
+        <CardActions
+          sx={{
+            p: links?.length ? 2 : 0.5,
+          }}
+        >
           {links?.map(({ href, logo, text }) => (
             <ExternalLink key={href} href={href} logo={logo}>
               {text}
             </ExternalLink>
           ))}
-        </StyledLinks>
+        </CardActions>
         {!open && <Pending>pending</Pending>}
       </div>
-    </StyledCard>
+    </Card>
   );
 }

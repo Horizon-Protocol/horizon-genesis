@@ -1,7 +1,6 @@
 import { useMemo } from "react";
-import { Box, Typography, LinearProgress, BoxProps } from "@material-ui/core";
-import { makeStyles, withStyles } from "@material-ui/core/styles";
-import { HelpOutline } from "@material-ui/icons";
+import { Box, Typography, LinearProgress, BoxProps } from "@mui/material";
+import { HelpOutline } from "@mui/icons-material";
 import { useAtomValue } from "jotai/utils";
 import { ratiosPercentAtom } from "@atoms/app";
 import { currentCRatioPercentAtom } from "@atoms/debt";
@@ -48,53 +47,6 @@ const getProgressByRatioPercent = (
   return Math.min(percent, 100);
 };
 
-const useStyles = makeStyles(() => ({
-  number: {
-    fontSize: 22,
-    letterSpacing: "0.92px",
-    lineHeight: "26px",
-    textAlign: "center",
-  },
-  tip: {
-    margin: "8px 0 16px",
-    lineHeight: "14px",
-    letterSpacing: "0.5px",
-  },
-  progressWrap: {
-    position: "relative",
-    paddingBottom: 32,
-  },
-  progress: {
-    height: 24,
-    borderRadius: 4,
-    border: `1px solid ${COLOR.border}`,
-  },
-  progressPrimary: {
-    backgroundColor: "transparent",
-  },
-  progressBar: {
-    backgroundColor: ({ color }: { color?: string }) => color,
-    borderRadius: 0,
-  },
-  tick: {
-    position: "absolute",
-    top: 1,
-  },
-  tickLine: {
-    display: "block",
-    height: 24,
-    borderLeft: `1px solid ${COLOR.border}`,
-  },
-}));
-
-const TickLabel = withStyles(() => ({
-  root: {
-    fontSize: 9,
-    transform: "translateX(-50%)",
-    marginTop: 4,
-  },
-}))(Typography);
-
 const Tick = ({
   percent = 0,
   left = 0,
@@ -106,16 +58,20 @@ const Tick = ({
   label: string;
   color?: string;
 }) => {
-  const classes = useStyles({ color });
-
   return (
-    <Box className={classes.tick} style={{ left, color }}>
-      <Box className={classes.tickLine} />
-      <TickLabel>
+    <Box position='absolute' top={1} left={left} color={color}>
+      <Box height={24} borderLeft={`1px solid ${COLOR.border}`} />
+      <Typography
+        mt={0.5}
+        fontSize={9}
+        sx={{
+          transform: "translateX(-50%)",
+        }}
+      >
         <strong>{percent}%</strong>
         <br />
         {label}
-      </TickLabel>
+      </Typography>
     </Box>
   );
 };
@@ -141,14 +97,15 @@ export default function CRatioRange(props: BoxProps) {
     [currentCRatioPercent, liquidationRatioPercent, targetCRatioPercent]
   );
 
-  const classes = useStyles({ color });
-
   return (
     <Box py={3} textAlign='center' {...props}>
       <Typography
         variant='h6'
-        classes={{ root: classes.number }}
-        style={{ color: currentCRatioPercent ? color : undefined }}
+        fontSize={22}
+        letterSpacing='0.92px'
+        lineHeight='26px'
+        textAlign='center'
+        color={currentCRatioPercent ? color : undefined}
       >
         {currentCRatioPercent ? formatNumber(currentCRatioPercent) : "--"}%
       </Typography>
@@ -165,20 +122,32 @@ export default function CRatioRange(props: BoxProps) {
         }
         placement='top'
       >
-        <Typography variant='subtitle2' classes={{ root: classes.tip }}>
+        <Typography
+          variant='subtitle2'
+          m='8px 0 16px'
+          lineHeight='14px'
+          letterSpacing='0.5px'
+        >
           Current C-Ratio
           <HelpOutline fontSize='inherit' />
         </Typography>
       </Tooltip>
-      <Box className={classes.progressWrap}>
+      <Box position='relative' pb={4}>
         <LinearProgress
           variant='determinate'
           value={progress}
           valueBuffer={currentCRatioPercent}
-          classes={{
-            root: classes.progress,
-            colorPrimary: classes.progressPrimary,
-            bar: classes.progressBar,
+          sx={{
+            height: 24,
+            borderRadius: 1,
+            border: `1px solid ${COLOR.border}`,
+            "&.MuiLinearProgress-colorPrimary": {
+              bgcolor: "transparent",
+            },
+            ".MuiLinearProgress-bar": {
+              bgcolor: color,
+              borderRadius: 0,
+            },
           }}
         />
         {liquidationRatioPercent > 0 && (

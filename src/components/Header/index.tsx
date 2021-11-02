@@ -1,5 +1,4 @@
-import { Box, Grid, Hidden } from "@material-ui/core";
-import { makeStyles } from "@material-ui/core/styles";
+import { Box, Grid, Hidden } from "@mui/material";
 import ConnectButton from "@components/ConnectButton";
 import logo from "@assets/logo.png";
 import useWallet from "@hooks/useWallet";
@@ -8,46 +7,7 @@ import WalletInfo from "./WalletInfo";
 import WalletsDialog from "./WalletsDialog";
 import DashboardLink from "./DashboardLink";
 
-const useStyles = makeStyles(({ breakpoints }) => ({
-  container: {
-    padding: 16,
-    borderBottom: "1px solid #11263B",
-  },
-  logo: {
-    height: 40,
-    [breakpoints.down("xs")]: {
-      margin: "auto",
-    },
-  },
-  nav: {
-    height: 40,
-    [breakpoints.between("sm", "md")]: {},
-    [breakpoints.down("sm")]: {
-      order: 3,
-    },
-  },
-  wallet: {
-    minHeight: 40,
-    order: 2,
-    flexWrap: "nowrap",
-    [breakpoints.down("sm")]: {
-      order: 2,
-      margin: "8px 0",
-    },
-    [breakpoints.down("xs")]: {
-      justifyContent: "center",
-      flexWrap: "wrap",
-    },
-  },
-  connect: {
-    fontSize: 14,
-    paddingLeft: 18,
-    paddingRight: 18,
-  },
-}));
-
 export default function Header() {
-  const classes = useStyles();
   const { connected } = useWallet();
 
   return (
@@ -55,20 +15,40 @@ export default function Header() {
       <Grid
         container
         alignItems='center'
-        classes={{ container: classes.container }}
+        flexWrap='wrap'
+        sx={{
+          "&.MuiGrid-container": {
+            padding: 2, // 16px
+            borderBottom: "1px solid #11263B",
+          },
+        }}
       >
-        <Grid container item xs={12} sm={5} md={3} lg={5}>
-          <img src={logo} alt='Horizon Mintr' className={classes.logo} />
+        <Grid container item xs={12} md={5} lg={4}>
+          <Box
+            component='img'
+            src={logo}
+            alt='Horizon Genesis'
+            m={{
+              xs: "auto",
+              md: "initial",
+            }}
+            height={40}
+          />
         </Grid>
         <Grid
           container
           item
           xs={12}
-          sm={12}
-          md={4}
-          lg={2}
-          justifyContent='center'
-          className={classes.nav}
+          md={12}
+          lg={4}
+          sx={{
+            justifyContent: "center",
+            height: 40,
+            order: {
+              xs: 3,
+              lg: 2,
+            },
+          }}
         >
           <NavTabs />
         </Grid>
@@ -76,12 +56,25 @@ export default function Header() {
           container
           item
           xs={12}
-          sm={7}
-          md={5}
-          lg={5}
-          alignItems='center'
-          justifyContent='flex-end'
-          className={classes.wallet}
+          md={7}
+          lg={4}
+          sx={{
+            m: {
+              xs: "8px 0",
+              lg: "initial",
+            },
+            minHeight: 40,
+            order: {
+              xs: 2,
+              lg: 3,
+            },
+            alignItems: "center",
+            justifyContent: {
+              xs: "center",
+              md: "flex-end",
+            },
+            flexWrap: { xs: "wrap", sm: "nowrap" },
+          }}
         >
           <DashboardLink />
           <Hidden smUp>
@@ -92,7 +85,17 @@ export default function Header() {
               <WalletInfo />
             </>
           ) : (
-            <ConnectButton rounded classes={{ root: classes.connect }} />
+            <ConnectButton
+              sx={{
+                px: 2,
+                py: 0,
+                height: 32,
+                display: "flex",
+                alignItems: "center",
+                fontSize: 12,
+                lineHeight: "22px",
+              }}
+            />
           )}
         </Grid>
       </Grid>

@@ -2,6 +2,14 @@ import { useCallback, useMemo } from "react";
 import { Contract, Provider } from "@horizon-protocol/ethcall";
 import useRpcProvider from "./useRpcProvider";
 
+export const getMultiCallContract = <T extends { callStatic: any }>(
+  address: string,
+  abi: any[]
+) => {
+  const contract = new Contract(address, abi);
+
+  return contract as Contract & { [k in keyof T["callStatic"]]: any };
+};
 export const useMultiCallContract = <T extends { callStatic: any }>(
   address: string,
   abi: any[]

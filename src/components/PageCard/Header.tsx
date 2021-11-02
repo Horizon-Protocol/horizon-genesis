@@ -1,22 +1,4 @@
-import { Box, BoxProps, Typography } from "@material-ui/core";
-import { withStyles } from "@material-ui/core/styles";
-
-const Title = withStyles({
-  root: {
-    marginBottom: 8,
-    fontWeight: 700,
-    letterSpacing: "4.57px",
-  },
-})(Typography);
-
-const Description = withStyles({
-  root: {
-    padding: "0 12px",
-    marginBottom: 8,
-    lineHeight: "22px",
-    color: "#C1D3E0",
-  },
-})(Typography);
+import { Box, BoxProps, Typography } from "@mui/material";
 
 export default function Header({
   color,
@@ -26,10 +8,24 @@ export default function Header({
 }: BoxProps & CardProps) {
   return (
     <Box textAlign='center' {...props}>
-      <Title variant='h4' style={{ color }}>
+      <Typography
+        variant='h4'
+        mb={1}
+        fontWeight={700}
+        letterSpacing='4.57px'
+        color={color}
+      >
         {title}
-      </Title>
-      <Description variant='body2'>{description}</Description>
+      </Typography>
+      <Typography
+        variant='body2'
+        p='0 12px'
+        mb={1}
+        lineHeight='22px'
+        color='#C1D3E0'
+      >
+        {description}
+      </Typography>
     </Box>
   );
 }

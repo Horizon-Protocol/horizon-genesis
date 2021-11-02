@@ -6,96 +6,59 @@ import {
   DialogProps,
   IconButton,
   List,
-  ListItem,
+  ListItemButton,
   ListItemIcon,
   ListItemText,
-} from "@material-ui/core";
+} from "@mui/material";
+import { styled } from "@mui/material/styles";
+import { Close, LinkOff } from "@mui/icons-material";
 import { useAtom } from "jotai";
-import { useAtomValue } from "jotai/utils";
-import { makeStyles, withStyles } from "@material-ui/core/styles";
-import { Close, LinkOff } from "@material-ui/icons";
 import { SUPPORTED_WALLETS } from "@utils/constants";
 import { waitForGlobal } from "@utils/helper";
-import { appDataReadyAtom } from "@atoms/app";
 import { openAtom, detailAtom, prevWalletNameAtom } from "@atoms/wallet";
 import useWallet from "@hooks/useWallet";
 import { injectorByName } from "@utils/web3React";
 
-const useStyles = makeStyles(({ breakpoints, typography }) => ({
-  header: {
-    width: "100%",
-    display: "flex",
-    justifyContent: "space-between",
-    alignItems: "center",
-  },
-  title: {
-    ...typography.h6,
-    fontSize: 24,
-    letterSpacing: "3px",
-    textTransform: "uppercase",
-    lineHeight: "28px",
-    [breakpoints.down("sm")]: {
-      fontSize: 18,
-    },
-  },
-  closeIcon: {
-    padding: 4,
-  },
-  logo: {
-    width: 32,
-    height: 32,
-    [breakpoints.down("sm")]: {
-      width: 28,
-      height: 28,
-    },
-  },
-}));
+const Span = styled("span")``;
+const Img = styled("img")``;
 
-const StyledDialog = withStyles(({ palette }) => ({
-  paper: {
-    border: `1px solid ${palette.divider}`,
-    borderRadius: 10,
+const StyledDialog = styled(Dialog)({
+  ".MuiDialog-paper": {
+    padding: "24px 32px 32px",
+    borderRadius: "24px",
   },
-}))(Dialog);
+});
 
-const StyledListItem = withStyles(({ palette }) => ({
-  root: {
-    padding: 12,
-    marginBottom: 24,
-    borderRadius: 6,
-    backgroundColor: "rgba(28, 57, 95, 0.6)",
-    "&:hover": {
-      backgroundColor: "rgba(28, 57, 95, 1)",
-    },
+const StyledListItem = styled(ListItemButton)({
+  padding: "8px",
+  marginTop: "24px",
+  borderRadius: "6px",
+  background: "rgba(217, 230, 255, 0.25)",
+  ":hover": {
+    background: "rgba(217, 230, 255, 0.5)",
   },
-  selected: {
-    border: `1px solid ${palette.secondary.main}`,
+  ".Mui-selected": {
+    color: "rgba(255, 255, 255, 0.3)",
+    background: "rgba(52,129,183,0.1)",
+    boxShadow: "none",
   },
-}))(ListItem);
+});
 
-const StyledListItemText = withStyles(({ breakpoints }) => ({
-  root: {
-    paddingRight: 48,
-    whiteSpace: "nowrap",
-  },
-  primary: {
+const StyledListItemText = styled(ListItemText)({
+  paddingRight: "48px",
+  whiteSpace: "nowrap",
+  ".MuiListItemText-primary": {
     textAlign: "center",
-    fontWeight: 700,
+    fontWeight: 500,
     textTransform: "uppercase",
-    letterSpacing: 0.88,
-    [breakpoints.down("sm")]: {
-      fontSize: 14,
-    },
   },
-}))(ListItemText);
+});
 
 export default function WalletsDialog(
   props: Omit<DialogProps, "open" | "onClose">
 ) {
-  const classes = useStyles();
   const { connectWallet, connected, deactivate } = useWallet();
 
-  const appDataReady = useAtomValue(appDataReadyAtom);
   const [prevWalletName, setPrevWalletName] = useAtom(prevWalletNameAtom);
 
   const [open, setOpen] = useAtom(openAtom);
@@ -138,7 +101,7 @@ export default function WalletsDialog(
 
   // Auto connect last connected wallet.
   useEffect(() => {
-    if (prevWalletName && appDataReady) {
+    if (prevWalletName) {
       const wallet = SUPPORTED_WALLETS.find(
         (item) => item.key === prevWalletName
       );
@@ -150,49 +113,76 @@ export default function WalletsDialog(
         });
       }
     }
-  }, [appDataReady, connectWallet, prevWalletName, setDetail]);
+  }, [connectWallet, prevWalletName, setDetail]);
 
   return (
     <StyledDialog open={open} onClose={handleClose} {...props}>
-      <DialogTitle disableTypography classes={{ root: classes.header }}>
-        <span className={classes.title}>Connect wallet</span>
+      <DialogTitle
+        sx={{
+          p: 0,
+          display: "flex",
+          justifyContent: "space-between",
+          alignItems: "center",
+        }}
+      >
+        <Span
+          sx={{
+            fontSize: "20px",
+            fontWeight: 600,
+            textTransform: "uppercase",
+            lineHeight: "28px",
+          }}
+        >
+          Connect wallet
+        </Span>
         <IconButton
           color='inherit'
           onClick={handleClose}
-          classes={{ root: classes.closeIcon }}
+          sx={{
+            p: "4px",
+          }}
+          size='large'
         >
           <Close />
         </IconButton>
       </DialogTitle>
-      <DialogContent>
-        <List component='nav'>
+      <DialogContent
+        sx={{
+          p: 0,
+        }}
+      >
+        <List component='nav' disablePadding>
           {SUPPORTED_WALLETS.map((wallet) => (
             <StyledListItem
               key={wallet.key}
-              button
               selected={connected && detail?.key === wallet.key}
               onClick={() => handleSelectWallet(wallet)}
             >
               <ListItemIcon>
-                <img
+                <Img
                   src={wallet.logo}
                   alt={wallet.label}
-                  className={classes.logo}
+                  sx={{
+                    width: "32px",
+                    height: "32px",
+                  }}
                 />
               </ListItemIcon>
               <StyledListItemText primary={wallet.label} />
             </StyledListItem>
           ))}
           {connected && (
-            <StyledListItem
-              key='disconnect'
-              button
-              onClick={() => handleDisconnect()}
-            >
+            <StyledListItem key='disconnect' onClick={() => handleDisconnect()}>
               <ListItemIcon>
-                <LinkOff color='error' className={classes.logo} />
+                <LinkOff
+                  color='error'
+                  sx={{
+                    width: "32px",
+                    height: "32px",
+                  }}
+                />
               </ListItemIcon>
-              <StyledListItemText primary='Disconnect Wallet' />
+              <StyledListItemText primary='Disconnect' />
             </StyledListItem>
           )}
         </List>

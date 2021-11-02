@@ -1,6 +1,6 @@
 import { useCallback, useMemo } from "react";
-import { Box, BoxProps, Link, Typography } from "@material-ui/core";
-import { HelpOutline } from "@material-ui/icons";
+import { Box, BoxProps, Link, Typography } from "@mui/material";
+import { HelpOutline } from "@mui/icons-material";
 import { useAtomValue } from "jotai/utils";
 import { presetCRatioPercentsAtom, targetRatioAtom } from "@atoms/app";
 import { cRatioToPercent } from "@utils/number";
@@ -36,6 +36,9 @@ export default function PresetCRatioOptions({
   type OptionItem = typeof presetCRatioPercents[number];
   const checkDisabled = useCallback(
     (option: OptionItem) => {
+      if (!account) {
+        return true;
+      }
       // burn
       if (isBurn) {
         return currentCRatio.lte(option.cRatio);
@@ -43,7 +46,7 @@ export default function PresetCRatioOptions({
       // mint
       return currentCRatio.gte(option.cRatio);
     },
-    [currentCRatio, isBurn]
+    [account, currentCRatio, isBurn]
   );
 
   const checkActive = useCallback(
@@ -56,10 +59,6 @@ export default function PresetCRatioOptions({
     },
     [changedCratioPercent, currentCRatio, targetRatio, value]
   );
-
-  if (!account) {
-    return null;
-  }
 
   return (
     <Box width='100%' {...props}>

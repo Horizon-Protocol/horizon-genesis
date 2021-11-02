@@ -1,6 +1,6 @@
 import { useMemo, useCallback, useState } from "react";
 import { useAtomValue } from "jotai/utils";
-import { Box } from "@material-ui/core";
+import { Box } from "@mui/material";
 import { ethers, utils } from "ethers";
 import { useSnackbar } from "notistack";
 import horizon from "@lib/horizon";
@@ -17,6 +17,7 @@ import {
   getStakingAmount,
   getMintAmount,
   getTransferableAmountFromMint,
+  getWalletErrorMsg,
 } from "@utils/helper";
 import useWallet from "@hooks/useWallet";
 import { targetRatioAtom } from "@atoms/app";
@@ -31,6 +32,7 @@ import TokenPair, {
   useInputState,
   formatInputValue,
   TokenProps,
+  isExceedMax,
 } from "@components/TokenPair";
 import BalanceChange, {
   Props as BalanceChangeProps,
@@ -117,10 +119,10 @@ export default function Mint() {
       }
 
       setState(() => ({
-        fromInput: formatInputValue(inputHZN.toString()),
+        fromInput: formatInputValue(inputHZN),
         toInput: formatInputValue(toPairInput(inputHZN)),
         isMax,
-        error: "",
+        error: isExceedMax(inputHZN, max) ? "Insufficient balance" : "",
       }));
     },
     [targetRatio, fromToken, setState, balance, collateral, stakedCollateral]
@@ -219,11 +221,8 @@ export default function Mint() {
         isMax: false,
       }));
       refresh();
-    } catch (e) {
-      console.log(e);
-      console.log(e.error);
-      const detail = `${e.error?.code}: ${e.error?.reason}`;
-      enqueueSnackbar(e.error ? detail : "Operation Failed", {
+    } catch (e: any) {
+      enqueueSnackbar(getWalletErrorMsg(e), {
         variant: "error",
       });
     }

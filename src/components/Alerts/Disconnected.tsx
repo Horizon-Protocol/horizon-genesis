@@ -1,5 +1,5 @@
 import { openAtom } from "@atoms/wallet";
-import { BoxProps } from "@material-ui/core";
+import { BoxProps } from "@mui/material";
 import { useUpdateAtom } from "jotai/utils";
 import ActionLink from "./ActionLink";
 import BaseAlert from "./Base";

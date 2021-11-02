@@ -1,5 +1,5 @@
 import { atom } from "jotai";
-import { atomFamily, atomWithReset, RESET } from "jotai/utils";
+import { atomFamily, atomWithReset } from "jotai/utils";
 import { zeroBN } from "@utils/number";
 
 interface State {
@@ -61,6 +61,13 @@ export const poolStateAtomFamily = atomFamily((token: TokenEnum) =>
 
 export const resetPoolStateAtomFamily = atomFamily((token: TokenEnum) =>
   atom(null, (get, set) => {
-    set(stateAtomFamily({ token }), RESET);
+    set(stateAtomFamily({ token }), (prev) => ({
+      ...prev,
+      allowance: undefined,
+      available: zeroBN, // available | transferrable
+      staked: zeroBN,
+      earned: zeroBN,
+      withdrawable: zeroBN,
+    }));
   })
 );

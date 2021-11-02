@@ -1,44 +1,14 @@
 import { useCallback, useState, useMemo } from "react";
-import { Box, Typography } from "@material-ui/core";
-import { makeStyles, withStyles } from "@material-ui/core/styles";
+import { Box, Typography } from "@mui/material";
+import { alpha } from "@mui/material/styles";
 import { useSnackbar } from "notistack";
 import CountUp from "react-countup-es";
-import { CARD_CONTENT } from "@utils/theme/constants";
+import { CARD_CONTENT, COLOR } from "@utils/theme/constants";
 import useRefreshEarn from "@hooks/useRefreshEarn";
 import PrimaryButton from "@components/PrimaryButton";
 import { formatNumber } from "@utils/number";
+import { getWalletErrorMsg } from "@utils/helper";
 import useStaking from "@hooks/staker/useStaking";
-
-const useStyles = makeStyles({
-  root: {
-    ...CARD_CONTENT,
-    display: "flex",
-    alignItems: "center",
-  },
-  amount: {
-    flex: 1,
-    overflow: "hidden",
-  },
-});
-
-const AmountLabel = withStyles({
-  root: {
-    fontSize: 12,
-    fontWeight: 900,
-    letterSpacing: "1px",
-  },
-})(Typography);
-
-const Amount = withStyles({
-  root: {
-    paddingRight: 8,
-    fontSize: 22,
-    fontFamily: "Rawline",
-    fontWeight: 500,
-    textOverflow: "ellipsis",
-    overflow: "hidden",
-  },
-})(Typography);
 
 interface Props {
   token: TokenEnum;
@@ -46,8 +16,6 @@ interface Props {
 }
 
 export default function Earned({ token, earned }: Props) {
-  const classes = useStyles();
-
   const { enqueueSnackbar } = useSnackbar();
 
   const [loading, setLoading] = useState<boolean>(false);
@@ -80,20 +48,25 @@ export default function Earned({ token, earned }: Props) {
           variant: "success",
         });
         refresh();
-      } catch (e) {
-        console.log(e);
-        enqueueSnackbar(e.error ?? "Operation Failed", { variant: "error" });
+      } catch (e: any) {
+        enqueueSnackbar(getWalletErrorMsg(e), { variant: "error" });
       }
       setLoading(false);
     }
   }, [earned, enqueueSnackbar, refresh, stakingContract]);
 
   return (
-    <Box className={classes.root}>
-      <Box className={classes.amount}>
-        <AmountLabel variant='caption' color='primary'>
+    <Box {...CARD_CONTENT} display='flex' alignItems='center'>
+      <Box flex='1' overflow='hidden'>
+        <Typography
+          variant='caption'
+          color={alpha(COLOR.text, 0.5)}
+          fontSize={12}
+          fontWeight={900}
+          letterSpacing='1px'
+        >
           HZN EARNED
-        </AmountLabel>
+        </Typography>
 
         <CountUp
           start={0}
@@ -105,7 +78,17 @@ export default function Earned({ token, earned }: Props) {
           // separator=','
         >
           {({ countUpRef }) => (
-            <Amount ref={countUpRef} variant='body1'></Amount>
+            <Typography
+              ref={countUpRef}
+              variant='body1'
+              paddingRight={8}
+              fontSize={24}
+              fontFamily='Rawline'
+              fontWeight={500}
+              textOverflow='ellipsis'
+              overflow='hidden'
+              color={earned.isZero() ? undefined : COLOR.safe}
+            />
           )}
         </CountUp>
       </Box>

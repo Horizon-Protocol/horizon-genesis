@@ -1,10 +1,10 @@
 import { useCallback, useState, useMemo } from "react";
-import { Box, Button, Collapse, Typography } from "@material-ui/core";
-import { makeStyles, withStyles } from "@material-ui/core/styles";
+import { Box, Button, Collapse, Typography } from "@mui/material";
+import { alpha } from "@mui/material/styles";
 import { useSnackbar } from "notistack";
 import { useAtomValue } from "jotai/utils";
-import { DEPRECATED_TOKENS, Action } from "@utils/constants";
-import { CARD_CONTENT } from "@utils/theme/constants";
+import { Action } from "@utils/constants";
+import { CARD_CONTENT, COLOR } from "@utils/theme/constants";
 import useRefresh from "@hooks/useRefreshEarn";
 import useTokenAllowance from "@hooks/useAllowance";
 import useStaking from "@hooks/staker/useStaking";
@@ -12,65 +12,12 @@ import PrimaryButton from "@components/PrimaryButton";
 import { poolStateAtomFamily } from "@atoms/staker/pool";
 import { TokenName } from "@utils/constants";
 import { BNToEther, toBN, zeroBN, formatNumber } from "@utils/number";
+import { getWalletErrorMsg } from "@utils/helper";
 import AmountInput from "./AmountInput";
-
-const useStyles = makeStyles(({ palette }) => ({
-  root: {
-    ...CARD_CONTENT,
-    minHeight: 54,
-  },
-  amountBox: {
-    display: "flex",
-    alignItems: "center",
-  },
-  staked: {
-    flex: 1,
-    overflow: "hidden",
-  },
-  buttons: {
-    flex: "0 0 120px",
-    display: "flex",
-    justifyContent: "space-between",
-    color: palette.text.primary,
-  },
-  inputBox: {
-    position: "relative",
-    padding: CARD_CONTENT.padding,
-  },
-}));
-
-const AmountLabel = withStyles({
-  root: {
-    fontSize: 12,
-    fontWeight: 900,
-    letterSpacing: "1px",
-    textTransform: "uppercase",
-  },
-})(Typography);
-
-const Amount = withStyles({
-  root: {
-    paddingRight: 8,
-    fontSize: 22,
-    fontFamily: "Rawline",
-    fontWeight: 500,
-    textOverflow: "ellipsis",
-    overflow: "hidden",
-  },
-})(Typography);
-
-const InputButton = withStyles(({ palette }) => ({
-  root: {
-    width: 50,
-    minWidth: 50,
-    fontWeight: 700,
-    color: palette.text.primary,
-    boxShadow: "none",
-  },
-}))(Button);
 
 interface Props {
   token: TokenEnum;
+  finished?: boolean;
   logo?: string;
   disabledActions?: ActionEnum[];
 }
@@ -88,8 +35,12 @@ const Actions = [
   },
 ];
 
-export default function AmountStake({ token, logo, disabledActions }: Props) {
-  const classes = useStyles();
+export default function AmountStake({
+  token,
+  finished,
+  logo,
+  disabledActions,
+}: Props) {
   const [submitting, setSubmitting] = useState<boolean>(false);
   const [currentAction, setCurrentAction] = useState<Action>();
   const [input, setInput] = useState<string>();
@@ -97,6 +48,9 @@ export default function AmountStake({ token, logo, disabledActions }: Props) {
   const { enqueueSnackbar } = useSnackbar();
 
   const actions = useMemo(() => {
+    if (finished) {
+      return [];
+    }
     if (disabledActions) {
       return Actions.map(({ key, ...item }) => ({
         ...item,
@@ -105,7 +59,7 @@ export default function AmountStake({ token, logo, disabledActions }: Props) {
       }));
     }
     return Actions;
-  }, [disabledActions]);
+  }, [finished, disabledActions]);
 
   const refresh = useRefresh();
 
@@ -149,75 +103,84 @@ export default function AmountStake({ token, logo, disabledActions }: Props) {
     setInput("0");
   }, []);
 
-  const handleStake = useCallback(async () => {
-    await checkApprove(amount);
-    const tx = await stakingContract!.stake(BNToEther(amount));
-    enqueueSnackbar(
-      <>
-        Transaction has been sent to blockchain,
-        <br />
-        waiting for confirmation...
-      </>,
-      { variant: "info" }
-    );
-    const res = await tx.wait(1);
-    console.log("Stake:", res);
-    enqueueSnackbar(`Successfully staked ${formatNumber(amount)} ${token}`, {
-      variant: "success",
-    });
-    refresh();
-    resetInput();
-  }, [
-    checkApprove,
-    amount,
-    stakingContract,
-    enqueueSnackbar,
-    token,
-    refresh,
-    resetInput,
-  ]);
+  const handleStake = useCallback(
+    async (amount: BN) => {
+      await checkApprove(amount);
+      const tx = await stakingContract!.stake(BNToEther(amount));
+      enqueueSnackbar(
+        <>
+          Transaction has been sent to blockchain,
+          <br />
+          waiting for confirmation...
+        </>,
+        { variant: "info" }
+      );
+      const res = await tx.wait(1);
+      console.log("Stake:", res);
+      enqueueSnackbar(`Successfully staked ${formatNumber(amount)} ${token}`, {
+        variant: "success",
+      });
+      refresh();
+      resetInput();
+    },
+    [checkApprove, stakingContract, enqueueSnackbar, token, refresh, resetInput]
+  );
 
-  const handleUnstake = useCallback(async () => {
-    const tx = await stakingContract!.withdraw(BNToEther(amount));
-    enqueueSnackbar(
-      <>
-        Transaction has been sent to blockchain,
-        <br />
-        waiting for confirmation...
-      </>,
-      { variant: "info" }
-    );
-    const res = await tx.wait(1);
-    console.log("Unstake:", res);
-    enqueueSnackbar(`Successfully unstaked ${formatNumber(amount)} ${token}`, {
-      variant: "success",
-    });
-    refresh();
-    resetInput();
-  }, [stakingContract, amount, enqueueSnackbar, token, refresh, resetInput]);
+  const handleUnstake = useCallback(
+    async (amount: BN) => {
+      const tx = await stakingContract!.withdraw(BNToEther(amount));
+      enqueueSnackbar(
+        <>
+          Transaction has been sent to blockchain,
+          <br />
+          waiting for confirmation...
+        </>,
+        { variant: "info" }
+      );
+      const res = await tx.wait(1);
+      console.log("Unstake:", res);
+      enqueueSnackbar(
+        `Successfully unstaked ${formatNumber(amount)} ${token}`,
+        {
+          variant: "success",
+        }
+      );
+      refresh();
+      resetInput();
+    },
+    [stakingContract, enqueueSnackbar, token, refresh, resetInput]
+  );
 
   const handleSubmit = useCallback(async () => {
     try {
-      if (currentAction && token && stakingContract && amount.gt(0)) {
+      if (token && stakingContract) {
         setSubmitting(true);
-        if (currentAction === Action.Stake) {
-          await handleStake();
-        } else if (currentAction === Action.Unstake) {
-          await handleUnstake();
+        if (finished && withdrawable.gt(0)) {
+          console.log("Unstake all", withdrawable.toNumber());
+          await handleUnstake(withdrawable);
+        } else if (currentAction && amount.gt(0)) {
+          if (currentAction === Action.Stake) {
+            console.log("Stake", amount.toNumber());
+            await handleStake(amount);
+          } else if (currentAction === Action.Unstake) {
+            console.log("Unstake", amount.toNumber());
+            await handleUnstake(amount);
+          }
         }
       }
-    } catch (e) {
-      console.log(e.error);
-      enqueueSnackbar(e.error ?? "Operation Failed", { variant: "error" });
+    } catch (e: any) {
+      enqueueSnackbar(getWalletErrorMsg(e), { variant: "error" });
     }
     setSubmitting(false);
   }, [
-    currentAction,
     token,
     stakingContract,
+    finished,
+    withdrawable,
+    currentAction,
     amount,
-    handleStake,
     handleUnstake,
+    handleStake,
     enqueueSnackbar,
   ]);
 
@@ -235,50 +198,101 @@ export default function AmountStake({ token, logo, disabledActions }: Props) {
 
   return (
     <>
-      <Box className={classes.root}>
+      <Box {...CARD_CONTENT}>
         {needApprove ? (
           <PrimaryButton
             size='large'
             fullWidth
             loading={loading}
             onClick={handleApprove}
-            disabled={DEPRECATED_TOKENS.indexOf(token) > -1}
+            sx={{
+              my: 0.7,
+            }}
           >
             Approve Contract
           </PrimaryButton>
         ) : (
           <>
-            <AmountLabel variant='caption' color='primary'>
+            <Typography
+              variant='caption'
+              color={alpha(COLOR.text, 0.5)}
+              fontSize={12}
+              fontWeight={900}
+              letterSpacing='1px'
+              sx={{ textTransform: "uppercase" }}
+            >
               {TokenName[token]} Staked
-            </AmountLabel>
-            <Box className={classes.amountBox}>
-              <Box className={classes.staked}>
-                <Amount variant='body1'>{formatNumber(staked)}</Amount>
+            </Typography>
+            <Box display='flex' alignItems='center'>
+              <Box flex='1' overflow='hidden'>
+                <Typography
+                  variant='body1'
+                  pr={1}
+                  fontSize={24}
+                  fontFamily='Rawline'
+                  fontWeight={500}
+                  lineHeight='32px'
+                >
+                  {formatNumber(staked)}
+                </Typography>
               </Box>
-              <Box className={classes.buttons}>
+              <Box
+                flex='0 0 120px'
+                display='flex'
+                justifyContent='space-between'
+                color='primary'
+              >
                 {actions.map(({ key, label, disabled }) =>
                   disabled ? (
                     <i key={key} />
                   ) : (
-                    <InputButton
+                    <Button
                       key={key}
                       disabled={disabled}
-                      variant='contained'
                       color={currentAction === key ? "primary" : "secondary"}
                       size='small'
                       onClick={() => handleAction(key)}
+                      sx={{
+                        p: "0 20px",
+                        width: 50,
+                        minWidth: 50,
+                        lineHeight: "30px",
+                        fontSize: 24,
+                        fontWeight: 400,
+                        color: COLOR.text,
+                        boxShadow: "none",
+                        bgcolor: "rgba(16, 38, 55, 0.6)",
+                        "&.MuiButton-textPrimary": {
+                          bgcolor: COLOR.safe,
+                          color: "#1E1F25",
+                        },
+                      }}
                     >
                       {label}
-                    </InputButton>
+                    </Button>
                   )
                 )}
               </Box>
             </Box>
+            {finished && (
+              <PrimaryButton
+                size='large'
+                fullWidth
+                loading={loading}
+                onClick={handleSubmit}
+                disabled={withdrawable.eq(0)}
+                sx={{
+                  mt: 2,
+                }}
+              >
+                UNSTAKE ALL
+              </PrimaryButton>
+            )}
           </>
         )}
       </Box>
       <Collapse in={!!currentAction}>
-        <Box className={classes.inputBox}>
+        <Box position='relative' p={CARD_CONTENT.padding}>
           <AmountInput
             token={token}
             logo={logo}

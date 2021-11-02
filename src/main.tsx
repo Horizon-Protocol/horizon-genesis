@@ -4,12 +4,12 @@ import { BrowserRouter as Router } from "react-router-dom";
 import { Provider as JotaiProvider } from "jotai";
 import { QueryClient, QueryClientProvider } from "react-query";
 import { ReactQueryDevtools } from "react-query/devtools";
-import { CssBaseline } from "@material-ui/core";
-import { ThemeProvider } from "@material-ui/styles";
+import { CssBaseline } from "@mui/material";
+import { ThemeProvider, StyledEngineProvider } from "@mui/material/styles";
 import { SnackbarProvider } from "notistack";
-import "@fontsource/raleway";
-import "@assets/fonts/rawline-400.woff2";
 import { Web3ReactProvider } from "@web3-react/core";
+import "@fontsource/raleway";
+import "@fontsource/raleway/700.css";
 import theme from "@utils/theme";
 import { getLibrary } from "@utils/web3React";
 import { REACT_QUERY_DEFAULT_OPTIONS } from "@utils/constants";
@@ -34,20 +34,22 @@ ReactDOM.render(
     <JotaiProvider>
       <QueryClientProvider client={queryClient}>
         <Web3ReactProvider getLibrary={getLibrary}>
-          <ThemeProvider theme={theme}>
+          <StyledEngineProvider injectFirst>
             <CssBaseline />
-            <SnackbarProvider
-              anchorOrigin={{
-                horizontal: "right",
-                vertical: "top",
-              }}
-              preventDuplicate
-            >
-              <Router>
-                <App />
-              </Router>
-            </SnackbarProvider>
-          </ThemeProvider>
+            <ThemeProvider theme={theme}>
+              <SnackbarProvider
+                anchorOrigin={{
+                  horizontal: "right",
+                  vertical: "top",
+                }}
+                preventDuplicate
+              >
+                <Router>
+                  <App />
+                </Router>
+              </SnackbarProvider>
+            </ThemeProvider>
+          </StyledEngineProvider>
         </Web3ReactProvider>
         {/* The rest of your application */}
         <ReactQueryDevtools initialIsOpen={true} />

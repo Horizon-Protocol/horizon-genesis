@@ -1,6 +1,6 @@
 import { useMemo, useCallback, useState, useEffect } from "react";
 import { useAtomValue } from "jotai/utils";
-import { Box, Typography } from "@material-ui/core";
+import { Box, Typography } from "@mui/material";
 import { ethers } from "ethers";
 import { useSnackbar } from "notistack";
 import horizon from "@lib/horizon";
@@ -35,12 +35,16 @@ import TokenPair, {
   useInputState,
   formatInputValue,
   TokenProps,
+  isExceedMax,
 } from "@components/TokenPair";
 import BalanceChange, {
   Props as BalanceChangeProps,
 } from "@components/BalanceChange";
 import PrimaryButton from "@components/PrimaryButton";
-import { getTransferableAmountFromBurn } from "@utils/helper";
+import {
+  getTransferableAmountFromBurn,
+  getWalletErrorMsg,
+} from "@utils/helper";
 import { toFutureDate } from "@utils/date";
 
 const THEME_COLOR = PAGE_COLOR.burn;
@@ -144,12 +148,12 @@ export default function Burn() {
           debtBalance.minus(collateralUSD.multipliedBy(presetCRatio)),
           zeroBN
         ).toString() || "0";
-      const { toPairInput } = fromToken;
+      const { toPairInput, max } = fromToken;
       setState(() => ({
         fromInput: formatInputValue(fromInput),
         toInput: formatInputValue(toPairInput(fromInput)),
         isMax: false,
-        error: "",
+        error: isExceedMax(fromInput, max) ? "Insufficient balance" : "",
       }));
     },
     [debtBalance, collateralUSD, fromToken, setState]
@@ -273,11 +277,8 @@ export default function Burn() {
         isMax: false,
       }));
       refresh();
-    } catch (e) {
-      console.log(e);
-      console.log(e.error);
-      const detail = `${e.error?.code}: ${e.error?.reason}`;
-      enqueueSnackbar(e.error ? detail : "Operation Failed", {
+    } catch (e: any) {
+      enqueueSnackbar(getWalletErrorMsg(e), {
         variant: "error",
       });
     }

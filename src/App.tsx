@@ -10,10 +10,9 @@ import {
   Button,
   Typography,
   BoxProps,
-} from "@material-ui/core";
-import { ExpandLess, ExpandMore } from "@material-ui/icons";
-import { makeStyles, useTheme } from "@material-ui/core/styles";
-import clsx from "clsx";
+} from "@mui/material";
+import { ExpandLess, ExpandMore } from "@mui/icons-material";
+import { useTheme } from "@mui/material/styles";
 import { readyAtom } from "@atoms/app";
 import useSetupHorizonLib from "@hooks/useSetupHorizonLib";
 import useFetchAppData from "@hooks/useFetchAppData";
@@ -41,101 +40,10 @@ if (import.meta.env.PROD) {
   });
   ReactGA.pageview(window.location.pathname + window.location.search);
 }
-const useStyles = makeStyles(({ breakpoints, palette, spacing }) => ({
-  container: {
-    filter: AppDisabled ? "blur(2px)" : undefined,
-  },
-  body: {
-    margin: "24px 0",
-    display: "flex",
-    justifyContent: "center",
-    [breakpoints.down("md")]: {
-      margin: "24px 0",
-    },
-    [breakpoints.down("sm")]: {
-      flexWrap: "wrap",
-    },
-  },
-  placeholder: {
-    flexShrink: 1,
-    width: "100%",
-    maxWidth: 320,
-    [breakpoints.down("lg")]: {
-      maxWidth: 280,
-    },
-  },
-  page: {
-    margin: "0 24px",
-    flexBasis: 640,
-    [breakpoints.down("lg")]: {
-      flexBasis: "600px",
-    },
-    [breakpoints.down("sm")]: {
-      flex: "1 1 480px",
-      margin: "0 8px 150px",
-    },
-  },
-  pageEarn: {
-    margin: "0 24px",
-    [breakpoints.down("sm")]: {
-      margin: "0 8px 150px",
-    },
-  },
-  alerts: {
-    [breakpoints.down("sm")]: {
-      margin: spacing(2, 2, 0),
-      // position: "fixed",
-      // right: 0,
-      // zIndex: 3,
-    },
-    [breakpoints.down("xs")]: {
-      margin: spacing(2, 1, 0),
-      // position: "fixed",
-      // right: 0,
-      // zIndex: 3,
-    },
-  },
-  dashboard: {
-    width: "100%",
-    maxWidth: 320,
-    [breakpoints.down("sm")]: {
-      zIndex: 3,
-      maxWidth: "100%",
-      position: "fixed",
-      left: 0,
-      right: 0,
-      bottom: 0,
-      maxHeight: 170,
-      background: "black",
-      overflow: "hidden",
-      borderTop: `2px solid ${palette.divider}`,
-      backgroundColor: "#102637",
-      transition: "max-height 0.25s ease-in",
-      "&.expanded": {
-        maxHeight: "100%",
-      },
-    },
-  },
-  showMore: {
-    position: "absolute",
-    top: 0,
-    right: 0,
-  },
-  mask: {
-    zIndex: 99,
-    content: '""',
-    position: "fixed",
-    top: 0,
-    right: 0,
-    bottom: 0,
-    left: 0,
-  },
-}));
 
 function App() {
   const { breakpoints } = useTheme();
-  const downSM = useMediaQuery(breakpoints.down("sm"));
-  const classes = useStyles();
+  const downMD = useMediaQuery(breakpoints.down("md"));
 
   const isEarnPage = useIsEarnPage();
 
@@ -168,18 +76,34 @@ function App() {
   const alertProps: BoxProps = {
     px: 2,
     py: 1,
-    mb: 2,
-    className: classes.alerts,
+    mt: {
+      xs: 2,
+      md: 0,
+    },
+    mb: {
+      xs: 0,
+      md: 2,
+    },
+    mx: {
+      xs: 1,
+      sm: 2,
+      md: 0,
+    },
   };
 
   return (
     <>
       {AppDisabled && (
         <Box
+          position={"fixed"}
+          zIndex={99}
+          top={0}
+          right={0}
+          bottom={0}
+          left={0}
           display='flex'
           justifyContent='center'
           alignItems='center'
-          className={classes.mask}
         >
           <Typography
             variant='h3'
@@ -193,21 +117,73 @@ function App() {
           </Typography>
         </Box>
       )}
-      <Box className={classes.container}>
+      <Box
+        sx={{
+          filter: AppDisabled ? "blur(2px)" : undefined,
+        }}
+      >
         <Header />
-        {!isEarnPage && downSM && (
+        {!isEarnPage && downMD && (
           <>
             <Alerts {...alertProps} />
             <AlertDashboard {...alertProps} />
           </>
         )}
-        <Box className={classes.body}>
+        <Box
+          my={3}
+          display='flex'
+          justifyContent='center'
+          flexWrap={{
+            xs: "wrap",
+            md: "nowrap",
+          }}
+        >
           {!isEarnPage && (
-            <Hidden mdDown>
-              <Box className={classes.placeholder}></Box>
+            <Hidden lgDown>
+              <Box
+                width='100%'
+                maxWidth={{
+                  xs: 0,
+                  sm: 220,
+                  lg: 320,
+                }}
+                flexShrink={1}
+              />
             </Hidden>
           )}
-          <Box className={isEarnPage ? classes.pageEarn : classes.page}>
+          <Box
+            my={3}
+            m={{
+              xs: "0 8px 150px",
+              md: "0 24px",
+            }}
+            flexGrow={
+              isEarnPage
+                ? undefined
+                : {
+                    xs: 1,
+                    md: 0,
+                  }
+            }
+            flexShrink={
+              isEarnPage
+                ? undefined
+                : {
+                    xs: 1,
+                    md: 0,
+                  }
+            }
+            flexBasis={
+              isEarnPage
+                ? undefined
+                : {
+                    xs: 480,
+                    sm: 600,
+                    lg: 640,
+                    xl: 640,
+                  }
+            }
+          >
             <Switch>
               <Route path='/burn'>
                 <Burn />
@@ -225,19 +201,58 @@ function App() {
           </Box>
           {!isEarnPage && (
             <Box
-              className={clsx(classes.dashboard, expanded ? "expanded" : "")}
+              pr={{
+                xs: 0,
+                sm: 0,
+                md: 1,
+                lg: 2,
+              }}
+              position={{
+                xs: "fixed",
+                md: "static",
+              }}
+              left={0}
+              right={0}
+              bottom={0}
+              zIndex={3}
+              width='100%'
+              maxWidth={{
+                xs: "100%",
+                md: 300,
+                lg: 320,
+              }}
+              maxHeight={{
+                xs: expanded ? "100%" : 170,
+                md: "100%",
+              }}
+              bgcolor={{
+                xs: "#102637",
+                md: "initial",
+              }}
+              borderTop={({ palette }) => ({
+                xs: `2px solid ${palette.divider}`,
+                md: 0,
+              })}
+              overflow='hidden'
+              sx={{
+                transition: "max-height 0.25s ease-in",
+              }}
             >
-              {!downSM && (
+              {!downMD && (
                 <>
                   <Alerts {...alertProps} />
                   <AlertDashboard {...alertProps} />
                 </>
               )}
               <Dashboard />
-              {downSM && (
+              {downMD && (
                 <Button
                   startIcon={expanded ? <ExpandMore /> : <ExpandLess />}
-                  className={classes.showMore}
+                  sx={{
+                    position: "absolute",
+                    top: 0,
+                    right: 0,
+                  }}
                   onClick={() => setExpanded((v) => !v)}
                 >
                   Show {expanded ? "Less" : "More"}

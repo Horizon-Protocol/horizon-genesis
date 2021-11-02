@@ -10,6 +10,9 @@ export const HORIZON_DATA = "HORIZON_DATA";
 // EARN page
 export const EARN = "EARN";
 
+// LP contract state
+export const LP = "LP";
+
 // query filters
 export const filterContract = [CONTRACT];
 export const filterPublic = [CONTRACT, PUBLIC];

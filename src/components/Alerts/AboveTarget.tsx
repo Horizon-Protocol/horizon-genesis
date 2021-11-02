@@ -1,12 +1,13 @@
 import { useCallback, useMemo } from "react";
 import { useSnackbar } from "notistack";
 import fromUnixTime from "date-fns/fromUnixTime";
-import { BoxProps } from "@material-ui/core";
+import { BoxProps } from "@mui/material";
 import horizon from "@lib/horizon";
 import useWallet from "@hooks/useWallet";
 import useRefresh from "@hooks/useRefresh";
 import useDateCountDown from "@hooks/useDateCountDown";
 import { formatCRatioToPercent } from "@utils/number";
+import { getWalletErrorMsg } from "@utils/helper";
 import { COLOR } from "@utils/theme/constants";
 import ActionLink from "./ActionLink";
 import BaseAlert from "./Base";
@@ -72,17 +73,17 @@ export default function AboveTarget({
       console.log("res", res);
       refresh();
     } catch (e: any) {
-      console.log(e);
-      console.log(e.error);
-      const detail = `${e.error?.code}: ${e.error?.reason}`;
-      enqueueSnackbar(e.error ? detail : "Failed to clear liquidation flag", {
-        variant: "error",
-      });
+      enqueueSnackbar(
+        getWalletErrorMsg(e, "Failed to clear liquidation flag"),
+        {
+          variant: "error",
+        }
+      );
     }
   }, [account, enqueueSnackbar, refresh]);
 
   return (
-    <BaseAlert color={color} title={title} content={content} {...props}>
+    <BaseAlert baseColor={color} title={title} content={content} {...props}>
       {liquidationDeadline > 0 && (
         <ActionLink onClick={clearLiquidationFlag}>
           Clear Liquidation Flag

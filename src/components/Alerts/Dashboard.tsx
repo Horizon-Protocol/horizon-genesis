@@ -1,4 +1,4 @@
-import { BoxProps } from "@material-ui/core";
+import { BoxProps } from "@mui/material";
 import { useAtom } from "jotai";
 import { atomWithStorage } from "jotai/utils";
 import ActionLink from "./ActionLink";

@@ -1,6 +1,6 @@
 // Set of helper functions to facilitate wallet setup
 
-import { ChainId, ChainExplorerUrl } from "./constants";
+import { ChainId, ChainExplorerUrl, Token, TokenAddresses } from "./constants";
 import { RPC_NODES } from "./rpcUrl";
 
 /**
@@ -40,29 +40,76 @@ export const setupNetwork = async () => {
   }
 };
 
+interface RegisterTokenParams {
+  address: string;
+  symbol: string;
+  decimals: number;
+  logo: string;
+}
+
+export const RegisterTokenConf: {
+  [t in TokenEnum]?: RegisterTokenParams;
+} = {
+  [Token.PHB]: {
+    address: TokenAddresses[Token.PHB],
+    symbol: "PHB V2",
+    decimals: 18,
+    logo: "",
+  },
+  [Token.PHB_LEGACY]: {
+    address: TokenAddresses[Token.PHB_LEGACY],
+    symbol: "PHB V1",
+    decimals: 18,
+    logo: "",
+  },
+  [Token.HZN_BNB_LP]: {
+    address: TokenAddresses[Token.HZN_BNB_LP],
+    symbol: "HZN-BNB",
+    decimals: 18,
+    logo: "",
+  },
+  [Token.HZN_BNB_LP_LEGACY]: {
+    address: TokenAddresses[Token.HZN_BNB_LP_LEGACY],
+    symbol: "HZN-BNB Old",
+    decimals: 18,
+    logo: "",
+  },
+  [Token.ZUSD_BUSD_LP]: {
+    address: TokenAddresses[Token.ZUSD_BUSD_LP],
+    symbol: "zUSD-BUSD",
+    decimals: 18,
+    logo: "",
+  },
+  [Token.HZN]: {
+    address: TokenAddresses[Token.HZN],
+    symbol: "HZN",
+    decimals: 18,
+    logo: "",
+  },
+};
+
 /**
  * Prompt the user to add a custom token to metamask
  * @param tokenAddress
  * @param tokenSymbol
  * @param tokenDecimals
- * @param tokenImage
  * @returns {boolean} true if the token has been added, false otherwise
  */
-export const registerToken = async (
-  tokenAddress: string,
-  tokenSymbol: string,
-  tokenDecimals: number,
-  tokenImage: string
-) => {
+export const registerToken = async ({
+  address,
+  symbol,
+  decimals,
+  logo,
+}: RegisterTokenParams) => {
   const tokenAdded = await (window as WindowChain).ethereum!.request!({
     method: "wallet_watchAsset",
     params: {
       type: "ERC20",
       options: {
-        address: tokenAddress,
-        symbol: tokenSymbol,
-        decimals: tokenDecimals,
-        image: tokenImage,
+        address,
+        symbol,
+        decimals,
+        image: logo,
       },
     },
   });

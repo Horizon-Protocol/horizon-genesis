@@ -15,8 +15,15 @@ export async function fetchPrice(): Promise<{
     const res = await fetch(ENDPOINT);
     const data: Result = await res.json();
 
+    let phbPrice = data["red-pulse"].usd;
+
+    // TODO
+    if (phbPrice && phbPrice < 0.1) {
+      phbPrice = phbPrice * 100;
+    }
+
     return {
-      phb: data["red-pulse"].usd,
+      phb: phbPrice,
       busd: data["binance-usd"].usd,
       zusd: data["zasset-zusd"].usd,
     };

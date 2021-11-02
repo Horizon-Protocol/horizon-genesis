@@ -32,7 +32,7 @@ export const AllPools: StakeCardProps[] = [
           color={COLOR.safe}
           underline='hover'
           fontWeight={700}
-          href='https://horizonprotocol.medium.com/swap-guide-phx-nep5-phb-bep2-and-phb-bep20-f79c0d12135c'
+          href='https://staker.phoenix.global/swap'
           target='_blank'
         >
           here
@@ -51,10 +51,7 @@ export const AllPools: StakeCardProps[] = [
       <>
         The PHB token has migrated to a new PHB V2 token and all rewards for
         this pool have ended. Read more{" "}
-        <Link
-          href='https://horizonprotocol.medium.com/swap-guide-phx-nep5-phb-bep2-and-phb-bep20-f79c0d12135c'
-          target='_blank'
-        >
+        <Link href='https://staker.phoenix.global/swap' target='_blank'>
           here
         </Link>
         .

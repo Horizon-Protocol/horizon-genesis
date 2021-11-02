@@ -32,7 +32,7 @@ jobs:
     needs: setup
     strategy:
       matrix:
-        type: [[56, "horizon-genesis"], [97, "horizon-genesis-dev"]]
+        type: [[56, "horizon-genesis"]]
 
     steps:
       - uses: actions/checkout@v2

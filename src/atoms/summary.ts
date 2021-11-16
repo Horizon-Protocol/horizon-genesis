@@ -33,6 +33,7 @@ export const activeRatioAtom = atom((get) => {
 
   if (import.meta.env.DEV) {
     console.log("===zAssets", {
+      holders,
       hznPrice,
       targetCRatio,
       lastDebtLedgerEntry,
@@ -45,7 +46,7 @@ export const activeRatioAtom = atom((get) => {
     collateral,
     debtEntryAtIndex,
     initialDebtOwnership,
-  } of holders) {
+  } of holders || []) {
     if (!collateral || !debtEntryAtIndex || !initialDebtOwnership) continue;
 
     let debtBalance =

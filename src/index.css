@@ -30,3 +30,7 @@ code {
   src: local("Rawline"), local("Rawline-Bold"),
     url(./assets/fonts/rawline-700.woff2) format("woff2");
 }
+
+#root .SnackbarContainer-top {
+  top: 64px;
+}

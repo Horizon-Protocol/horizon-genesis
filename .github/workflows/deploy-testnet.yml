@@ -3,7 +3,7 @@ name: Deploy Dev
 on:
   push:
     branches:
-      - dev
+      - testnet
     paths-ignore:
       - ".github/workflows/deploy.yml"
 

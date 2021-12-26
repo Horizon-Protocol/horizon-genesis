@@ -33,7 +33,7 @@ export default function useFetchAppData() {
     const res = await Promise.all([
       SynthetixState.lastDebtLedgerEntry(),
       Synthetix.totalSupply(),
-      Synthetix.totalIssuedSynthsExcludeEtherCollateral(
+      Synthetix.totalIssuedSynthsExcludeOtherCollateral(
         utils.formatBytes32String("zUSD"),
         {
           blockTag: "latest",
@@ -41,12 +41,12 @@ export default function useFetchAppData() {
       ),
       SystemSettings.issuanceRatio(),
       Liquidations.liquidationRatio(),
-      // Liquidations.liquidationDelay(),
+      Liquidations.liquidationDelay(),
     ]);
 
     return [
       toBN(utils.formatUnits(res[0], 27)),
-      ...res.slice(1).map((item) => etherToBN(item)),
+      ...res.slice(0).map((item) => etherToBN(item)),
     ];
   }, []);
 
@@ -57,21 +57,21 @@ export default function useFetchAppData() {
       totalIssuedZUSDExclEth,
       targetRatio,
       liquidationRatio,
-      // liquidationDelay,
+      liquidationDelay,
     ]) {
       console.log({
-        lastDebtLedgerEntry: lastDebtLedgerEntry.toString(),
+        // lastDebtLedgerEntry: lastDebtLedgerEntry.toString(),
         totalIssuedZUSDExclEth: totalIssuedZUSDExclEth.toString(),
-        // liquidationDelay: liquidationDelay,
+        liquidationDelay: liquidationDelay,
       });
-      setLastDebtLedgerEntry(lastDebtLedgerEntry);
-      setTotalSupply(totalSupply);
-      setTotalIssuedZUSDExclEth(totalIssuedZUSDExclEth);
-      setTargetCRatio(targetRatio);
-      setLiquidationRatio(liquidationRatio);
-      // setLiquidationDelay(liquidationDelay);
+      // setLastDebtLedgerEntry(lastDebtLedgerEntry);
+      // setTotalSupply(totalSupply);
+      // setTotalIssuedZUSDExclEth(totalIssuedZUSDExclEth);
+      // setTargetCRatio(targetRatio);
+      // setLiquidationRatio(liquidationRatio);
+      // // setLiquidationDelay(liquidationDelay);
 
-      setAppDataReady(true);
+      // setAppDataReady(true);
     },
   });
 

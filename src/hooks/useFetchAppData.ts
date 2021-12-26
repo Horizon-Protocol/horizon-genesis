@@ -41,12 +41,12 @@ export default function useFetchAppData() {
       ),
       SystemSettings.issuanceRatio(),
       Liquidations.liquidationRatio(),
-      Liquidations.liquidationDelay(),
+      // Liquidations.liquidationDelay(),
     ]);
 
     return [
       toBN(utils.formatUnits(res[0], 27)),
-      ...res.slice(0).map((item) => etherToBN(item)),
+      ...res.slice(1).map((val) => etherToBN(val)),
     ];
   }, []);
 
@@ -57,21 +57,24 @@ export default function useFetchAppData() {
       totalIssuedZUSDExclEth,
       targetRatio,
       liquidationRatio,
-      liquidationDelay,
+      // liquidationDelay,
     ]) {
-      console.log({
-        // lastDebtLedgerEntry: lastDebtLedgerEntry.toString(),
+      console.log("====AppData", {
+        lastDebtLedgerEntry: lastDebtLedgerEntry.toString(),
+        totalSupply: totalSupply.toString(),
         totalIssuedZUSDExclEth: totalIssuedZUSDExclEth.toString(),
-        liquidationDelay: liquidationDelay,
+        targetRatio: targetRatio.toString(),
+        liquidationRatio: liquidationRatio.toString(),
+        // liquidationDelay: liquidationDelay,
       });
-      // setLastDebtLedgerEntry(lastDebtLedgerEntry);
-      // setTotalSupply(totalSupply);
-      // setTotalIssuedZUSDExclEth(totalIssuedZUSDExclEth);
-      // setTargetCRatio(targetRatio);
-      // setLiquidationRatio(liquidationRatio);
-      // // setLiquidationDelay(liquidationDelay);
+      setLastDebtLedgerEntry(lastDebtLedgerEntry);
+      setTotalSupply(totalSupply);
+      setTotalIssuedZUSDExclEth(totalIssuedZUSDExclEth);
+      setTargetCRatio(targetRatio);
+      setLiquidationRatio(liquidationRatio);
+      // setLiquidationDelay(liquidationDelay);
 
-      // setAppDataReady(true);
+      setAppDataReady(true);
     },
   });
 

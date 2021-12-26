@@ -111,7 +111,7 @@ export const TOKEN_ADDRESS: {
   97: {
     [Token.PHB]: "0xf09f5e21f86692c614d2d7b47e3b9729dc1c436f",
     [Token.PHB_LEGACY]: "0xf09f5e21f86692c614d2d7b47e3b9729dc1c436f",
-    [Token.HZN]: "0x74ba52975dd4f0a9cde1b8d4d54b808ef9d0a3f8",
+    [Token.HZN]: "0xd582733b8ce3b84fcfad9373626c89c7d5606e30",
     [Token.ZUSD_BUSD_LP]: "0x74ba52975dd4f0a9cde1b8d4d54b808ef9d0a3f8",
     [Token.HZN_BNB_LP]: "0x74ba52975dd4f0a9cde1b8d4d54b808ef9d0a3f8",
     [Token.HZN_BNB_LP_LEGACY]: "0x74ba52975dd4f0a9cde1b8d4d54b808ef9d0a3f8",

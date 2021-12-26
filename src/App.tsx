@@ -53,11 +53,11 @@ function App() {
 
   useSetupHorizonLib();
   useFetchAppData();
-  // useFetchDebtData();
-  // useFetchZAssets();
-  // useFetchFeePool();
-  // useFetchRewards();
-  // useFetchHorizonData();
+  useFetchDebtData();
+  useFetchZAssets();
+  useFetchFeePool();
+  useFetchRewards();
+  useFetchHorizonData();
 
   const refresh = useRefresh();
 

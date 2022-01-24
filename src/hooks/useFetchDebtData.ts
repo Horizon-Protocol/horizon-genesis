@@ -19,7 +19,7 @@ export default function useFetchDebtData() {
 
   const fetcher = useCallback<() => Promise<[number, BN[]]>>(async () => {
     const {
-      contracts: { Synthetix, RewardEscrow, Liquidations },
+      contracts: { Synthetix, RewardEscrowV2, Liquidations },
       utils,
     } = horizon.js!;
 
@@ -32,7 +32,7 @@ export default function useFetchDebtData() {
       Synthetix.debtBalanceOf(account, zUSDBytes),
       Synthetix.maxIssuableSynths(account),
       Synthetix.balanceOf(account),
-      RewardEscrow.balanceOf(account),
+      RewardEscrowV2.balanceOf(account),
     ])) as BigNumber[];
     return [deadline.toNumber(), values.map((item) => etherToBN(item))];
   }, [account]);
@@ -51,16 +51,16 @@ export default function useFetchDebtData() {
         escrowedReward,
       ],
     ]) {
-      // console.log({
-      //   currentCRatio: currentCRatio.toNumber(),
-      //   transferable,
-      //   debtBalance,
-      //   collateral,
-      //   issuableSynths,
-      //   balance,
-      //   escrowedReward,
-      //   liquidationDeadline,
-      // });
+      console.log("===debtData", {
+        currentCRatio: currentCRatio.toNumber(),
+        transferable,
+        debtBalance,
+        collateral,
+        issuableSynths,
+        balance,
+        escrowedReward: escrowedReward.toString(),
+        liquidationDeadline,
+      });
       setDebtData({
         currentCRatio,
         transferable,

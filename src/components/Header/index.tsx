@@ -1,11 +1,14 @@
 import { Box, Grid, Hidden } from "@mui/material";
 import ConnectButton from "@components/ConnectButton";
-import logo from "@assets/logo.png";
 import useWallet from "@hooks/useWallet";
 import NavTabs from "./NavTabs";
 import WalletInfo from "./WalletInfo";
 import WalletsDialog from "./WalletsDialog";
-import DashboardLink from "./DashboardLink";
+import { openLinkDropDownAtom } from "@atoms/wallet";
+import { useAtom } from "jotai";
+import LogoMenu from "./LogoMenu";
+import HelpMenu from "./HelpMenu";
+import RefreshButton from "./RefreshButton";
 
 export default function Header() {
   const { connected } = useWallet();
@@ -24,16 +27,7 @@ export default function Header() {
         }}
       >
         <Grid container item xs={12} md={5} lg={4}>
-          <Box
-            component='img'
-            src={logo}
-            alt='Horizon Genesis'
-            m={{
-              xs: "auto",
-              md: "initial",
-            }}
-            height={40}
-          />
+          <LogoMenu />
         </Grid>
         <Grid
           container
@@ -76,7 +70,9 @@ export default function Header() {
             flexWrap: { xs: "wrap", sm: "nowrap" },
           }}
         >
-          <DashboardLink />
+          {/* <DashboardLink /> */}
+          <RefreshButton />
+          <HelpMenu mr={1.25} />
           <Hidden smUp>
             <Box width='100%' height={8} />
           </Hidden>

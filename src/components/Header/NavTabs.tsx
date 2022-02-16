@@ -1,12 +1,14 @@
 import { useMemo } from "react";
 import { useLocation, useHistory } from "react-router-dom";
 import ReactGA from "react-ga";
-import { useAtomValue } from "jotai/utils";
+import { useAtomValue, useUpdateAtom } from "jotai/utils";
 import { Badge, Tabs, Tab, TabProps } from "@mui/material";
 import { alpha, styled } from "@mui/material/styles";
 import { PriorityHigh } from "@mui/icons-material";
 import { PAGE_COLOR } from "@utils/theme/constants";
 import { hasRewardsAtom } from "@atoms/feePool";
+import path from "path/posix";
+import { openLinkDropDownAtom } from "@atoms/wallet";
 
 type StyledTabType = (props: TabProps) => JSX.Element;
 
@@ -22,7 +24,12 @@ interface StyledTabProps extends LinkTabProps {
 
 const tabs: LinkTabProps[] = [
   {
-    to: "/",
+    to: "/home",
+    label: "Home",
+    color: PAGE_COLOR.mint,
+  },
+  {
+    to: "/mint",
     label: "Mint",
     color: PAGE_COLOR.mint,
   },
@@ -71,6 +78,7 @@ const getStyledTab: (color: string) => any = (color) =>
 export default function NavTabs() {
   const history = useHistory();
   const { pathname } = useLocation();
+  const setOpenLinkDropDown = useUpdateAtom(openLinkDropDownAtom);
 
   const hasRewards = useAtomValue(hasRewardsAtom);
 
@@ -97,6 +105,7 @@ export default function NavTabs() {
       textColor='primary'
       onChange={(_, value) => {
         if (value !== pathname) {
+          setOpenLinkDropDown(false)
           history.push(value);
           if (import.meta.env.PROD) {
             ReactGA.pageview(value);

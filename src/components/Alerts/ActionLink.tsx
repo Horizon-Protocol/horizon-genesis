@@ -26,6 +26,7 @@ export default function ActionLink({
   href,
   onClick,
   children,
+  color,
   ...props
 }: Props) {
   const handleClick = useCallback(
@@ -54,7 +55,7 @@ export default function ActionLink({
         alignItems: "center",
         fontSize: 10,
         fontWeight: 700,
-        color: COLOR.safe,
+        color: color == null ? COLOR.safe : color,
         cursor: "pointer",
       }}
       {...linkProps}

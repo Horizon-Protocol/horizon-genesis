@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import { Switch, Route } from "react-router-dom";
+import { Switch, Route, Redirect } from "react-router-dom";
 import ReactGA from "react-ga";
 import { hotjar } from "react-hotjar";
 import { useAtomValue } from "jotai/utils";
@@ -23,6 +23,7 @@ import useFetchRewards from "@hooks/useFetchRewards";
 import useFetchHorizonData from "@hooks/useFetchHorizonData";
 import useRefresh from "@hooks/useRefresh";
 import useIsEarnPage from "@hooks/useIsEarnPage";
+import Home from "@pages/Home";
 import Mint from "@pages/mint";
 import Burn from "@pages/burn";
 import Claim from "@pages/claim";
@@ -185,6 +186,10 @@ function App() {
             }
           >
             <Switch>
+              <Route exact path="/" render={() => <Redirect to="/home" push />} />        
+              <Route path='/home'>
+                <Home />
+              </Route>
               <Route path='/burn'>
                 <Burn />
               </Route>
@@ -194,7 +199,7 @@ function App() {
               <Route path='/earn'>
                 <Earn />
               </Route>
-              <Route path='/'>
+              <Route path='/mint'>
                 <Mint />
               </Route>
             </Switch>

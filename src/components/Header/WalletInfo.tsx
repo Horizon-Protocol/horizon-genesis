@@ -1,12 +1,15 @@
-import { useUpdateAtom } from "jotai/utils";
-import { Button, Box, BoxProps } from "@mui/material";
-import { openAtom } from "@atoms/wallet";
+import { useUpdateAtom, useAtomValue } from "jotai/utils";
+import { Button, Box, BoxProps, Avatar } from "@mui/material";
+import { openAtom, openLinkDropDownAtom } from "@atoms/wallet";
 import useWallet from "@hooks/useWallet";
 import Network from "./Network";
+import { detailAtom } from "@atoms/wallet";
 
 export default function WalletInfo(props: BoxProps) {
   const { shortAccount, connected } = useWallet();
   const setOpen = useUpdateAtom(openAtom);
+  const setOpenLinkDropDown = useUpdateAtom(openLinkDropDownAtom);
+  const wallet = useAtomValue(detailAtom);
 
   return (
     <Box
@@ -16,16 +19,35 @@ export default function WalletInfo(props: BoxProps) {
       textAlign='center'
       {...props}
     >
-      <Network />
+      {/* <Network /> */}
       <Button
         size='small'
-        onClick={() => setOpen(true)}
+        onClick={() => {
+          setOpen(true)
+          setOpenLinkDropDown(false)
+        }}
         sx={{
           color: "text.primary",
           borderRadius: 1,
           p: "4px 12px",
           border: "1px solid rgba(55,133,185,0.25)",
         }}
+        startIcon={
+          <Avatar
+            variant="circular"
+            src={wallet?.logo}
+            alt={wallet?.label}
+            sx={{
+              width: 20,
+              height: 20,
+              ".MuiAvatar-img": {
+                width: 18,
+                height: 18,
+                objectFit: "contain",
+              },
+            }}
+          />
+        }
       >
         {shortAccount}
         <Box

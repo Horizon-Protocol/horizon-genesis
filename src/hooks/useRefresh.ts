@@ -1,9 +1,10 @@
-import { CONTRACT, PUBLIC } from "@utils/queryKeys";
-import { useCallback } from "react";
-import { useQueryClient } from "react-query";
+import { CONTRACT, PUBLIC, EARN } from "@utils/queryKeys";
+import { useCallback, useState, useEffect } from "react";
+import { useQueryClient, useIsFetching  } from "react-query";
 import useWallet from "./useWallet";
 import useIsEarnPage from "./useIsEarnPage";
 import useRefreshEarn from "./useRefreshEarn";
+import dayjs from "dayjs";
 
 export default function useRefresh() {
   const { account } = useWallet();
@@ -36,4 +37,23 @@ export default function useRefresh() {
   }, [isEarnPage, refreshEarnPage, refreshPublic, refreshUser]);
 
   return refresh;
+}
+
+const getTimeNow = () => dayjs().format("MMM D, YYYY HH:mm:ss");
+export function useIsRefrshing() {
+  const isEarnFetching = useIsFetching(EARN);
+  const isContractFetching = useIsFetching(CONTRACT);
+  // const isUserFetching = useIsFetching(WALLET);
+
+  const refreshing = isEarnFetching || isContractFetching;
+
+  const [time, setTime] = useState(getTimeNow());
+
+  useEffect(() => {
+    if (!refreshing) {
+      setTime(getTimeNow());
+    }
+  }, [refreshing]);
+
+  return { refreshing, time };
 }

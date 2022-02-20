@@ -1,10 +1,23 @@
 import { Box, Button, Typography } from "@mui/material";
 import { styled } from "@mui/material/styles";
 import { PAGE_COLOR } from "@utils/theme/constants";
-import mintBg from "@assets/bgs/hzn.png";
 const Img = styled("img")``;
 
-export default function BannerStakeReason() {
+type bannarProps = {
+  img?: string;
+  title: string;
+  desc: string | JSX.Element;
+  highlightText: string;
+  to?: string;
+}
+
+export default function BannerStakeReasonRisk({
+  img,
+  title,
+  desc,
+  highlightText,
+  to
+} : bannarProps) {
   return (
     <Box
       height='240px'
@@ -15,7 +28,7 @@ export default function BannerStakeReason() {
       justifyContent='center'
     >
       <Img
-        src={mintBg}
+        src={img}
         sx={{
           width: "32px",
           height: "32px",
@@ -30,7 +43,7 @@ export default function BannerStakeReason() {
         letterSpacing={1}
         mt='14px'
       >
-        WHY STAKE HZN?
+        {title}
       </Typography>
       <Typography
         textAlign='center'
@@ -44,12 +57,12 @@ export default function BannerStakeReason() {
           mt:'10px'
         }}
       >
-        Staking HZN, and minting zUSD, will allow you to <br/>earn staking rewards from the protocol as well as <br/>a split of the zUSD transaction fees generated on <br/>Horizon Exchange.  HZN staking rewards are <br/>currently
+        {desc}
         <span style={{
           fontSize: 13,
           fontWeight: 'bold',
           color: PAGE_COLOR.mint
-        }}> 194.14% APY.</span>
+        }}>{highlightText}</span>
       </Typography>
     </Box>
   );

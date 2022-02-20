@@ -14,7 +14,7 @@
     "@emotion/react": "^11.4.1",
     "@emotion/styled": "^11.3.0",
     "@fontsource/raleway": "^4.3.0",
-    "@horizon-protocol/contracts-interface": "2.51.10",
+    "@horizon-protocol/contracts-interface": "2.51.11",
     "@horizon-protocol/data": "^2.1.45",
     "@horizon-protocol/ethcall": "^3.5.0",
     "@mui/icons-material": "^5.0.1",

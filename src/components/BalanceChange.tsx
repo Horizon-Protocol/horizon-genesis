@@ -45,15 +45,21 @@ export default function BalanceChange({
         to: `$${formatNumber(debt.to)} zUSD`,
       },
       {
-        label: "Staked",
+        label: "Staked HZN",
         from: `${formatNumber(staked.from)} HZN`,
         to: `${formatNumber(staked.to)} HZN`,
       },
       {
-        label: "Transferrable",
+        label: "Transferrable HZN",
         from: `${formatNumber(transferrable.from)} HZN`,
         to: `${formatNumber(transferrable.to)} HZN`,
       },
+      {
+        label: "Escrowed HZN",
+        from: `${formatNumber(transferrable.from)} HZN`,
+        to: `${formatNumber(transferrable.to)} HZN`,
+      },
+      
     ],
     [cRatio, debt, staked, transferrable]
   );

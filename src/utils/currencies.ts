@@ -1,14 +1,28 @@
-export type CurrencyKey = string;
+import {
+  CurrencyKey as ICurrencyKey,
+  Synth as ISynth,
+  Synths as ISynths,
+  Token as IToken,
+} from "@horizon-protocol/contracts-interface";
 
-export type CryptoBalance = {
-  currencyKey: CurrencyKey;
-  balance: BN;
-  usdBalance: BN;
-  synth?: string;
-  transferrable?: BN;
-};
+declare global {
+  type CurrencyKey = ICurrencyKey;
+  type Synth = ISynth;
+  type Synths = ISynths;
+  type Token = IToken;
+}
 
-export type SynthBalancesMap = Record<CurrencyKey, CryptoBalance>;
+// export type CurrencyKey = string;
+
+// export type CryptoBalance = {
+//   currencyKey: CurrencyKey;
+//   balance: BN;
+//   usdBalance: BN;
+//   synth?: string;
+//   transferrable?: BN;
+// };
+
+export type SynthBalancesMap = Record<CurrencyKey, BN>;
 
 export type Asset = {
   currencyKey: string;
@@ -16,14 +30,15 @@ export type Asset = {
 };
 
 export type Rates = Record<CurrencyKey, number>;
+export type ParitalRates = Partial<Rates>;
 
-export enum ZAssests {
-  zUSD = "zUSD",
-  zBTC = "zBTC",
-  zETH = "zETH",
-  iBTC = "iBTC",
-  iETH = "iETH",
-}
+// export enum ZAssests {
+//   zUSD = "zUSD",
+//   zBTC = "zBTC",
+//   zETH = "zETH",
+//   iBTC = "iBTC",
+//   iETH = "iETH",
+// }
 
 export enum CryptoCurrency {
   HZN = "HZN",
@@ -34,10 +49,10 @@ export enum CryptoCurrency {
 
 export const zUSD_EXCHANGE_RATE = 1;
 
-export const FIAT_ZASSETS = new Set([ZAssests.zUSD]);
+export const FIAT_ZASSETS = new Set<CurrencyKey>(["zUSD"]);
 
 export const isFiatCurrency = (currencyKey: CurrencyKey) =>
-  FIAT_ZASSETS.has(currencyKey as ZAssests);
+  FIAT_ZASSETS.has(currencyKey as CurrencyKey);
 
 export const toInverseSynth = (currencyKey: CurrencyKey) =>
   currencyKey.replace(/^z/i, "i");

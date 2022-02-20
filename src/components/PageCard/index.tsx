@@ -70,7 +70,7 @@ export default function PageCard({
         flexDirection='column'
         p={{
           xs: "24px 8px",
-          sm: "24px 56px 32px",
+          sm: "24px 82px 32px",
         }}
       >
         {children}

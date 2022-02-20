@@ -4,8 +4,10 @@ import { COLOR, PAGE_COLOR } from "@utils/theme/constants";
 import mintBg from "@assets/bgs/hzn.png";
 import ActionLink from "@components/Alerts/ActionLink";
 const Img = styled("img")``;
+import { useHistory } from "react-router-dom";
 
 export default function BannerUseOfZusd() {
+  const history = useHistory()
 
   interface LinkProps {
     label: string;
@@ -77,9 +79,15 @@ export default function BannerUseOfZusd() {
         justifyContent='space-around'
         marginTop='10px'
       >
-        <ActionLink to='/'>TRADE</ActionLink>
-        <ActionLink color={COLOR.warning} to='/'>SUPPLY</ActionLink>
-        <ActionLink color={COLOR.text} to='/'>EARN</ActionLink>
+        <ActionLink onClick={()=>{
+          
+        }}>TRADE</ActionLink>
+        <ActionLink onClick={()=>{
+          
+        }} color={COLOR.warning} to='/'>SUPPLY</ActionLink>
+        <ActionLink onClick={()=>{
+          history.push('earn')
+        }} color={COLOR.text} to='/'>EARN</ActionLink>
       </Box>
     </Box>
   );

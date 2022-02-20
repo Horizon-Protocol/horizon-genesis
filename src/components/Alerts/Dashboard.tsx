@@ -16,12 +16,12 @@ export default function Dashboard(props: BoxProps) {
   return (
     <BaseAlert
       title='Tip'
-      content='Horizon Dashboard is now live! View real-time network statistics for Horizon Protocol'
+      content='Horizon Exchange is now Live! Trade your zUSD for a wide range of assets!'
       onClose={() => setDismissed(true)}
       {...props}
     >
       <ActionLink href='https://dashboard.horizonprotocol.com/' target='_blank'>
-        View Now
+        TRADE NOW
       </ActionLink>
     </BaseAlert>
   );

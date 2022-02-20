@@ -1,7 +1,7 @@
 import bignumber from "bignumber.js";
 import { ethers, utils } from "ethers";
 import numbro from "numbro";
-import { CurrencyKey, isFiatCurrency } from "./currencies";
+import { isFiatCurrency } from "./currencies";
 
 declare global {
   interface BN extends bignumber {}

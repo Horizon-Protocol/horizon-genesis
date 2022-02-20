@@ -1,7 +1,8 @@
 import { useMemo } from "react";
 import { useAtomValue } from "jotai/utils";
 import { Box, BoxProps, Typography } from "@mui/material";
-import { debtAtom, collateralDataAtom, zUSDBalanceAtom } from "@atoms/debt";
+import { debtAtom, collateralDataAtom } from "@atoms/debt";
+import { zUSDBalanceAtom } from "@atoms/balances";
 import { hznRateAtom } from "@atoms/exchangeRates";
 import useUserStakingData from "@hooks/useUserStakingData";
 import { formatNumber } from "@utils/number";
@@ -81,7 +82,7 @@ export default function Dashboard(props: BoxProps) {
         border={1}
         borderColor={BORDER_COLOR}
         width='100%'
-        bgcolor='#0C111D'
+        bgcolor='rgba(16, 38, 55, 0.3)'
         borderRadius={{
           xs: 0,
           md: 2.5, // 10px
@@ -90,21 +91,21 @@ export default function Dashboard(props: BoxProps) {
       >
         <CRatioRange px={2} />
         <Box
-          mt={4}
-          p={2}
+          mt={0}
+          p="15px"
           pt={0}
-          pb={3}
+          pb={0}
           textAlign='center'
-          bgcolor='rgba(8, 12, 22, 0.3)'
+          // bgcolor='rgba(16, 38, 55, 0.3)'
         >
           <Box
             width='100%'
-            // bgcolor='red'
+            bgcolor='transparent'
             display='flex'
             justifyContent='space-between'
           >
             <HZNInfoPrice
-              maxWidth={150}
+              width={140}
               title='HZN STAKING'
               desc={<>
                 {stakingAPR * 100 && isEstimateAPR ? (
@@ -114,18 +115,16 @@ export default function Dashboard(props: BoxProps) {
                 ) : null}
                 <span>{stakingAPR * 100 ? formatNumber(stakingAPR * 100) : "--"}</span>% APY
               </>}
-              bgcolor='#091620'
+              bgcolor='rgba(16, 38, 55, 0.3)'
               sx={{
-                // transform: "translateY(-50%)",
               }}
             />
             <HZNInfoPrice
-              maxWidth={110}
+              width={100}
               title='HZN PRICE'
               desc={`$${formatPrice(hznRate.toNumber(), { mantissa: 4 })}`}
-              bgcolor='#091620'
+              bgcolor='rgba(16, 38, 55, 0.3)'
               sx={{
-                // transform: "translateY(-50%)",
               }}
             />
           </Box>

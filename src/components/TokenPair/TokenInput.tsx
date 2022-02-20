@@ -76,7 +76,7 @@ export default function TokenInput({
       borderRadius={1}
       borderColor={BORDER_COLOR}
       p='16px 24px'
-      py={2}
+      py={1}
       px={{
         xs: 1,
         sm: 3,

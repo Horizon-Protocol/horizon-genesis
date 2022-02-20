@@ -3,7 +3,7 @@ import { COLOR } from "@utils/theme/constants";
 import { formatNumber } from "@utils/number";
 
 interface Props extends BoxProps {
-  maxWidth: number,
+  // maxWidth: number,
   title: string,
   desc: string | JSX.Element;
 }
@@ -13,7 +13,7 @@ export default function HZNInfoPrice({
   // percent,
   // isEstimate,
   className,
-  maxWidth,
+  // maxWidth,
   title,
   desc,
   ...props
@@ -25,6 +25,12 @@ export default function HZNInfoPrice({
       // maxWidth={maxWidth}
       borderRadius='4px'
       // border='1px solid #11263B'
+      sx={{
+        // display:"flex",
+        // flexDirection:'column',
+        // justifyContent:'center',
+        // alignContent:'center'
+      }}
       {...props}
     >
       <Typography sx={{opacity:0.5}} fontSize={12} color={COLOR.text} variant='caption'>{title}</Typography>

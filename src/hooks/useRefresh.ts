@@ -1,6 +1,6 @@
-import { CONTRACT, PUBLIC, EARN } from "@utils/queryKeys";
+import { CONTRACT, PUBLIC, EARN, WALLET } from "@utils/queryKeys";
 import { useCallback, useState, useEffect } from "react";
-import { useQueryClient, useIsFetching  } from "react-query";
+import { useQueryClient, useIsFetching } from "react-query";
 import useWallet from "./useWallet";
 import useIsEarnPage from "./useIsEarnPage";
 import useRefreshEarn from "./useRefreshEarn";
@@ -57,3 +57,4 @@ export function useIsRefrshing() {
 
   return { refreshing, time };
 }
+

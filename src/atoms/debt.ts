@@ -66,21 +66,19 @@ export const burnAmountToFixCRatioAtom = atom((get) => {
 });
 
 // zAssets
-export const zAssetstotalUSDAtom = atomWithReset(zeroBN);
 
-export const zAssetsBalanceAtom = atomWithReset<SynthBalancesMap>({});
+// export const zAssetsBalanceAtom = atomWithReset<SynthBalancesMap>({});
 
-export const zUSDBalanceAtom = selectAtom(
-  zAssetsBalanceAtom,
-  (rates) => rates["zUSD"]?.balance || zeroBN
-);
+// export const zUSDBalanceAtom = selectAtom(
+//   zAssetsBalanceAtom,
+//   (rates) => rates["zUSD"]?.balance || zeroBN
+// );
 
 // reset all debt balances
 export const resetDebtAtom = atom(null, (get, set) => {
   set(debtAtom, RESET);
 });
 
-export const resetZAssetsAtom = atom(null, (get, set) => {
-  set(zAssetstotalUSDAtom, RESET);
-  set(zAssetsBalanceAtom, RESET);
-});
+// export const resetZAssetsAtom = atom(null, (get, set) => {
+//   set(zAssetsBalanceAtom, RESET);
+// });

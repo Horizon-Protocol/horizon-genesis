@@ -256,14 +256,14 @@ export default function Mint() {
         onChange={handleSelectPresetCRatio}
       />
       <TokenPair
-        mt={2}
+        mt={1}
         fromToken={fromToken}
         toToken={toToken}
         arrowImg={arrowImg}
         state={state}
         setState={setState}
       />
-      <BalanceChange my={3} changed={!!state.fromInput} {...changedBalance} />
+      <BalanceChange my={2} changed={!!state.fromInput} {...changedBalance} />
       <Box>
         {connected && (
           <PrimaryButton

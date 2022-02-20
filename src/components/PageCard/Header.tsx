@@ -1,3 +1,4 @@
+import ActionLink from "@components/Alerts/ActionLink";
 import { Box, BoxProps, Typography } from "@mui/material";
 
 export default function Header({
@@ -26,6 +27,7 @@ export default function Header({
       >
         {description}
       </Typography>
+      <ActionLink showArrow={false}>LEARN MORE</ActionLink>
     </Box>
   );
 }

@@ -12,7 +12,7 @@ export interface AlertProps extends Omit<BoxProps, "title"> {
 }
 
 export default function BaseAlert({
-  baseColor = COLOR.tip,
+  baseColor = COLOR.text,
   title,
   content,
   children,
@@ -25,7 +25,7 @@ export default function BaseAlert({
       display='flex'
       borderRadius='4px'
       borderTop={`2px solid ${baseColor}`}
-      bgcolor='#102637'
+      bgcolor='rgba(16, 38, 55, 0.3)'
       color={baseColor}
       {...props}
     >

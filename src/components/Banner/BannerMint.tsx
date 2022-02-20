@@ -3,8 +3,12 @@ import { color } from "@mui/system";
 import { PAGE_COLOR } from "@utils/theme/constants";
 import PrimaryButton from "@components/PrimaryButton";
 import mintBg from "@assets/bgs/hzn.png";
+import { useHistory } from "react-router-dom";
 
 export default function BannerMint() {
+
+  const history = useHistory()
+
   return (
     <Box
       height='240px'
@@ -56,7 +60,9 @@ export default function BannerMint() {
           width: 122,
           mt: '13px'
         }}
-      // onClick={handleClaim}
+        onClick={()=>{
+          history.push('mint')
+        }}
       >
         MINT NOW
       </PrimaryButton>

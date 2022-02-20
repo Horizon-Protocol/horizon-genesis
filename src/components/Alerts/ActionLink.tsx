@@ -17,12 +17,14 @@ import { COLOR } from "@utils/theme/constants";
 
 type Props = {
   to?: string;
+  showArrow?: boolean;
   onClick?: () => void;
 } & Omit<RouterLinkProps, "to" | "onClick"> &
   Omit<LinkProps, "href" | "onClick">;
 
 export default function ActionLink({
   to,
+  showArrow = true,
   href,
   onClick,
   children,
@@ -61,7 +63,7 @@ export default function ActionLink({
       {...linkProps}
       {...props}
     >
-      {children} &#8594;
+      {children}  {showArrow ? <>&#8594;</> : <></>}
     </Link>
   );
 }

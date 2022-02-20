@@ -13,6 +13,8 @@ export const EARN = "EARN";
 // LP contract state
 export const LP = "LP";
 
+export const WALLET = "WALLET";
+
 // query filters
 export const filterContract = [CONTRACT];
 export const filterPublic = [CONTRACT, PUBLIC];

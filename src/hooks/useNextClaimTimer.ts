@@ -11,6 +11,7 @@ export default function useNextClaimCountDown() {
   const { formatted } = useDateCountDown(nextFeePeriodStarts);
 
   useEffect(() => {
+    console.log("=====formatted=====",formatted)
     setNextClaimCountDown(formatted);
   }, [formatted, setNextClaimCountDown]);
 }

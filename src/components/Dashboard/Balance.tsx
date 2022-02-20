@@ -20,7 +20,7 @@ export default function Balance({ data }: Props) {
   const [showMore, setShowMore] = useState(false)
 
   const CustomListItem = ({ sectionHeader, label, value }: Data) => (
-    <ListItem key={label} sx={{
+    <ListItem sx={{
       p: 0,
       pl: sectionHeader ? 1 : 2,
       pr: 1,
@@ -60,9 +60,9 @@ export default function Balance({ data }: Props) {
         position: 'relative'
       }} dense disablePadding>
         {data.map(({ sectionHeader, label, value }) => (
-          sectionHeader ? <CustomListItem sectionHeader={sectionHeader} label={label} value={value} />
+          sectionHeader ? <CustomListItem key={label} sectionHeader={sectionHeader} label={label} value={value} />
             :
-            <Collapse in={showMore} timeout="auto" unmountOnExit>
+            <Collapse key={label} in={showMore} timeout="auto" unmountOnExit>
               <CustomListItem sectionHeader={sectionHeader} label={label} value={value} />
             </Collapse>
         ))}

@@ -34,11 +34,13 @@ export const previousFeePeriodAtom = atom<FeePoolAtom>({
 
 export const feePeriodDatesAtom = atom((get) => {
   const { startTime, feePeriodDuration } = get(currentFeePeriodAtom);
+  
   return {
     currentFeePeriodStarts: startTime ? new Date(startTime * 1000) : undefined,
     nextFeePeriodStarts: startTime
       ? new Date((startTime + feePeriodDuration) * 1000)
       : undefined,
+    nextClaimProgress: startTime ? (Date.parse(Date()) - startTime * 1000) / (feePeriodDuration * 1000) * 100 : 0,  
   };
 });
 

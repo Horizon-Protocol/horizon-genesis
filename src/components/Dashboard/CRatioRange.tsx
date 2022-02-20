@@ -7,6 +7,12 @@ import { currentCRatioPercentAtom } from "@atoms/debt";
 import { formatNumber } from "@utils/number";
 import { COLOR } from "@utils/theme/constants";
 import Tooltip from "@components/Tooltip";
+import SvgIcon from "@mui/material/SvgIcon";
+import { ReactComponent as IconRefresh } from "@assets/images/icon-refresh.svg";
+import useWallet from "@hooks/useWallet";
+import { useIsFetching, useQueryClient } from "react-query";
+import { WALLET } from "@utils/queryKeys";
+import { useCallback } from "react";
 
 const getColorByRatioPercent = (
   ratioPercent: number,
@@ -81,6 +87,16 @@ export default function CRatioRange(props: BoxProps) {
     useAtomValue(ratiosPercentAtom);
   const currentCRatioPercent = useAtomValue(currentCRatioPercentAtom);
 
+  const { account } = useWallet()
+  const queryClient = useQueryClient()
+  const balacneRefreshing = useIsFetching(WALLET)
+
+  const refreshBalance = useCallback(() => {
+    queryClient.refetchQueries([WALLET, account, "balances"], {
+      fetching: false,
+    });
+  }, [queryClient, account])
+
   const { progress, color } = useMemo(
     () => ({
       color: getColorByRatioPercent(
@@ -98,13 +114,41 @@ export default function CRatioRange(props: BoxProps) {
   );
 
   return (
-    <Box py={3} textAlign='center' {...props}>
+    <Box py={3} textAlign='center' {...props} sx={{
+      position: "relative"
+    }}>
+       <SvgIcon
+        onClick={refreshBalance}
+        sx={{
+          cursor:"pointer",
+          position:"absolute",
+          right: 8,
+          top: 2,
+          color: "text.primary",
+          width: 14,
+          animation: "circular-rotate 4s linear infinite",
+          animationPlayState: balacneRefreshing ? "running" : "paused",
+          "@keyframes circular-rotate": {
+            from: {
+              transform: "rotate(0deg)",
+              /* 修复 IE11 下的抖动 */
+              transformOrigin: "50% 50%",
+            },
+            to: {
+              transform: "rotate(360deg)",
+            },
+          },
+        }}
+      >
+         <IconRefresh />
+      </SvgIcon>
       <Typography
         variant='h6'
         fontSize={22}
         letterSpacing='0.92px'
         lineHeight='26px'
         textAlign='center'
+        fontWeight='bold'
         color={currentCRatioPercent ? color : undefined}
       >
         {currentCRatioPercent ? formatNumber(currentCRatioPercent) : "--"}%

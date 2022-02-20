@@ -10,7 +10,7 @@ export default function Disconnected(props: BoxProps) {
   return (
     <BaseAlert
       title='Tip'
-      content='To get started, please connect to a wallet.'
+      content='To get started, please connect a wallet.'
       {...props}
     >
       <ActionLink onClick={() => openWalletDialog(true)}>

@@ -20,9 +20,9 @@ import { hznRateAtom } from "@atoms/exchangeRates";
 import {
   debtAtom,
   collateralDataAtom,
-  zUSDBalanceAtom,
   burnAmountToFixCRatioAtom,
 } from "@atoms/debt";
+import { zUSDBalanceAtom } from "@atoms/balances";
 import useWallet from "@hooks/useWallet";
 import useRefresh from "@hooks/useRefresh";
 import useFetchBurnStatus from "@hooks/useFetchBurnStatus";

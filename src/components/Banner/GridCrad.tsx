@@ -7,6 +7,7 @@ const Img = styled("img")``;
 
 declare global {
     interface GridCardProps {
+        onClick?: () => void;
         titleColor: string
         icon: string,
         title: string,
@@ -16,6 +17,7 @@ declare global {
 }
 
 export default function GridCrad({
+    onClick,
     titleColor,
     icon,
     title,
@@ -23,8 +25,10 @@ export default function GridCrad({
     showAlert,
     ...props
 }: BoxProps & GridCardProps) {
+
     return (
         <Box
+            onClick={onClick}
             position='relative'
             height='100px'
             bgcolor='rgba(16, 38, 55, 0.5)'

@@ -18,6 +18,7 @@ import useSetupHorizonLib from "@hooks/useSetupHorizonLib";
 import useFetchAppData from "@hooks/useFetchAppData";
 import useFetchDebtData from "@hooks/useFetchDebtData";
 import useFetchZAssets from "@hooks/useFetchZAssets";
+import useTokensBalance from "@hooks/query/useTokensBalance";
 import useFetchFeePool from "@hooks/useFetchFeePool";
 import useFetchRewards from "@hooks/useFetchRewards";
 import useFetchHorizonData from "@hooks/useFetchHorizonData";
@@ -55,7 +56,10 @@ function App() {
   useSetupHorizonLib();
   useFetchAppData();
   useFetchDebtData();
-  useFetchZAssets();
+  //TODO will remove
+  // useFetchZAssets();
+  //new for load asset
+  useTokensBalance();
   useFetchFeePool();
   useFetchRewards();
   useFetchHorizonData();
@@ -187,6 +191,7 @@ function App() {
           >
             <Switch>
               <Route exact path="/" render={() => <Redirect to="/home" push />} />        
+              {/* <CacheRoute path="/home"><Home /></CacheRoute> */}
               <Route path='/home'>
                 <Home />
               </Route>
@@ -220,11 +225,20 @@ function App() {
               right={0}
               bottom={0}
               zIndex={3}
-              width='100%'
-              maxWidth={{
+              // width='100%'
+              width={{
                 xs: "100%",
                 md: 300,
-                lg: 320,
+                lg: 300,
+              }}
+              // maxWidth={{
+              //   xs: "100%",
+              //   md: 320,
+              //   lg: 320,
+              // }}
+              minWidth={{
+                md: 300,
+                lg: 300,
               }}
               maxHeight={{
                 xs: expanded ? "100%" : 170,

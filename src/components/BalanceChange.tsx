@@ -54,6 +54,11 @@ export default function BalanceChange({
         from: `${formatNumber(transferrable.from)} HZN`,
         to: `${formatNumber(transferrable.to)} HZN`,
       },
+      {
+        label: "Escrowed HZN",
+        from: `${formatNumber(transferrable.from)} HZN`,
+        to: `${formatNumber(transferrable.to)} HZN`,
+      },
     ],
     [cRatio, debt, staked, transferrable]
   );

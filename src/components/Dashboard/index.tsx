@@ -28,7 +28,7 @@ export default function Dashboard(props: BoxProps) {
       {
         sectionHeader: true,
         label: "HZN Balance",
-        value: `${formatNumber(stakedCollateral.plus(transferable).plus(dashboardEscrowed))} HZN`,
+        value: `${formatNumber(collateral)} HZN`,
       },
       {
         label: "Staked",

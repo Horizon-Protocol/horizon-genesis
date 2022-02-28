@@ -18,13 +18,11 @@ export const DEFAULT_PERCENT_DECIMALS = 2;
 export type NumericValue = BN | string | number;
 
 export type FormatNumberOptions = {
-  decimals?: number;
   prefix?: string;
   suffix?: string;
 };
 
-export type FormatCurrencyOptions = {
-  decimals?: number;
+export type FormatCurrencyOptions = numbro.Format & {
   sign?: string;
   currencyKey?: CurrencyKey;
 };
@@ -54,21 +52,17 @@ export const minBN = bignumber.minimum;
 
 export const formatNumber = (
   value: NumericValue,
-  options?: FormatNumberOptions
+  options: FormatNumberOptions = {}
+
 ) => {
-  const prefix = options?.prefix;
-  const suffix = options?.suffix;
+  const { prefix, suffix, ...format } = options;
 
   const formattedValue = [];
   if (prefix) {
     formattedValue.push(prefix);
   }
 
-  formattedValue.push(
-    toBN(value).toFormat(
-      options?.decimals ?? DEFAULT_NUMBER_DECIMALS,
-      bignumber.ROUND_HALF_EVEN
-    )
+  formattedValue.push(numbro(toBN(value)).format({ ...format })
   );
   if (suffix) {
     formattedValue.push(` ${suffix}`);
@@ -79,32 +73,34 @@ export const formatNumber = (
 
 export const formatCryptoCurrency = (
   value: NumericValue,
-  options?: FormatCurrencyOptions
+  { sign: prefix, currencyKey: suffix, ...format }: FormatCurrencyOptions = {}
 ) =>
   formatNumber(value, {
-    prefix: options?.sign,
-    suffix: options?.currencyKey,
-    decimals: options?.decimals ?? DEFAULT_CRYPTO_DECIMALS,
+    prefix,
+    suffix,
+    mantissa: value < 100 ? DEFAULT_CRYPTO_DECIMALS : DEFAULT_NUMBER_DECIMALS,
+    ...format,
   });
 
 export const formatFiatCurrency = (
   value: NumericValue,
-  options?: FormatCurrencyOptions
+  { sign: prefix, currencyKey: suffix, ...format }: FormatCurrencyOptions = {}
 ) =>
   formatNumber(value, {
-    prefix: options?.sign,
-    suffix: options?.currencyKey,
-    decimals: options?.decimals ?? DEFAULT_FIAT_DECIMALS,
+    prefix,
+    suffix,
+    mantissa: DEFAULT_FIAT_DECIMALS,
+    ...format,
   });
 
-export const formatCurrency = (
-  currencyKey: CurrencyKey,
-  value: NumericValue,
-  options?: FormatCurrencyOptions
-) =>
-  isFiatCurrency(currencyKey)
-    ? formatFiatCurrency(value, options)
-    : formatCryptoCurrency(value, options);
+  export const formatCurrency = (
+    currencyKey: string,
+    value: NumericValue,
+    options?: FormatCurrencyOptions
+  ) =>
+    isFiatCurrency(currencyKey as CurrencyKey)
+      ? formatFiatCurrency(value, options)
+      : formatCryptoCurrency(value, options);
 
 export const formatPercent = (
   value: NumericValue,
@@ -125,31 +121,31 @@ const getPrecision = (amount: NumericValue) => {
 };
 
 // TODO: use a library for this, because the sign does not always appear on the left. (perhaps something like number.toLocaleString)
-export const formatCurrencyWithSign = (
-  sign: string | null | undefined,
-  value: NumericValue,
-  decimals?: number
-) => `${sign}${formatCurrency(String(value), decimals || getPrecision(value))}`;
+// export const formatCurrencyWithSign = (
+//   sign: string | null | undefined,
+//   value: NumericValue,
+//   decimals?: number
+// ) => `${sign}${formatCurrency(String(value), decimals || getPrecision(value))}`;
 
-export const formatCurrencyWithKey = (
-  currencyKey: CurrencyKey,
-  value: NumericValue,
-  decimals?: number
-) =>
-  `${formatCurrency(
-    String(value),
-    decimals || getPrecision(value)
-  )} ${currencyKey}`;
+// export const formatCurrencyWithKey = (
+//   currencyKey: CurrencyKey,
+//   value: NumericValue,
+//   decimals?: number
+// ) =>
+//   `${formatCurrency(
+//     String(value),
+//     decimals || getPrecision(value)
+//   )} ${currencyKey}`;
 
-export function formatUnits(
-  value: any,
-  units: number,
-  decimals?: number
-): string {
-  return formatNumber(toBN(value.toString()).dividedBy(toBN(10).pow(units)), {
-    decimals: decimals,
-  });
-}
+// export function formatUnits(
+//   value: any,
+//   units: number,
+//   decimals?: number
+// ): string {
+//   return formatNumber(toBN(value.toString()).dividedBy(toBN(10).pow(units)), {
+//     decimals: decimals,
+//   });
+// }
 
 export function cRatioToPercent(cRatio: BN): number {
   const cRatioPercent = cRatio.isZero() ? toBN(0) : toBN(100).div(cRatio);

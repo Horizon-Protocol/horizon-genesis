@@ -21,7 +21,6 @@ export default function Alerts(boxProps: BoxProps) {
     useAtomValue(collateralDataAtom);
   const { claimable } = useAtomValue(rewardsAtom);
 
-
   console.log('=====currentCRatio=====',{
     liquidationRatio:formatNumber(liquidationRatio),
     liquidationDeadline:formatNumber(liquidationDeadline),

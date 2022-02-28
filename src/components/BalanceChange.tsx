@@ -35,7 +35,7 @@ export default function BalanceChange({
   const data = useMemo(
     () => [
       {
-        label: "C-Ratio",
+        label: "Current C-Ratio",
         from: `${formatCRatioToPercent(cRatio.from)} %`,
         to: `${formatCRatioToPercent(cRatio.to)} %`,
       },
@@ -51,6 +51,11 @@ export default function BalanceChange({
       },
       {
         label: "Transferrable HZN",
+        from: `${formatNumber(transferrable.from)} HZN`,
+        to: `${formatNumber(transferrable.to)} HZN`,
+      },
+      {
+        label: "Escrowed HZN",
         from: `${formatNumber(transferrable.from)} HZN`,
         to: `${formatNumber(transferrable.to)} HZN`,
       },

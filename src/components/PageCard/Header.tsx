@@ -13,7 +13,7 @@ export default function Header({
         variant='h4'
         mb={1}
         fontWeight={700}
-        letterSpacing='4.57px'
+        letterSpacing='3px'
         color={color}
       >
         {title}
@@ -21,7 +21,7 @@ export default function Header({
       <Typography
         variant='body2'
         p='0 12px'
-        mb={1}
+        mb={0}
         lineHeight='22px'
         color='#C1D3E0'
       >

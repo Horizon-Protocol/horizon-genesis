@@ -33,6 +33,8 @@ import Header from "@components/Header";
 import Dashboard from "@components/Dashboard";
 import Alerts from "@components/Alerts";
 import AlertDashboard from "@components/Alerts/Dashboard";
+import Record from "@components/Record";
+import DebtTracker from "@pages/DebtTracker";
 
 const AppDisabled = !!import.meta.env.VITE_APP_DISABLED;
 
@@ -146,6 +148,7 @@ function App() {
           {!isEarnPage && (
             <Hidden lgDown>
               <Box
+                position="relative"
                 width='100%'
                 maxWidth={{
                   xs: 0,
@@ -153,7 +156,9 @@ function App() {
                   lg: 320,
                 }}
                 flexShrink={1}
-              />
+              >
+                <Record />
+              </Box>
             </Hidden>
           )}
           <Box
@@ -206,6 +211,15 @@ function App() {
               </Route>
               <Route path='/mint'>
                 <Mint />
+              </Route>
+              <Route path='/debtTracker'>
+                <DebtTracker/>
+              </Route>
+              <Route path='/escrow'>
+              <Box>bbbbbbbbbb</Box>
+              </Route>
+               <Route path='/history'>
+               <Box>cccccccccc</Box>
               </Route>
             </Switch>
           </Box>

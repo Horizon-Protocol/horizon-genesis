@@ -12,6 +12,7 @@ export const COLOR = {
   safe: "#2AD4B7",
   tip: "#62B5DB",
   text: "#B4E0FF",
+  bgColor: "rgba(16, 38, 55, 0.3)"
 };
 
 export const PAGE_COLOR = {

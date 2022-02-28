@@ -1,5 +1,5 @@
 import { useCallback, useMemo, useState } from "react";
-import { Box } from "@mui/material";
+import { Box, Typography } from "@mui/material";
 import { ethers } from "ethers";
 import { useSnackbar } from "notistack";
 import { useAtomValue } from "jotai/utils";
@@ -11,7 +11,7 @@ import {
 } from "@atoms/feePool";
 import horizon from "@lib/horizon";
 import useWallet from "@hooks/useWallet";
-import { PAGE_COLOR } from "@utils/theme/constants";
+import { COLOR,PAGE_COLOR } from "@utils/theme/constants";
 import headerBg from "@assets/images/claim.svg";
 import PageCard from "@components/PageCard";
 import RewardCard from "@components/Claim/RewardCard";
@@ -42,12 +42,16 @@ export default function Claim() {
 
   const infoList: Info[] = [
     {
-      label: "Next Reward Claim Period",
+      label: "Next Reward Claim",
       value: nextClaimCountDown,
     },
     {
       label: "Claim Period Ends",
       value: nextClaimCountDown,
+    },
+    {
+      label: "Lifetime Claimed Rewards",
+      value: `${formatNumber(currentTotalRewards)} HZN / ${formatNumber(currentTotalRewards)} zUSD`,
     },
     {
       label: "Total Rewards this Period",
@@ -96,18 +100,57 @@ export default function Claim() {
         </>
       }
     >
+      <Typography sx={{
+        width: "100%",
+        textAlign: "center",
+        fontWeight: "bold",
+        fontSize: "12px",
+        mb: "10px"
+      }}>
+        CLAIMABLE REWARDS
+      </Typography>
       <Box display='flex' justifyContent='space-between'>
-        <RewardCard label='Staking Rewards' amount={stakingReward} />
+        <RewardCard label='STAKING REWARDS' amount={stakingReward} />
         <RewardCard
-          label='Exchange Rewards'
+          label='EXCHANGE REWARDS'
           amount={exchangeReward}
           token={zAssets.zUSD}
-          disabled
-          help={
-            <>
-              Available when <br /> Horizon Exchange launches
-            </>
-          }
+        />
+      </Box>
+      <Typography sx={{
+        width: "100%",
+        textAlign: "center",
+        fontWeight: "bold",
+        fontSize: "12px",
+        mt:"20px",
+        mb:"10px"
+      }}>
+        UPCOMING REWARDS
+      </Typography>
+      <Box display='flex' justifyContent='space-between'>
+        <RewardCard
+        height={87}
+        upcoming={true} 
+        label={<><Box
+        component="span"
+           sx={{
+             fontSize: 7,
+              color:COLOR.text, 
+             opacity:.5
+        }}>ESTIMATED</Box><br />STAKING REWARDS</>}
+        amount={stakingReward} />
+        <RewardCard
+          height={87}
+          upcoming={true} 
+          label={<><Box
+            component="span"
+               sx={{
+                 fontSize: 7,
+                  color:COLOR.text, 
+                 opacity:.5
+            }}>ACCRUED</Box><br />EXCHANGE REWARDS</>}
+          amount={exchangeReward}
+          token={zAssets.zUSD}
         />
       </Box>
       <Box mt={3}>

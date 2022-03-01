@@ -2,15 +2,30 @@ import PageCard from "@components/PageCard";
 import DebtOverview from "@components/Record/Debt/DebtOverview";
 import useReponsiveChart from "@hooks/useReponsiveChart";
 import { Box, Typography } from "@mui/material";
-import { BarPrice, BusinessDay, ISeriesApi, LineSeriesPartialOptions, PriceFormat } from "lightweight-charts";
+import { BarPrice, BusinessDay, IChartApi, ISeriesApi, LineSeriesPartialOptions, MouseEventParams, Point, PriceFormat } from "lightweight-charts";
 import { padStart } from "lodash";
 import { COLOR } from "@utils/theme/constants";
 import { formatFiatCurrency } from "@utils/number";
 import { useState } from "react";
 
+interface ToolTipPros {
+    toolTipDisplay: string,
+    left?: string,
+    top?: string,
+    time?: string,
+    debts?: string[]
+}
+
 export default function DebtTracker() {
 
-    const [lineSeries, setLineSeries] = useState<ISeriesApi<"Line"> | null>(null);
+    // const [lineSeries, setLineSeries] = useState<ISeriesApi<"Line"> | null>(null);
+    const [toolTipProps, setToolTipProps] = useState<ToolTipPros>({
+        toolTipDisplay: 'none',
+        left: '0',
+        top: '0',
+        time: '',
+        debts: []
+    })
 
     const leftPriceConfig: Partial<LineSeriesPartialOptions> = {
         lineWidth: 2,
@@ -48,7 +63,7 @@ export default function DebtTracker() {
         },
     }
 
-    const setSeriesData = () => {
+    const setSeriesData = (chart: IChartApi) => {
         const acitveDebt = chart.addLineSeries({
             color: '#3377FF',
             priceScaleId: 'left',
@@ -126,44 +141,59 @@ export default function DebtTracker() {
             },
         },
         onReady(chart, container) {
-            setSeriesData()
+            setSeriesData(chart)
+        },
+        onCrosshairMove(param, chart, container) {
+            const width = container?.clientWidth as number
+            const height = container?.clientHeight as number
+            const toolTipWidth = 96
+            const toolTipHeight = 80
+            const toolTipMargin = 10
 
-            var toolTip = document.createElement('div');
-            toolTip.className = 'floating-tooltip-2';
-            container.appendChild(toolTip);
+            let point = param.point as Point
+            if (!param.time || point.x < 0 || point.x > width || point.y < 0 || point.y > height) {
+                setToolTipProps({ toolTipDisplay: 'none' })
+                return;
+            }
 
-            chart.subscribeCrosshairMove(function(param) {
-                if (param != undefined){
-                    if (!param.time || param.point.x < 0 || param.point.x > width || param.point.y < 0 || param.point.y > height) {
-                        toolTip.style.display = 'none';
-                        return;
-                    }
-                
-                    var dateStr = LightweightCharts.isBusinessDay(param.time)
-                        ? businessDayToString(param.time)
-                        : new Date(param.time * 1000).toLocaleDateString();
-                
-                    toolTip.style.display = 'block';
-                    var price = param.seriesPrices.get(areaSeries);
-                    toolTip.innerHTML = '<div style="color: rgba(255, 70, 70, 1)">Apple Inc.</div>' +
-                        '<div style="font-size: 24px; margin: 4px 0px">' + Math.round(price * 100) / 100 + '</div>' +
-                        '<div>' + dateStr + '</div>';
-                
-                    var y = param.point.y;
-                
-                    var left = param.point.x + toolTipMargin;
-                    if (left > width - toolTipWidth) {
-                        left = param.point.x - toolTipMargin - toolTipWidth;
-                    }
-                
-                    var top = y + toolTipMargin;
-                    if (top > height - toolTipHeight) {
-                        top = y - toolTipHeight - toolTipMargin;
-                    }
-                }
-                toolTip.style.left = left + 'px';
-                toolTip.style.top = top + 'px';
-            });
+            let x = point?.x
+            let y = point?.y
+
+            let left = x - toolTipWidth/2 - toolTipMargin
+            // if (left > width - toolTipWidth) {
+            //     left = point.x - toolTipMargin - toolTipWidth;
+            // }
+
+            let top = y - toolTipHeight - toolTipMargin;
+            // if (top > height - toolTipHeight) {
+            //     top = y - toolTipHeight - toolTipMargin;
+            // }
+            setToolTipProps({
+                toolTipDisplay: 'block',
+                left: left + 'px',
+                top: top + 'px',
+                time: '',
+                debts: []
+            })
+            //                 hoveredMarkerId: undefined
+            // hoveredSeries: undefined
+            // point:
+            // x: 188
+            // y: 134.515625
+            // [[Prototype]]: Object
+            // seriesPrices: Map(3)
+            // [[Entries]]
+            // 0: {t => 51}
+            // 1: {t => 42}
+            // 2: {t => 1528123}
+            // size: 3
+            // [[Prototype]]: Map
+            // time:
+            // day: 7
+            // month: 7
+            // year: 2021
+            // [[Prototype]]: Ob
+            // console.log("===subscribeCrosshairMove===", param)
         }
     })
 
@@ -190,8 +220,28 @@ export default function DebtTracker() {
                 // backgroundColor:"red",
                 alignSelf: "center"
             }}>
-
+                <ToolTip {...toolTipProps} />
             </Box>
         </PageCard>
     )
-} 
+}
+
+const ToolTip = ({ toolTipDisplay, left, top, time, debts }: ToolTipPros) => {
+    return (
+        <Box sx={{
+            width: '96px',
+            height: '80px',
+            position: 'absolute',
+            display: toolTipDisplay,
+            padding: '8px',
+            fontSize: '12px',
+            color: '#131722',
+            zIndex: 1000,
+            top: top,
+            left: left,
+            backgroundColor: 'red'
+        }}>
+            测试
+        </Box>
+    )
+}

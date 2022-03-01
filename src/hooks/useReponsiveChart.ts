@@ -1,14 +1,24 @@
 //this class is for initialed the chart with ref and set configuration
 
-import { ChartOptions, createChart, DeepPartial, IChartApi } from "lightweight-charts";
+import {
+    ChartOptions, createChart, DeepPartial, IChartApi, MouseEventParams,
+} from "lightweight-charts";
 import { defaultsDeep } from "lodash";
 import { useCallback, useEffect, useRef } from "react";
 import { COLOR } from "@utils/theme/constants";
-import { jsx } from "@emotion/react";
 
 interface ChartProps {
     //onready will be called when chart initialized finished,  IChartApi implemented all chart function，
-    onReady?(chart: IChartApi, chartContainer : HTMLElement): void
+    onReady?(
+        chart: IChartApi, 
+        chartContainer: HTMLElement
+        ): void,
+
+    onCrosshairMove?(
+        param: MouseEventParams,
+        chart: IChartApi, 
+        chartContainer: HTMLElement | null
+    ): void
 }
 
 const defaultChartOptions: DeepPartial<ChartOptions> = {
@@ -50,25 +60,35 @@ const defaultChartOptions: DeepPartial<ChartOptions> = {
 export default function useReponsiveChart(
     props: ChartProps & DeepPartial<ChartOptions>
 ) {
-    const { onReady, ...options } = props || {}
+    const { onReady, onCrosshairMove, ...options } = props || {}
     const chartRef = useRef<HTMLDivElement | null>(null)
 
     const initChart = useCallback(() => {
         if (chartRef.current) {
+
+            const width = chartRef.current?.clientWidth
+            const height = chartRef.current?.clientHeight
+
             const chart = createChart(
                 chartRef.current,
                 defaultsDeep(
                     defaultChartOptions,
                     {
-                        width: chartRef.current?.clientWidth,
-                        height: chartRef.current?.clientHeight
+                        width: width,
+                        height: height
                     },
                     options
                 )
             );
+            chart.subscribeCrosshairMove((param) => {
+                if (param != null && param != undefined){
+                    onCrosshairMove?.(param, chart, chartRef.current)
+                }
+            });
+
             onReady?.(chart, chartRef.current)
         }
-    }, [onReady,chartRef])
+    }, [onReady, chartRef])
 
     useEffect(() => {
         initChart()

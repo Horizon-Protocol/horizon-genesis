@@ -25,11 +25,15 @@ const defaultChartOptions: DeepPartial<ChartOptions> = {
     localization: { locale: "en" },
     rightPriceScale: {
         visible: true,
-        borderColor: 'rgba(197, 203, 206, 1)',
+        
+        // lineWidth: '1px',
+        borderColor: '#222331',
+        
     },
     leftPriceScale: {
         visible: true,
-        borderColor: 'rgba(197, 203, 206, 1)',
+        // lineWidth: '1px',
+        borderColor: '#222331',
     },
     overlayPriceScales: {
         borderColor: "#222331",
@@ -43,8 +47,9 @@ const defaultChartOptions: DeepPartial<ChartOptions> = {
     },
     layout: {
         backgroundColor: "transparent",
-        textColor: COLOR.text,
+        textColor: 'rgba(180, 224, 255, .5)',
         fontFamily: "Rawline",
+        fontSize: 10
     },
     grid: {
         vertLines: {

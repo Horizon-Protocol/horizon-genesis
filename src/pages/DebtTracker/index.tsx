@@ -7,6 +7,8 @@ import { padStart } from "lodash";
 import { COLOR } from "@utils/theme/constants";
 import { formatFiatCurrency } from "@utils/number";
 import { useState } from "react";
+import dayjs from "dayjs";
+import { time } from "console";
 
 interface ToolTipPros {
     toolTipDisplay: string,
@@ -146,9 +148,12 @@ export default function DebtTracker() {
         onCrosshairMove(param, chart, container) {
             const width = container?.clientWidth as number
             const height = container?.clientHeight as number
-            const toolTipWidth = 96
-            const toolTipHeight = 80
+            const toolTipWidth = 224
+            const toolTipHeight = 112
             const toolTipMargin = 10
+            const leftPriceWidth = 48
+            const rightPriceWidth = 62
+
 
             let point = param.point as Point
             if (!param.time || point.x < 0 || point.x > width || point.y < 0 || point.y > height) {
@@ -159,21 +164,34 @@ export default function DebtTracker() {
             let x = point?.x
             let y = point?.y
 
-            let left = x - toolTipWidth/2 - toolTipMargin
-            // if (left > width - toolTipWidth) {
-            //     left = point.x - toolTipMargin - toolTipWidth;
-            // }
+
+            let left = x - toolTipWidth - toolTipMargin + leftPriceWidth
+            if (x < (toolTipMargin + toolTipWidth)) {
+                left = left + toolTipWidth + 2 * toolTipMargin
+            }
+
 
             let top = y - toolTipHeight - toolTipMargin;
+            if (top < 0) {
+                top = top + 2 * toolTipMargin + toolTipHeight;
+            }
             // if (top > height - toolTipHeight) {
             //     top = y - toolTipHeight - toolTipMargin;
             // }
+
+            const businessTime = param.time as BusinessDay
             setToolTipProps({
                 toolTipDisplay: 'block',
                 left: left + 'px',
                 top: top + 'px',
-                time: '',
-                debts: []
+                time: dayjs(
+                    new Date(
+                        businessTime.year,
+                        businessTime.month - 1,
+                        businessTime.day
+                    )
+                ).format("MMM D, YYYY"),
+                debts: ["$62.91", "$32.92", "$3002320.91",],
             })
             //                 hoveredMarkerId: undefined
             // hoveredSeries: undefined
@@ -197,7 +215,6 @@ export default function DebtTracker() {
         }
     })
 
-
     return (
         <PageCard
             mx='auto'
@@ -217,7 +234,6 @@ export default function DebtTracker() {
                 mt: "31px",
                 width: "574px",
                 height: "250px",
-                // backgroundColor:"red",
                 alignSelf: "center"
             }}>
                 <ToolTip {...toolTipProps} />
@@ -226,22 +242,79 @@ export default function DebtTracker() {
     )
 }
 
-const ToolTip = ({ toolTipDisplay, left, top, time, debts }: ToolTipPros) => {
+const ToolTip = ({
+    toolTipDisplay,
+    left,
+    top,
+    time,
+    debts,
+}: ToolTipPros) => {
     return (
         <Box sx={{
-            width: '96px',
-            height: '80px',
+            width: '224px',
+            height: '112px',
             position: 'absolute',
             display: toolTipDisplay,
-            padding: '8px',
             fontSize: '12px',
             color: '#131722',
             zIndex: 1000,
             top: top,
             left: left,
-            backgroundColor: 'red'
+            backgroundColor: '#11192A',
+            borderRadius: '2px'
         }}>
-            测试
+            <Typography sx={{
+                textAlign: 'center',
+                color: 'white',
+                py: 'auto',
+                fontSize: '12px',
+                lineHeight: '30px',
+                letterSpacing: '1px'
+            }}>{time}</Typography>
+            <Box sx={{
+                height: '82px',
+                width: '100%',
+                backgroundColor: 'rgba(16, 38, 55, 0.3)',
+                display: 'flex',
+                flexDirection: 'column',
+                px: '12px',
+                py: '10px',
+                justifyContent: 'space-between'
+            }}>
+                {debts?.map((value, index) => (
+                    <Box sx={{
+                        display: 'flex',
+                        alignItems: 'center',
+                    }}>
+                        <Box sx={{
+                            height: '10px',
+                            width: '10px',
+                            backgroundColor: ['#3377FF', '#2AD4B7', '#FFA539'][index],
+                            border: '1px solid #FFFFFF',
+                            borderRadius: '50%'
+                        }} />
+                        <Typography sx={{
+                            color: ['#3377FF', '#2AD4B7', '#FFA539'][index],
+                            fontSize: '12px',
+                            letterSpacing: '0.5px',
+                            ml: '10px'
+                        }}>
+                            {['Active Debt', 'Issued Debt', 'Global Debt'][index]}
+                        </Typography>
+                        <Typography sx={{
+                            color: COLOR.text,
+                            fontSize: '12px',
+                            letterSpacing: '0.5px',
+                            // mr: '0px',
+                            ml: 'auto',
+                            textAlign: 'right',
+                            // backgroundColor:'red'
+                        }}>
+                            {debts[index]}
+                        </Typography>
+                    </Box>
+                ))}
+            </Box>
         </Box>
     )
 }

@@ -46,7 +46,7 @@ export default function Claim() {
       value: nextClaimCountDown,
     },
     {
-      label: "Claim Period Ends",
+      label: "Current Claim Period Ends",
       value: nextClaimCountDown,
     },
     {
@@ -56,7 +56,7 @@ export default function Claim() {
     {
       label: "Total Rewards this Period",
       value: `${formatNumber(currentTotalRewards)} HZN`,
-    },
+    }, 
     {
       label: "Total Claimed Rewards",
       value: `${formatNumber(escrowedReward)} HZN`,

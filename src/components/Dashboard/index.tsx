@@ -27,6 +27,7 @@ export default function Dashboard(props: BoxProps) {
     () => [
       {
         sectionHeader: true,
+        showWalletIcon: true,
         label: "HZN Balance",
         value: `${formatNumber(collateral)} HZN`,
       },
@@ -58,6 +59,7 @@ export default function Dashboard(props: BoxProps) {
       },
       {
         label: "zUSD Balance",
+        showWalletIcon: true,
         value: `${formatNumber(zUSDBalance)} zUSD`,
       },
       {

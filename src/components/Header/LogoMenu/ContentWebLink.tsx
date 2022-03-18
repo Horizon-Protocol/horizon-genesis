@@ -18,7 +18,7 @@ const Img = styled("img")``;
 declare global {
   interface ContentWebLinkProps {
     icon?: string,
-    index?: number,
+    index: number,
     title: string,
     desc: string,
   }
@@ -44,7 +44,7 @@ export default function ContentWebLink({
   return (
     <Box
       display='flex'
-      bgcolor= {index < 1 ? 'transparent' : '#102637'}
+      bgcolor = {index < 1 ? 'transparent' : '#102637'}
       borderRadius={borderRadius}
       sx={{
         cursor: "pointer",
@@ -52,7 +52,7 @@ export default function ContentWebLink({
           opacity: 0.4
         },
       }}
-      {...props}
+      // {...props}
     >
       <Box sx={{
         width: '47px',

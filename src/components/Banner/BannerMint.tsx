@@ -22,22 +22,27 @@ export default function BannerMint() {
         background: `url(${mintBg}) no-repeat`,
         backgroundSize: "100% 100%",
       }}
+      px={{
+        xs: 7,
+        sm: 3,
+      }}
     >
       <Typography
         component='div'
         textAlign='center'
-        fontSize={34}
+        fontSize='1.3rem'
         fontWeight='bold'
+        variant="h5"
         fontFamily='Raleway'
-        lineHeight='40px'
+        lineHeight='1.6rem'
         letterSpacing={2}
       >
         <span style={{
-          fontSize: 34,
+          fontSize: '1.3rem',
           color: PAGE_COLOR.mint
         }}>MINT </span>
         SYNTHETIC ASSETS<br/>AND <span style={{
-          fontSize: 34,
+          fontSize: '1.3rem',
           color: PAGE_COLOR.mint
         }}>EARN</span> REWARDS
       </Typography>

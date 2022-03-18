@@ -1,16 +1,15 @@
-import { Box, Button, Typography, alpha } from "@mui/material";
+import { Box, Button, Typography, alpha, BoxProps, useMediaQuery } from "@mui/material";
 import { styled } from "@mui/material/styles";
 import { COLOR } from "@utils/theme/constants";
-import { atom } from "jotai";
-
 import bnbLogo from "@assets/tokens/bnb.png";
 import cakeLogo from "@assets/tokens/cake.png";
 import { useMemo } from "react";
 import { useHistory, useLocation } from "react-router-dom";
+import { useTheme } from "@mui/material/styles";
 
 const Img = styled("img")``;
 
-export default function Record() {
+export default function Record(props: BoxProps) {
     // const styledTabs = useMemo<StyledTabProps[]>(
     //     () =>
     //       tabs.map(({ color, ...item }) => ({
@@ -24,6 +23,9 @@ export default function Record() {
 
     const { pathname } = useLocation()
     const history = useHistory()
+
+    const { breakpoints } = useTheme();
+    const downLG = useMediaQuery(breakpoints.down("lg"));
 
     interface RecordButtonProps {
         img: string;
@@ -61,12 +63,7 @@ export default function Record() {
     )
 
     return (
-        <Box sx={{
-            position: "absolute",
-            right: 0,
-            top: 0,
-
-        }}>
+        <Box {...props}>
             {recordButtons.map(({ to, img, selectedImg, selected, title }: RecordButtonProps) => (
                 <Box key={to} onClick={() => {
                     // console.log({
@@ -79,7 +76,8 @@ export default function Record() {
                     flexDirection: "column",
                     justifyContent: "center",
                     alignItems: "center",
-                    mb: "20px"
+                    mt: downLG ? "10px" : "0px",
+                    mb: downLG ? '0px' : "20px"
                 }}>
                     <Img src={selected ? selectedImg : img} sx={{
                         width: "40px",

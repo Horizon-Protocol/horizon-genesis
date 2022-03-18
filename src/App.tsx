@@ -35,6 +35,9 @@ import Alerts from "@components/Alerts";
 import AlertDashboard from "@components/Alerts/Dashboard";
 import Record from "@components/Record";
 import DebtTracker from "@pages/DebtTracker";
+import { display } from "@mui/system";
+import Escrow from "@pages/Escrow";
+import History from "@pages/History";
 
 const AppDisabled = !!import.meta.env.VITE_APP_DISABLED;
 
@@ -48,6 +51,7 @@ if (import.meta.env.PROD) {
 function App() {
   const { breakpoints } = useTheme();
   const downMD = useMediaQuery(breakpoints.down("md"));
+  const downLG = useMediaQuery(breakpoints.down("lg"));
 
   const isEarnPage = useIsEarnPage();
 
@@ -98,6 +102,16 @@ function App() {
     },
   };
 
+  const recordProps: BoxProps = {
+    mb: 0,
+    // bgcolor:'red',
+    right: 0,
+    top: 0,
+    position: downLG ? 'static' : 'absolute',
+    display: downLG ? 'flex' : 'block',
+    justifyContent:"space-around"
+  }
+
   return (
     <>
       {AppDisabled && (
@@ -136,6 +150,9 @@ function App() {
             <AlertDashboard {...alertProps} />
           </>
         )}
+        {!isEarnPage && downLG && (
+          <Record {...recordProps}/>
+        )}
         <Box
           my={3}
           display='flex'
@@ -157,7 +174,7 @@ function App() {
                 }}
                 flexShrink={1}
               >
-                <Record />
+               <Record {...recordProps}/>
               </Box>
             </Hidden>
           )}
@@ -216,10 +233,10 @@ function App() {
                 <DebtTracker/>
               </Route>
               <Route path='/escrow'>
-              <Box>bbbbbbbbbb</Box>
+               <Escrow />
               </Route>
                <Route path='/history'>
-               <Box>cccccccccc</Box>
+               <History />
               </Route>
             </Switch>
           </Box>

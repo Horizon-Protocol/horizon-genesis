@@ -4,9 +4,12 @@ import SvgIcon from "@mui/material/SvgIcon";
 import { ReactComponent as IconArrowUp } from "@assets/images/icon-arrow-up.svg";
 import { useState } from "react";
 import { BoxProps } from "@mui/system";
+import { detailAtom } from "@atoms/wallet";
+import { useAtomValue } from "jotai/utils";
 
 interface Data {
   sectionHeader?: boolean;
+  showWalletIcon?: boolean;
   label: string;
   value?: string;
 }
@@ -16,25 +19,37 @@ interface Props {
 }
 
 export default function Balance({ data }: Props) {
+  const wallet = useAtomValue(detailAtom);
 
   const [showMore, setShowMore] = useState(false)
 
-  const CustomListItem = ({ sectionHeader, label, value }: Data) => (
+  const CustomListItem = ({ sectionHeader, showWalletIcon, label, value }: Data) => (
     <ListItem sx={{
       p: 0,
       pl: sectionHeader ? 1 : 2,
       pr: 1,
       // mt: '-5px'
     }}>
-      <ListItemIcon
+      <ListItemText
         sx={{
+          width: 'auto',
           color: COLOR.text,
           fontSize: sectionHeader ? 14 : 12,
           opacity: sectionHeader ? 1 : 0.5,
         }}
       >
         {label}
-      </ListItemIcon>
+        {showWalletIcon && (
+          <Box component='img' src={wallet?.logo} sx={{
+            // pt:'2px',
+            mb:'-3px',
+            ml:'3px',
+            width:'14px',
+            height:'14px'
+          }} />
+        )}
+      </ListItemText>
+
       <ListItemText
         primary={value}
         sx={{
@@ -59,11 +74,11 @@ export default function Balance({ data }: Props) {
         // pb: '24px',
         position: 'relative'
       }} dense disablePadding>
-        {data.map(({ sectionHeader, label, value }) => (
-          sectionHeader ? <CustomListItem key={label} sectionHeader={sectionHeader} label={label} value={value} />
+        {data.map(({ sectionHeader, showWalletIcon, label, value }) => (
+          sectionHeader ? <CustomListItem key={label} showWalletIcon={showWalletIcon} sectionHeader={sectionHeader} label={label} value={value} />
             :
             <Collapse key={label} in={showMore} timeout="auto" unmountOnExit>
-              <CustomListItem sectionHeader={sectionHeader} label={label} value={value} />
+              <CustomListItem showWalletIcon={showWalletIcon} sectionHeader={sectionHeader} label={label} value={value} />
             </Collapse>
         ))}
       </List >

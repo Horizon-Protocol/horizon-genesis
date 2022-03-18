@@ -9,6 +9,8 @@ import { formatFiatCurrency } from "@utils/number";
 import { useState } from "react";
 import dayjs from "dayjs";
 import { time } from "console";
+import GlobalPortfolio from "./GlobalPortfolio";
+import YourPortfolio from "./YourPortfolio";
 
 interface ToolTipPros {
     toolTipDisplay: string,
@@ -154,7 +156,6 @@ export default function DebtTracker() {
             const leftPriceWidth = 48
             const rightPriceWidth = 62
 
-
             let point = param.point as Point
             if (!param.time || point.x < 0 || point.x > width || point.y < 0 || point.y > height) {
                 setToolTipProps({ toolTipDisplay: 'none' })
@@ -164,22 +165,19 @@ export default function DebtTracker() {
             let x = point?.x
             let y = point?.y
 
-
             let left = x - toolTipWidth - toolTipMargin + leftPriceWidth
             if (x < (toolTipMargin + toolTipWidth)) {
                 left = left + toolTipWidth + 2 * toolTipMargin
             }
 
-
             let top = y - toolTipHeight - toolTipMargin;
             if (top < 0) {
                 top = top + 2 * toolTipMargin + toolTipHeight;
             }
-            // if (top > height - toolTipHeight) {
-            //     top = y - toolTipHeight - toolTipMargin;
-            // }
 
             const businessTime = param.time as BusinessDay
+            // console.log('========chartparam=======',param.seriesPrices[0])
+            
             setToolTipProps({
                 toolTipDisplay: 'block',
                 left: left + 'px',
@@ -193,25 +191,6 @@ export default function DebtTracker() {
                 ).format("MMM D, YYYY"),
                 debts: ["$62.91", "$32.92", "$3002320.91",],
             })
-            //                 hoveredMarkerId: undefined
-            // hoveredSeries: undefined
-            // point:
-            // x: 188
-            // y: 134.515625
-            // [[Prototype]]: Object
-            // seriesPrices: Map(3)
-            // [[Entries]]
-            // 0: {t => 51}
-            // 1: {t => 42}
-            // 2: {t => 1528123}
-            // size: 3
-            // [[Prototype]]: Map
-            // time:
-            // day: 7
-            // month: 7
-            // year: 2021
-            // [[Prototype]]: Ob
-            // console.log("===subscribeCrosshairMove===", param)
         }
     })
 
@@ -220,7 +199,7 @@ export default function DebtTracker() {
             mx='auto'
             // color={THEME_COLOR}
             // headerBg={headerBg}
-            title='Debt Tracker '
+            title='Debt Tracker'
             description={
                 <>
                     Track your debt over time and compare your<br />
@@ -231,12 +210,25 @@ export default function DebtTracker() {
             <DebtOverview />
             <Typography sx={{ fontSize: "12px", color: COLOR.text, textAlign: "center", mt: 3 }}>DEBT OVER TIME</Typography>
             <Box position="relative" ref={bindRef} sx={{
-                mt: "31px",
-                width: "574px",
+                mt: "5px",
+                width: document.body.clientWidth < 500 ? document.body.clientWidth : 570,//  window.innerWidth < 400 ? window.innerWidth - 50 : 570,
                 height: "250px",
-                alignSelf: "center"
+                alignSelf: "center",
             }}>
                 <ToolTip {...toolTipProps} />
+            </Box>
+            <Box sx={{
+                mt: 2,
+                display: 'flex',
+                flexDirection: {
+                    xs: 'column',
+                    sm: 'row'
+                },
+                alignItems: 'center',
+                justifyContent: 'space-around'
+            }}>
+                <GlobalPortfolio />
+                <YourPortfolio /> 
             </Box>
         </PageCard>
     )

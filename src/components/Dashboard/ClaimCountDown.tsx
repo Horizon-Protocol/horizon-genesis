@@ -42,6 +42,7 @@ export default function ClaimCountDown(props: BoxProps) {
         variant='determinate'
         value={nextClaimProgress}
         valueBuffer={100}
+
         sx={{
           height: 10,
           mt: '3px',
@@ -51,7 +52,8 @@ export default function ClaimCountDown(props: BoxProps) {
             bgcolor: "#080C16",
           },
           ".MuiLinearProgress-bar": {
-            bgcolor: COLOR.safe,
+            background: `linear-gradient(-45deg,#03BB9C 25%,#2AD4B7 0,#2AD4B7 50%,#03BB9C 0,#03BB9C 75%,#2AD4B7 0)`,
+            backgroundSize: '10px 10px',
             borderRadius: 0,
           },
         }}

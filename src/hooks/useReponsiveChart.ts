@@ -4,19 +4,20 @@ import {
     ChartOptions, createChart, DeepPartial, IChartApi, MouseEventParams,
 } from "lightweight-charts";
 import { defaultsDeep } from "lodash";
-import { useCallback, useEffect, useRef } from "react";
+import { useCallback, useEffect, useRef, useState } from "react";
 import { COLOR } from "@utils/theme/constants";
+import useResizeObserver from "use-resize-observer";
 
 interface ChartProps {
     //onready will be called when chart initialized finished,  IChartApi implemented all chart function，
     onReady?(
-        chart: IChartApi, 
+        chart: IChartApi,
         chartContainer: HTMLElement
-        ): void,
+    ): void,
 
     onCrosshairMove?(
         param: MouseEventParams,
-        chart: IChartApi, 
+        chart: IChartApi,
         chartContainer: HTMLElement | null
     ): void
 }
@@ -25,10 +26,7 @@ const defaultChartOptions: DeepPartial<ChartOptions> = {
     localization: { locale: "en" },
     rightPriceScale: {
         visible: true,
-        
-        // lineWidth: '1px',
         borderColor: '#222331',
-        
     },
     leftPriceScale: {
         visible: true,
@@ -49,7 +47,7 @@ const defaultChartOptions: DeepPartial<ChartOptions> = {
         backgroundColor: "transparent",
         textColor: 'rgba(180, 224, 255, .5)',
         fontFamily: "Rawline",
-        fontSize: 10
+        fontSize: 10,
     },
     grid: {
         vertLines: {
@@ -67,6 +65,7 @@ export default function useReponsiveChart(
 ) {
     const { onReady, onCrosshairMove, ...options } = props || {}
     const chartRef = useRef<HTMLDivElement | null>(null)
+    // const chartInstanceRef = useRef<IChartApi | null>(null);
 
     const initChart = useCallback(() => {
         if (chartRef.current) {
@@ -86,10 +85,11 @@ export default function useReponsiveChart(
                 )
             );
             chart.subscribeCrosshairMove((param) => {
-                if (param != null && param != undefined){
+                if (param != null && param != undefined) {
                     onCrosshairMove?.(param, chart, chartRef.current)
                 }
             });
+            // chartInstanceRef.current = chart;
 
             onReady?.(chart, chartRef.current)
         }
@@ -99,8 +99,37 @@ export default function useReponsiveChart(
         initChart()
     }, [])
 
+
+    // useEffect(() => {
+    //     // 监听
+    //     window.addEventListener('resize', handleResize);
+    //     // 销毁
+    //     return () => window.removeEventListener('resize', handleResize)
+    // }, []);
+
+    // const handleResize = () => {
+    //     const width = window.innerWidth
+    //     const height = window.innerHeight
+    //     // console.log('=====window=====',{
+    //     //     width: window.innerWidth,
+    //     //     height: window.innerHeight
+    //     // }) 
+    //     if (chartInstanceRef.current) {
+    //         if (width < 600) {
+    //             console.log('=====window=====', {
+    //                 width: window.innerWidth,
+    //             })
+    //             chartInstanceRef.current.resize(width, 250);
+    //         }else{
+    //             chartInstanceRef.current.resize(550, 250);
+    //         }
+    //     }
+
+    // };
+
     return {
         bindRef(instance: HTMLDivElement) {
+            // containerRef(instance)   
             chartRef.current = instance
         }
     }

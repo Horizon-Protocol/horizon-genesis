@@ -31,3 +31,21 @@ export const COLOR_BG_50 = alpha(COLOR.bg, 0.5);
 export const COLOR_BG_85 = alpha(COLOR.bg, 0.85);
 
 export const BORDER_COLOR = "#11233C";
+
+export const PORTFOLIO_COLORS = [
+  "#2AD4B7",
+  "#3377FF",
+  "#F0B90B",
+  "#B4E0FF",
+  "#FA2256",
+  "#00FFD8",
+  "#00C0FF",
+  "#D3622C",
+  "#A45EFF",
+  "#FF5E69",
+  "#9DFFEE",
+  "#5A22FA",
+  "#DFFF9D",
+  "#BD9DFF",
+  "#FF9DAE",
+];

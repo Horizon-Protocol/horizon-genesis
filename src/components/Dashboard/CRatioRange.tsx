@@ -123,7 +123,7 @@ export default function CRatioRange(props: BoxProps) {
           cursor:"pointer",
           position:"absolute",
           right: 8,
-          top: 2,
+          top: {md:2, xs:30},
           color: "text.primary",
           width: 14,
           animation: "circular-rotate 4s linear infinite",

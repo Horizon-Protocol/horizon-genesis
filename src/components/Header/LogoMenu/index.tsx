@@ -25,11 +25,11 @@ export default function LogoMenu({ height = 90 }: Props) {
         setAnchorEl(null);
     };
 
-    useEffect(()=>{
-        if (!openLinkDropDown){
+    useEffect(() => {
+        if (!openLinkDropDown) {
             setAnchorEl(null);
         }
-    },[openLinkDropDown])
+    }, [openLinkDropDown])
 
     return (
         <Box
@@ -74,23 +74,20 @@ export default function LogoMenu({ height = 90 }: Props) {
                     },
                 }}
             >
-                <ContentWebLink onClick={() => {
-                    // setOpenLinkDropDown(!openLinkDropDown)
-                    setTimeout(() => {
-                        window.open(
-                            "https://dashboard.horizonprotocol.com/",
-                        );
-                    }, 200);
-
-                }} index={1} title='EXCHANGE' desc='Trade Borderless Derivatives' />
-                <ContentWebLink onClick={() => {
-                    // setOpenLinkDropDown(!openLinkDropDown)
-                    setTimeout(() => {
-                        window.open(
-                            "https://exchange-testnet.horizonprotocol.com/",
-                        );
-                    }, 200);
-                }} index={2} title='DASHBOARD' desc='Track Real-Time Network Statistics' />
+                <Link
+                    href="https://dashboard.horizonprotocol.com/"
+                    target="_blank"
+                    underline="none"
+                >
+                    <ContentWebLink index={1} title='EXCHANGE' desc='Trade Borderless Derivatives' />
+                </Link>
+                <Link
+                    href="https://exchange-testnet.horizonprotocol.com/"
+                    target="_blank"
+                    underline="none"
+                >
+                    <ContentWebLink index={2} title='DASHBOARD' desc='Track Real-Time Network Statistics' />
+                </Link>
             </Popover>
         </Box>
     );

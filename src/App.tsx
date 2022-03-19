@@ -62,9 +62,6 @@ function App() {
   useSetupHorizonLib();
   useFetchAppData();
   useFetchDebtData();
-  //TODO will remove
-  // useFetchZAssets();
-  //new for load asset
   useTokensBalance();
   useFetchFeePool();
   useFetchRewards();

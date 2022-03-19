@@ -131,7 +131,7 @@ export default function YourPortfolio() {
             }}><img style={{ marginRight: '9px' }} src={noZasset} />No zAssets</Box> */}
 
              {tmpdata.map((data, index) =>
-                <ListItem {...{
+                <ListItem key={index} {...{
                     text: [
                         data.name,
                         formatNumber(data.amount),
@@ -167,7 +167,7 @@ const ListItem = ({ text, props, index }: ListItemProps) => {
             backgroundColor: index !== undefined ? index % 2 == 0 ? 'rgba(16, 38, 55, 0.3)' : 'transparent' : 'transparent'
         }}>
             {text.map((item, index) =>
-                <Typography sx={{
+                <Typography key={index} sx={{
                     width: '25%',
                     textAlign: 'center',
                     fontSize: '12px',

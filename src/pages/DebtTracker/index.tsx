@@ -11,6 +11,7 @@ import dayjs from "dayjs";
 import { time } from "console";
 import GlobalPortfolio from "./GlobalPortfolio";
 import YourPortfolio from "./YourPortfolio";
+import { useEffect } from "react";
 
 interface ToolTipPros {
     toolTipDisplay: string,
@@ -22,7 +23,10 @@ interface ToolTipPros {
 
 export default function DebtTracker() {
 
-    // const [lineSeries, setLineSeries] = useState<ISeriesApi<"Line"> | null>(null);
+    const [acitveDebtLineSeries, setAcitveDebtLineSeries] = useState<ISeriesApi<"Line"> | null>(null);
+    const [isuuedDebtLineSeries, setIsuuedDebtLineSeries] = useState<ISeriesApi<"Line"> | null>(null);
+    const [globalDebtLineSeries, setGlobalDebtLineSeries] = useState<ISeriesApi<"Line"> | null>(null);
+
     const [toolTipProps, setToolTipProps] = useState<ToolTipPros>({
         toolTipDisplay: 'none',
         left: '0',
@@ -67,55 +71,28 @@ export default function DebtTracker() {
         },
     }
 
-    const setSeriesData = (chart: IChartApi) => {
-        const acitveDebt = chart.addLineSeries({
-            color: '#3377FF',
-            priceScaleId: 'left',
-            ...leftPriceConfig
-        })
-        acitveDebt.setData([
-            { time: { year: 2021, month: 7, day: 4 }, value: 14.5 },
-            { time: { year: 2021, month: 7, day: 5 }, value: 19 },
-            { time: { year: 2021, month: 7, day: 6 }, value: 16.5 },
-            { time: { year: 2021, month: 7, day: 7 }, value: 51 },
-            { time: { year: 2021, month: 7, day: 8 }, value: 30.3 },
-            { time: { year: 2021, month: 7, day: 9 }, value: 26 },
-            { time: { year: 2021, month: 7, day: 10 }, value: 44 },
-        ])
+    // const setSeriesData = (chart: IChartApi) => {
+    //     const acitveDebt = chart.addLineSeries({
+    //         color: '#3377FF',
+    //         priceScaleId: 'left',
+    //         ...leftPriceConfig
+    //     })
+    //     setAcitveDebtLineSeries(acitveDebt)
 
-        const isuuedDebt = chart.addLineSeries({
-            color: '#2AD4B7',
-            priceScaleId: 'left',
-            ...leftPriceConfig
+    //     const isuuedDebt = chart.addLineSeries({
+    //         color: '#2AD4B7',
+    //         priceScaleId: 'left',
+    //         ...leftPriceConfig
+    //     })
+    //     setIsuuedDebtLineSeries(isuuedDebt)
 
-        })
-        isuuedDebt.setData([
-            { time: { year: 2021, month: 7, day: 4 }, value: 10.5 },
-            { time: { year: 2021, month: 7, day: 5 }, value: 10 },
-            { time: { year: 2021, month: 7, day: 6 }, value: 8 },
-            { time: { year: 2021, month: 7, day: 7 }, value: 42 },
-            { time: { year: 2021, month: 7, day: 8 }, value: 22 },
-            { time: { year: 2021, month: 7, day: 9 }, value: 17 },
-            { time: { year: 2021, month: 7, day: 10 }, value: 38 },
-        ])
-
-
-
-        const globalDebt = chart.addLineSeries({
-            color: COLOR.warning,
-            priceScaleId: 'right',
-            ...rightPriceConfig
-        })
-        globalDebt.setData([
-            { time: { year: 2021, month: 7, day: 4 }, value: 7164343 },
-            { time: { year: 2021, month: 7, day: 5 }, value: 1366123 },
-            { time: { year: 2021, month: 7, day: 6 }, value: 1997123 },
-            { time: { year: 2021, month: 7, day: 7 }, value: 1528123 },
-            { time: { year: 2021, month: 7, day: 8 }, value: 1412123 },
-            { time: { year: 2021, month: 7, day: 9 }, value: 2003123 },
-            { time: { year: 2021, month: 7, day: 10 }, value: 3843434 },
-        ])
-    }
+    //     const globalDebt = chart.addLineSeries({
+    //         color: COLOR.warning,
+    //         priceScaleId: 'right',
+    //         ...rightPriceConfig
+    //     })
+    //     setGlobalDebtLineSeries(globalDebt)
+    // }
 
     const { bindRef } = useReponsiveChart({
         rightPriceScale: {
@@ -145,7 +122,26 @@ export default function DebtTracker() {
             },
         },
         onReady(chart, container) {
-            setSeriesData(chart)
+            const acitveDebt = chart.addLineSeries({
+                color: '#3377FF',
+                priceScaleId: 'left',
+                ...leftPriceConfig
+            })
+            setAcitveDebtLineSeries(acitveDebt)
+    
+            const isuuedDebt = chart.addLineSeries({
+                color: '#2AD4B7',
+                priceScaleId: 'left',
+                ...leftPriceConfig
+            })
+            setIsuuedDebtLineSeries(isuuedDebt)
+    
+            const globalDebt = chart.addLineSeries({
+                color: COLOR.warning,
+                priceScaleId: 'right',
+                ...rightPriceConfig
+            })
+            setGlobalDebtLineSeries(globalDebt)
         },
         onCrosshairMove(param, chart, container) {
             const width = container?.clientWidth as number
@@ -193,6 +189,38 @@ export default function DebtTracker() {
             })
         }
     })
+
+    useEffect(()=>{
+        setTimeout(() => {
+            acitveDebtLineSeries?.setData([
+                { time: { year: 2021, month: 7, day: 4 }, value: 14.5 },
+                { time: { year: 2021, month: 7, day: 5 }, value: 19 },
+                { time: { year: 2021, month: 7, day: 6 }, value: 16.5 },
+                { time: { year: 2021, month: 7, day: 7 }, value: 51 },
+                { time: { year: 2021, month: 7, day: 8 }, value: 30.3 },
+                { time: { year: 2021, month: 7, day: 9 }, value: 26 },
+                { time: { year: 2021, month: 7, day: 10 }, value: 44 },
+            ])
+            isuuedDebtLineSeries?.setData([
+                { time: { year: 2021, month: 7, day: 4 }, value: 10.5 },
+                { time: { year: 2021, month: 7, day: 5 }, value: 10 },
+                { time: { year: 2021, month: 7, day: 6 }, value: 8 },
+                { time: { year: 2021, month: 7, day: 7 }, value: 42 },
+                { time: { year: 2021, month: 7, day: 8 }, value: 22 },
+                { time: { year: 2021, month: 7, day: 9 }, value: 17 },
+                { time: { year: 2021, month: 7, day: 10 }, value: 38 },
+            ])
+            globalDebtLineSeries?.setData([
+                { time: { year: 2021, month: 7, day: 4 }, value: 7164343 },
+                { time: { year: 2021, month: 7, day: 5 }, value: 1366123 },
+                { time: { year: 2021, month: 7, day: 6 }, value: 1997123 },
+                { time: { year: 2021, month: 7, day: 7 }, value: 1528123 },
+                { time: { year: 2021, month: 7, day: 8 }, value: 1412123 },
+                { time: { year: 2021, month: 7, day: 9 }, value: 2003123 },
+                { time: { year: 2021, month: 7, day: 10 }, value: 3843434 },
+            ])
+        }, );
+    },[acitveDebtLineSeries,isuuedDebtLineSeries,globalDebtLineSeries])
 
     return (
         <PageCard

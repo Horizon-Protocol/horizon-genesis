@@ -1,8 +1,8 @@
-import { useMemo } from "react";
+import { useEffect, useMemo } from "react";
 import { useAtomValue } from "jotai/utils";
 import { Box, BoxProps, Typography } from "@mui/material";
 import { debtAtom, collateralDataAtom } from "@atoms/debt";
-import { zUSDBalanceAtom } from "@atoms/balances";
+import { zAssetsBalanceAtom, zUSDBalanceAtom } from "@atoms/balances";
 import { hznRateAtom } from "@atoms/exchangeRates";
 import useUserStakingData from "@hooks/useUserStakingData";
 import { formatNumber } from "@utils/number";
@@ -12,6 +12,9 @@ import CRatioRange from "./CRatioRange";
 import HZNInfoPrice from "./HZNInfoPrice";
 import Balance from "./Balance";
 import ClaimCountDown from "./ClaimCountDown";
+import useFilterZAssets from "@hooks/useFilterZAssets";
+import { sumBy } from "lodash";
+
 
 export default function Dashboard(props: BoxProps) {
   const { collateral, transferable, debtBalance } = useAtomValue(debtAtom);
@@ -22,6 +25,9 @@ export default function Dashboard(props: BoxProps) {
   const hznRate = useAtomValue(hznRateAtom);
 
   const { stakingAPR, isEstimateAPR } = useUserStakingData();
+
+  const othersZAssets = sumBy(useFilterZAssets({zUSDIncluded:false}),"amountUSD")
+  const zAssets = sumBy(useFilterZAssets({zUSDIncluded:true}),"amountUSD")
 
   const balances = useMemo(
     () => [
@@ -55,7 +61,7 @@ export default function Dashboard(props: BoxProps) {
       {
         sectionHeader: true,
         label: "zAssets",
-        value: `?`,
+        value: `${formatNumber(zAssets)} zUSD`,
       },
       {
         label: "zUSD Balance",
@@ -64,7 +70,7 @@ export default function Dashboard(props: BoxProps) {
       },
       {
         label: "Others zAssets",
-        value: `?`,
+        value: `${formatNumber(othersZAssets)} zUSD`,
       },
     ],
     [

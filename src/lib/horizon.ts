@@ -61,5 +61,12 @@ const horizon: Horizon = {
   },
 };
 
+declare global {
+  interface Window {
+    $horizon?: Horizon;
+  }
+}
+window.$horizon = horizon;
+
 export type { Synth };
 export default horizon;

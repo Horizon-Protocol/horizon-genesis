@@ -5,6 +5,7 @@ import { formatPercent, formatNumber } from "@utils/number";
 import noZasset from "@assets/images/no-zasset.png";
 import ConnectButton from "@components/ConnectButton";
 import useWallet from "@hooks/useWallet";
+import YourZAssetPortfolio from "./YourZAssetPortfolio";
 
 const tmpdata = [
     {
@@ -85,7 +86,7 @@ export default function YourPortfolio() {
             mt: 2,
             width: {
                 xs: '90%',
-                sm: '300px',
+                sm: '340px',
             },
             height: "300px",
             display: 'flex',
@@ -115,37 +116,7 @@ export default function YourPortfolio() {
                     color: COLOR.safe
                 }}>$71.45</span>
             </Typography>
-            <ListItem {...{
-                text: ["zAssset", "Balance", "Value", "Portfolio %"]
-            }} />
-            
-            {/* {!connected && <ConnectButton fullWidth sx={{
-                width:'340px',
-                height: '36px'
-            }}/>} */}
-
-            {/* <Box sx={{
-                display: 'flex',
-                fontSize: '12px',
-                color: '#5D6588'
-            }}><img style={{ marginRight: '9px' }} src={noZasset} />No zAssets</Box> */}
-
-             {tmpdata.map((data, index) =>
-                <ListItem key={index} {...{
-                    text: [
-                        data.name,
-                        formatNumber(data.amount),
-                        formatNumber(data.amountUSD),
-                        formatPercent(data?.percent ?? 0)],
-                    props: [
-                        { color: COLOR.text },
-                        { color: COLOR.text, fontWeight: 'bold' },
-                        { color: COLOR.text, opacity: .5 },
-                        { color: COLOR.text }
-                    ],
-                    index: index
-                }} />
-            )}
+            <YourZAssetPortfolio/>
         </Box>
     )
 }

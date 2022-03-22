@@ -74,7 +74,9 @@ export default function useWallet() {
     () => (account ? formatAddress(account) : ""),
     [account]
   );
-  const address = useMemo(() => account|| "", [account]);
+  const address = useMemo(() => {
+    return (account|| "")}
+    , [account]);
   // const address = useMemo(() => "0x8660684212F371F1834de5651F609af5D7F648F7" || "", [account]);
 
   return {

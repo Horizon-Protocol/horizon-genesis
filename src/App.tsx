@@ -38,6 +38,7 @@ import DebtTracker from "@pages/DebtTracker";
 import { display } from "@mui/system";
 import Escrow from "@pages/Escrow";
 import History from "@pages/History";
+import useQueryDebt from "@hooks/query/useQueryDebt";
 
 const AppDisabled = !!import.meta.env.VITE_APP_DISABLED;
 
@@ -66,6 +67,7 @@ function App() {
   useFetchFeePool();
   useFetchRewards();
   useFetchHorizonData();
+  useQueryDebt()
 
   const refresh = useRefresh();
 
@@ -291,7 +293,7 @@ function App() {
                   <AlertDashboard {...alertProps} />
                 </>
               )}
-              <Dashboard />
+              {/* <Dashboard /> */}
               {downMD && (
                 <Button
                   startIcon={expanded ? <ExpandMore /> : <ExpandLess />}

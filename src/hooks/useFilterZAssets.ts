@@ -8,7 +8,7 @@ import { useMemo } from "react";
 interface FilterParams {
     category?: string;
     keyword?: string;
-    zUSDIncluded?: boolean
+    zUSDIncluded?: boolean;
 }
 
 export default function useFilterZAssets({
@@ -42,6 +42,7 @@ export default function useFilterZAssets({
             }
             return true;
         });
-    }, [ready, zUSDIncluded, category, keyword]);
+    }, [ready, zAssetsBalanceInfo, zUSDIncluded, category, keyword]);
+
     return filteredZAssets
 }

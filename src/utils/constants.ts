@@ -166,3 +166,7 @@ export const REACT_QUERY_DEFAULT_OPTIONS: Partial<DefaultOptions["queries"]> = {
   // staleTime: 15000,
   refetchInterval: 15000, // 15s,
 };
+
+//horizon subgraphs endpoint
+export const GRAPH_ENDPOINT =
+  "https://api.thegraph.com/subgraphs/name/njess00/exchanger";

@@ -7,7 +7,9 @@ declare global {
     interface ZAssetsBalanceInfo extends Partial<Synth> {
         color?: string;
         amountUSD?: number;
-        amounta?: number;
+        amount?: number;
+        percent?: number;
+        id?: string;
     }
   }
 

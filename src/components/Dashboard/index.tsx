@@ -15,7 +15,6 @@ import ClaimCountDown from "./ClaimCountDown";
 import useFilterZAssets from "@hooks/useFilterZAssets";
 import { sumBy } from "lodash";
 
-
 export default function Dashboard(props: BoxProps) {
   const { collateral, transferable, debtBalance } = useAtomValue(debtAtom);
   const { stakedCollateral, dashboardEscrowed } =

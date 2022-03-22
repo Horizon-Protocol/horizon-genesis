@@ -12,7 +12,7 @@ import { formatNumber } from "@utils/number";
 import { ratesAtom } from "@atoms/exchangeRates";
 import { useMemo } from "react";
 import horizon from "@lib/horizon";
-import { values } from "lodash";
+import { sumBy, values } from "lodash";
 
 export default function useTokensBalance() {
   const { provider, account } = useWallet();
@@ -41,13 +41,22 @@ export default function useTokensBalance() {
     .map((item, index) => {
       return {
         ...item,
+        id: item.name,
         amount: zAssetsBalance[item.name]!.toNumber(),
         amountUSD: zAssetsBalance[item.name]!.multipliedBy(
           rates[item.name]!
         ).toNumber(),
       }
     })
-    setZAssetsBalanceInfo(noZeroZAssets)
+    const totalUSD = sumBy(noZeroZAssets, "amountUSD");
+    const fulInfoZAssetBalance = noZeroZAssets.map((item,index) => {
+      return {
+        ...item,
+        percent: item.amountUSD / totalUSD,
+      }
+    })
+    console.log("========fulInfoZAssetBalance======",fulInfoZAssetBalance)
+    setZAssetsBalanceInfo(fulInfoZAssetBalance)
   },[zAssetsBalance,rates])
 
   useQuery<ZAssetsBalance>(

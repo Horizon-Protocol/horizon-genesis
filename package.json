@@ -21,6 +21,7 @@
     "@mui/lab": "^5.0.0-alpha.48",
     "@mui/material": "^5.0.1",
     "@mui/styles": "^5.3.0",
+    "@mui/x-data-grid": "5.2.0",
     "@types/node": "^15.3.0",
     "@web3-react/core": "^6.1.9",
     "@web3-react/injected-connector": "^6.0.7",
@@ -30,6 +31,7 @@
     "date-fns": "^2.21.3",
     "ethers": "5.5.2",
     "events": "^3.3.0",
+    "graphql-request": "^4.1.0",
     "jotai": "^1.2.2",
     "lightweight-charts": "^3.8.0",
     "lodash": "^4.17.21",
@@ -46,8 +48,7 @@
     "react-number-format": "^4.5.5",
     "react-query": "^3.16.0",
     "react-router-dom": "^5.3.0",
-    "victory": "^36.3.0",
-    "@mui/x-data-grid": "5.2.0"
+    "victory": "^36.3.0"
   },
   "devDependencies": {
     "@typechain/ethers-v5": "8.0.5",

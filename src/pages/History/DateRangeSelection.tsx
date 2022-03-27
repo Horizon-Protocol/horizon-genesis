@@ -7,19 +7,21 @@ import DateRangePicker, { DateRange } from '@mui/lab/DateRangePicker';
 import { COLOR, COLOR_BG } from "@utils/theme/constants";
 import dropdown_arrow from "@assets/images/hitory-dropdown-arrow.png";
 import { styled } from "@mui/material/styles";
-import { HistoryDateRange } from "@atoms/record";
+// import { HistoryDateRange } from "@atoms/record";
 import { useAtom } from "jotai";
+import { HistoryRangeDateProps } from "./HistoryRecord";
 
 const Img = styled("img")``;
 
-export default function DateRangeSelection(props: BoxProps) {
+interface SelectDateRangeProps{
+    selectDateRange : (range: HistoryRangeDateProps) => void
+}
+
+export default function DateRangeSelection({selectDateRange, ...props}: BoxProps & SelectDateRangeProps) {
 
     const [value, setValue] = useState<DateRange<Date>>([null, null]);
     const [open, setOpen] = useState<boolean>(false)
     const [dateDropDown, setDateDropDown] = useState<boolean>(false);
-    const [historyDateRange, setHistoryDateRange] = useAtom(HistoryDateRange)
-
-    // {dateContent(startProps?.inputProps?.value,endProps?.inputProps?.value)}
 
     const dateContent = (start: string, end: string) => {
         if (start == '' && end == ''){
@@ -79,9 +81,7 @@ export default function DateRangeSelection(props: BoxProps) {
                 okText={''}
                 showToolbar={false}
                 onChange={(newValue) => {
-                    // console.log('========newValue========', {
-                    //     newValue: newValue,
-                    // })
+                    selectDateRange({start:newValue[0], end:newValue[1]})
                     setValue(newValue);
                 }}
                 renderInput={(startProps, endProps) => {

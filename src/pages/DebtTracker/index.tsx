@@ -2,32 +2,36 @@ import PageCard from "@components/PageCard";
 import DebtOverview from "@components/Record/Debt/DebtOverview";
 import useReponsiveChart from "@hooks/useReponsiveChart";
 import { Box, Typography } from "@mui/material";
-import { BarPrice, BusinessDay, IChartApi, ISeriesApi, LineSeriesPartialOptions, MouseEventParams, Point, PriceFormat } from "lightweight-charts";
-import { padStart } from "lodash";
+import { BarPrice, BusinessDay, IChartApi, ISeriesApi, LineData, LineSeriesPartialOptions, MouseEventParams, Point, PriceFormat, WhitespaceData } from "lightweight-charts";
+import { padStart, values } from "lodash";
 import { COLOR } from "@utils/theme/constants";
-import { formatFiatCurrency } from "@utils/number";
+import { formatFiatCurrency, formatNumber } from "@utils/number";
 import { useState } from "react";
 import dayjs from "dayjs";
 import { time } from "console";
 import GlobalPortfolio from "./GlobalPortfolio";
 import YourPortfolio from "./YourPortfolio";
 import { useEffect } from "react";
+import { globalDebtAtom, historicalDebtAtom } from "@atoms/record";
+import { useAtomValue } from "jotai/utils";
 
-interface ToolTipPros {
+interface ToolTipCellPros{
+    color: string;
+    title: string;
+    value: string;
+}
+
+interface ToolTipProps {
     toolTipDisplay: string,
     left?: string,
     top?: string,
     time?: string,
-    debts?: string[]
+    debts?: ToolTipCellPros[]
 }
 
 export default function DebtTracker() {
 
-    const [acitveDebtLineSeries, setAcitveDebtLineSeries] = useState<ISeriesApi<"Line"> | null>(null);
-    const [isuuedDebtLineSeries, setIsuuedDebtLineSeries] = useState<ISeriesApi<"Line"> | null>(null);
-    const [globalDebtLineSeries, setGlobalDebtLineSeries] = useState<ISeriesApi<"Line"> | null>(null);
-
-    const [toolTipProps, setToolTipProps] = useState<ToolTipPros>({
+    const [toolTipProps, setToolTipProps] = useState<ToolTipProps>({
         toolTipDisplay: 'none',
         left: '0',
         top: '0',
@@ -46,6 +50,13 @@ export default function DebtTracker() {
             formatter(priceValue: BarPrice) {
                 //   return priceValue + "dsds"
                 return formatFiatCurrency(priceValue, { prefix: "$" });
+                // return formatFiatCurrency(priceValue, {
+                //     prefix: "$",
+                //     average: true,
+                //     mantissa: 4,
+                //     optionalMantissa: true,
+                //     spaceSeparated: true
+                // });
             },
         },
     }
@@ -71,28 +82,9 @@ export default function DebtTracker() {
         },
     }
 
-    // const setSeriesData = (chart: IChartApi) => {
-    //     const acitveDebt = chart.addLineSeries({
-    //         color: '#3377FF',
-    //         priceScaleId: 'left',
-    //         ...leftPriceConfig
-    //     })
-    //     setAcitveDebtLineSeries(acitveDebt)
-
-    //     const isuuedDebt = chart.addLineSeries({
-    //         color: '#2AD4B7',
-    //         priceScaleId: 'left',
-    //         ...leftPriceConfig
-    //     })
-    //     setIsuuedDebtLineSeries(isuuedDebt)
-
-    //     const globalDebt = chart.addLineSeries({
-    //         color: COLOR.warning,
-    //         priceScaleId: 'right',
-    //         ...rightPriceConfig
-    //     })
-    //     setGlobalDebtLineSeries(globalDebt)
-    // }
+    const [acitveDebtLineSeries, setAcitveDebtLineSeries] = useState<ISeriesApi<"Line"> | null>(null);
+    const [isuuedDebtLineSeries, setIsuuedDebtLineSeries] = useState<ISeriesApi<"Line"> | null>(null);
+    const [globalDebtLineSeries, setGlobalDebtLineSeries] = useState<ISeriesApi<"Line"> | null>(null);
 
     const { bindRef } = useReponsiveChart({
         rightPriceScale: {
@@ -127,100 +119,150 @@ export default function DebtTracker() {
                 priceScaleId: 'left',
                 ...leftPriceConfig
             })
-            setAcitveDebtLineSeries(acitveDebt)
-    
+
             const isuuedDebt = chart.addLineSeries({
                 color: '#2AD4B7',
                 priceScaleId: 'left',
                 ...leftPriceConfig
             })
-            setIsuuedDebtLineSeries(isuuedDebt)
-    
+
             const globalDebt = chart.addLineSeries({
                 color: COLOR.warning,
                 priceScaleId: 'right',
                 ...rightPriceConfig
             })
+
+            setAcitveDebtLineSeries(acitveDebt)
+            setIsuuedDebtLineSeries(isuuedDebt)
             setGlobalDebtLineSeries(globalDebt)
+
+            chart.subscribeCrosshairMove((param) => {
+                const width = container?.clientWidth as number
+                const height = container?.clientHeight as number
+                const toolTipWidth = 224
+                const toolTipHeight = 112
+                const toolTipMargin = 10
+                const leftPriceWidth = 48
+                const rightPriceWidth = 62
+
+                let point = param.point as Point
+                if (!param.time || point.x < 0 || point.x > width || point.y < 0 || point.y > height) {
+                    setToolTipProps({ toolTipDisplay: 'none' })
+                    return;
+                }
+
+                let x = point?.x
+                let y = point?.y
+
+                let left = x - toolTipWidth - toolTipMargin + leftPriceWidth
+                if (x < (toolTipMargin + toolTipWidth)) {
+                    left = left + toolTipWidth + 2 * toolTipMargin
+                }
+
+                let top = y - toolTipHeight - toolTipMargin;
+                if (top < 0) {
+                    top = top + 2 * toolTipMargin + toolTipHeight;
+                }
+
+                const businessTime = param.time as BusinessDay
+
+                // console.log("oncross", {
+                //     acitveDebtLineSeries: acitveDebt,
+                //     param: param,
+                //     chart: chart,
+                //     container: container
+                // })
+
+                const acitveDebtValue = formatFiatCurrency(param.seriesPrices.get(acitveDebt) as BarPrice, { prefix: "$", mantissa: 2 })
+                const issuedDebtValue = formatFiatCurrency(param.seriesPrices.get(isuuedDebt) as BarPrice, { prefix: "$", mantissa: 2 })
+                const globalDebtValue = formatFiatCurrency(param.seriesPrices.get(globalDebt) as BarPrice, { prefix: "$", mantissa: 2 })
+
+                const toolTipDispplay = []
+
+                if (acitveDebtValue != "$NaN") {toolTipDispplay.push({
+                    color: '#3377FF',
+                    title: 'Active Debt',
+                    value: acitveDebtValue
+                })}
+                if (issuedDebtValue != "$NaN") {toolTipDispplay.push({
+                    color: '#2AD4B7',
+                    title: 'Issued Debt',
+                    value: issuedDebtValue
+                })}
+                if (globalDebtValue != "$NaN") {toolTipDispplay.push({
+                    color: '#FFA539',
+                    title: 'Global Debt',
+                    value: globalDebtValue
+                })}
+
+                console.log("acitveDebtValue", acitveDebtValue)
+                setToolTipProps({
+                    toolTipDisplay: 'block',
+                    left: left + 'px',
+                    top: top + 'px',
+                    time: dayjs(
+                        new Date(
+                            businessTime.year,
+                            businessTime.month - 1,
+                            businessTime.day
+                        )
+                    ).format("MMM D, YYYY"),
+                    debts: toolTipDispplay,
+                })
+            });
         },
-        onCrosshairMove(param, chart, container) {
-            const width = container?.clientWidth as number
-            const height = container?.clientHeight as number
-            const toolTipWidth = 224
-            const toolTipHeight = 112
-            const toolTipMargin = 10
-            const leftPriceWidth = 48
-            const rightPriceWidth = 62
-
-            let point = param.point as Point
-            if (!param.time || point.x < 0 || point.x > width || point.y < 0 || point.y > height) {
-                setToolTipProps({ toolTipDisplay: 'none' })
-                return;
-            }
-
-            let x = point?.x
-            let y = point?.y
-
-            let left = x - toolTipWidth - toolTipMargin + leftPriceWidth
-            if (x < (toolTipMargin + toolTipWidth)) {
-                left = left + toolTipWidth + 2 * toolTipMargin
-            }
-
-            let top = y - toolTipHeight - toolTipMargin;
-            if (top < 0) {
-                top = top + 2 * toolTipMargin + toolTipHeight;
-            }
-
-            const businessTime = param.time as BusinessDay
-            // console.log('========chartparam=======',param.seriesPrices[0])
-            
-            setToolTipProps({
-                toolTipDisplay: 'block',
-                left: left + 'px',
-                top: top + 'px',
-                time: dayjs(
-                    new Date(
-                        businessTime.year,
-                        businessTime.month - 1,
-                        businessTime.day
-                    )
-                ).format("MMM D, YYYY"),
-                debts: ["$62.91", "$32.92", "$3002320.91",],
-            })
-        }
+        // onCrosshairMove(param, chart, container) {
+        // }
     })
 
-    useEffect(()=>{
-        setTimeout(() => {
-            acitveDebtLineSeries?.setData([
-                { time: { year: 2021, month: 7, day: 4 }, value: 14.5 },
-                { time: { year: 2021, month: 7, day: 5 }, value: 19 },
-                { time: { year: 2021, month: 7, day: 6 }, value: 16.5 },
-                { time: { year: 2021, month: 7, day: 7 }, value: 51 },
-                { time: { year: 2021, month: 7, day: 8 }, value: 30.3 },
-                { time: { year: 2021, month: 7, day: 9 }, value: 26 },
-                { time: { year: 2021, month: 7, day: 10 }, value: 44 },
-            ])
-            isuuedDebtLineSeries?.setData([
-                { time: { year: 2021, month: 7, day: 4 }, value: 10.5 },
-                { time: { year: 2021, month: 7, day: 5 }, value: 10 },
-                { time: { year: 2021, month: 7, day: 6 }, value: 8 },
-                { time: { year: 2021, month: 7, day: 7 }, value: 42 },
-                { time: { year: 2021, month: 7, day: 8 }, value: 22 },
-                { time: { year: 2021, month: 7, day: 9 }, value: 17 },
-                { time: { year: 2021, month: 7, day: 10 }, value: 38 },
-            ])
-            globalDebtLineSeries?.setData([
-                { time: { year: 2021, month: 7, day: 4 }, value: 7164343 },
-                { time: { year: 2021, month: 7, day: 5 }, value: 1366123 },
-                { time: { year: 2021, month: 7, day: 6 }, value: 1997123 },
-                { time: { year: 2021, month: 7, day: 7 }, value: 1528123 },
-                { time: { year: 2021, month: 7, day: 8 }, value: 1412123 },
-                { time: { year: 2021, month: 7, day: 9 }, value: 2003123 },
-                { time: { year: 2021, month: 7, day: 10 }, value: 3843434 },
-            ])
-        }, );
-    },[acitveDebtLineSeries,isuuedDebtLineSeries,globalDebtLineSeries])
+    const historicalDebt = useAtomValue(historicalDebtAtom);
+    const globalDebt = useAtomValue(globalDebtAtom)
+    useEffect(() => {
+        if (historicalDebt?.length) {
+
+            const activeRows: (LineData | WhitespaceData)[] = []
+            for (let i = historicalDebt.length - 1; i >= 0; i--) {
+                var debt = historicalDebt[i]
+                const time = dayjs.unix(Number(debt.timestamp / 1000)).format("YYYY-MM-DD")
+                if (!activeRows.find(x => x.time == time)) {
+                    activeRows.push({
+                        time: time,
+                        value: Number(debt.actualDebt)
+                    })
+                }
+            }
+            acitveDebtLineSeries?.setData(activeRows.reverse())
+
+            const issuedRows: (LineData | WhitespaceData)[] = []
+            for (let i = historicalDebt.length - 1; i >= 0; i--) {
+                var debt = historicalDebt[i]
+                const time = dayjs.unix(Number(debt.timestamp / 1000)).format("YYYY-MM-DD")
+                if (!issuedRows.find(x => x.time == time)) {
+                    issuedRows.push({
+                        time: time,
+                        value: Number(debt.issuanceDebt)
+                    })
+                }
+            }
+            isuuedDebtLineSeries?.setData(issuedRows.reverse())
+        }
+
+        if (globalDebt?.length) {
+            const globalRows: (LineData | WhitespaceData)[] = []
+            for (let i = globalDebt?.length - 1; i >= 0; i--) {
+                var gdebt = globalDebt[i]
+                const time = dayjs.unix(Number(gdebt.id)).format("YYYY-MM-DD")
+                if (!globalRows.find(x => x.time == time)) {
+                    globalRows.push({
+                        time: time,
+                        value: Number(gdebt.totalDebt)
+                    })
+                }
+                globalDebtLineSeries?.setData(globalRows)
+                // setGlobalDebtLineSeries(globalDebtLineSeries)
+            }
+        }
+    }, [historicalDebt, globalDebt, acitveDebtLineSeries, isuuedDebtLineSeries, globalDebtLineSeries])
 
     return (
         <PageCard
@@ -256,10 +298,24 @@ export default function DebtTracker() {
                 justifyContent: 'space-around'
             }}>
                 <GlobalPortfolio />
-                <YourPortfolio /> 
+                <YourPortfolio />
             </Box>
         </PageCard>
     )
+}
+
+interface ToolTipCellPros{
+    color: string;
+    title: string;
+    value: string;
+}
+
+interface ToolTipProps {
+    toolTipDisplay: string,
+    left?: string,
+    top?: string,
+    time?: string,
+    debts?: ToolTipCellPros[]
 }
 
 const ToolTip = ({
@@ -268,11 +324,11 @@ const ToolTip = ({
     top,
     time,
     debts,
-}: ToolTipPros) => {
+}: ToolTipProps) => {
     return (
         <Box sx={{
             width: '224px',
-            height: '112px',
+            // height: '112px',
             position: 'absolute',
             display: toolTipDisplay,
             fontSize: '12px',
@@ -292,7 +348,7 @@ const ToolTip = ({
                 letterSpacing: '1px'
             }}>{time}</Typography>
             <Box sx={{
-                height: '82px',
+                // height: '82px',
                 width: '100%',
                 backgroundColor: 'rgba(16, 38, 55, 0.3)',
                 display: 'flex',
@@ -305,21 +361,22 @@ const ToolTip = ({
                     <Box sx={{
                         display: 'flex',
                         alignItems: 'center',
+                        mt:'3px',
                     }}>
                         <Box sx={{
                             height: '10px',
                             width: '10px',
-                            backgroundColor: ['#3377FF', '#2AD4B7', '#FFA539'][index],
+                            backgroundColor: debts[index].color,
                             border: '1px solid #FFFFFF',
                             borderRadius: '50%'
                         }} />
                         <Typography sx={{
-                            color: ['#3377FF', '#2AD4B7', '#FFA539'][index],
+                            color: debts[index].color,
                             fontSize: '12px',
                             letterSpacing: '0.5px',
                             ml: '10px'
                         }}>
-                            {['Active Debt', 'Issued Debt', 'Global Debt'][index]}
+                            {debts[index].title}
                         </Typography>
                         <Typography sx={{
                             color: COLOR.text,
@@ -330,7 +387,7 @@ const ToolTip = ({
                             textAlign: 'right',
                             // backgroundColor:'red'
                         }}>
-                            {debts[index]}
+                            {debts[index].value}
                         </Typography>
                     </Box>
                 ))}

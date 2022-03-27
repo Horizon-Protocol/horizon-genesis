@@ -14,7 +14,7 @@ import { useMemo } from "react";
 import horizon from "@lib/horizon";
 import { sumBy, values } from "lodash";
 
-export default function useTokensBalance() {
+export default function useFetchZAssetsBalance() {
   const { provider, account } = useWallet();
   const horizonJs = useHorizonJs();
 
@@ -56,6 +56,8 @@ export default function useTokensBalance() {
       }
     })
     console.log("========fulInfoZAssetBalance======",fulInfoZAssetBalance)
+    console.log("========rates======",rates)
+
     setZAssetsBalanceInfo(fulInfoZAssetBalance)
   },[zAssetsBalance,rates])
 

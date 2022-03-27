@@ -59,7 +59,7 @@ export default function useFetchAppData() {
       liquidationRatio,
       // liquidationDelay,
     ]) {
-      console.log("====AppData", {
+      console.log("====AppData====", {
         lastDebtLedgerEntry: lastDebtLedgerEntry.toString(),
         totalSupply: totalSupply.toString(),
         totalIssuedZUSDExclEth: totalIssuedZUSDExclEth.toString(),

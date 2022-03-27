@@ -1,89 +1,23 @@
 import { Box, BoxProps, Hidden, Typography } from "@mui/material";
 import { COLOR } from "@utils/theme/constants";
 import PieChart from "./PieChart";
-import { formatPercent, formatNumber } from "@utils/number";
-import noZasset from "@assets/images/no-zasset.png";
-import ConnectButton from "@components/ConnectButton";
 import useWallet from "@hooks/useWallet";
 import YourZAssetPortfolio from "./YourZAssetPortfolio";
-
-const tmpdata = [
-    {
-        amount: 310.19859657733696,
-        amountUSD: 310.19859657733696,
-        asset: "USD",
-        category: "forex",
-        color: "#2AD4B7",
-        description: "US Dollars",
-        id: "zUSD",
-        name: "zUSD",
-        percent: 0.6241128959077654,
-        sign: "$",
-        subclass: "MultiCollateralSynth"
-    },
-    {
-        amount: 0.24656246908695223,
-        amountUSD: 96.30988166073054,
-        asset: "BNB",
-        category: "crypto",
-        color: "#3377FF",
-        description: "Binance Coin",
-        feed: "0x2514895c72f50D8bd4B4F9b1110F0D6bD2c97526",
-        id: "zBNB",
-        name: "zBNB",
-        percent: 0.19377340778144647,
-        sign: "",
-        subclass: "MultiCollateralSynth"
-    },
-    {
-        amount: 713.738405863125,
-        amountUSD: 90.51473440706862,
-        asset: "DOGE",
-        category: "crypto",
-        color: "#F0B90B",
-        description: "DOGE",
-        feed: "0x963D5e7f285Cc84ed566C486c3c1bC911291be38",
-        id: "zDOGE",
-        name: "zDOGE",
-        percent: 0.1821136963107882,
-        sign: "",
-        subclass: "PurgeableSynth"
-    },
-    {
-        amount: 713.738405863125,
-        amountUSD: 90.51473440706862,
-        asset: "DOGE",
-        category: "crypto",
-        color: "#F0B90B",
-        description: "DOGE",
-        feed: "0x963D5e7f285Cc84ed566C486c3c1bC911291be38",
-        id: "zDOGE",
-        name: "zDOGE",
-        percent: 0.1821136963107882,
-        sign: "",
-        subclass: "PurgeableSynth"
-    },
-    {
-        amount: 713.738405863125,
-        amountUSD: 90.51473440706862,
-        asset: "DOGE",
-        category: "crypto",
-        color: "#F0B90B",
-        description: "DOGE",
-        feed: "0x963D5e7f285Cc84ed566C486c3c1bC911291be38",
-        id: "zDOGE",
-        name: "zDOGE",
-        percent: 0.1821136963107882,
-        sign: "",
-        subclass: "PurgeableSynth"
-    },
-]
+import useFilterZAssets from "@hooks/useFilterZAssets";
+import { sumBy } from "lodash";
+import { formatNumber } from "@utils/number";
 
 export default function YourPortfolio() {
+
     const { connectWallet, connected, deactivate } = useWallet();
+    const zAssets = sumBy(useFilterZAssets({zUSDIncluded:true}),"amountUSD")
+
     return (
         <Box sx={{
-            mt: 2,
+            mt: {
+                xs: 4,
+                sm: 2,
+            },
             width: {
                 xs: '90%',
                 sm: '340px',
@@ -114,7 +48,7 @@ export default function YourPortfolio() {
                     opacity: 0.5
                 }}>Total zAsset Value: </span><span style={{
                     color: COLOR.safe
-                }}>$71.45</span>
+                }}>${formatNumber(zAssets)}</span>
             </Typography>
             <YourZAssetPortfolio/>
         </Box>

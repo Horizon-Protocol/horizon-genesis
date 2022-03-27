@@ -15,13 +15,13 @@ const FullNameFix: { [k: string]: string } = {
   zMATIC: "Polygon",
 };
 
-export interface PortfolioRow extends Synth {
-  id: CurrencyKey;
-  amount: number;
-  amountUSD: number;
-  percent: number;
-  color: string;
-}
+// export interface PortfolioRow extends Synth {
+//   id: CurrencyKey;
+//   amount: number;
+//   amountUSD: number;
+//   percent: number;
+//   color: string;
+// }
 
 export const getCurrencyKeys: () => CurrencyKey[] = () => {
   return horizon.js?.synths?.map(({ name }) => name) || [];

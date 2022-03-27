@@ -1,14 +1,7 @@
-import { alpha, Box, BoxProps, TableCellProps, Typography } from "@mui/material";
-import Table from '@mui/material/Table';
-import TableBody from '@mui/material/TableBody';
-import TableCell from '@mui/material/TableCell';
-import TableContainer from '@mui/material/TableContainer';
-import TableHead from '@mui/material/TableHead';
-import TablePagination from '@mui/material/TablePagination';
-import TableRow from '@mui/material/TableRow';
-import { useState } from "react";
-import { COLOR, COLOR_BG_30 } from "@utils/theme/constants";
-import { DataGrid, GridColDef } from '@mui/x-data-grid';
+import { alpha, Box, Typography } from "@mui/material";
+import { useState, useMemo, useEffect } from "react";
+import { COLOR } from "@utils/theme/constants";
+import { GridColDef } from '@mui/x-data-grid';
 import CustomDataGrid from "@components/CustomDataGrid";
 import {
     SortedDescendingIcon,
@@ -22,24 +15,74 @@ import ActionLink from "@components/Alerts/ActionLink";
 import NoRowsOverlay from "@components/NoRowsOverlay";
 import DateRangeSelection from "./DateRangeSelection";
 import TypeSelection from "./TypeSelection";
+import { useAtomValue } from "jotai/utils";
+import { historicalOperationAtom } from "@atoms/record";
+import dayjs from "dayjs";
+import { formatNumber } from "@utils/number";
+import { HistoryType } from "@atoms/record";
+import { HistoricalOperationData } from "@hooks/query/useQueryDebt";
 
-interface RowsData {
-    claimDate: string;
-    unlockDate: string;
-    amount: string | JSX.Element;
+interface HistoryDataProps{
+    id: string,
+    type: HistoryType,
+    date: string,
+    amount: string,
 }
 
-function createData(
-    claimDate: string,
-    unlockDate: string,
-    amount: string | JSX.Element,
-): RowsData {
-    return { claimDate, unlockDate, amount };
+export interface HistoryRangeDateProps{
+    start: string,
+    end: string,
 }
 
 export default function HistoryRecord() {
     const [page, setPage] = useState(0);
     const [rowsPerPage, setRowsPerPage] = useState(5);
+
+    // const [dataRows, setDataRows] = useState<HistoryDataProps[]>([])
+
+    const historicalOperationData = useAtomValue(historicalOperationAtom)
+    const [historyType, setHistoryType] = useState<HistoryType>(HistoryType.All)
+    const [historyDateRange, setHistoryDateRange] = useState<HistoryRangeDateProps>({start:'',end:''})
+
+    // const [historyType, setHistoryType] = useState<HistoryType>(HistoryType.All)
+
+
+    // useEffect(()=>{
+    //     const rowsData = historicalOperationData.map(item => {
+    //         return ({
+    //             id: item.id,
+    //             type: item.type,
+    //             date: dayjs(Number(item.timestamp) * 1000).format('DD/MM/YYYY hh:mm'),
+    //             amount: formatNumber(item.value)
+    //         })
+    //     }).reverse()
+    //     setDataRows(rowsData)
+    // },[historicalOperationData])
+
+    // const filterWithType = (type: HistoryType) => {
+
+        // setDataRows
+        // setDataRows([])
+        // alert(type)
+    // }
+
+    // useEffect(()=>{
+
+    //     setRows(historicalOperationData)
+    // },[historicalOperationData])
+
+    const dataRows = useMemo(()=>{
+        return historicalOperationData.map(item => {
+            return ({
+                id: item.id,
+                type: item.type,
+                date: dayjs(Number(item.timestamp) * 1000).format('DD/MM/YYYY hh:mm'),
+                amount: formatNumber(item.value)
+            })
+        }).reverse().filter(item => {
+            return item.type = historyType
+        })
+    },[historicalOperationData,historyType,historyDateRange])
 
     const handleChangePage = (event: unknown, newPage: number) => {
         setPage(newPage);
@@ -53,6 +96,7 @@ export default function HistoryRecord() {
     const columns: GridColDef[] = [{
         field: "type",
         headerName: "Type",
+        sortable: false,
         width: 90,
         editable: false,
         headerAlign: 'left',
@@ -99,6 +143,7 @@ export default function HistoryRecord() {
         field: "tx",
         headerName: "Tx",
         type: "number",
+        sortable: false,
         width: 80,
         editable: false,
         headerAlign: 'center',
@@ -109,62 +154,28 @@ export default function HistoryRecord() {
         },
     },]
 
-    // const rows:RowsData[] = [];
-    const rows = [
-        {
-            id: "28daceaf-7567-5f29-9818-d2f4146cdff2",
-            type: "Mint",
-            date: "Aug 21, 2021 22:13",
-            amount: 43006,
-        },
-        {
-            id: "6aef0ebf-02d7-50dc-8e5a-9c108ed7a27b",
-            type: "Burn",
-            date: "Aug 21, 2021 22:13",
-            amount: 43006,
-        },
-        {
-            id: "bdfb5923-583c-5c57-afe9-9b64785165e8",
-            type: "Claim",
-            date: "Aug 21, 2021 22:13",
-            amount: 43006,
-        },
-        {
-            id: "cba21385-5834-5019-a0f3-98635b70d53b",
-            type: "Claim",
-            date: "Aug 21, 2021 22:13",
-            amount: 43006,
-        },
-        {
-            id: "a2c09b75-08f3-5545-80c0-b1c869dd4347",
-            type: "Burn",
-            date: "Aug 21, 2021 22:13",
-            amount: 43006,
-        },
-        {
-            id: "295197c2-d961-5167-b42f-04224227effe",
-            type: "Mint",
-            date: "Aug 21, 2021 22:13",
-            amount: 43006,
-        }
-    ]
-
     return (
         <Box>
             <NoRowsOverlay
-                hidden={rows.length > 0}
+                hidden={dataRows.length > 0}
                 noRowsTitle={<>You have no transactions. Start by staking<br />HZN and minting zUSD.</>}
                 noRowsbtnTitle="STAKE NOW"
             />
-            <Box sx={{display : rows.length > 0 ? 'block' : 'none'}}>
+            <Box sx={{display : dataRows.length > 0 ? 'block' : 'none'}}>
                 <Box sx={{
                     display: 'flex',
                     // flexWrap:'wrap',
                     alignItems: 'center',
                     justifyContent: 'space-between'
                 }}>
-                    <TypeSelection {...{ width: '44%' }} />
-                    <DateRangeSelection {...{ width: '44%' }} />
+                    <TypeSelection selectType={(type)=>{
+                        setHistoryType(type)
+                    }} {...{ width: '44%' }} />
+                    <DateRangeSelection selectDateRange={(rangeDate:HistoryRangeDateProps)=>{
+                        if (rangeDate.start && rangeDate.end){
+                            setHistoryDateRange(rangeDate)
+                        }
+                    }} {...{ width: '44%' }} />
                     <Typography onClick={() => {
 
                     }} sx={{
@@ -178,7 +189,7 @@ export default function HistoryRecord() {
                 <Box sx={{ mt: '20px', width: '100%', overflow: 'hidden'}}>
                     <CustomDataGrid
                         columns={columns}
-                        rows={rows}
+                        rows={dataRows}
                         page={page}
                         autoHeight
                         pageSize={rowsPerPage}
@@ -201,7 +212,7 @@ export default function HistoryRecord() {
                         }}
                     />
                 </Box>
-                <Pagination {...{ mt: '18px' }} rowsCount={rows.length} currentPage={page} rowsPerPage={rowsPerPage} pageClick={(index) => {
+                <Pagination {...{ mt: '18px' }} rowsCount={dataRows.length} currentPage={page} rowsPerPage={rowsPerPage} pageClick={(index) => {
                     setPage(index - 1)
                 }} />
             </Box>

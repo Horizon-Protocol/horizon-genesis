@@ -169,4 +169,4 @@ export const REACT_QUERY_DEFAULT_OPTIONS: Partial<DefaultOptions["queries"]> = {
 
 //horizon subgraphs endpoint
 export const GRAPH_ENDPOINT =
-  "https://api.thegraph.com/subgraphs/name/njess00/exchanger";
+  "https://api.thegraph.com/subgraphs/name/rout-horizon/bsc4-issuance";

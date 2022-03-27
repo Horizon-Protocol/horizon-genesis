@@ -17,15 +17,6 @@ export const debtAtom = atomWithReset({
 
 export const currentCRatioPercentAtom = atom((get) => {
   const currentCRatio = get(debtAtom).currentCRatio;
-  // const targetRatio = get(targetRatioAtom);
-
-  // const percentCurrentCRatioOfTarget = currentCRatio.isZero()
-  //   ? toBN(0)
-  //   : toBN(100).multipliedBy(targetRatio).div(currentCRatio);
-
-  // return percentCurrentCRatioOfTarget.isNaN()
-  //   ? 0
-  //   : percentCurrentCRatioOfTarget.toNumber();
   return cRatioToPercent(currentCRatio);
 });
 
@@ -45,12 +36,12 @@ export const collateralDataAtom = atom((get) => {
     lockedCollateral.minus(stakedCollateral).toFixed(8)
   );
 
-  // console.log({
-  //   stakedCollateral: stakedCollateral.toNumber(),
-  //   unstakedCollateral: unstakedCollateral.toNumber(),
-  //   lockedCollateral: lockedCollateral.toNumber(),
-  //   dashboardEscrowed: dashboardEscrowed.toNumber(),
-  // });
+  console.log('collateralDataAtom',{
+    stakedCollateral: stakedCollateral.toNumber(),
+    unstakedCollateral: unstakedCollateral.toNumber(),
+    lockedCollateral: lockedCollateral.toNumber(),
+    dashboardEscrowed: dashboardEscrowed.toNumber(),
+  });
 
   return {
     stakedCollateral,
@@ -65,20 +56,8 @@ export const burnAmountToFixCRatioAtom = atom((get) => {
   return maxBN(debtBalance.minus(issuableSynths), zeroBN);
 });
 
-// zAssets
-
-// export const zAssetsBalanceAtom = atomWithReset<SynthBalancesMap>({});
-
-// export const zUSDBalanceAtom = selectAtom(
-//   zAssetsBalanceAtom,
-//   (rates) => rates["zUSD"]?.balance || zeroBN
-// );
-
 // reset all debt balances
 export const resetDebtAtom = atom(null, (get, set) => {
   set(debtAtom, RESET);
 });
 
-// export const resetZAssetsAtom = atom(null, (get, set) => {
-//   set(zAssetsBalanceAtom, RESET);
-// });

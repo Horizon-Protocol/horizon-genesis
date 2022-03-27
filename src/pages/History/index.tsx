@@ -1,12 +1,12 @@
 import PageCard from "@components/PageCard";
 import HistoryRecord from "./HistoryRecord";
 import { useUpdateAtom } from "jotai/utils";
-import { HistoryTypeAtom } from "@atoms/record";
+// import { HistoryTypeAtom } from "@atoms/record";
 
 export default function History() {
 
     // const [historyType, setHistoryType] = useAtom(HistoryTypeAtom)
-    const updateHistoryType = useUpdateAtom(HistoryTypeAtom)
+    // const updateHistoryType = useUpdateAtom(HistoryTypeAtom)
     // const update
 
     return (

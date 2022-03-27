@@ -17,8 +17,7 @@ import { readyAtom } from "@atoms/app";
 import useSetupHorizonLib from "@hooks/useSetupHorizonLib";
 import useFetchAppData from "@hooks/useFetchAppData";
 import useFetchDebtData from "@hooks/useFetchDebtData";
-import useFetchZAssets from "@hooks/useFetchZAssets";
-import useTokensBalance from "@hooks/query/useTokensBalance";
+import useFetchZAssetsBalance from "@hooks/useFetchZAssetsBalance";
 import useFetchFeePool from "@hooks/useFetchFeePool";
 import useFetchRewards from "@hooks/useFetchRewards";
 import useFetchHorizonData from "@hooks/useFetchHorizonData";
@@ -39,6 +38,7 @@ import { display } from "@mui/system";
 import Escrow from "@pages/Escrow";
 import History from "@pages/History";
 import useQueryDebt from "@hooks/query/useQueryDebt";
+import useQueryGlobalDebt from "@hooks/query/useQueryGlobalDebt";
 
 const AppDisabled = !!import.meta.env.VITE_APP_DISABLED;
 
@@ -63,11 +63,12 @@ function App() {
   useSetupHorizonLib();
   useFetchAppData();
   useFetchDebtData();
-  useTokensBalance();
+  useFetchZAssetsBalance();
   useFetchFeePool();
   useFetchRewards();
   useFetchHorizonData();
   useQueryDebt()
+  useQueryGlobalDebt()
 
   const refresh = useRefresh();
 
@@ -293,7 +294,7 @@ function App() {
                   <AlertDashboard {...alertProps} />
                 </>
               )}
-              {/* <Dashboard /> */}
+              <Dashboard />
               {downMD && (
                 <Button
                   startIcon={expanded ? <ExpandMore /> : <ExpandLess />}

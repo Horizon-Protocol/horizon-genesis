@@ -1,81 +1,51 @@
 import { Box, Typography } from "@mui/material";
-import { COLOR } from "@utils/theme/constants";
+import { COLOR , PORTFOLIO_COLORS} from "@utils/theme/constants";
 import PieChart from "./PieChart";
 import { formatPercent, formatNumber } from "@utils/number";
-
-const tmpdata = [
-    {
-        amount: 310.19859657733696,
-        amountUSD: 310.19859657733696,
-        asset: "USD",
-        category: "forex",
-        color: "#2AD4B7",
-        description: "US Dollars",
-        id: "zUSD",
-        name: "zUSD",
-        percent: 0.6241128959077654,
-        sign: "$",
-        subclass: "MultiCollateralSynth"
-    },
-    {
-        amount: 0.24656246908695223,
-        amountUSD: 96.30988166073054,
-        asset: "BNB",
-        category: "crypto",
-        color: "#3377FF",
-        description: "Binance Coin",
-        feed: "0x2514895c72f50D8bd4B4F9b1110F0D6bD2c97526",
-        id: "zBNB",
-        name: "zBNB",
-        percent: 0.19377340778144647,
-        sign: "",
-        subclass: "MultiCollateralSynth"
-    },
-    {
-        amount: 713.738405863125,
-        amountUSD: 90.51473440706862,
-        asset: "DOGE",
-        category: "crypto",
-        color: "#F0B90B",
-        description: "DOGE",
-        feed: "0x963D5e7f285Cc84ed566C486c3c1bC911291be38",
-        id: "zDOGE",
-        name: "zDOGE",
-        percent: 0.1821136963107882,
-        sign: "",
-        subclass: "PurgeableSynth"
-    },
-    {
-        amount: 713.738405863125,
-        amountUSD: 90.51473440706862,
-        asset: "DOGE",
-        category: "crypto",
-        color: "#F0B90B",
-        description: "DOGE",
-        feed: "0x963D5e7f285Cc84ed566C486c3c1bC911291be38",
-        id: "zDOGE",
-        name: "zDOGE",
-        percent: 0.1821136963107882,
-        sign: "",
-        subclass: "PurgeableSynth"
-    },
-    {
-        amount: 713.738405863125,
-        amountUSD: 90.51473440706862,
-        asset: "DOGE",
-        category: "crypto",
-        color: "#F0B90B",
-        description: "DOGE",
-        feed: "0x963D5e7f285Cc84ed566C486c3c1bC911291be38",
-        id: "zDOGE",
-        name: "zDOGE",
-        percent: 0.1821136963107882,
-        sign: "",
-        subclass: "PurgeableSynth"
-    },
-]
+import { useEffect, useMemo } from "react";
+import useFetchGlobalZAsset from "@hooks/useFetchGlobalZAsset";
+import { useAtomValue } from "jotai/utils";
+import { globalZAsstesPoolAtom } from "@atoms/record";
+import { sortBy, takeRight, sumBy } from "lodash"
 
 export default function GlobalPortfolio() {
+    useFetchGlobalZAsset()
+
+    const globalZAsstesPool = useAtomValue(globalZAsstesPoolAtom)
+
+    const topZAssets = useMemo(() => {
+        const topFour = takeRight(sortBy(globalZAsstesPool.supplyData, "value"), 4)
+
+        const totalValue = sumBy(globalZAsstesPool.supplyData, "value")
+        const totalSupply = sumBy(globalZAsstesPool.supplyData, "totalSupply")
+
+        const topFourSumValue = sumBy(topFour, "value")
+        const topFourSumSupply = sumBy(topFour, "totalSupply")
+
+        const othersValue = totalValue - topFourSumValue
+        const othersPercent = 1 - sumBy(topFour, "percent")
+        const otherName = "Others"
+        const otherSupply = totalSupply - topFourSumSupply
+
+        topFour.push({
+            name: otherName,
+            totalSupply: otherSupply,
+            value: othersValue,
+            percent: othersPercent
+        })
+
+        const dd = sortBy(topFour,"percent").reverse().map((item,index) => {
+            return (
+                {
+                    ...item,
+                    color: PORTFOLIO_COLORS[index]
+                }
+            )
+        })
+        
+        return dd
+    }, [globalZAsstesPool])
+
     return (
         <Box sx={{
             width: '230px',
@@ -96,14 +66,14 @@ export default function GlobalPortfolio() {
                 fontSize: '12px',
                 fontWeight: 'bold'
             }}>GLOBAL PORTFOLIO</Typography>
-            <PieChart rows={tmpdata} />
+            <PieChart rows={topZAssets} />
             <Box sx={{
                 width: '100%',
-                justifyContent:'center',
+                justifyContent: 'center',
                 display: 'flex',
                 flexWrap: 'wrap'
             }}>
-                {tmpdata.map((item,index) =>
+                {topZAssets.map((item,index) =>
                     <Box key={index} sx={{
                         mt:'10px',
                         display: 'flex',
@@ -128,7 +98,7 @@ export default function GlobalPortfolio() {
                             <span style={{
                                 fontWeight: 'normal',
                                 opacity: .5
-                            }}>zUSD</span>
+                            }}>{item.name}</span>
                         </Typography>
                     </Box>
                 )}

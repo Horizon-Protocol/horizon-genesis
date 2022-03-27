@@ -84,11 +84,11 @@ export default function useReponsiveChart(
                     options
                 )
             );
-            chart.subscribeCrosshairMove((param) => {
-                if (param != null && param != undefined) {
-                    onCrosshairMove?.(param, chart, chartRef.current)
-                }
-            });
+            // chart.subscribeCrosshairMove((param) => {
+            //     if (param != null && param != undefined) {
+            //         onCrosshairMove?.(param, chart, chartRef.current)
+            //     }
+            // });
             // chartInstanceRef.current = chart;
 
             onReady?.(chart, chartRef.current)

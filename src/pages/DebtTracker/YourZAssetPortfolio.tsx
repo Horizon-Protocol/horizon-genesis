@@ -17,7 +17,6 @@ import { isNumber } from "lodash";
 
 export default function YourZAssetPortfolio() {
     const rows = useFilterZAssets({zUSDIncluded:true})
-    console.log('==========rows------',rows)
 
     const [page, setPage] = useState(0);
     const [rowsPerPage, setRowsPerPage] = useState(5);

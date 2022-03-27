@@ -1,5 +1,6 @@
 import bignumber from "bignumber.js";
-import { ethers, utils } from "ethers";
+import { BigNumber, ethers, utils } from "ethers";
+import { formatUnits } from "ethers/lib/utils";
 import numbro from "numbro";
 import { isFiatCurrency } from "./currencies";
 
@@ -53,7 +54,6 @@ export const minBN = bignumber.minimum;
 export const formatNumber = (
   value: NumericValue,
   options: FormatNumberOptions = {}
-
 ) => {
   const { prefix, suffix, ...format } = options;
 
@@ -64,6 +64,7 @@ export const formatNumber = (
 
   formattedValue.push(numbro(toBN(value)).format({ ...format })
   );
+
   if (suffix) {
     formattedValue.push(` ${suffix}`);
   }
@@ -108,6 +109,13 @@ export const formatPercent = (
 ) => {
   return formatNumber(Number(value) * 100);
 };
+
+export const formatUnitsWithDecimals = (value: BN | undefined, decimal: number = 1e18) => {
+  if (!value) {
+    value = zeroBN
+  }
+  return Number(value) / decimal ;
+}
 
 // TODO: figure out a robust way to get the correct precision.
 const getPrecision = (amount: NumericValue) => {

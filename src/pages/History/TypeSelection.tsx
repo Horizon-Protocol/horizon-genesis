@@ -7,14 +7,18 @@ import { styled } from "@mui/material/styles";
 import { useEffect, useState } from "react";
 import TypeSelectionItem from "./TypeSelectionItem";
 import { useAtom } from "jotai";
-import { HistoryType, HistoryTypeAtom } from "@atoms/record";
+import { HistoryType } from "@atoms/record";
 
 const Span = styled("span")``;
 const Img = styled("img")``;
 
-export default function TypeSelection(props: BoxProps) {
+interface TypeSelectionProps {
+    selectType?: (type: HistoryType) => void
+}
 
-    const [historyType, setHistoryType] = useAtom(HistoryTypeAtom)
+export default function TypeSelection({selectType , ...props}: BoxProps & TypeSelectionProps) {
+
+    const [historyType, setHistoryType] = useState<HistoryType>(HistoryType.All)
     const [typeDropDown, setTypeDropDown] = useState<boolean>(false);
 
     const [anchorEl, setAnchorEl] = useState<HTMLDivElement | null>(null);
@@ -76,6 +80,7 @@ export default function TypeSelection(props: BoxProps) {
                 }} historyType={HistoryType.Mint} onClick={()=>{
                     handleClose()
                     setHistoryType(HistoryType.Mint)
+                    selectType?.(HistoryType.Mint)
                 }}/>
                 <TypeSelectionItem {...{
                     width: '200px',
@@ -83,6 +88,7 @@ export default function TypeSelection(props: BoxProps) {
                 }} historyType={HistoryType.Burn} onClick={()=>{
                     handleClose()
                     setHistoryType(HistoryType.Burn)
+                    selectType?.(HistoryType.Burn)
                 }}/>
                 <TypeSelectionItem {...{
                     width: '200px',
@@ -90,6 +96,7 @@ export default function TypeSelection(props: BoxProps) {
                 }} historyType={HistoryType.Claim} onClick={()=>{
                     handleClose()
                     setHistoryType(HistoryType.Claim)
+                    selectType?.(HistoryType.Claim)
                 }}/>
                 </Popover>
         </Box>

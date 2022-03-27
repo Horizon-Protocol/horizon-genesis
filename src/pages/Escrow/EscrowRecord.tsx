@@ -18,8 +18,13 @@ import {
 } from "@components/TableSortIcon";
 import iconNoTransaction from "@assets/wallets/no-transaction.svg";
 import NoRowsOverlay from "@components/NoRowsOverlay";
+import { useAtomValue } from "jotai/utils";
+import { rewardsEscrowAtom } from "@atoms/record";
+import { formatNumber } from "@utils/number";
+import dayjs from "dayjs";
 
 interface RowsData {
+    id?: string;
     claimDate: string;
     unlockDate: string;
     amount: string | JSX.Element;
@@ -36,6 +41,16 @@ function createData(
 export default function EscrowRecord() {
     const [page, setPage] = useState(0);
     const [rowsPerPage, setRowsPerPage] = useState(5);
+
+	const rewardsEscrow = useAtomValue(rewardsEscrowAtom)
+    const rows = rewardsEscrow?.schedule ? rewardsEscrow?.schedule?.map((item,index) => {
+        return {
+            id: formatNumber(item.entryID),
+            unlockDate: dayjs(Number(item.endTime) * 1000).format('DD/MM/YYYY hh:mm'),
+            claimDate: dayjs(Number(item.endTime) * 1000).subtract(52,'w').format('DD/MM/YYYY hh:mm'),
+            amount: formatNumber(item.escrowAmount),
+        }
+    }) : []
 
     const handleChangePage = (event: unknown, newPage: number) => {
         setPage(newPage);
@@ -103,47 +118,6 @@ export default function EscrowRecord() {
             );
         },
     },]
-
-        // const rows: RowsData[] = []
-
-    const rows: RowsData[] = [
-        {
-            id: "28daceaf-7567-5f29-9818-d2f4146cdff2",
-            claimDate: "Aug 21, 2021 22:13",
-            unlockDate: "Aug 21, 2022 22:13",
-            amount: 43006,
-        },
-        {
-            id: "6aef0ebf-02d7-50dc-8e5a-9c108ed7a27b",
-            claimDate: "Aug 21, 2021 22:13",
-            unlockDate: "Aug 21, 2022 22:13",
-            amount: 43006,
-        },
-        {
-            id: "bdfb5923-583c-5c57-afe9-9b64785165e8",
-            claimDate: "Aug 21, 2021 22:13",
-            unlockDate: "Aug 21, 2022 22:13",
-            amount: 43006,
-        },
-        {
-            id: "cba21385-5834-5019-a0f3-98635b70d53b",
-            claimDate: "Aug 21, 2021 22:13",
-            unlockDate: "Aug 21, 2022 22:13",
-            amount: 43006,
-        },
-        {
-            id: "a2c09b75-08f3-5545-80c0-b1c869dd4347",
-            claimDate: "Aug 21, 2021 22:13",
-            unlockDate: "Aug 21, 2022 22:13",
-            amount: 43006,
-        },
-        {
-            id: "295197c2-d961-5167-b42f-04224227effe",
-            claimDate: "Aug 21, 2021 22:13",
-            unlockDate: "Aug 21, 2022 22:13",
-            amount: 43006,
-        }
-    ]
 
     //cause the design need hide all component includes sort area, so now rowsoverlay doesn't fit here
     return (

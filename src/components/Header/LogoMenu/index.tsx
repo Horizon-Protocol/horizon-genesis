@@ -1,12 +1,12 @@
 import logo from "@assets/tokens/hzn.png";
 import { Box, Link, Popover } from "@mui/material";
-import SvgIcon from "@mui/material/SvgIcon";
 import { ReactComponent as IconArrowUp } from "@assets/images/icon-arrow-up.svg";
-import { COLOR } from "@utils/theme/constants";
 import { useEffect, useState } from "react";
 import ContentWebLink from "./ContentWebLink";
 import { openLinkDropDownAtom } from "@atoms/wallet";
 import { useAtom } from "jotai";
+import { LINK_EXCHANGE } from "@utils/constants";
+import hznLogo from "@assets/tokens/hzn.png";
 
 interface Props {
     height?: number;
@@ -46,7 +46,7 @@ export default function LogoMenu({ height = 90 }: Props) {
                 md: "initial",
             }}
         >
-            <ContentWebLink icon="ds" index={0} title='GENESIS' desc='Mint Synthetic Assets and Earn Rewards' />
+            <ContentWebLink icon={hznLogo} index={0} title='GENESIS' desc='Mint Synthetic Assets and Earn Rewards' />
             <Popover
                 open={!!anchorEl}
                 anchorEl={anchorEl}
@@ -75,14 +75,14 @@ export default function LogoMenu({ height = 90 }: Props) {
                 }}
             >
                 <Link
-                    href="https://dashboard.horizonprotocol.com/"
+                    href={LINK_EXCHANGE}
                     target="_blank"
                     underline="none"
                 >
                     <ContentWebLink index={1} title='EXCHANGE' desc='Trade Borderless Derivatives' />
                 </Link>
                 <Link
-                    href="https://exchange-testnet.horizonprotocol.com/"
+                    href="https://dashboard.horizonprotocol.com"
                     target="_blank"
                     underline="none"
                 >

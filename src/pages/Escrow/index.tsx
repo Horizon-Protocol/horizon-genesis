@@ -8,17 +8,11 @@ import PrimaryButton from "@components/PrimaryButton";
 import useEscrowCalculations from "@hooks/Escrowed/useEscrowCalculations";
 import { useMemo } from "react";
 import { format } from "path";
-import { formatNumber } from "@utils/number";
+import { formatNumber,formatUnitsWithDecimals } from "@utils/number";
 
 export default function Escrow() {
 
     const { totalClaimableBalance, totalEscrowBalance, totalVestedBalance } = useEscrowCalculations()
-
-    // alert(totalEscrowBalance)
-
-    // const escrowBalance = useMemo(() => {
-    //     // alert(totalEscrowBalance)
-    // }, [totalEscrowBalance])
 
     return (
         <PageCard
@@ -60,7 +54,7 @@ export default function Escrow() {
                                 <Box sx={{
                                     height: '86px',
                                 }}>
-                                    <EscrowedCard title="TOTAL UNLOCKED" color={COLOR.text} amount={formatNumber(totalVestedBalance)} />
+                                    <EscrowedCard title="TOTAL UNLOCKED" color={COLOR.text} amount={formatNumber(formatUnitsWithDecimals(totalVestedBalance))} />
                                 </Box>
                             </Grid>
                         </Grid>

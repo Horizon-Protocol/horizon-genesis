@@ -40,16 +40,18 @@ export default function InfoList({
               p: 0,
             }}
           >
-            <ListItemIcon sx={{ color: "#5897C1", fontSize: 14 }}>
+            <ListItemIcon sx={{ color: "#B4E0FF", fontSize: 14, opacity: .5 }}>
               {label}
             </ListItemIcon>
             <ListItemText
-              primary={value}
+              // primary={value}
               sx={{
+                fontSize: '12px',
                 textAlign: "right",
-                color: "#88ABC3",
+                color: "#B4E0FF",
               }}
             />
+            {value}
           </ListItem>
         ))}
       </List>

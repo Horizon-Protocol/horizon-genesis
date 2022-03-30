@@ -1,6 +1,6 @@
 import { GRAPH_DEBT } from "@utils/queryKeys";
 import { useQuery } from "react-query";
-import requset, { gql } from "graphql-request"
+import request, { gql } from 'graphql-request';
 import { GRAPH_ENDPOINT } from "@utils/constants";
 import { useCallback } from "react";
 import useWallet from "@hooks/useWallet";
@@ -8,10 +8,8 @@ import { concat, flattenDeep, last, sortBy } from "lodash";
 import { toBN } from "@utils/number";
 import { useAtomValue, useResetAtom, useUpdateAtom } from "jotai/utils";
 import { debtAtom } from "@atoms/debt";
-import { formatNumber } from "@utils/number";
 import useDisconnected from "@hooks/useDisconnected";
-import dayjs from "dayjs";
-import { historicalDebtAtom, historicalOperationAtom, HistoryType } from "@atoms/record";
+import { historicalClaimHZNAndZUSDAtom, historicalDebtAtom, historicalOperationAtom, HistoryType } from "@atoms/record";
 
 export type HistoricalDebtAndIssuanceData = {
     timestamp: number;
@@ -27,9 +25,15 @@ export type HistoricalOperationData = {
     value: string;
 };
 
+export type HistoricalClaimHZNAndZusdData = {
+    id: string,
+    timestamp: string,
+    rewards: string,
+    value: string,
+}
+
 export default function useQueryDebt() {
-    // const { account } = useWallet()
-    const account = "0xa153459bf4485c6d46b01ee73cfa159b697d824a"
+    const { account } = useWallet()
     const { debtBalance } = useAtomValue(debtAtom);
 
     const setHistoricalDebt = useUpdateAtom(historicalDebtAtom);
@@ -39,12 +43,15 @@ export default function useQueryDebt() {
     const setHistoricalOperation = useUpdateAtom(historicalOperationAtom);
     const resetHistoricalOperation = useResetAtom(historicalOperationAtom);
     useDisconnected(resetHistoricalOperation);
+
+    const setHistoricalClaim = useUpdateAtom(historicalClaimHZNAndZUSDAtom);
+    const resetHistoricalClaim = useResetAtom(historicalOperationAtom);
+    useDisconnected(resetHistoricalClaim);
     
     const issueds = async () => {
         try {
-            const issuesReponse = await requset(
+            const issuesReponse = await request(
                 GRAPH_ENDPOINT,
-                // "https://api.thegraph.com/subgraphs/name/synthetixio-team/synthetix",
                 gql
                     `
                     query{
@@ -55,6 +62,10 @@ export default function useQueryDebt() {
                         where: {
                             account: "${account}"
                         }){
+                        account
+                        source
+                        gasPrice
+                        block
                         id
                         timestamp
                         value
@@ -72,7 +83,7 @@ export default function useQueryDebt() {
 
     const burneds = async () => {
         try {
-            const burnedsReponse = await requset(
+            const burnedsReponse = await request(
                 GRAPH_ENDPOINT,
                 gql
                     `
@@ -101,7 +112,7 @@ export default function useQueryDebt() {
 
     const claims = async () => {
         try {
-            const claimsReponse = await requset(
+            const claimsReponse = await request(
                 GRAPH_ENDPOINT,
                 gql
                     `
@@ -131,7 +142,7 @@ export default function useQueryDebt() {
 
     const debtSnapshots = async () => {
         try {
-            const debtSnapshotsReponse = await requset(
+            const debtSnapshotsReponse = await request(
                 GRAPH_ENDPOINT,
                 gql
                     `
@@ -188,6 +199,9 @@ export default function useQueryDebt() {
                 );
 
                 //============== load record of (Claimed/Burned/Minted) ==================//
+                /* abstract cliams and calculate all the claim record for HZN and zUSD(come from exchange fee) */ 
+                setHistoricalClaim(claims.feesClaimeds)
+                /* --------------------------- */ 
                 let typeMintHistory = issues.issueds.map((b:any) => ({...b, type: HistoryType.Mint }))
                 let typeBurnHistory = burns.burneds.map((b:any) => ({ ...b, type: HistoryType.Burn }))
                 let typeClaimHistory = claims.feesClaimeds.map((b:any) => ({ ...b, type: HistoryType.Claim, value: b.rewards }))
@@ -196,7 +210,6 @@ export default function useQueryDebt() {
                 //==============================================================================
 
                 const debtHistory = debtSnapshot.debtSnapshots ?? [];
-
                 // We set historicalIssuanceAggregation array, to store all the cumulative
                 // values of every mint and burns
                 const historicalIssuanceAggregation: BN[] = [];

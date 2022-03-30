@@ -39,6 +39,7 @@ import Escrow from "@pages/Escrow";
 import History from "@pages/History";
 import useQueryDebt from "@hooks/query/useQueryDebt";
 import useQueryGlobalDebt from "@hooks/query/useQueryGlobalDebt";
+import useEscrowDataQuery from "@hooks/Escrowed/useEscrowDataQuery";
 
 const AppDisabled = !!import.meta.env.VITE_APP_DISABLED;
 
@@ -67,6 +68,7 @@ function App() {
   useFetchFeePool();
   useFetchRewards();
   useFetchHorizonData();
+  useEscrowDataQuery()
   useQueryDebt()
   useQueryGlobalDebt()
 

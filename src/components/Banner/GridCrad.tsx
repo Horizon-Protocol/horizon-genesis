@@ -36,6 +36,7 @@ export default function GridCrad({
             flexDirection='column'
             justifyContent='center'
             alignItems='center'
+            overflow='hidden'
             sx={{
                 cursor: "pointer",
                 ":hover": {
@@ -45,11 +46,11 @@ export default function GridCrad({
             }}
         >
             <Img
+                src={icon}
                 sx={{
                     position: 'absolute',
                     left: 0,
-                    top: 0,
-                    backgroundColor: 'red',
+                    top: '-5px',
                     width: "46px",
                     height: "46px",
                 }}

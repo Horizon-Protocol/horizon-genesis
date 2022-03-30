@@ -21,15 +21,15 @@ export default function Alerts(boxProps: BoxProps) {
     useAtomValue(collateralDataAtom);
   const { claimable } = useAtomValue(rewardsAtom);
 
-  console.log('=====currentCRatio=====',{
-    liquidationRatio:formatNumber(liquidationRatio),
-    liquidationDeadline:formatNumber(liquidationDeadline),
-    stakedCollateral:formatNumber(stakedCollateral),
-    unstakedCollateral:formatNumber(unstakedCollateral),
-    claimable:claimable,
-    currentCRatio:formatNumber(currentCRatio),
-    targetRatio:formatNumber(targetRatio)
-  })
+  // console.log('=====currentCRatio=====',{
+  //   liquidationRatio:formatNumber(liquidationRatio),
+  //   liquidationDeadline:formatNumber(liquidationDeadline),
+  //   stakedCollateral:formatNumber(stakedCollateral),
+  //   unstakedCollateral:formatNumber(unstakedCollateral),
+  //   claimable:claimable,
+  //   currentCRatio:formatNumber(currentCRatio),
+  //   targetRatio:formatNumber(targetRatio)
+  // })
   
   // wallet not connected
   if (!account) {

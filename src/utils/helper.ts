@@ -1,5 +1,6 @@
 import { NumericValue, toBN, zeroBN, maxBN } from "@utils/number";
 import { isString } from "lodash";
+import { ChainExplorerUrl } from "@utils/constants";
 
 /**
  * to mint zUSD amount
@@ -39,10 +40,11 @@ export function getStakingAmount(
 
 export function getTransferableAmountFromMint(
   balance: BN,
-  stakedAmount: BN
+  stakedAmount: BN,
+  totalEscrowBalance: BN
 ): BN {
   if (!balance || !stakedAmount) return toBN(0);
-  return maxBN(balance.minus(stakedAmount), zeroBN);
+  return maxBN(balance.minus(stakedAmount).minus(totalEscrowBalance), zeroBN);
 }
 
 export function getTransferableAmountFromBurn(
@@ -104,3 +106,11 @@ export function getWalletErrorMsg(e: any, defaultMsg = "Operation Failed") {
 
   return defaultMsg;
 }
+
+export const BlockExplorer = {
+  baseLink: ChainExplorerUrl,
+  txLink: (txId: string) => `${ChainExplorerUrl}tx/${txId}`,
+  addressLink: (address: string) => `${ChainExplorerUrl}address/${address}`,
+  tokenLink: (address: string) => `${ChainExplorerUrl}token/${address}`,
+  blockLink: (blockNumber: string) => `${ChainExplorerUrl}block/${blockNumber}`,
+};

@@ -61,10 +61,9 @@ export default function ContentWebLink({
         flexDirection: 'row-reverse',
         alignItems: 'center',
       }}>
-        <Img sx={{
+        <Img src={icon} sx={{
           width: '40px',
           height: '40px',
-          backgroundColor: 'green'
         }} />
       </Box>
       <Box sx={{

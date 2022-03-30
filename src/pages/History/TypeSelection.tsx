@@ -8,17 +8,18 @@ import { useEffect, useState } from "react";
 import TypeSelectionItem from "./TypeSelectionItem";
 import { useAtom } from "jotai";
 import { HistoryType } from "@atoms/record";
+import { HistoryRangeDateProps } from "./HistoryRecord";
 
 const Span = styled("span")``;
 const Img = styled("img")``;
 
 interface TypeSelectionProps {
+    typeValue: HistoryType,
     selectType?: (type: HistoryType) => void
 }
 
-export default function TypeSelection({selectType , ...props}: BoxProps & TypeSelectionProps) {
+export default function TypeSelection({typeValue, selectType , ...props}: BoxProps & TypeSelectionProps) {
 
-    const [historyType, setHistoryType] = useState<HistoryType>(HistoryType.All)
     const [typeDropDown, setTypeDropDown] = useState<boolean>(false);
 
     const [anchorEl, setAnchorEl] = useState<HTMLDivElement | null>(null);
@@ -42,7 +43,7 @@ export default function TypeSelection({selectType , ...props}: BoxProps & TypeSe
             <TypeSelectionItem {...{
                 // width: '200px',
                 height: '44px',
-            }} showArrow={true} arrowUp={typeDropDown} historyType={historyType} onClick={handleOpen} />
+            }} showArrow={true} arrowUp={typeDropDown} historyType={typeValue} onClick={handleOpen} />
             <Popover
                 open={!!anchorEl}
                 anchorEl={anchorEl}
@@ -79,7 +80,6 @@ export default function TypeSelection({selectType , ...props}: BoxProps & TypeSe
                     height: '44px',
                 }} historyType={HistoryType.Mint} onClick={()=>{
                     handleClose()
-                    setHistoryType(HistoryType.Mint)
                     selectType?.(HistoryType.Mint)
                 }}/>
                 <TypeSelectionItem {...{
@@ -87,7 +87,6 @@ export default function TypeSelection({selectType , ...props}: BoxProps & TypeSe
                     height: '44px',
                 }} historyType={HistoryType.Burn} onClick={()=>{
                     handleClose()
-                    setHistoryType(HistoryType.Burn)
                     selectType?.(HistoryType.Burn)
                 }}/>
                 <TypeSelectionItem {...{
@@ -95,7 +94,6 @@ export default function TypeSelection({selectType , ...props}: BoxProps & TypeSe
                     height: '44px',
                 }} historyType={HistoryType.Claim} onClick={()=>{
                     handleClose()
-                    setHistoryType(HistoryType.Claim)
                     selectType?.(HistoryType.Claim)
                 }}/>
                 </Popover>

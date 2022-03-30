@@ -20,8 +20,7 @@ export type GloablDebt = {
 };
 
 export default function useQueryGlobalDebt() {
-    // const { account } = useWallet()
-    const account = "0xa153459bf4485c6d46b01ee73cfa159b697d824a"
+    const { account } = useWallet()
     const { debtBalance } = useAtomValue(debtAtom);
 
     const setGlobalDebtAtom = useUpdateAtom(globalDebtAtom);
@@ -31,8 +30,8 @@ export default function useQueryGlobalDebt() {
     const globalDebts = async () => {
         try {
             const globalDebtsReponse = await requset(
-                GRAPH_ENDPOINT,
-                // "https://api.thegraph.com/subgraphs/name/synthetixio-team/synthetix",
+                // GRAPH_ENDPOINT,
+                "https://api.thegraph.com/subgraphs/name/rout-horizon/bsc4-issuance",
                 gql
                     `
                     query{
@@ -48,6 +47,7 @@ export default function useQueryGlobalDebt() {
                     }
                 `
             )
+            console.log("===globalDebts",globalDebtsReponse)
             return globalDebtsReponse
         } catch (e) {
             return [];
@@ -62,10 +62,9 @@ export default function useQueryGlobalDebt() {
             onSuccess(
                 debts,
             ) {
-                console.log("globalDebtsReponse",debts.dailyIssueds)
+                // console.log("globalDebtsReponse",debts.dailyIssueds)
                 setGlobalDebtAtom(debts.dailyIssueds ?? [])
             }            
-
         }
     )
 }

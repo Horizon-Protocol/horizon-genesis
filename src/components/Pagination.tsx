@@ -62,7 +62,7 @@ export default function Pagination({
         }
         setPaginationData(pagination)
         updateHiddenIndex(1)
-    }, [])
+    }, [rowsCount,rowsPerPage])
 
     const updateHiddenIndex = (pageNumber: number) => {
         if (pageNumber > totalPageNumber || pageNumber < 1) return

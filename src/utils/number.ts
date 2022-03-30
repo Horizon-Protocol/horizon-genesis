@@ -21,6 +21,7 @@ export type NumericValue = BN | string | number;
 export type FormatNumberOptions = {
   prefix?: string;
   suffix?: string;
+  mantissa?: number
 };
 
 export type FormatCurrencyOptions = numbro.Format & {
@@ -115,6 +116,13 @@ export const formatUnitsWithDecimals = (value: BN | undefined, decimal: number =
     value = zeroBN
   }
   return Number(value) / decimal ;
+}
+
+export const formatBNWithDecimals = (value: BN | undefined, decimal: number = 1e18) => {
+  if (!value) {
+    value = zeroBN
+  }
+  return toBN(Number(value) / decimal)
 }
 
 // TODO: figure out a robust way to get the correct precision.

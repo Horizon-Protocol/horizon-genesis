@@ -1,10 +1,11 @@
 import { Box, Button, Grid, Typography } from "@mui/material";
 import { styled } from "@mui/material/styles";
 import { COLOR, PAGE_COLOR } from "@utils/theme/constants";
-import mintBg from "@assets/bgs/hzn.png";
+import zusdIcon from '@assets/images/zUSD-icon.png'
 import ActionLink from "@components/Alerts/ActionLink";
 const Img = styled("img")``;
 import { useHistory } from "react-router-dom";
+import { LINK_EXCHANGE } from "@utils/constants";
 
 export default function BannerUseOfZusd() {
   const history = useHistory()
@@ -40,7 +41,7 @@ export default function BannerUseOfZusd() {
       justifyContent='center'
     >
       <Img
-        src={mintBg}
+        src={zusdIcon}
         sx={{
           width: "32px",
           height: "32px",
@@ -69,7 +70,7 @@ export default function BannerUseOfZusd() {
           mt:'10px'
         }}
       >
-        ou can use zUSD to purchase other synthetic <br/>assets (zAssets) on Horizon Exchange, trade it on <br/>a DEX, or supply liquidity to the zUSD stablecoin <br/>pool to earn yield.
+        You can use zUSD to purchase other synthetic <br/>assets (zAssets) on Horizon Exchange, trade it on <br/>a DEX, or supply liquidity to the zUSD stablecoin <br/>pool to earn yield.
       </Typography>
       <Box
         width='190px'
@@ -79,15 +80,9 @@ export default function BannerUseOfZusd() {
         justifyContent='space-around'
         marginTop='10px'
       >
-        <ActionLink onClick={()=>{
-          
-        }}>TRADE</ActionLink>
-        <ActionLink onClick={()=>{
-          
-        }} color={COLOR.warning} to='/'>SUPPLY</ActionLink>
-        <ActionLink onClick={()=>{
-          history.push('earn')
-        }} color={COLOR.text} to='/'>EARN</ActionLink>
+        <ActionLink href={LINK_EXCHANGE} target='_blank'>TRADE</ActionLink>
+        <ActionLink href={""} target='_blank' color={COLOR.warning} to='/'>SUPPLY</ActionLink>
+        <ActionLink color={COLOR.text} to='/earn'>EARN</ActionLink>
       </Box>
     </Box>
   );

@@ -15,7 +15,7 @@ import useDisconnected from "@hooks/useDisconnected";
 export type RewardEscrowV2Props = {
     claimableAmount?: BN;
     schedule: RecordEscrowRowProps[] | [];
-    totalEscrowed?: BN;
+    totalEscrowed: BN;
     totalVested?: BN;
 }
 
@@ -28,8 +28,7 @@ export type RecordEscrowRowProps = {
 export default function useEscrowDataQuery() {
 
     const appReady = useAtomValue(readyAtom);
-    // const { account } = useWallet(); 
-    const account = '0x958f782B7652CdD07F7e1C7D8D68E8C9923944cF'
+    const { account } = useWallet(); 
 
     const setRewardsEscrow = useUpdateAtom(rewardsEscrowAtom)
     const resetRewardsEscrow = useResetAtom(rewardsEscrowAtom);

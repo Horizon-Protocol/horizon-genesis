@@ -50,7 +50,7 @@ export default function Mint() {
   const hznRate = useAtomValue(hznRateAtom);
   const { currentCRatio, balance, collateral, transferable, debtBalance } =
     useAtomValue(debtAtom);
-  const { stakedCollateral, unstakedCollateral } =
+  const { stakedCollateral, unstakedCollateral, dashboardEscrowed } =
     useAtomValue(collateralDataAtom);
 
   const unstakedCollateralUSD = useMemo(
@@ -142,7 +142,7 @@ export default function Mint() {
 
     const changedTransferable = transferable.isZero()
       ? zeroBN
-      : getTransferableAmountFromMint(collateral, changedStaked);
+      : getTransferableAmountFromMint(collateral, changedStaked, dashboardEscrowed);
 
     const changedCRatio = fromAmount.gt(0)
       ? currentCRatio.isLessThan(targetRatio)
@@ -152,20 +152,27 @@ export default function Mint() {
         : changedDebt.div(changedStaked.multipliedBy(hznRate))
       : currentCRatio;
 
-    // console.log({
-    //   balance: balance.toString(),
-    //   debt: debtBalance.toString(),
-    //   changedDebt: changedDebt.toString(),
-    //   stakedCollateral: stakedCollateral.toNumber(),
-    //   unstakedCollateral: unstakedCollateral.toNumber(),
-    //   transferable: transferable.toNumber(),
-    //   hznRate: hznRate.toString(),
-    //   changedStaked: changedStaked.toString(),
-    //   targetRatio: targetRatio.toString(),
-    //   currentCRatio: currentCRatio.toString(),
-    //   changedCRatio: changedCRatio.toString(),
-    //   changedTransferable: changedTransferable.toNumber(),
-    // });
+    const changedEscrowed = dashboardEscrowed.isZero()
+    ? zeroBN
+    : fromAmount.gt(transferable) ? transferable.plus(dashboardEscrowed).minus(fromAmount) : dashboardEscrowed;
+
+    console.log({
+      fromAmount: fromAmount.toString(),
+      balance: balance.toString(),
+      debt: debtBalance.toString(),
+      changedDebt: changedDebt.toString(),
+      stakedCollateral: stakedCollateral.toNumber(),
+      unstakedCollateral: unstakedCollateral.toNumber(),
+      transferable: transferable.toNumber(),
+      hznRate: hznRate.toString(),
+      changedStaked: changedStaked.toString(),
+      targetRatio: targetRatio.toString(),
+      currentCRatio: currentCRatio.toString(),
+      changedCRatio: changedCRatio.toString(),
+      changedTransferable: changedTransferable.toNumber(),
+    });
+
+
     return {
       cRatio: {
         from: currentCRatio,
@@ -182,6 +189,10 @@ export default function Mint() {
       transferrable: {
         from: transferable,
         to: changedTransferable,
+      },
+      escrowed: {
+        from: dashboardEscrowed,
+        to: changedEscrowed,
       },
       gapImg: arrowRightImg,
     };

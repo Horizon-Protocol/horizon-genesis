@@ -46,6 +46,7 @@ import {
   getWalletErrorMsg,
 } from "@utils/helper";
 import { toFutureDate } from "@utils/date";
+import useEscrowCalculations from "@hooks/Escrowed/useEscrowCalculations";
 
 const THEME_COLOR = PAGE_COLOR.burn;
 
@@ -64,14 +65,15 @@ export default function Burn() {
     issuableSynths,
   } = useAtomValue(debtAtom);
   const zUSDBalance = useAtomValue(zUSDBalanceAtom);
-  const { stakedCollateral } = useAtomValue(collateralDataAtom);
+  const { stakedCollateral, dashboardEscrowed } = useAtomValue(collateralDataAtom);
   const burnAmountToFixCRatio = useAtomValue(burnAmountToFixCRatioAtom);
 
   const collateralUSD = useMemo(
     () => collateral.multipliedBy(hznRate),
     [collateral, hznRate]
   );
-
+  const { totalEscrowBalance } = useEscrowCalculations()
+  
   const { state, setState } = useInputState();
 
   const [waitingPeriod, setWaitingPeriod] = useState<number>();
@@ -171,7 +173,6 @@ export default function Burn() {
     const changedDebt = debtBalance.minus(fromAmount);
 
     const changedStaked = changedDebt.div(targetRatio).div(hznRate);
-
     // debtBalance + (escrowedReward * hznRate * targetRatio) - issuableSynths
     const debtEscrowBalance = maxBN(
       debtBalance
@@ -189,13 +190,19 @@ export default function Burn() {
 
     const changedCRatio = debtBalance.minus(fromAmount).div(collateralUSD);
 
+    const burnHZN = toBN(state.toInput)
+    const changedEscrowed = dashboardEscrowed.isZero()
+    ? zeroBN
+    : burnHZN.lt(totalEscrowBalance.minus(dashboardEscrowed)) ? dashboardEscrowed.plus(burnHZN) : totalEscrowBalance
+
     // console.log({
-    //   balance: balance.toNumber(),
+    //   totalEscrowBalance: totalEscrowBalance.toNumber(),
+    //   debtEscrowBalance: debtEscrowBalance.toNumber(),
     //   burnAmountToFixCRatio: burnAmountToFixCRatio.toNumber(),
     //   escrowedReward: escrowedReward.toNumber(),
     //   debt: debtBalance.toString(),
     //   changedDebt: changedDebt.toString(),
-    //   staked: staked.toNumber(),
+    //   // staked: staked.toNumber(),
     //   transferable: transferable.toNumber(),
     //   hznRate: hznRate.toString(),
     //   targetRatio: targetRatio.toNumber(),
@@ -204,6 +211,7 @@ export default function Burn() {
     //   changedStaked: changedStaked.toNumber(),
     //   changedTransferable: changedTransferable.toNumber(),
     // });
+
     return {
       cRatio: {
         from: currentCRatio,
@@ -220,6 +228,10 @@ export default function Burn() {
       transferrable: {
         from: transferable,
         to: changedTransferable,
+      },
+      escrowed: {
+        from: dashboardEscrowed,
+        to: changedEscrowed
       },
       gapImg: arrowRightImg,
     };

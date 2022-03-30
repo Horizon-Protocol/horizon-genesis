@@ -1,9 +1,11 @@
 import { Box, Button, Typography } from "@mui/material";
 import { color } from "@mui/system";
-import { PAGE_COLOR } from "@utils/theme/constants";
+import { COLOR, PAGE_COLOR } from "@utils/theme/constants";
 import PrimaryButton from "@components/PrimaryButton";
 import mintBg from "@assets/bgs/hzn.png";
 import { useHistory } from "react-router-dom";
+import { HZNBuyLink } from "@utils/constants";
+import ActionLink from "@components/Alerts/ActionLink";
 
 export default function BannerMint() {
 
@@ -30,19 +32,20 @@ export default function BannerMint() {
       <Typography
         component='div'
         textAlign='center'
-        fontSize='1.3rem'
+        fontSize={{
+          xs: '20px',
+          sm: '34px',
+        }}
         fontWeight='bold'
         variant="h5"
         fontFamily='Raleway'
-        lineHeight='1.6rem'
+        lineHeight='4opx'
         letterSpacing={2}
       >
         <span style={{
-          fontSize: '1.3rem',
           color: PAGE_COLOR.mint
         }}>MINT </span>
         SYNTHETIC ASSETS<br/>AND <span style={{
-          fontSize: '1.3rem',
           color: PAGE_COLOR.mint
         }}>EARN</span> REWARDS
       </Typography>
@@ -53,10 +56,11 @@ export default function BannerMint() {
         lineHeight='16px'
         fontFamily='Raleway'
         letterSpacing={1}
-        mt='14px'
+        mt='4px'
       >
         Stake HZN to mint zUSD (a USD stablecoin) and <br/>earn rewards.
       </Typography>
+      <Box sx={{display:'flex'}}>
       <PrimaryButton
         size='large'
         fullWidth
@@ -71,6 +75,25 @@ export default function BannerMint() {
       >
         MINT NOW
       </PrimaryButton>
+      <ActionLink showArrow={false} href={HZNBuyLink} target='_blank'>
+        <PrimaryButton
+          size='large'
+          fullWidth
+          sx={{
+            ml: '10px',
+            backgroundColor:"transparent",
+            border: `1px solid ${COLOR.safe}`,
+            color: COLOR.safe,
+            height: 28,
+            width: 122,
+            mt: '13px'
+          }}
+        >
+          GET HZN
+        </PrimaryButton>
+      </ActionLink>
+      </Box>
+      
     </Box>
   );
 }

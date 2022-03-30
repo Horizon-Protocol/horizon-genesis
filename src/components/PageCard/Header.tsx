@@ -27,7 +27,8 @@ export default function Header({
       >
         {description}
       </Typography>
-      <ActionLink showArrow={false}>LEARN MORE</ActionLink>
+      
+      <ActionLink href="https://docs.horizonprotocol.com/" target='_blank' showArrow={false}>LEARN MORE</ActionLink>
     </Box>
   );
 }

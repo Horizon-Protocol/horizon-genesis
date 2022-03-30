@@ -1,9 +1,8 @@
 import { rewardsEscrowAtom, tokenSaleEscrowAtom } from "@atoms/record";
 import useWallet from "@hooks/useWallet";
-import { formatUnitsWithDecimals, toBN, zeroBN } from "@utils/number";
 import { useAtomValue } from "jotai/utils";
 import { useMemo } from "react";
-import { formatNumber } from "@utils/number";
+import { formatBNWithDecimals } from "@utils/number";
 import useTokenSaleEscrowQuery from "./useTokenSaleEscrowQuery";
 import useEscrowDataQuery from "./useEscrowDataQuery";
 import { ethers } from "ethers";
@@ -20,17 +19,17 @@ export default function useEscrowCalculations(){
 
 	const results = useMemo(() => {
 		// formatNumber
-		const stakingEscrowBalance = formatUnitsWithDecimals(rewardsEscrow?.totalEscrowed)
-		const stakingClaimableBalance = formatUnitsWithDecimals(rewardsEscrow?.claimableAmount)
-		const stakingVestedBalance = formatUnitsWithDecimals(rewardsEscrow?.totalVested)
+		const stakingEscrowBalance = rewardsEscrow?.totalEscrowed
+		const stakingClaimableBalance = rewardsEscrow?.claimableAmount
+		const stakingVestedBalance = rewardsEscrow?.totalVested
 
-		const tokenSaleEscrowBalance = formatUnitsWithDecimals(tokenSaleEscrow?.totalEscrowed)
-		const tokenSaleClaimableBalance = formatUnitsWithDecimals(tokenSaleEscrow?.claimableAmount)
-		const tokenSaleVestedBalance = formatUnitsWithDecimals(tokenSaleEscrow?.totalVested)
+		// const tokenSaleEscrowBalance = formatUnitsWithDecimals(tokenSaleEscrow?.totalEscrowed)
+		// const tokenSaleClaimableBalance = formatUnitsWithDecimals(tokenSaleEscrow?.claimableAmount)
+		// const tokenSaleVestedBalance = formatUnitsWithDecimals(tokenSaleEscrow?.totalVested)
 
-		const totalEscrowBalance = stakingEscrowBalance + tokenSaleEscrowBalance;
-		const totalClaimableBalance = stakingClaimableBalance + tokenSaleClaimableBalance;
-		const totalVestedBalance = stakingVestedBalance + tokenSaleVestedBalance;
+		const totalEscrowBalance = formatBNWithDecimals(stakingEscrowBalance)/* + tokenSaleEscrowBalance;*/
+		const totalClaimableBalance = formatBNWithDecimals(stakingClaimableBalance)/* + tokenSaleClaimableBalance;*/
+		const totalVestedBalance = formatBNWithDecimals(stakingVestedBalance)/* + tokenSaleVestedBalance;*/
 
 		const result = {
 			totalEscrowBalance,

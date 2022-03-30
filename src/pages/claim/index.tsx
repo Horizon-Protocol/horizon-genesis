@@ -18,9 +18,10 @@ import RewardCard from "@components/Claim/RewardCard";
 import InfoList, { Info } from "@components/InfoList";
 import PrimaryButton from "@components/PrimaryButton";
 import useRefresh from "@hooks/useRefresh";
-import { formatNumber } from "@utils/number";
+import { formatNumber, toBN, zeroBN } from "@utils/number";
 import { getWalletErrorMsg } from "@utils/helper";
 import { zAssets } from "@utils/zAssets";
+import { historicalClaimHZNAndZUSDAtom, historicalOperationAtom } from "@atoms/record";
 
 const THEME_COLOR = PAGE_COLOR.claim;
 
@@ -28,10 +29,27 @@ export default function Claim() {
   const { connected } = useWallet();
 
   const { enqueueSnackbar } = useSnackbar();
-
+  const historicalClaim = useAtomValue(historicalClaimHZNAndZUSDAtom)
+  
   const { escrowedReward } = useAtomValue(debtAtom);
-  const { stakingReward, exchangeReward } = useAtomValue(rewardsAtom);
+  const { stakingReward, exchangeReward, upcomingStakingReward, upcomingExchangeReward } = useAtomValue(rewardsAtom);
   const canClaim = useAtomValue(canClaimAtom);
+
+  const lifeTimeClaimed = useMemo(
+    () => {
+      let ltHZN = zeroBN
+      let ltzUSD = zeroBN 
+      historicalClaim.forEach(element => {
+        ltHZN = ltHZN.plus(element.rewards)
+        ltzUSD = ltzUSD.plus(element.value)
+      });
+      return ({
+        ltHZN,
+        ltzUSD
+      })
+    },
+    [historicalClaim]
+  );
 
   const currentTotalRewards = useMemo(
     () => stakingReward.plus(exchangeReward),
@@ -51,16 +69,16 @@ export default function Claim() {
     },
     {
       label: "Lifetime Claimed Rewards",
-      value: `${formatNumber(currentTotalRewards)} HZN / ${formatNumber(currentTotalRewards)} zUSD`,
+      value: `${formatNumber(lifeTimeClaimed.ltHZN)} HZN / ${formatNumber(lifeTimeClaimed.ltzUSD)} zUSD`,
     },
-    {
-      label: "Total Rewards this Period",
-      value: `${formatNumber(currentTotalRewards)} HZN`,
-    }, 
-    {
-      label: "Total Claimed Rewards",
-      value: `${formatNumber(escrowedReward)} HZN`,
-    },
+    // {
+    //   label: "Total Rewards this Period",
+    //   value: `${formatNumber(currentTotalRewards)} HZN`,
+    // }, 
+    // {
+    //   label: "Total Claimed Rewards",
+    //   value: `${formatNumber(escrowedReward)} HZN`,
+    // },
     // {
     //   label: "Lifetime Rewards",
     //   value: "0.00 HZN",
@@ -138,7 +156,7 @@ export default function Claim() {
               color:COLOR.text, 
              opacity:.5
         }}>ESTIMATED</Box><br />STAKING REWARDS</>}
-        amount={stakingReward} />
+        amount={upcomingStakingReward} />
         <RewardCard
           height={87}
           upcoming={true} 
@@ -149,7 +167,7 @@ export default function Claim() {
                   color:COLOR.text, 
                  opacity:.5
             }}>ACCRUED</Box><br />EXCHANGE REWARDS</>}
-          amount={exchangeReward}
+          amount={upcomingExchangeReward}
           token={zAssets.zUSD}
         />
       </Box>

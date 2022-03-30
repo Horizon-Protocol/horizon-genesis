@@ -28,13 +28,13 @@ export default function useFetchGlobalZAsset() {
     const appReady = useAtomValue(readyAtom);
 
     const fetcher = useCallback(async () => {
-        if (appReady) {
+        // if (appReady) {
             const {
                 contracts: { SynthUtil },
             } = horizon.js!;
             const result = await SynthUtil.synthsTotalSupplies()
             return result
-        }
+        // }
     }, [appReady])
 
     useQuery([GRAPH_DEBT, PUBLIC, "globalZAsset"], fetcher, {
@@ -67,7 +67,7 @@ export default function useFetchGlobalZAsset() {
                 return true;
             });
 
-            console.log("===useFetchGlobalZAsseterror", filterSupplyData);
+            console.log("===SupplyData", filterSupplyData);
 
             setGlobalZAssetsPool({
                 supplyData: filterSupplyData,

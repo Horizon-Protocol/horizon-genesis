@@ -1,13 +1,11 @@
-import { Box, Button, Typography } from "@mui/material";
-import { styled } from "@mui/material/styles";
+import { Box, BoxProps, Button, Typography } from "@mui/material";
 import { PAGE_COLOR } from "@utils/theme/constants";
-const Img = styled("img")``;
 
 type bannarProps = {
-  img?: string;
+  img?: string | JSX.Element;
   title: string;
   desc: string | JSX.Element;
-  highlightText: string;
+  highlightText?: string;
   to?: string;
 }
 
@@ -16,8 +14,9 @@ export default function BannerStakeReasonRisk({
   title,
   desc,
   highlightText,
-  to
-} : bannarProps) {
+  to,
+  ...highLightProps
+} : bannarProps & BoxProps) {
   return (
     <Box
       height='240px'
@@ -27,13 +26,7 @@ export default function BannerStakeReasonRisk({
       alignItems='center'
       justifyContent='center'
     >
-      <Img
-        src={img}
-        sx={{
-          width: "32px",
-          height: "32px",
-        }}
-      />
+      {img}
       <Typography
         textAlign='center'
         fontSize={14}
@@ -58,11 +51,12 @@ export default function BannerStakeReasonRisk({
         }}
       >
         {desc}
-        <span style={{
+        <Box {...highLightProps} component='span' sx={{
           fontSize: 13,
           fontWeight: 'bold',
-          color: PAGE_COLOR.mint
-        }}>{highlightText}</span>
+          color: PAGE_COLOR.mint,
+        }}
+        >{highlightText}</Box>
       </Typography>
     </Box>
   );

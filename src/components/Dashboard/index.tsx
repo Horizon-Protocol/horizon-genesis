@@ -13,7 +13,10 @@ import HZNInfoPrice from "./HZNInfoPrice";
 import Balance from "./Balance";
 import ClaimCountDown from "./ClaimCountDown";
 import useFilterZAssets from "@hooks/useFilterZAssets";
-import { sumBy } from "lodash";
+import { last, sumBy } from "lodash";
+import { totalIssuedZUSDExclEthAtom } from "@atoms/app";
+import { atom } from "jotai";
+import { globalDebtAtom } from "@atoms/record";
 
 export default function Dashboard(props: BoxProps) {
   const { collateral, transferable, debtBalance } = useAtomValue(debtAtom);
@@ -22,6 +25,23 @@ export default function Dashboard(props: BoxProps) {
   const zUSDBalance = useAtomValue(zUSDBalanceAtom);
 
   const hznRate = useAtomValue(hznRateAtom);
+
+  // const poolPercentage = atom((get) => {
+  //   const totalIssuedSynths = get(totalIssuedZUSDExclEthAtom);  //total usd of pool
+      
+  //     console.log("poolPercentage", {
+  //       debtBalance:formatNumber(debtBalance),
+  //       totalIssuedSynths:formatNumber(totalIssuedSynths),
+  //     })
+  //   return 'zzz' //debtBalance.dividedBy(totalIssuedSynths) //debtbalance / totalissuedsynths
+  // });
+  const totalIssuedSynths = useAtomValue(totalIssuedZUSDExclEthAtom)
+  const globalDebt = useAtomValue(globalDebtAtom);
+
+  console.log('debtpoll',{
+    debtBalance:debtBalance,
+    globalDebt:globalDebt
+  })
 
   const { stakingAPR, isEstimateAPR } = useUserStakingData();
 
@@ -54,8 +74,9 @@ export default function Dashboard(props: BoxProps) {
         value: `$ ${formatNumber(debtBalance)}`,
       },
       {
-        label: "Your Debt Pool %",
-        value: `?`,
+        label: "Your Debt Pool %", 
+        // value: `${formatNumber(Number(debtBalance)/Number(totalIssuedSynths) * 100,{mantissa:5})}%`
+        value: `${formatNumber(Number(debtBalance)/Number(last(globalDebt)?.value ?? 0) * 100,{mantissa:5})}%`
       },
       {
         sectionHeader: true,

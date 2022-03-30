@@ -49,6 +49,8 @@ export const rewardsAtom = atomWithReset({
   claimable: false,
   stakingReward: zeroBN,
   exchangeReward: zeroBN,
+  upcomingExchangeReward: zeroBN,
+  upcomingStakingReward: zeroBN,
 });
 // total rewards
 export const hasRewardsAtom = selectAtom(

@@ -24,6 +24,9 @@ letter-spacing: 0.5px;
     outline: none !important;
   }
 }
+.MuiDataGrid-overlay{
+  background-color: transparent !important
+}
 .MuiDataGrid-row {
   &:nth-of-type(2n+1) {
     background: ${COLOR_BG_30};

@@ -70,12 +70,13 @@ export default function PieChart({ rows }: Props) {
           // }
           cornerRadius={0}
           data={
-            connected && chartRows.length > 0
-              ? chartRows
-              : [{ x: "bc", y: 100 }]
+            // connected && chartRows.length > 0
+            //   ? 
+              chartRows
+              // : [{ x: "bc", y: 100 }]
           }
           colorScale={
-            connected && chartRows.length > 0
+            chartRows.length > 0
               ? PORTFOLIO_COLORS
               : ["rgb(12,30,47)"]
           }

@@ -10,16 +10,17 @@ import { styled } from "@mui/material/styles";
 // import { HistoryDateRange } from "@atoms/record";
 import { useAtom } from "jotai";
 import { HistoryRangeDateProps } from "./HistoryRecord";
+import dayjs from "dayjs";
 
 const Img = styled("img")``;
 
 interface SelectDateRangeProps{
-    selectDateRange : (range: HistoryRangeDateProps) => void
+    dateRangeValue: DateRange<Date>,
+    selectDateRange : (range: DateRange<Date>) => void
 }
 
-export default function DateRangeSelection({selectDateRange, ...props}: BoxProps & SelectDateRangeProps) {
+export default function DateRangeSelection({dateRangeValue, selectDateRange, ...props}: BoxProps & SelectDateRangeProps) {
 
-    const [value, setValue] = useState<DateRange<Date>>([null, null]);
     const [open, setOpen] = useState<boolean>(false)
     const [dateDropDown, setDateDropDown] = useState<boolean>(false);
 
@@ -66,7 +67,6 @@ export default function DateRangeSelection({selectDateRange, ...props}: BoxProps
                         backgroundColor:'red !important'
                     }
                 }}
-                
                 open={open}
                 onClose={() => {
                     setOpen(false)
@@ -76,19 +76,12 @@ export default function DateRangeSelection({selectDateRange, ...props}: BoxProps
                 calendars={1}
                 maxDate={new Date()}
                 inputFormat="MM/dd/yy"
-                value={value}
+                value={dateRangeValue}
                 cancelText={''}
                 okText={''}
                 showToolbar={false}
-                onChange={(newValue) => {
-                    selectDateRange({start:newValue[0], end:newValue[1]})
-                    setValue(newValue);
-                }}
+                onChange={selectDateRange}
                 renderInput={(startProps, endProps) => {
-                    // console.log('========start/end========', {
-                    //     startProps: startProps,
-                    //     endProps: endProps
-                    // })
                     return (
                         <Box onClick={() => {
                             setOpen(!open)

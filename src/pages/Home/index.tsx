@@ -9,16 +9,24 @@ import BannerStakeReasonRisk from "@components/Banner/BannerStakeReasonRisk";
 import BannerUseOfZusd from "@components/Banner/BannerUseOfZusd";
 // import "./styles.css"
 import GridCrad from "@components/Banner/GridCrad";
-import mintBg from "@assets/bgs/hzn.png";
+import information from "@assets/images/information.png";
 import { useAtomValue } from "jotai/utils";
 import { hasRewardsAtom } from "@atoms/feePool";
 import { useHistory } from "react-router-dom";
-import HomeIcon from '@mui/icons-material/Home';
+import useUserStakingData from "@hooks/useUserStakingData";
+import { formatNumber } from "@utils/number";
+import { styled } from "@mui/material/styles";
+import hznIcon from "@assets/images/icon-hzn.png";
+import gridMint from "@assets/images/grid-mint.png";
+import zusdIcon from "@assets/images/zUSD-icon.png";
+
+
+const Img = styled("img")``;
 
 const gridCards: GridCardProps[] = [
   {
     titleColor: PAGE_COLOR.mint,
-    icon: '',
+    icon: gridMint,
     title: 'Mint',
     desc: <>Stake HZN to mint zUSD and<br />earn 194.14% APY</>,
   },
@@ -58,6 +66,7 @@ export default function Home() {
 
   const hasRewards = useAtomValue(hasRewardsAtom);
   const history = useHistory();
+  const { stakingAPR } = useUserStakingData();
 
   useEffect(() => {
 
@@ -107,6 +116,7 @@ export default function Home() {
           }
           indicatorIconButtonProps={{
             style: {
+              marginTop: '-50px',
               opacity: .5,
               backgroundColor: PAGE_COLOR.mint,
               marginLeft: '10px',
@@ -127,17 +137,59 @@ export default function Home() {
         >
           <BannerMint />
           <BannerStakeReasonRisk
-            img={mintBg}
-            title="WHAT ARE THE RISKS?"
+            img={<Box sx={{
+              mb: '15px',
+              display: 'flex',
+              alignItems: 'flex-end',
+            }}>
+              <Img
+                src={hznIcon}
+                sx={{
+                  mr: '10px',
+                  width: "32px",
+                  height: "32px",
+                  mb: '-13px',
+                }}
+              />
+              <Img
+                src={gridMint}
+                sx={{
+                  width: "60px",
+                  height: "53px",
+                }}
+              />
+              <Img
+                src={zusdIcon}
+                sx={{
+                  ml: '10px',
+                  width: "32px",
+                  height: "32px",
+                  mb: '-13px',
+                }}
+              />
+            </Box>}
+            title="WHY STAKE HZN?"
             desc={<>Staking HZN, and minting zUSD, will allow you to <br />earn staking rewards from the protocol as well as <br />a split of the zUSD transaction fees generated on <br />Horizon Exchange.  HZN staking rewards are <br />currently</>}
-            highlightText=" 194.14% APY."
+            highlightText={stakingAPR * 100 ? ` ${formatNumber(stakingAPR * 100)}% APY` : "--"}
           />
           <BannerUseOfZusd />
           <BannerStakeReasonRisk
-            img={mintBg}
-            title="WHY STAKE HZN?"
+            img={<Img
+              src={information}
+              sx={{
+                width: "54px",
+                height: "54px",
+              }}
+            />}
+            title="WHAT ARE THE RISKS?"
             desc={<>When staking HZN and minting zUSD you are<br />collateralizing the zUSD with HZN at an 800% ratio<br />(C-Ratio). You must maintain this 800% C-Ratio or <br />you cannot claim rewards or you can be potentially<br />liquidated if you reach a 200% C-Ratio.<br /></>}
             highlightText="LEARN MORE"
+            style={{
+              cursor:'pointer'
+            }}
+            onClick={()=>{
+              window.open("https://docs.horizonprotocol.com/");
+            }}
           />
         </Carousel>
       </Box>

@@ -20,6 +20,10 @@ export interface Props {
     from: BN;
     to: BN;
   };
+  escrowed: {
+    from: BN;
+    to: BN;
+  };
   gapImg?: string;
 }
 
@@ -29,6 +33,7 @@ export default function BalanceChange({
   debt,
   staked,
   transferrable,
+  escrowed,
   gapImg,
   ...props
 }: Props & BoxProps) {
@@ -56,8 +61,8 @@ export default function BalanceChange({
       },
       {
         label: "Escrowed HZN",
-        from: `${formatNumber(transferrable.from)} HZN`,
-        to: `${formatNumber(transferrable.to)} HZN`,
+        from: `${formatNumber(escrowed.from)} HZN`,
+        to: `${formatNumber(escrowed.to)} HZN`,
       },
     ],
     [cRatio, debt, staked, transferrable]

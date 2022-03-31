@@ -47,6 +47,7 @@ import {
 } from "@utils/helper";
 import { toFutureDate } from "@utils/date";
 import useEscrowCalculations from "@hooks/Escrowed/useEscrowCalculations";
+import ConnectButton from "@components/ConnectButton";
 
 const THEME_COLOR = PAGE_COLOR.burn;
 
@@ -98,9 +99,10 @@ export default function Burn() {
       label: "BURN",
       color: THEME_COLOR,
       bgColor: "#0A1624",
+      labelColor: THEME_COLOR,
       amount: toBN(0),
       max: minBN(zUSDBalance, debtBalance),
-      maxButtonLabel: "Burn Max",
+      maxButtonLabel: "Max Burn",
       inputPrefix: "$",
       toPairInput: (amount) =>
         toBN(amount)
@@ -129,7 +131,6 @@ export default function Burn() {
       max: stakedCollateral,
       maxButtonLabel: "Unstake Max",
       color: THEME_COLOR,
-      labelColor: THEME_COLOR,
       toPairInput: (amount) => {
         const tmpAmount = toBN(amount)
           .multipliedBy(hznRate)
@@ -261,7 +262,7 @@ export default function Burn() {
       const isWaitingPeriod: boolean = await Synthetix.isWaitingPeriod(
         zUSDBytes
       );
-      console.log("isWaitingPeriod", isWaitingPeriod);
+      // console.log("isWaitingPeriod", isWaitingPeriod);
       if (isWaitingPeriod) {
         throw new Error("Waiting period for zUSD is still ongoing");
       }
@@ -272,17 +273,17 @@ export default function Burn() {
 
       let tx: ethers.ContractTransaction;
       if (burnToTarget) {
-        console.log("burn to target");
+        // console.log("burn to target");
         tx = await Synthetix.burnSynthsToTarget();
       } else {
         const burnAmount = state.isMax
           ? BNToEther(fromToken.max!)
           : utils.parseEther(state.fromInput);
-        console.log("burn amount:", burnAmount.toString());
+        // console.log("burn amount:", burnAmount.toString());
         tx = await Synthetix.burnSynths(burnAmount);
       }
       const res = await tx.wait(1);
-      console.log("res", res);
+      // console.log("res", res);
       setState(() => ({
         fromInput: "",
         toInput: "",
@@ -357,6 +358,7 @@ export default function Burn() {
       <Box>
         {connected && (
           <PrimaryButton
+            bgColor={THEME_COLOR}
             loading={loading}
             disabled={burnDisabled}
             size='large'
@@ -365,6 +367,12 @@ export default function Burn() {
           >
             Burn Now
           </PrimaryButton>
+        )}
+        {!connected && (
+          <ConnectButton 
+          size='large'
+          fullWidth
+          />
         )}
       </Box>
     </PageCard>

@@ -19,8 +19,6 @@ interface Props {
 export default function PieChart({ rows }: Props) {
   const { connected } = useWallet();
 
-  console.log('======piechart=====', rows)
-
   const chartRows = useMemo<Datum[]>(
     () =>
       rows.map((r) => ({

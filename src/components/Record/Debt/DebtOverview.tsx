@@ -12,9 +12,11 @@ import { debtAtom } from "@atoms/debt";
 import { useAtomValue } from "jotai/utils";
 import last from 'lodash/last';
 import { globalDebtAtom, historicalDebtAtom } from "@atoms/record";
+import useWallet from "@hooks/useWallet";
 
 export default function DebtOverview() {
 
+    const { connected } = useWallet()
     const { debtBalance } = useAtomValue(debtAtom);
     const historicalDebt = useAtomValue(historicalDebtAtom);
     const globalDebt = useAtomValue(globalDebtAtom);
@@ -23,10 +25,10 @@ export default function DebtOverview() {
         const tmp = formatNumber(last(historicalDebt)?.issuanceDebt ?? 0)
         return [
             {
-                label: `$${formatNumber(debtBalance)}`
+                label: connected ? `$${formatNumber(debtBalance)}` : "--"
             },
             {
-                label: `$${formatNumber(last(historicalDebt)?.issuanceDebt ?? 0)}`
+                label: connected ? `$${formatNumber(last(historicalDebt)?.issuanceDebt ?? 0)}` : "--"
             },
             {
                 label: `$${formatNumber(last(globalDebt)?.value ?? 0)}`

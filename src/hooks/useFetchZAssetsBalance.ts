@@ -55,8 +55,8 @@ export default function useFetchZAssetsBalance() {
         percent: item.amountUSD / totalUSD,
       }
     })
-    console.log("========fulInfoZAssetBalance======",fulInfoZAssetBalance)
-    console.log("========rates======",rates)
+    // console.log("========fulInfoZAssetBalance======",fulInfoZAssetBalance)
+    // console.log("========rates======",rates)
 
     setZAssetsBalanceInfo(fulInfoZAssetBalance)
   },[zAssetsBalance,rates])

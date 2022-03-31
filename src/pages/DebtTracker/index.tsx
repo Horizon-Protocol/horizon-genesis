@@ -14,6 +14,7 @@ import YourPortfolio from "./YourPortfolio";
 import { useEffect } from "react";
 import { globalDebtAtom, historicalDebtAtom } from "@atoms/record";
 import { useAtomValue } from "jotai/utils";
+import useWallet from "@hooks/useWallet";
 
 interface ToolTipCellPros{
     color: string;
@@ -30,7 +31,7 @@ interface ToolTipProps {
 }
 
 export default function DebtTracker() {
-
+    const { connected } = useWallet();
     const [toolTipProps, setToolTipProps] = useState<ToolTipProps>({
         toolTipDisplay: 'none',
         left: '0',
@@ -182,7 +183,7 @@ export default function DebtTracker() {
                 if (acitveDebtValue != "$NaN") {toolTipDispplay.push({
                     color: '#3377FF',
                     title: 'Active Debt',
-                    value: acitveDebtValue
+                    value:  acitveDebtValue
                 })}
                 if (issuedDebtValue != "$NaN") {toolTipDispplay.push({
                     color: '#2AD4B7',
@@ -195,7 +196,6 @@ export default function DebtTracker() {
                     value: globalDebtValue
                 })}
 
-                console.log("acitveDebtValue", acitveDebtValue)
                 setToolTipProps({
                     toolTipDisplay: 'block',
                     left: left + 'px',
@@ -231,7 +231,9 @@ export default function DebtTracker() {
                     })
                 }
             }
-            acitveDebtLineSeries?.setData(activeRows.reverse())
+            // if (historicalDebt.length != 1 && Number(historicalDebt[0].actualDebt) != 0){
+                acitveDebtLineSeries?.setData(activeRows.reverse())
+            // }
 
             const issuedRows: (LineData | WhitespaceData)[] = []
             for (let i = historicalDebt.length - 1; i >= 0; i--) {
@@ -244,7 +246,9 @@ export default function DebtTracker() {
                     })
                 }
             }
-            isuuedDebtLineSeries?.setData(issuedRows.reverse())
+            // if (historicalDebt.length != 1 && Number(historicalDebt[0].issuanceDebt) != 0){
+                isuuedDebtLineSeries?.setData(issuedRows.reverse())
+            // }
         }
 
         if (globalDebt?.length) {
@@ -259,7 +263,6 @@ export default function DebtTracker() {
                     })
                 }
                 globalDebtLineSeries?.setData(globalRows)
-                // setGlobalDebtLineSeries(globalDebtLineSeries)
             }
         }
     }, [historicalDebt, globalDebt, acitveDebtLineSeries, isuuedDebtLineSeries, globalDebtLineSeries])

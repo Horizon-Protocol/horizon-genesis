@@ -8,7 +8,7 @@ import PrimaryButton from "@components/PrimaryButton";
 import useEscrowCalculations from "@hooks/Escrowed/useEscrowCalculations";
 import { useMemo } from "react";
 import { format } from "path";
-import { formatNumber,formatUnitsWithDecimals } from "@utils/number";
+import { formatNumber,formatUnitsWithDecimals, zeroBN } from "@utils/number";
 
 export default function Escrow() {
 
@@ -38,7 +38,10 @@ export default function Escrow() {
                         <Box sx={{
                             height: '182px',
                         }}>
-                            <EscrowedCard unlockCard title="AVAILABLE HZN" color={COLOR.safe} amount={formatNumber(totalClaimableBalance)} />
+                            <EscrowedCard unlockCard 
+                            title="AVAILABLE HZN" 
+                            color={totalClaimableBalance.gt(zeroBN) ? COLOR.safe : COLOR.text} 
+                            amount={formatNumber(totalClaimableBalance)} />
                         </Box>
                     </Grid>
                     <Grid item xs={6}>
@@ -47,14 +50,20 @@ export default function Escrow() {
                                 <Box sx={{
                                     height: '86px',
                                 }}>
-                                    <EscrowedCard title="Total ESCROWED" color={COLOR.safe} amount={formatNumber(totalEscrowBalance)} />
+                                    <EscrowedCard 
+                                    title="Total ESCROWED" 
+                                    color={COLOR.safe} 
+                                    amount={formatNumber(totalEscrowBalance)} />
                                 </Box>
                             </Grid>
                             <Grid item xs={12}>
                                 <Box sx={{
                                     height: '86px',
                                 }}>
-                                    <EscrowedCard title="TOTAL UNLOCKED" color={COLOR.text} amount={formatNumber(formatUnitsWithDecimals(totalVestedBalance))} />
+                                    <EscrowedCard 
+                                    title="TOTAL UNLOCKED" 
+                                    color={totalClaimableBalance.gt(zeroBN) ? COLOR.safe : COLOR.text} 
+                                    amount={formatNumber(formatUnitsWithDecimals(totalVestedBalance))} />
                                 </Box>
                             </Grid>
                         </Grid>
@@ -112,18 +121,12 @@ const EscrowedCard = ({ unlockCard, title, color, amount }: EscrowedCardProps) =
                 }}>HZN</span>
             </Typography>
             {unlockCard && <PrimaryButton
+                disabled={true}
                 sx={{
                     mt: '8px',
                     width: '172px',
                     height: '36px'
                 }}
-            // loading={loading}
-            // disabled={!canClaim}
-            // size='small'
-
-            // fullWidth
-
-            // onClick={handleClaim}
             >
                 UNLOCK
             </PrimaryButton>}

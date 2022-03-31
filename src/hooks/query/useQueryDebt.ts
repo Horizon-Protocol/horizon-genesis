@@ -22,6 +22,7 @@ export type HistoricalOperationData = {
     id: string
     type: HistoryType,
     timestamp: string;
+    rewards?: string;
     value: string;
 };
 
@@ -161,7 +162,7 @@ export default function useQueryDebt() {
                     }
                 `
             )
-            // console.log("debtSnapshotsReponse",debtSnapshotsReponse)
+            console.log("debtSnapshotsReponse",debtSnapshotsReponse)
             return debtSnapshotsReponse
         } catch (e) {
             console.log("query报错",e)
@@ -204,8 +205,9 @@ export default function useQueryDebt() {
                 /* --------------------------- */ 
                 let typeMintHistory = issues.issueds.map((b:any) => ({...b, type: HistoryType.Mint }))
                 let typeBurnHistory = burns.burneds.map((b:any) => ({ ...b, type: HistoryType.Burn }))
-                let typeClaimHistory = claims.feesClaimeds.map((b:any) => ({ ...b, type: HistoryType.Claim, value: b.rewards }))
+                let typeClaimHistory = claims.feesClaimeds.map((b:any) => ({ ...b, type: HistoryType.Claim }))
                 const allTypeHistory = sortBy(concat(typeMintHistory,typeBurnHistory,typeClaimHistory),"timestamp")
+                console.log("====allTypeHistory",allTypeHistory)
                 setHistoricalOperation(allTypeHistory)
                 //==============================================================================
 

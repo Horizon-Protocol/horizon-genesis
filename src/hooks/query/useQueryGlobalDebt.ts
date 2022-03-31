@@ -24,8 +24,6 @@ export default function useQueryGlobalDebt() {
     const { debtBalance } = useAtomValue(debtAtom);
 
     const setGlobalDebtAtom = useUpdateAtom(globalDebtAtom);
-    const resetGlobalDebtAtom = useResetAtom(globalDebtAtom);
-    useDisconnected(resetGlobalDebtAtom);
     
     const globalDebts = async () => {
         try {

@@ -75,3 +75,5 @@ export const resetAtom = atom(null, (get, set) => {
 
 // reset user rewards
 export const nextClaimCountDownAtom = atom("n/a");
+export const nextClaimCountDownDurationAtom = atom<number>(0);
+

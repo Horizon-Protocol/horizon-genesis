@@ -86,7 +86,7 @@ export function waitForGlobal(
     if (waited > maxWait) {
       return;
     }
-    console.log("wait", key);
+    // console.log("wait", key);
     setTimeout(function () {
       waitForGlobal(key, callback, maxWait, waited + 100);
     }, 100);

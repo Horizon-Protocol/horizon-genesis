@@ -52,16 +52,16 @@ export default function useFetchDebtData() {
         escrowedReward,
       ],
     ]) {
-      console.log("===debtData===", {
-        currentCRatio: currentCRatio.toNumber(),
-        transferable: transferable.toString(),
-        debtBalance: debtBalance.toString(),
-        collateral: collateral.toString(),
-        issuableSynths: issuableSynths.toString(),
-        balance: balance.toString(),
-        escrowedReward: escrowedReward.toString(),
-        liquidationDeadline,
-      });
+      // console.log("===debtData===", {
+      //   currentCRatio: currentCRatio.toNumber(),
+      //   transferable: transferable.toString(),
+      //   debtBalance: debtBalance.toString(),
+      //   collateral: collateral.toString(),
+      //   issuableSynths: issuableSynths.toString(),
+      //   balance: balance.toString(),
+      //   escrowedReward: escrowedReward.toString(),
+      //   liquidationDeadline,
+      // });
       setDebtData({
         currentCRatio,
         transferable,

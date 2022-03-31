@@ -44,8 +44,6 @@ export default function useTokenSaleEscrowQuery() {
     useQuery([CONTRACT, account, "EscrowChecker", "SynthetixEscrow"], fetcher, {
         enabled: !!account && !!horizon.js,
         onSuccess(data) {
-            console.log("useTokenSaleEscrowQuery", data)
-
             const currentUnixTime = new Date().getTime();
             const dataReversed = data?.accountSchedule.slice().reverse()
             let hasVesting = false;

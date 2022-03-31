@@ -8,6 +8,7 @@ import {
   rewardsAtom,
   nextClaimCountDownAtom,
   canClaimAtom,
+  nextClaimCountDownDurationAtom,
 } from "@atoms/feePool";
 import horizon from "@lib/horizon";
 import useWallet from "@hooks/useWallet";
@@ -22,6 +23,8 @@ import { formatNumber, toBN, zeroBN } from "@utils/number";
 import { getWalletErrorMsg } from "@utils/helper";
 import { zAssets } from "@utils/zAssets";
 import { historicalClaimHZNAndZUSDAtom, historicalOperationAtom } from "@atoms/record";
+import { targetRatioAtom } from "@atoms/app";
+import { secondsOfDays } from "@utils/date";
 
 const THEME_COLOR = PAGE_COLOR.claim;
 
@@ -30,10 +33,12 @@ export default function Claim() {
 
   const { enqueueSnackbar } = useSnackbar();
   const historicalClaim = useAtomValue(historicalClaimHZNAndZUSDAtom)
-  
+
   const { escrowedReward } = useAtomValue(debtAtom);
   const { stakingReward, exchangeReward, upcomingStakingReward, upcomingExchangeReward } = useAtomValue(rewardsAtom);
   const canClaim = useAtomValue(canClaimAtom);
+  const targetRatio = useAtomValue(targetRatioAtom);
+  const { currentCRatio } = useAtomValue(debtAtom);
 
   const lifeTimeClaimed = useMemo(
     () => {
@@ -51,12 +56,33 @@ export default function Claim() {
     [historicalClaim]
   );
 
+  const ableToClaim = useMemo(()=>{
+    // console.log("ableToClaim", {
+    //   currentCRatio: formatNumber(currentCRatio),
+    //   targetRatio: formatNumber(targetRatio)
+    // })
+    if (currentCRatio.gt(targetRatio)){
+      return false
+    }else{
+      return canClaim
+    }
+  },[canClaim,targetRatio])
+
   const currentTotalRewards = useMemo(
+    // dayjs.duration()
     () => stakingReward.plus(exchangeReward),
     [stakingReward, exchangeReward]
   );
 
   const nextClaimCountDown = useAtomValue(nextClaimCountDownAtom);
+
+  const nextClaimCountDownDuration = useAtomValue(nextClaimCountDownDurationAtom);
+  const warning = useMemo(()=>{
+    if (0 < nextClaimCountDownDuration && nextClaimCountDownDuration < secondsOfDays(2)){
+      return true
+    }
+    return false
+  },[nextClaimCountDownDuration])
 
   const infoList: Info[] = [
     {
@@ -66,6 +92,7 @@ export default function Claim() {
     {
       label: "Current Claim Period Ends",
       value: nextClaimCountDown,
+      warning: warning,
     },
     {
       label: "Lifetime Claimed Rewards",
@@ -178,13 +205,25 @@ export default function Claim() {
         {connected && (
           <PrimaryButton
             loading={loading}
-            disabled={!canClaim}
+            disabled={!ableToClaim}
             size='large'
             fullWidth
             onClick={handleClaim}
           >
             Claim Now
           </PrimaryButton>
+        )}
+        {currentCRatio.gt(targetRatio) && (
+          <Typography sx={{
+            mt:'10px',
+            textAlign:'center',
+            color:'#FA2256',
+            fontSize:"12px",
+            letterSpacing:'0.5px',
+            lineHeight:"14px"
+          }}>
+          You need to restore your C-Ratio back to 800%<br/>
+          before you can claim your rewards.</Typography>
         )}
       </Box>
     </PageCard>

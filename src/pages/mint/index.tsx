@@ -39,6 +39,7 @@ import BalanceChange, {
 } from "@components/BalanceChange";
 import PrimaryButton from "@components/PrimaryButton";
 import useRefresh from "@hooks/useRefresh";
+import ConnectButton from "@components/ConnectButton";
 
 const THEME_COLOR = PAGE_COLOR.mint;
 
@@ -96,26 +97,26 @@ export default function Mint() {
 
   const handleSelectPresetCRatio = useCallback(
     (presetCRatio: BN) => {
-      console.log("preset c-ratio:", presetCRatio.toNumber());
+      // console.log("preset c-ratio:", presetCRatio.toNumber());
       const isMax = presetCRatio.eq(targetRatio);
       const { toPairInput, max } = fromToken;
       let inputHZN: string;
       if (isMax) {
         inputHZN = max!.toString();
       } else {
-        console.log({
-          balance: balance.toString(),
-          collateral: collateral.toString(),
-          presetCRatio: presetCRatio.toString(),
-          targetRatio: targetRatio.toString(),
-          stakedCollateral: stakedCollateral.toString(),
-        });
+        // console.log({
+        //   balance: balance.toString(),
+        //   collateral: collateral.toString(),
+        //   presetCRatio: presetCRatio.toString(),
+        //   targetRatio: targetRatio.toString(),
+        //   stakedCollateral: stakedCollateral.toString(),
+        // });
         inputHZN = collateral
           .multipliedBy(presetCRatio)
           .div(targetRatio)
           .minus(stakedCollateral)
           .toString();
-        console.log("input HZN", inputHZN.toString());
+        // console.log("input HZN", inputHZN.toString());
       }
 
       setState(() => ({
@@ -156,21 +157,21 @@ export default function Mint() {
     ? zeroBN
     : fromAmount.gt(transferable) ? transferable.plus(dashboardEscrowed).minus(fromAmount) : dashboardEscrowed;
 
-    console.log({
-      fromAmount: fromAmount.toString(),
-      balance: balance.toString(),
-      debt: debtBalance.toString(),
-      changedDebt: changedDebt.toString(),
-      stakedCollateral: stakedCollateral.toNumber(),
-      unstakedCollateral: unstakedCollateral.toNumber(),
-      transferable: transferable.toNumber(),
-      hznRate: hznRate.toString(),
-      changedStaked: changedStaked.toString(),
-      targetRatio: targetRatio.toString(),
-      currentCRatio: currentCRatio.toString(),
-      changedCRatio: changedCRatio.toString(),
-      changedTransferable: changedTransferable.toNumber(),
-    });
+    // console.log({
+    //   fromAmount: fromAmount.toString(),
+    //   balance: balance.toString(),
+    //   debt: debtBalance.toString(),
+    //   changedDebt: changedDebt.toString(),
+    //   stakedCollateral: stakedCollateral.toNumber(),
+    //   unstakedCollateral: unstakedCollateral.toNumber(),
+    //   transferable: transferable.toNumber(),
+    //   hznRate: hznRate.toString(),
+    //   changedStaked: changedStaked.toString(),
+    //   targetRatio: targetRatio.toString(),
+    //   currentCRatio: currentCRatio.toString(),
+    //   changedCRatio: changedCRatio.toString(),
+    //   changedTransferable: changedTransferable.toNumber(),
+    // });
 
 
     return {
@@ -218,14 +219,14 @@ export default function Mint() {
       setLoading(true);
       let tx: ethers.ContractTransaction;
       if (state.isMax) {
-        console.log("mint max");
+        // console.log("mint max");
         tx = await Synthetix.issueMaxSynths();
       } else {
-        console.log("mint", state.toInput);
+        // console.log("mint", state.toInput);
         tx = await Synthetix.issueSynths(utils.parseEther(state.toInput));
       }
       const res = await tx.wait(1);
-      console.log("res", res);
+      // console.log("res", res);
       setState(() => ({
         fromInput: "",
         toInput: "",
@@ -286,6 +287,12 @@ export default function Mint() {
           >
             Mint Now
           </PrimaryButton>
+        )}
+        {!connected && (
+          <ConnectButton
+            size='large'
+            fullWidth
+          />
         )}
       </Box>
     </PageCard>

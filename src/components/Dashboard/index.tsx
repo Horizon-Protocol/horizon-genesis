@@ -17,6 +17,7 @@ import { last, sumBy } from "lodash";
 import { totalIssuedZUSDExclEthAtom } from "@atoms/app";
 import { atom } from "jotai";
 import { globalDebtAtom } from "@atoms/record";
+import useWallet from "@hooks/useWallet";
 
 export default function Dashboard(props: BoxProps) {
   const { collateral, transferable, debtBalance } = useAtomValue(debtAtom);
@@ -26,22 +27,15 @@ export default function Dashboard(props: BoxProps) {
 
   const hznRate = useAtomValue(hznRateAtom);
 
-  // const poolPercentage = atom((get) => {
-  //   const totalIssuedSynths = get(totalIssuedZUSDExclEthAtom);  //total usd of pool
-      
-  //     console.log("poolPercentage", {
-  //       debtBalance:formatNumber(debtBalance),
-  //       totalIssuedSynths:formatNumber(totalIssuedSynths),
-  //     })
-  //   return 'zzz' //debtBalance.dividedBy(totalIssuedSynths) //debtbalance / totalissuedsynths
-  // });
   const totalIssuedSynths = useAtomValue(totalIssuedZUSDExclEthAtom)
   const globalDebt = useAtomValue(globalDebtAtom);
 
-  console.log('debtpoll',{
-    debtBalance:debtBalance,
-    globalDebt:globalDebt
-  })
+  const {connected} = useWallet()
+
+  // console.log('debtpoll',{
+  //   debtBalance:debtBalance,
+  //   globalDebt:globalDebt
+  // })
 
   const { stakingAPR, isEstimateAPR } = useUserStakingData();
 
@@ -52,7 +46,7 @@ export default function Dashboard(props: BoxProps) {
     () => [
       {
         sectionHeader: true,
-        showWalletIcon: true,
+        showWalletIcon: connected,
         label: "HZN Balance",
         value: `${formatNumber(collateral)} HZN`,
       },
@@ -85,7 +79,7 @@ export default function Dashboard(props: BoxProps) {
       },
       {
         label: "zUSD Balance",
-        showWalletIcon: true,
+        showWalletIcon: connected,
         value: `${formatNumber(zUSDBalance)} zUSD`,
       },
       {

@@ -67,7 +67,7 @@ export default function useFetchGlobalZAsset() {
                 return true;
             });
 
-            console.log("===SupplyData", filterSupplyData);
+            // console.log("===SupplyData", filterSupplyData);
 
             setGlobalZAssetsPool({
                 supplyData: filterSupplyData,

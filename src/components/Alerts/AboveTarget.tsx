@@ -70,7 +70,7 @@ export default function AboveTarget({
 
       const tx = await Liquidations.checkAndRemoveAccountInLiquidation(account);
       const res = await tx.wait(1);
-      console.log("res", res);
+      // console.log("res", res);
       refresh();
     } catch (e: any) {
       enqueueSnackbar(

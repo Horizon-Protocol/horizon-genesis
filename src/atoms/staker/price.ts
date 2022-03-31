@@ -41,7 +41,7 @@ export const tokenPriceAtomFamily = atomFamily((token: Token) =>
           ? overallValueOfLPToken.div(totalSupply).toNumber()
           : 0;
 
-        console.log("====lp", token, lpTokenPrice);
+        // console.log("====lp", token, lpTokenPrice);
         return lpTokenPrice;
       }
       return get(priceAtomFamily({ token }));

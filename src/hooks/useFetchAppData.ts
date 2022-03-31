@@ -59,18 +59,19 @@ export default function useFetchAppData() {
       liquidationRatio,
       // liquidationDelay,
     ]) {
-      console.log("====AppData====", {
-        lastDebtLedgerEntry: lastDebtLedgerEntry.toString(),
-        totalSupply: totalSupply.toString(),
-        totalIssuedZUSDExclEth: totalIssuedZUSDExclEth.toString(),
-        targetRatio: targetRatio.toString(),
-        liquidationRatio: liquidationRatio.toString(),
-        // liquidationDelay: liquidationDelay,
-      });
+      // console.log("====AppData====", {
+      //   lastDebtLedgerEntry: lastDebtLedgerEntry.toString(),
+      //   totalSupply: totalSupply.toString(),
+      //   totalIssuedZUSDExclEth: totalIssuedZUSDExclEth.toString(),
+      //   targetRatio: targetRatio.toString(),
+      //   liquidationRatio: liquidationRatio.toString(),
+      //   // liquidationDelay: liquidationDelay,
+      // });
       setLastDebtLedgerEntry(lastDebtLedgerEntry);
       setTotalSupply(totalSupply);
       setTotalIssuedZUSDExclEth(totalIssuedZUSDExclEth);
       setTargetCRatio(targetRatio);
+      // setTargetCRatio(toBN(0.05));
       setLiquidationRatio(liquidationRatio);
       // setLiquidationDelay(liquidationDelay);
 

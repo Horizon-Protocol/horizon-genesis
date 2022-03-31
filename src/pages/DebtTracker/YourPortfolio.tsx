@@ -47,6 +47,7 @@ export default function YourPortfolio() {
                     fontWeight: 'normal',
                     opacity: 0.5
                 }}>Total zAsset Value: </span><span style={{
+                    fontWeight: 'normal',
                     color: COLOR.safe
                 }}>${formatNumber(zAssets)}</span>
             </Typography>

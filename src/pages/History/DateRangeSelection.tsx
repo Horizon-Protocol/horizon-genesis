@@ -8,9 +8,8 @@ import { COLOR, COLOR_BG } from "@utils/theme/constants";
 import dropdown_arrow from "@assets/images/hitory-dropdown-arrow.png";
 import { styled } from "@mui/material/styles";
 // import { HistoryDateRange } from "@atoms/record";
-import { useAtom } from "jotai";
 import { HistoryRangeDateProps } from "./HistoryRecord";
-import dayjs from "dayjs";
+import "./dateStyle.css";
 
 const Img = styled("img")``;
 
@@ -62,12 +61,16 @@ export default function DateRangeSelection({dateRangeValue, selectDateRange, ...
                 // showToolbar={true}
                 // disableMaskedInput={false}
                 // showTodayButton={true}
-                DialogProps={{
-                    sx:{
-                        backgroundColor:'red !important'
-                    }
-                }}
-                open={open}
+                // DialogProps={{
+                //     sx:{
+                //         backgroundColor:'red !important'
+                //     }
+                // }}
+                // renderDay={()=>{
+                //     return
+                //     (<Box></Box>)
+                // }}
+                open={true}
                 onClose={() => {
                     setOpen(false)
                     setDateDropDown(false)

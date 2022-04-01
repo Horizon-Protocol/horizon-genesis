@@ -43,20 +43,26 @@ export default function useFetchRewards() {
       upcomingExchangeReward: etherToBN(periodFees[0][0]),
       upcomingStakingReward: etherToBN(periodFees[0][1]),
     };
-    // console.log('===periodFees',{periodFees: formatNumber(etherToBN(periodFees[0][0]))})
+    // console.log('===periodFees',[
+    //   formatNumber(etherToBN(periodFees[0][0])),
+    //   formatNumber(etherToBN(periodFees[0][1])),
+    //   formatNumber(etherToBN(periodFees[1][0])),
+    //   formatNumber(etherToBN(periodFees[1][1])),
+    //   // periodFees: formatNumber(etherToBN(periodFees[0][0]))
+    // ])
     return result
   }, [account]);
 
   useQuery([CONTRACT, account, "rewards"], fetcher, {
     enabled: !!account && !!horizon.js,
     onSuccess({ claimable, stakingReward, exchangeReward, upcomingExchangeReward, upcomingStakingReward }) {
-      // console.log('===claimablestakingRewardexchangeReward',{
-      //   claimable:claimable,
-      //   stakingReward:stakingReward.toNumber(),
-      //   exchangeReward:exchangeReward.toNumber(),
-      //   upcomingExchangeReward: upcomingExchangeReward.toNumber(),
-      //   upcomingStakingReward: upcomingStakingReward.toNumber()
-      // });
+      console.log('===claimablestakingRewardexchangeReward',{
+        claimable:claimable,
+        stakingReward:stakingReward.toNumber(),
+        exchangeReward:exchangeReward.toNumber(),
+        upcomingExchangeReward: upcomingExchangeReward.toNumber(),
+        upcomingStakingReward: upcomingStakingReward.toNumber()
+      });
       setRewards({
         claimable,
         stakingReward,

@@ -7,6 +7,7 @@ import useWallet from "@hooks/useWallet";
 import { concat, flattenDeep, last, sortBy } from "lodash";
 import { toBN } from "@utils/number";
 import { useAtomValue, useResetAtom, useUpdateAtom } from "jotai/utils";
+import { useAtom } from "jotai";
 import { debtAtom } from "@atoms/debt";
 import useDisconnected from "@hooks/useDisconnected";
 import { historicalClaimHZNAndZUSDAtom, historicalDebtAtom, historicalOperationAtom, HistoryType } from "@atoms/record";
@@ -37,7 +38,7 @@ export default function useQueryDebt() {
     const { account } = useWallet()
     const { debtBalance } = useAtomValue(debtAtom);
 
-    const setHistoricalDebt = useUpdateAtom(historicalDebtAtom);
+    const [historicalDebt, setHistoricalDebt] = useAtom(historicalDebtAtom);
     const resetHistoricalDebt = useResetAtom(historicalDebtAtom);
     useDisconnected(resetHistoricalDebt);
 
@@ -251,7 +252,9 @@ export default function useQueryDebt() {
                 });
 
                 // console.log("===historicalDebtAndIssuance",historicalDebtAndIssuance)
-                setHistoricalDebt(historicalDebtAndIssuance)
+                if (historicalDebt?.length != historicalDebtAndIssuance.length){
+                    setHistoricalDebt(historicalDebtAndIssuance)
+                }
             }
         }
     )

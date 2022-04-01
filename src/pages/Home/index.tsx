@@ -1,27 +1,15 @@
 import { Box, Grid, Typography } from "@mui/material";
-import Carousel from 'react-material-ui-carousel'
-import { useEffect } from "react";
+import {  useCallback, useEffect } from "react";
 import { COLOR, PAGE_COLOR } from "@utils/theme/constants";
-import navNext from "@assets/images/next.png";
-import navPre from "@assets/images/pre.png";
-import BannerMint from "@components/Banner/BannerMint";
-import BannerStakeReasonRisk from "@components/Banner/BannerStakeReasonRisk";
-import BannerUseOfZusd from "@components/Banner/BannerUseOfZusd";
 // import "./styles.css"
 import GridCrad from "@components/Banner/GridCrad";
-import information from "@assets/images/information.png";
 import { useAtomValue } from "jotai/utils";
 import { hasRewardsAtom } from "@atoms/feePool";
+import { LINK_EXCHANGE } from "@utils/constants";
+import gridMint from "@assets/images/grid-mint.png";
 import { useHistory } from "react-router-dom";
 import useUserStakingData from "@hooks/useUserStakingData";
-import { formatNumber } from "@utils/number";
-import { styled } from "@mui/material/styles";
-import hznIcon from "@assets/images/icon-hzn.png";
-import gridMint from "@assets/images/grid-mint.png";
-import zusdIcon from "@assets/images/zUSD-icon.png";
-
-
-const Img = styled("img")``;
+import TopCarousel from "./TopCarousel";
 
 const gridCards: GridCardProps[] = [
   {
@@ -72,6 +60,12 @@ export default function Home() {
 
   }, []);
 
+  // const TopCarousel = useCallback(() => {
+  //   return (
+      
+  //   )
+  // }, [])
+
   return (
     <Box
       mx='auto'
@@ -88,111 +82,7 @@ export default function Home() {
         sm: 3
       }}
     >
-      <Box
-        px={{
-          xs: 1,
-          sm: '40px',
-        }}
-        sx={{
-          height: '271px',
-          width: '100%',
-        }}>
-        <Carousel
-          animation="slide"
-          autoPlay={false}
-          className="home_carousel"
-          duration={500}
-          navButtonsAlwaysVisible={true}
-          NextIcon={<img src={navNext}></img>}
-          PrevIcon={<img src={navPre}></img>}
-          navButtonsProps={{          // Change the colors and radius of the actual buttons. THIS STYLES BOTH BUTTONS
-            style: {
-              backgroundColor: 'transparent',
-              borderRadius: 0
-            }
-          }}
-          IndicatorIcon={
-            <Box sx={{ width: "5px", height: '5px' }}></Box>
-          }
-          indicatorIconButtonProps={{
-            style: {
-              marginTop: '-50px',
-              opacity: .5,
-              backgroundColor: PAGE_COLOR.mint,
-              marginLeft: '10px',
-            }
-          }}
-          activeIndicatorIconButtonProps={{
-            style: {
-              opacity: 1,
-              marginLeft: '10px',
-              backgroundColor: PAGE_COLOR.mint,
-            }
-          }}
-          indicatorContainerProps={{
-            style: {
-              textAlign: 'center'
-            }
-          }}
-        >
-          <BannerMint />
-          <BannerStakeReasonRisk
-            img={<Box sx={{
-              mb: '15px',
-              display: 'flex',
-              alignItems: 'flex-end',
-            }}>
-              <Img
-                src={hznIcon}
-                sx={{
-                  mr: '10px',
-                  width: "32px",
-                  height: "32px",
-                  mb: '-13px',
-                }}
-              />
-              <Img
-                src={gridMint}
-                sx={{
-                  width: "60px",
-                  height: "53px",
-                }}
-              />
-              <Img
-                src={zusdIcon}
-                sx={{
-                  ml: '10px',
-                  width: "32px",
-                  height: "32px",
-                  mb: '-13px',
-                }}
-              />
-            </Box>}
-            title="WHY STAKE HZN?"
-            desc={<>Staking HZN, and minting zUSD, will allow you to <br />earn staking rewards from the protocol as well as <br />a split of the zUSD transaction fees generated on <br />Horizon Exchange.  HZN staking rewards are <br />currently</>}
-            highlightText={stakingAPR * 100 ? ` ${formatNumber(stakingAPR * 100)}% APY` : "--"}
-          />
-          <BannerUseOfZusd />
-          <BannerStakeReasonRisk
-            img={<Img
-              src={information}
-              sx={{
-                width: "54px",
-                height: "54px",
-              }}
-            />}
-            title="WHAT ARE THE RISKS?"
-            desc={<>When staking HZN and minting zUSD you are<br />collateralizing the zUSD with HZN at an 800% ratio<br />(C-Ratio). You must maintain this 800% C-Ratio or <br />you cannot claim rewards or you can be potentially<br />liquidated if you reach a 200% C-Ratio.<br /></>}
-            highlightText="LEARN MORE"
-            style={{
-              cursor:'pointer'
-            }}
-            onClick={()=>{
-              window.open("https://docs.horizonprotocol.com/");
-            }}
-          />
-        </Carousel>
-      </Box>
+      <TopCarousel />
       <Box
         px={{
           xm: 1,
@@ -213,9 +103,9 @@ export default function Home() {
                   if (index == 0) history.push("mint")
                   if (index == 1) history.push("burn")
                   if (index == 2) history.push("claim")
-                  // if (index == 3) history.push("mint")
+                  if (index == 3) window.open(LINK_EXCHANGE)
                   if (index == 4) history.push("earn")
-                  // if (index == 5) history.push("mint")
+                  if (index == 5) window.open("https://docs.horizonprotocol.com/");
                 }} titleColor={item.titleColor} title={item.title} desc={item.desc} icon={item.icon} showAlert={item.title === "Claim" && hasRewards} />
               </Grid>
             )

@@ -3,7 +3,7 @@ import { Box, Typography, LinearProgress, BoxProps } from "@mui/material";
 import { HelpOutline } from "@mui/icons-material";
 import { useAtomValue } from "jotai/utils";
 import { ratiosPercentAtom } from "@atoms/app";
-import { currentCRatioPercentAtom } from "@atoms/debt";
+import { currentCRatioPercentAtom, debtAtom } from "@atoms/debt";
 import { formatNumber } from "@utils/number";
 import { COLOR } from "@utils/theme/constants";
 import Tooltip from "@components/Tooltip";
@@ -13,6 +13,7 @@ import useWallet from "@hooks/useWallet";
 import { useIsFetching, useQueryClient } from "react-query";
 import { WALLET } from "@utils/queryKeys";
 import { useCallback } from "react";
+import { hznRateAtom } from "@atoms/exchangeRates";
 
 const getColorByRatioPercent = (
   ratioPercent: number,
@@ -43,7 +44,7 @@ const getProgressByRatioPercent = (
       25 +
       ((ratioPercent - liquidationPercent) /
         (targetPercent - liquidationPercent)) *
-        50;
+      50;
   } else {
     // ratio >= target
     percent =
@@ -97,6 +98,17 @@ export default function CRatioRange(props: BoxProps) {
     });
   }, [queryClient, account])
 
+  const { collateral, debtBalance } = useAtomValue(debtAtom);
+
+  const { liquidationPrice, targetPrice } = useMemo(() => {
+    let liquidationPrice = (liquidationRatioPercent * debtBalance.toNumber()) / (collateral.toNumber() * 100)
+    let targetPrice = (targetCRatioPercent * debtBalance.toNumber()) / (collateral.toNumber() * 100)
+    return ({
+      liquidationPrice,
+      targetPrice
+    })
+  }, [liquidationRatioPercent, targetCRatioPercent, debtBalance, collateral])
+
   const { progress, color } = useMemo(
     () => ({
       color: getColorByRatioPercent(
@@ -117,13 +129,13 @@ export default function CRatioRange(props: BoxProps) {
     <Box py={3} textAlign='center' {...props} sx={{
       position: "relative"
     }}>
-       <SvgIcon
+      <SvgIcon
         onClick={refreshBalance}
         sx={{
-          cursor:"pointer",
-          position:"absolute",
+          cursor: "pointer",
+          position: "absolute",
           right: 8,
-          top: {md:2, xs:30},
+          top: { md: 2, xs: 30 },
           color: "text.primary",
           width: 14,
           animation: "circular-rotate 4s linear infinite",
@@ -140,7 +152,7 @@ export default function CRatioRange(props: BoxProps) {
           },
         }}
       >
-         <IconRefresh />
+        <IconRefresh />
       </SvgIcon>
       <Typography
         variant='h6'
@@ -168,7 +180,7 @@ export default function CRatioRange(props: BoxProps) {
       >
         <Typography
           variant='subtitle2'
-          m='8px 0 16px'
+          m='8px 0 0px'
           lineHeight='14px'
           letterSpacing='0.5px'
         >
@@ -176,6 +188,19 @@ export default function CRatioRange(props: BoxProps) {
           <HelpOutline fontSize='inherit' />
         </Typography>
       </Tooltip>
+      {[liquidationPrice, targetPrice].map((item, index) => {
+        return (
+          <Typography sx={{
+            opacity: .5,
+            color: COLOR.text,
+            fontSize: '8px',
+            letterSpacing: '0.5px',
+            width: "40%",
+            ml: index == 0 ? "25%" : "75%",
+            transform: index == 0 ? "translateX(-50%) translateY(100%)" : "translateX(-50%)",
+          }}>${formatNumber(item, { mantissa: 3 })}</Typography>
+        )
+      })}
       <Box position='relative' pb={4}>
         <LinearProgress
           variant='determinate'

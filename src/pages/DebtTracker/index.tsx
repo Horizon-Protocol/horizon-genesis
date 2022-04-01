@@ -16,7 +16,7 @@ import { globalDebtAtom, historicalDebtAtom } from "@atoms/record";
 import { useAtomValue } from "jotai/utils";
 import useWallet from "@hooks/useWallet";
 
-interface ToolTipCellPros{
+interface ToolTipCellPros {
     color: string;
     title: string;
     value: string;
@@ -180,21 +180,27 @@ export default function DebtTracker() {
 
                 const toolTipDispplay = []
 
-                if (acitveDebtValue != "$NaN") {toolTipDispplay.push({
-                    color: '#3377FF',
-                    title: 'Active Debt',
-                    value:  acitveDebtValue
-                })}
-                if (issuedDebtValue != "$NaN") {toolTipDispplay.push({
-                    color: '#2AD4B7',
-                    title: 'Issued Debt',
-                    value: issuedDebtValue
-                })}
-                if (globalDebtValue != "$NaN") {toolTipDispplay.push({
-                    color: '#FFA539',
-                    title: 'Global Debt',
-                    value: globalDebtValue
-                })}
+                if (acitveDebtValue != "$NaN") {
+                    toolTipDispplay.push({
+                        color: '#3377FF',
+                        title: 'Active Debt',
+                        value: acitveDebtValue
+                    })
+                }
+                if (issuedDebtValue != "$NaN") {
+                    toolTipDispplay.push({
+                        color: '#2AD4B7',
+                        title: 'Issued Debt',
+                        value: issuedDebtValue
+                    })
+                }
+                if (globalDebtValue != "$NaN") {
+                    toolTipDispplay.push({
+                        color: '#FFA539',
+                        title: 'Global Debt',
+                        value: globalDebtValue
+                    })
+                }
 
                 setToolTipProps({
                     toolTipDisplay: 'block',
@@ -217,9 +223,9 @@ export default function DebtTracker() {
 
     const historicalDebt = useAtomValue(historicalDebtAtom);
     const globalDebt = useAtomValue(globalDebtAtom)
+
     useEffect(() => {
         if (historicalDebt?.length) {
-
             const activeRows: (LineData | WhitespaceData)[] = []
             for (let i = historicalDebt.length - 1; i >= 0; i--) {
                 var debt = historicalDebt[i]
@@ -232,7 +238,7 @@ export default function DebtTracker() {
                 }
             }
             // if (historicalDebt.length != 1 && Number(historicalDebt[0].actualDebt) != 0){
-                acitveDebtLineSeries?.setData(activeRows.reverse())
+            acitveDebtLineSeries?.setData(activeRows.reverse())
             // }
 
             const issuedRows: (LineData | WhitespaceData)[] = []
@@ -247,10 +253,12 @@ export default function DebtTracker() {
                 }
             }
             // if (historicalDebt.length != 1 && Number(historicalDebt[0].issuanceDebt) != 0){
-                isuuedDebtLineSeries?.setData(issuedRows.reverse())
+            isuuedDebtLineSeries?.setData(issuedRows.reverse())
             // }
         }
+    }, [historicalDebt, acitveDebtLineSeries, isuuedDebtLineSeries])
 
+    useEffect(()=>{
         if (globalDebt?.length) {
             const globalRows: (LineData | WhitespaceData)[] = []
             for (let i = globalDebt?.length - 1; i >= 0; i--) {
@@ -265,7 +273,7 @@ export default function DebtTracker() {
                 globalDebtLineSeries?.setData(globalRows)
             }
         }
-    }, [historicalDebt, globalDebt, acitveDebtLineSeries, isuuedDebtLineSeries, globalDebtLineSeries])
+    },[globalDebt,globalDebtLineSeries])
 
     return (
         <PageCard
@@ -307,7 +315,7 @@ export default function DebtTracker() {
     )
 }
 
-interface ToolTipCellPros{
+interface ToolTipCellPros {
     color: string;
     title: string;
     value: string;
@@ -364,7 +372,7 @@ const ToolTip = ({
                     <Box sx={{
                         display: 'flex',
                         alignItems: 'center',
-                        mt:'3px',
+                        mt: '3px',
                     }}>
                         <Box sx={{
                             height: '10px',

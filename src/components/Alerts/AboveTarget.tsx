@@ -50,7 +50,7 @@ export default function AboveTarget({
       return {
         color: COLOR.danger,
         title: "Attention Required",
-        content: `Your account is flagged for liquidation. You have ${formatted} to clear this flag or you may be at risk of liquidation if your c-ratio drops below ${formatCRatioToPercent(
+        content: `Your account is still flagged for liquidation. You have ${formatted} to clear this flag or you may be at risk of liquidation if your c-ratio drops below ${formatCRatioToPercent(
           targetRatio
         )}%.`,
       };

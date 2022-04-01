@@ -2,15 +2,10 @@ import { GRAPH_DEBT } from "@utils/queryKeys";
 import { useQuery } from "react-query";
 import requset, { gql } from "graphql-request"
 import { GRAPH_ENDPOINT } from "@utils/constants";
-import { useCallback } from "react";
 import useWallet from "@hooks/useWallet";
-import { last, sortBy } from "lodash";
-import { toBN } from "@utils/number";
 import { useAtomValue, useResetAtom, useUpdateAtom } from "jotai/utils";
 import { debtAtom } from "@atoms/debt";
-import { formatNumber } from "@utils/number";
-import useDisconnected from "@hooks/useDisconnected";
-import dayjs from "dayjs";
+import { useAtom } from "jotai";
 import { globalDebtAtom } from "@atoms/record";
 
 export type GloablDebt = {
@@ -23,7 +18,8 @@ export default function useQueryGlobalDebt() {
     const { account } = useWallet()
     const { debtBalance } = useAtomValue(debtAtom);
 
-    const setGlobalDebtAtom = useUpdateAtom(globalDebtAtom);
+    // const setGlobalDebtAtom = useUpdateAtom(globalDebtAtom);
+    const [globalDebt, setGlobalDebt] = useAtom(globalDebtAtom);
     
     const globalDebts = async () => {
         try {
@@ -60,8 +56,9 @@ export default function useQueryGlobalDebt() {
             onSuccess(
                 debts,
             ) {
-                // console.log("globalDebtsReponse",debts.dailyIssueds)
-                setGlobalDebtAtom(debts.dailyIssueds ?? [])
+                if (globalDebt?.length != debts.dailyIssueds.length){
+                    setGlobalDebt(debts.dailyIssueds ?? [])
+                }
             }            
         }
     )

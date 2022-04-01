@@ -194,12 +194,12 @@ export default function HistoryRecord() {
     return (
         <Box>
             <NoRowsOverlay
-                hidden={dataRows && dataRows.length > 0}
+                hidden={historicalOperationData != null && historicalOperationData?.length > 0}
                 noRowsTitle={<>You have no transactions. Start by staking<br />HZN and minting zUSD.</>}
                 noRowsbtnTitle="STAKE NOW"
             />
             <Box sx={{
-                display : (dataRows && dataRows.length > 0) ? 'block' : 'none'
+                display : (historicalOperationData != null && historicalOperationData.length > 0) ? 'block' : 'none'
             }}>
                 <Box sx={{
                     display: 'flex',
@@ -251,7 +251,6 @@ export default function HistoryRecord() {
                             NoRowsOverlay: () =>
                                 <Box></Box>
                         }}
-
                     />
                 </Box>
                 <Pagination {...{ mt: '18px' }} rowsCount={dataRows.length} currentPage={page} rowsPerPage={rowsPerPage} pageClick={(index) => {

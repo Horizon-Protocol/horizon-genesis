@@ -70,7 +70,7 @@ export default function DateRangeSelection({dateRangeValue, selectDateRange, ...
                 //     return
                 //     (<Box></Box>)
                 // }}
-                open={true}
+                open={open}
                 onClose={() => {
                     setOpen(false)
                     setDateDropDown(false)

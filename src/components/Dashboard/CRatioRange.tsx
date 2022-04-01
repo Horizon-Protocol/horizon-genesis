@@ -88,7 +88,7 @@ export default function CRatioRange(props: BoxProps) {
     useAtomValue(ratiosPercentAtom);
   const currentCRatioPercent = useAtomValue(currentCRatioPercentAtom);
 
-  const { account } = useWallet()
+  const { account, connected } = useWallet()
   const queryClient = useQueryClient()
   const balacneRefreshing = useIsFetching(WALLET)
 
@@ -190,7 +190,7 @@ export default function CRatioRange(props: BoxProps) {
       </Tooltip>
       {[liquidationPrice, targetPrice].map((item, index) => {
         return (
-          <Typography sx={{
+          <Typography key={index} sx={{
             opacity: .5,
             color: COLOR.text,
             fontSize: '8px',
@@ -198,7 +198,7 @@ export default function CRatioRange(props: BoxProps) {
             width: "40%",
             ml: index == 0 ? "25%" : "75%",
             transform: index == 0 ? "translateX(-50%) translateY(100%)" : "translateX(-50%)",
-          }}>${formatNumber(item, { mantissa: 3 })}</Typography>
+          }}>${connected ? formatNumber(item, { mantissa: 3 }) : "--"}</Typography>
         )
       })}
       <Box position='relative' pb={4}>

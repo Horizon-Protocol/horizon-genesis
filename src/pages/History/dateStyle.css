@@ -1,10 +1,58 @@
-/* 
-.MuiButtonBase-root.Mui-disabled {
-  background-color: red;
+.MuiPaper-root{
+  background-color: #0C1D2E;
 }
 
-.MuiButtonBase-root.Mui-disabled.MuiPickersDay-root {
+.MuiDateRangePickerDay-rangeIntervalDayHighlight{
+  border-top-right-radius: 0 !important;
+    border-bottom-right-radius: 0 !important;
+    border-top-left-radius: 0 !important;
+    border-bottom-left-radius: 0 !important;
+    /* color: white !important; */
+  background-color: rgba(42, 212, 183, .2);
+}
+
+.MuiDateRangePickerDay-day.MuiDateRangePickerDay-notSelectedDate.MuiDateRangePickerDay-dayInsideRangeInterval{
+  color: white;
+}
+
+.MuiDateRangePickerDay-rangeIntervalDayHighlightEnd{
+  border-top-right-radius: 0;
+    border-bottom-right-radius: 0;
+}
+
+.PrivatePickersSlideTransition-root{
+  min-width: auto;
+  min-height: 210px;
+}
+
+.MuiDateRangePickerDay-rangeIntervalPreview{
+  border: 1px solid #091526 !important;
+}
+
+.Mui-selected.MuiDateRangePickerDay-day{
+  border-radius: 4px !important;
+  border: 2px solid #091526 !important;
+
+  background-color: #2AD4B7;
+}
+
+.MuiPickersDay-today {
+  position: relative;
+  border: 0px !important;
+  &:after {
+    position: absolute;
+    content: '';
+    width: 5px;
+    height: 5px;
+    background-color: #2AD4B7;
+    border-radius: 50%;
+    top: 5px;
+    right: 5px;
+  }
+}
+
+.Mui-disabled.MuiPickersDay-root {
   background-color: #091526;
-  color: #B4E0FF;
-  opacity: .5;
-} */
+  color:  #B4E0FF;
+  border-radius: 0px !important;
+}

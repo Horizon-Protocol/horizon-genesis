@@ -1,5 +1,4 @@
 import { HelpOutline } from "@mui/icons-material";
-// import claimbleTip from "@assets/images/claimble-tip.png"
 import { ReactComponent as ClaimbleTip } from "@assets/images/claimbleTip.svg";
 
 import {

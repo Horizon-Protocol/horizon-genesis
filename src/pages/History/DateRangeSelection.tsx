@@ -7,8 +7,9 @@ import DateRangePicker, { DateRange } from '@mui/lab/DateRangePicker';
 import { COLOR, COLOR_BG } from "@utils/theme/constants";
 import dropdown_arrow from "@assets/images/hitory-dropdown-arrow.png";
 import { styled } from "@mui/material/styles";
-// import { HistoryDateRange } from "@atoms/record";
-import { HistoryRangeDateProps } from "./HistoryRecord";
+import SvgIcon from "@mui/material/SvgIcon";
+import ArrowBackIosNewIcon from '@mui/icons-material/ArrowBackIosNew';
+import ArrowForwardIosIcon from '@mui/icons-material/ArrowForwardIos';
 import "./dateStyle.css";
 
 const Img = styled("img")``;
@@ -31,6 +32,32 @@ export default function DateRangeSelection({dateRangeValue, selectDateRange, ...
         }
     }
 
+    const leftArrow = () => {
+        return (
+            <SvgIcon
+                sx={{
+                  fontSize: '15px',
+                  color:'white'
+                }}
+              >
+                <ArrowBackIosNewIcon />
+              </SvgIcon>
+        )
+    }
+    
+    const rightArrow = () => {
+        return (
+            <SvgIcon
+                sx={{
+                  fontSize: '15px',
+                  color:'white'
+                }}
+              >
+                <ArrowForwardIosIcon />
+              </SvgIcon>
+        )
+    }
+
     return (
         <Box sx={{
             borderRadius: '4px',
@@ -39,37 +66,10 @@ export default function DateRangeSelection({dateRangeValue, selectDateRange, ...
         >
         <LocalizationProvider dateAdapter={AdapterDateFns}>
             <DateRangePicker
-                          // disabled={true}
-                // disableOpenPicker={true}
-                // loading={true}
-                // okText="zzz"
-                // mask="MMM d, yy | HH:mm"
-                // getOpenDialogAriaText={(value, utils) => 
-                //     `Choose date, selected date is ${utils.format(utils.date(value), 'fullDate')}`
-                // }
-
-                // leftArrowButtonText='dsds'
-                // renderDay={(day)=> {
-                //     return (
-                //         <Box>day</Box>
-
-                //     )
-                // }}
-                // clearable={true}
-                // disableAutoMonthSwitching={true}
-                // disableCloseOnSelect={false}
-                // showToolbar={true}
-                // disableMaskedInput={false}
-                // showTodayButton={true}
-                // DialogProps={{
-                //     sx:{
-                //         backgroundColor:'red !important'
-                //     }
-                // }}
-                // renderDay={()=>{
-                //     return
-                //     (<Box></Box>)
-                // }}
+                components={{
+                    LeftArrowIcon: leftArrow,
+                    RightArrowIcon: rightArrow
+                }}
                 open={open}
                 onClose={() => {
                     setOpen(false)

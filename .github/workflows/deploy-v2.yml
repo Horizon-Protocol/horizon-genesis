@@ -1,9 +1,9 @@
-name: Deploy Dev
+name: Deploy Genesis v2.0
 
 on:
   push:
     branches:
-      - testnet
+      - Genesis2.0
     paths-ignore:
       - ".github/workflows/deploy.yml"
 
@@ -43,7 +43,7 @@ jobs:
         env:
           AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
           AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
-          AWS_S3_BUCKET: horizon-genesis-dev
+          AWS_S3_BUCKET: horizon-genesis-v2
           AWS_REGION: ap-southeast-1
           SOURCE_DIR: dist
 
@@ -58,5 +58,5 @@ jobs:
           host: https://bark.etcd.run
           key: ${{ secrets.BARK_KEY }} # Your secret key
           title: "[Horizon] Genesis"
-          body: "Public Testnet"
+          body: "v2.0"
           category: Horizon

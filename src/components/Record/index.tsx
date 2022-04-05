@@ -1,7 +1,7 @@
 import { useMemo } from "react";
 import { useHistory, useLocation } from "react-router-dom";
-import { Box, Typography, alpha, BoxProps, useMediaQuery } from "@mui/material";
-import { useTheme, styled } from "@mui/material/styles";
+import { Box, Typography, BoxProps, useMediaQuery } from "@mui/material";
+import { alpha, useTheme, styled } from "@mui/material/styles";
 import { COLOR } from "@utils/theme/constants";
 import debtTracker from "@assets/images/debtTracker.png";
 import debtTrackerSelected from "@assets/images/debtTracker-selected.png";

@@ -29,7 +29,8 @@ export type Asset = {
   balance: BN;
 };
 
-export type Rates = Record<CurrencyKey, number>;
+export type RateKey = CurrencyKey | "HZN";
+export type Rates = Record<RateKey, number>;
 export type ParitalRates = Partial<Rates>;
 
 // export enum ZAssests {

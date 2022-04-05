@@ -1,6 +1,6 @@
 import path from "path";
 import { defineConfig } from "vite";
-import reactRefresh from "@vitejs/plugin-react-refresh";
+import react from "@vitejs/plugin-react";
 import vitePluginImp from "vite-plugin-imp";
 import tsconfigPaths from "vite-tsconfig-paths";
 import svgrPlugin from "vite-plugin-svgr";
@@ -10,9 +10,7 @@ export default defineConfig({
   server: {
     host: "0.0.0.0",
   },
-  esbuild: {
-    jsxInject: `import React from 'react'`,
-  },
+  esbuild: {},
   resolve: {
     alias: [
       {
@@ -33,12 +31,13 @@ export default defineConfig({
   },
   build: {
     // sourcemap: true,
+    chunkSizeWarningLimit: 15000,
     commonjsOptions: {
       exclude: ["contracts-interface/*"],
     },
   },
   plugins: [
-    reactRefresh(),
+    react(),
     tsconfigPaths(),
     svgrPlugin({
       svgrOptions: {

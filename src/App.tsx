@@ -34,7 +34,6 @@ import Alerts from "@components/Alerts";
 import AlertDashboard from "@components/Alerts/Dashboard";
 import Record from "@components/Record";
 import DebtTracker from "@pages/DebtTracker";
-import { display } from "@mui/system";
 import Escrow from "@pages/Escrow";
 import History from "@pages/History";
 import useQueryDebt from "@hooks/query/useQueryDebt";
@@ -68,9 +67,9 @@ function App() {
   useFetchFeePool();
   useFetchRewards();
   useFetchHorizonData();
-  useEscrowDataQuery()
-  useQueryDebt()
-  useQueryGlobalDebt()
+  useEscrowDataQuery();
+  useQueryDebt();
+  useQueryGlobalDebt();
 
   const refresh = useRefresh();
 
@@ -109,10 +108,10 @@ function App() {
     // bgcolor:'red',
     right: 0,
     top: 0,
-    position: downLG ? 'static' : 'absolute',
-    display: downLG ? 'flex' : 'block',
-    justifyContent:"space-around"
-  }
+    position: downLG ? "static" : "absolute",
+    display: downLG ? "flex" : "block",
+    justifyContent: "space-around",
+  };
 
   return (
     <>
@@ -152,9 +151,7 @@ function App() {
             <AlertDashboard {...alertProps} />
           </>
         )}
-        {!isEarnPage && downLG && (
-          <Record {...recordProps}/>
-        )}
+        {!isEarnPage && downLG && <Record {...recordProps} />}
         <Box
           my={3}
           display='flex'
@@ -167,7 +164,7 @@ function App() {
           {!isEarnPage && (
             <Hidden lgDown>
               <Box
-                position="relative"
+                position='relative'
                 width='100%'
                 maxWidth={{
                   xs: 0,
@@ -176,7 +173,7 @@ function App() {
                 }}
                 flexShrink={1}
               >
-               <Record {...recordProps}/>
+                <Record {...recordProps} />
               </Box>
             </Hidden>
           )}
@@ -214,7 +211,11 @@ function App() {
             }
           >
             <Switch>
-              <Route exact path="/" render={() => <Redirect to="/home" push />} />        
+              <Route
+                exact
+                path='/'
+                render={() => <Redirect to='/home' push />}
+              />
               {/* <CacheRoute path="/home"><Home /></CacheRoute> */}
               <Route path='/home'>
                 <Home />
@@ -232,13 +233,13 @@ function App() {
                 <Mint />
               </Route>
               <Route path='/debtTracker'>
-                <DebtTracker/>
+                <DebtTracker />
               </Route>
               <Route path='/escrow'>
-               <Escrow />
+                <Escrow />
               </Route>
-               <Route path='/history'>
-               <History />
+              <Route path='/history'>
+                <History />
               </Route>
             </Switch>
           </Box>

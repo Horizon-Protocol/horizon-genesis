@@ -64,9 +64,12 @@ const getStyledTab: (color: string) => any = (color) =>
     overflow: "visible",
     ":hover": {
       color,
+      fontWeight: "bold",
+      backgroundColor: COLOR_BG,
+      height: "38px",
     },
     ":focus": {
-      color,
+      // color,
     },
     "&.MuiTab-root": {
       background: COLOR_BG_40,

@@ -18,6 +18,7 @@ import { totalIssuedZUSDExclEthAtom } from "@atoms/app";
 import { atom } from "jotai";
 import { globalDebtAtom } from "@atoms/record";
 import useWallet from "@hooks/useWallet";
+import { Token } from "@utils/constants";
 
 export default function Dashboard(props: BoxProps) {
   const { collateral, transferable, debtBalance } = useAtomValue(debtAtom);
@@ -47,6 +48,7 @@ export default function Dashboard(props: BoxProps) {
       {
         sectionHeader: true,
         showWalletIcon: connected,
+        importToken: Token.HZN,
         label: "HZN Balance",
         value: `${formatNumber(collateral)} HZN`,
       },
@@ -80,6 +82,7 @@ export default function Dashboard(props: BoxProps) {
       {
         label: "zUSD Balance",
         showWalletIcon: connected,
+        importToken: Token.ZUSD,
         value: `${formatNumber(zUSDBalance)} zUSD`,
       },
       {

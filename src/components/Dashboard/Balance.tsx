@@ -1,15 +1,18 @@
 import { Box, List, ListItem, ListItemIcon, ListItemText, ListItemProps, Collapse } from "@mui/material";
-import { COLOR } from "@utils/theme/constants";
 import SvgIcon from "@mui/material/SvgIcon";
 import { ReactComponent as IconArrowUp } from "@assets/images/icon-arrow-up.svg";
-import { useState } from "react";
-import { BoxProps } from "@mui/system";
+import { useMemo, useState } from "react";
 import { detailAtom } from "@atoms/wallet";
 import { useAtomValue } from "jotai/utils";
+import useWallet from "@hooks/useWallet";
+import { COLOR } from "@utils/theme/constants";
+import { ConnectorNames, Token, TokenName } from "@utils/constants";
+import { registerToken, RegisterTokenConf } from "@utils/wallet";
 
 interface Data {
   sectionHeader?: boolean;
   showWalletIcon?: boolean;
+  importToken?: Token;
   label: string;
   value?: string;
 }
@@ -19,11 +22,18 @@ interface Props {
 }
 
 export default function Balance({ data }: Props) {
+
+  const { connected } = useWallet();
   const wallet = useAtomValue(detailAtom);
+  const canRegisterToken = useMemo(
+    () =>
+      wallet?.connectorId === ConnectorNames.Injected,
+    [wallet?.connectorId]
+  );
 
   const [showMore, setShowMore] = useState(false)
 
-  const CustomListItem = ({ sectionHeader, showWalletIcon, label, value }: Data) => (
+  const CustomListItem = ({ sectionHeader, showWalletIcon, importToken, label, value }: Data) => (
     <ListItem sx={{
       p: 0,
       pl: sectionHeader ? 1 : 2,
@@ -42,11 +52,16 @@ export default function Balance({ data }: Props) {
         {showWalletIcon && (
           <Box component='img' src={wallet?.logo} sx={{
             // pt:'2px',
+            cursor:'pointer',
             mb:'-3px',
             ml:'3px',
             width:'14px',
             height:'14px'
-          }} />
+          }} onClick={()=>{
+            if (canRegisterToken && importToken) {
+              registerToken(RegisterTokenConf[importToken]!);
+            }
+          }}/>
         )}
       </ListItemText>
 
@@ -74,11 +89,11 @@ export default function Balance({ data }: Props) {
         // pb: '24px',
         position: 'relative'
       }} dense disablePadding>
-        {data.map(({ sectionHeader, showWalletIcon, label, value }) => (
-          sectionHeader ? <CustomListItem key={label} showWalletIcon={showWalletIcon} sectionHeader={sectionHeader} label={label} value={value} />
+        {data.map(({ sectionHeader, showWalletIcon, importToken, label, value }) => (
+          sectionHeader ? <CustomListItem key={label} showWalletIcon={showWalletIcon} importToken={importToken} sectionHeader={sectionHeader} label={label} value={value} />
             :
             <Collapse key={label} in={showMore} timeout="auto" unmountOnExit>
-              <CustomListItem showWalletIcon={showWalletIcon} sectionHeader={sectionHeader} label={label} value={value} />
+              <CustomListItem showWalletIcon={showWalletIcon} importToken={importToken} sectionHeader={sectionHeader} label={label} value={value} />
             </Collapse>
         ))}
       </List >

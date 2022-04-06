@@ -116,18 +116,24 @@ export default function DebtTracker() {
         },
         onReady(chart, container) {
             const acitveDebt = chart.addLineSeries({
+                priceLineVisible: false,
+                lastValueVisible: false,
                 color: '#3377FF',
                 priceScaleId: 'left',
                 ...leftPriceConfig
             })
 
             const isuuedDebt = chart.addLineSeries({
+                priceLineVisible: false,
+                lastValueVisible: false,
                 color: '#2AD4B7',
                 priceScaleId: 'left',
                 ...leftPriceConfig
             })
 
             const globalDebt = chart.addLineSeries({
+                priceLineVisible: false,
+                lastValueVisible: false,
                 color: COLOR.warning,
                 priceScaleId: 'right',
                 ...rightPriceConfig
@@ -217,8 +223,6 @@ export default function DebtTracker() {
                 })
             });
         },
-        // onCrosshairMove(param, chart, container) {
-        // }
     })
 
     const historicalDebt = useAtomValue(historicalDebtAtom);
@@ -230,7 +234,7 @@ export default function DebtTracker() {
             for (let i = historicalDebt.length - 1; i >= 0; i--) {
                 var debt = historicalDebt[i]
                 const time = dayjs.unix(Number(debt.timestamp / 1000)).format("YYYY-MM-DD")
-                if (!activeRows.find(x => x.time == time)) {
+                if (!activeRows.find(x => x.time == time) && debt.actualDebt != undefined) {
                     activeRows.push({
                         time: time,
                         value: Number(debt.actualDebt)
@@ -245,7 +249,7 @@ export default function DebtTracker() {
             for (let i = historicalDebt.length - 1; i >= 0; i--) {
                 var debt = historicalDebt[i]
                 const time = dayjs.unix(Number(debt.timestamp / 1000)).format("YYYY-MM-DD")
-                if (!issuedRows.find(x => x.time == time)) {
+                if (!issuedRows.find(x => x.time == time) && debt.issuanceDebt != undefined) {
                     issuedRows.push({
                         time: time,
                         value: Number(debt.issuanceDebt)
@@ -264,14 +268,14 @@ export default function DebtTracker() {
             for (let i = globalDebt?.length - 1; i >= 0; i--) {
                 var gdebt = globalDebt[i]
                 const time = dayjs.unix(Number(gdebt.id)).format("YYYY-MM-DD")
-                if (!globalRows.find(x => x.time == time)) {
+                if (!globalRows.find(x => x.time == time) && gdebt.totalDebt != undefined) {
                     globalRows.push({
                         time: time,
                         value: Number(gdebt.totalDebt)
                     })
                 }
-                globalDebtLineSeries?.setData(globalRows)
             }
+            globalDebtLineSeries?.setData(globalRows)
         }
     },[globalDebt,globalDebtLineSeries])
 

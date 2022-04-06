@@ -10,7 +10,7 @@ import { useMemo } from "react";
 import { atom, useAtom } from "jotai";
 import { debtAtom } from "@atoms/debt";
 import { useAtomValue } from "jotai/utils";
-import last from 'lodash/last';
+import { first, last } from 'lodash';
 import { globalDebtAtom, historicalDebtAtom } from "@atoms/record";
 import useWallet from "@hooks/useWallet";
 
@@ -31,7 +31,7 @@ export default function DebtOverview() {
                 label: connected ? `$${formatNumber(last(historicalDebt)?.issuanceDebt ?? 0)}` : "--"
             },
             {
-                label: `$${formatNumber(last(globalDebt)?.value ?? 0)}`
+                label: `$${formatNumber(first(globalDebt)?.totalDebt ?? 0)}`
             },
         ]
     }, [historicalDebt,debtBalance])

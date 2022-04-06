@@ -2,6 +2,7 @@ import { jsx } from "@emotion/react";
 import { Typography, BoxProps } from "@mui/material";
 import { styled } from "@mui/material/styles";
 import { Box } from "@mui/system"
+import { useState } from "react";
 
 const Img = styled("img")``;
 
@@ -25,13 +26,27 @@ export default function GridCrad({
     showAlert,
     ...props
 }: BoxProps & GridCardProps) {
+    const [boxColor,setBoxColor] = useState('rgba(16, 38, 55, 0.5)')
+    const [imgOpacity,setImgOpacity] = useState(.2)
+    const [descOpacity,setDescOpacity] = useState(.5)
 
     return (
         <Box
+        onMouseEnter={()=>{
+            setBoxColor('rgba(16, 38, 55, 1)')
+            setImgOpacity(1)
+            setDescOpacity(1)
+        }}
+        onMouseLeave={()=>{
+            setBoxColor('rgba(16, 38, 55, .5)')
+            setImgOpacity(.2)
+            setDescOpacity(.5)
+        }}
+            // class="ds"
             onClick={onClick}
             position='relative'
             height='100px'
-            bgcolor='rgba(16, 38, 55, 0.5)'
+            bgcolor={boxColor}
             display='flex'
             flexDirection='column'
             justifyContent='center'
@@ -39,10 +54,6 @@ export default function GridCrad({
             overflow='hidden'
             sx={{
                 cursor: "pointer",
-                ":hover": {
-                    opacity: .5,
-                    // backgroundColor: "#102637",
-                },
             }}
         >
             <Img
@@ -53,6 +64,7 @@ export default function GridCrad({
                     top: '-5px',
                     width: "46px",
                     height: "46px",
+                    opacity: imgOpacity
                 }}
             />
             {showAlert && (<Box sx={{
@@ -81,6 +93,9 @@ export default function GridCrad({
                 fontFamily='Raleway'
                 letterSpacing={0.5}
                 color='#B4E0FF'
+                sx={{
+                    opacity: descOpacity
+                }}
             >{desc}</Typography>
         </Box>
     )

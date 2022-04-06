@@ -36,7 +36,7 @@ const TopCarousel = () => {
         }}>
         <Carousel
           animation="fade"
-          autoPlay={true}
+          autoPlay={false}
           duration={500}
           navButtonsAlwaysVisible={true}
           NextIcon={<img src={navNext}></img>}

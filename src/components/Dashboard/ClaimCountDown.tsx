@@ -40,9 +40,8 @@ export default function ClaimCountDown(props: BoxProps) {
       </Box>
       <LinearProgress
         variant='determinate'
-        value={nextClaimProgress}
+        value={nextClaimProgress > 0 ? (nextClaimProgress > 100 ? 100 :nextClaimProgress) : 0}
         valueBuffer={100}
-
         sx={{
           height: 10,
           mt: '3px',
@@ -70,7 +69,7 @@ export default function ClaimCountDown(props: BoxProps) {
           letterSpacing='0.43px'
           color={COLOR.text}
         >
-          {nextClaimProgress > 0 ? nextClaimProgress.toFixed() : 0}%
+          {nextClaimProgress > 0 ? (nextClaimProgress > 100 ? 100 :nextClaimProgress.toFixed()) : 0}%
         </Typography>
         <Typography
           color='#5D6588'

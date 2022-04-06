@@ -58,7 +58,21 @@ const defaultChartOptions: DeepPartial<ChartOptions> = {
             color: "#222331",
         },
     },
+    crosshair: {
+        horzLine: {
+            visible: false,
+            labelVisible: false
+        },
+        // vertLine: {
+        //     visible: true,
+        //     style: 0,
+        //     width: 2,
+        //     color: 'rgba(32, 38, 46, 0.1)',
+        //     labelVisible: false,
+        // }
+    },
 }
+
 
 export default function useReponsiveChart(
     props: ChartProps & DeepPartial<ChartOptions>

@@ -1,4 +1,5 @@
 import { BoxProps } from "@mui/material";
+import { LINK_EXCHANGE } from "@utils/constants";
 import { useAtom } from "jotai";
 import { atomWithStorage } from "jotai/utils";
 import ActionLink from "./ActionLink";
@@ -20,7 +21,7 @@ export default function Dashboard(props: BoxProps) {
       onClose={() => setDismissed(true)}
       {...props}
     >
-      <ActionLink href='https://dashboard.horizonprotocol.com/' target='_blank'>
+      <ActionLink href={LINK_EXCHANGE} target='_blank'>
         TRADE NOW
       </ActionLink>
     </BaseAlert>

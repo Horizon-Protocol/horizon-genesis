@@ -129,7 +129,7 @@ export default function CRatioRange(props: BoxProps) {
     <Box py={3} textAlign='center' {...props} sx={{
       position: "relative"
     }}>
-      <SvgIcon
+      {/* <SvgIcon
         onClick={refreshBalance}
         sx={{
           cursor: "pointer",
@@ -143,7 +143,6 @@ export default function CRatioRange(props: BoxProps) {
           "@keyframes circular-rotate": {
             from: {
               transform: "rotate(0deg)",
-              /* 修复 IE11 下的抖动 */
               transformOrigin: "50% 50%",
             },
             to: {
@@ -153,7 +152,7 @@ export default function CRatioRange(props: BoxProps) {
         }}
       >
         <IconRefresh />
-      </SvgIcon>
+      </SvgIcon> */}
       <Typography
         variant='h6'
         fontSize={22}

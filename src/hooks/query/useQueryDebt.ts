@@ -11,6 +11,7 @@ import { useAtom } from "jotai";
 import { debtAtom } from "@atoms/debt";
 import useDisconnected from "@hooks/useDisconnected";
 import { historicalClaimHZNAndZUSDAtom, historicalDebtAtom, historicalOperationAtom, HistoryType } from "@atoms/record";
+import dayjs from "dayjs";
 
 export type HistoricalDebtAndIssuanceData = {
     timestamp: number;
@@ -75,7 +76,15 @@ export default function useQueryDebt() {
                     }
                 `
             )
-            console.log("issuesReponse",issuesReponse.issueds)
+            // console.log("issuesReponse",issuesReponse.issueds)
+            // console.log("issuesReponse",issuesReponse.issueds.map(item => {
+            //     const time = dayjs.unix(Number(item.timestamp)).format("YYYY-MM-DD")
+            //     const value = Number(item.value)
+            //     return {
+            //         time,
+            //         value
+            //     }
+            // }))
             return issuesReponse
         } catch (e) {
             console.log("query报错",e)
@@ -216,7 +225,7 @@ export default function useQueryDebt() {
                 // We set historicalIssuanceAggregation array, to store all the cumulative
                 // values of every mint and burns
                 const historicalIssuanceAggregation: BN[] = [];
-
+                console.log("issuesAndBurns",issuesAndBurns)
                 issuesAndBurns.slice().forEach((event:any) => {
                     const eventValue = toBN(event.value)
 
@@ -227,6 +236,8 @@ export default function useQueryDebt() {
 
                     historicalIssuanceAggregation.push(aggregation);
                 });
+                console.log("historicalIssuanceAggregation",historicalIssuanceAggregation)
+
 
                 // We merge both actual & issuance debt into an array
                 let historicalDebtAndIssuance: HistoricalDebtAndIssuanceData[] = [];
@@ -251,7 +262,7 @@ export default function useQueryDebt() {
                     index: historicalDebtAndIssuance.length,
                 });
 
-                // console.log("===historicalDebtAndIssuance",historicalDebtAndIssuance)
+                console.log("===historicalDebtAndIssuance",historicalDebtAndIssuance)
                 if (historicalDebt?.length != historicalDebtAndIssuance.length){
                     setHistoricalDebt(historicalDebtAndIssuance)
                 }

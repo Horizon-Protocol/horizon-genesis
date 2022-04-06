@@ -125,7 +125,7 @@ export const TOKEN_ADDRESS: {
 // staking contract
 export const STAKING_CONTRACT_ADDRESS: {
   [chain: number]: {
-    [t in Token]?: string;
+    [t in Token]: string;
   };
 } = {
   56: {
@@ -135,6 +135,7 @@ export const STAKING_CONTRACT_ADDRESS: {
     [Token.ZUSD_BUSD_LP]: "0x5646aA2F9408C7c2eE1dC7db813C8B687A959a85",
     [Token.HZN_BNB_LP]: "0x84838d0AB37857fAd5979Fcf6BDDf8ddb1cC1dA8",
     [Token.HZN_BNB_LP_LEGACY]: "0xB9C6C9F41d3Da1C81c869e527F7b8f44D6e949b6",
+    [Token.ZUSD]: "",
   },
   97: {
     [Token.PHB]: "0x04f8bd779921F3df6EF0E98e4D2fb00D77ae051B",
@@ -143,6 +144,7 @@ export const STAKING_CONTRACT_ADDRESS: {
     [Token.ZUSD_BUSD_LP]: "0x19b0E3B2413104b48Dc543A036CF808D5Fcb9d6F",
     [Token.HZN_BNB_LP]: "0x19b0E3B2413104b48Dc543A036CF808D5Fcb9d6F",
     [Token.HZN_BNB_LP_LEGACY]: "0x19b0E3B2413104b48Dc543A036CF808D5Fcb9d6F",
+    [Token.ZUSD]: "",
   },
 };
 

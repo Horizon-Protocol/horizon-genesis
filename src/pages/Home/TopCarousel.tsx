@@ -35,6 +35,7 @@ const TopCarousel = () => {
           width: '100%',
         }}>
         <Carousel
+          height='271px'
           animation="fade"
           autoPlay={false}
           duration={500}

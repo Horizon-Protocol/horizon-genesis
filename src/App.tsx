@@ -10,6 +10,7 @@ import {
   Button,
   Typography,
   BoxProps,
+  Container,
 } from "@mui/material";
 import { ExpandLess, ExpandMore } from "@mui/icons-material";
 import { useTheme } from "@mui/material/styles";
@@ -61,6 +62,7 @@ function App() {
   const [expanded, setExpanded] = useState(false);
 
   useSetupHorizonLib();
+  useQueryDebt();
   useFetchAppData();
   useFetchDebtData();
   useFetchZAssetsBalance();
@@ -68,7 +70,6 @@ function App() {
   useFetchRewards();
   useFetchHorizonData();
   useEscrowDataQuery();
-  useQueryDebt();
   useQueryGlobalDebt();
 
   const refresh = useRefresh();

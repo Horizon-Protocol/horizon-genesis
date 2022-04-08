@@ -9,8 +9,17 @@ import escrow from "@assets/images/escrow.png";
 import escrowSelected from "@assets/images/escrow-selected.png";
 import historyU from "@assets/images/history.png";
 import historySelected from "@assets/images/history-selected.png";
+import RecordButton from "./Debt/RecordButton";
 
 const Img = styled("img")``;
+
+export interface RecordButtonProps {
+  img: string;
+  selectedImg: string;
+  selected: boolean;
+  title: string | JSX.Element;
+  to: string;
+}
 
 export default function Record(props: BoxProps) {
   // const styledTabs = useMemo<StyledTabProps[]>(
@@ -29,14 +38,6 @@ export default function Record(props: BoxProps) {
 
   const { breakpoints } = useTheme();
   const downLG = useMediaQuery(breakpoints.down("lg"));
-
-  interface RecordButtonProps {
-    img: string;
-    selectedImg: string;
-    selected: boolean;
-    title: string | JSX.Element;
-    to: string;
-  }
 
   const recordButtons = useMemo<RecordButtonProps[]>(
     () => [
@@ -74,42 +75,8 @@ export default function Record(props: BoxProps) {
   return (
     <Box {...props}>
       {recordButtons.map(
-        ({ to, img, selectedImg, selected, title }: RecordButtonProps) => (
-          <Box
-            key={to}
-            onClick={() => {
-              history.push(to);
-            }}
-            sx={{
-              cursor: "pointer",
-              display: "flex",
-              flexDirection: "column",
-              justifyContent: "center",
-              alignItems: "center",
-              mt: downLG ? "10px" : "0px",
-              mb: downLG ? "0px" : "20px",
-            }}
-          >
-            <Img
-              src={selected ? selectedImg : img}
-              sx={{
-                width: "40px",
-                height: "40px",
-              }}
-            />
-            <Typography
-              sx={{
-                color: selected ? COLOR.safe : alpha(COLOR.text, 0.75),
-                fontWeight: selected ? "bold" : "normal",
-                lineHeight: "16px",
-                fontSize: "14px",
-                mt: "5px",
-                textAlign: "center",
-              }}
-            >
-              {title}
-            </Typography>
-          </Box>
+        (data: RecordButtonProps, index: number) => (
+          <RecordButton key={index} {...data}></RecordButton>
         )
       )}
     </Box>

@@ -66,19 +66,20 @@ const getStyledTab: (color: string) => any = (color) =>
       color,
       fontWeight: "bold",
       backgroundColor: COLOR_BG,
-      height: "38px",
+      height: "36px",
     },
     ":focus": {
       // color,
     },
     "&.MuiTab-root": {
+      color:'rgb(193, 211, 224,0.5)',
       background: COLOR_BG_40,
     },
     "&.Mui-selected": {
       color,
       fontWeight: "bold",
       backgroundColor: COLOR_BG,
-      height: "38px",
+      height: "36px",
     },
   }));
 

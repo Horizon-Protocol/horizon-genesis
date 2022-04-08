@@ -1,6 +1,6 @@
 import { atom } from "jotai";
 import { atomWithReset, atomWithStorage } from "jotai/utils";
-import { HistoricalClaimHZNAndZusdData, HistoricalDebtAndIssuanceData, HistoricalOperationData } from "@hooks/query/useQueryDebt";
+import { HistoricalActualDebtData, HistoricalClaimHZNAndZusdData, HistoricalDebtAndIssuanceData, HistoricalOperationData } from "@hooks/query/useQueryDebt";
 import { GloablDebt } from "@hooks/query/useQueryGlobalDebt";
 import { GlobalZAssetsPoolProps } from "@hooks/useFetchGlobalZAsset";
 import { RewardEscrowV2Props } from "@hooks/Escrowed/useEscrowDataQuery";
@@ -20,6 +20,7 @@ export const globalZAsstesPoolAtom = atom<GlobalZAssetsPoolProps>({supplyData:[]
 export const rewardsEscrowAtom = atomWithReset<RewardEscrowV2Props | null>(null)
 export const tokenSaleEscrowAtom = atomWithReset<TokenSaleEscrowProps | null>(null)
 
-export const historicalDebtAtom = atomWithReset<HistoricalDebtAndIssuanceData[] | null>([])
+export const historicalIssuedDebtAtom = atomWithReset<HistoricalDebtAndIssuanceData[] | null>([])
+export const historicalActualDebtAtom = atomWithReset<HistoricalActualDebtData[] | null>([])
 export const historicalOperationAtom = atomWithReset<HistoricalOperationData[] | null>(null)
 export const historicalClaimHZNAndZUSDAtom = atomWithReset<HistoricalClaimHZNAndZusdData[]>([])

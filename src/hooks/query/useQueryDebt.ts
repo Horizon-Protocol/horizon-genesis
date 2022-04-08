@@ -5,19 +5,22 @@ import { GRAPH_ENDPOINT } from "@utils/constants";
 import { useCallback } from "react";
 import useWallet from "@hooks/useWallet";
 import { concat, flattenDeep, last, sortBy } from "lodash";
-import { toBN } from "@utils/number";
+import { toBN, formatNumber, zeroBN } from "@utils/number";
 import { useAtomValue, useResetAtom, useUpdateAtom } from "jotai/utils";
 import { useAtom } from "jotai";
 import { debtAtom } from "@atoms/debt";
 import useDisconnected from "@hooks/useDisconnected";
-import { historicalClaimHZNAndZUSDAtom, historicalDebtAtom, historicalOperationAtom, HistoryType } from "@atoms/record";
+import { historicalActualDebtAtom, historicalClaimHZNAndZUSDAtom, historicalIssuedDebtAtom, historicalOperationAtom, HistoryType } from "@atoms/record";
 import dayjs from "dayjs";
 
 export type HistoricalDebtAndIssuanceData = {
     timestamp: number;
-    actualDebt: BN;
     issuanceDebt: BN;
-    index: number;
+};
+
+export type HistoricalActualDebtData = {
+    timestamp: number;
+    actualDebt: BN;
 };
 
 export type HistoricalOperationData = {
@@ -39,9 +42,13 @@ export default function useQueryDebt() {
     const { account } = useWallet()
     const { debtBalance } = useAtomValue(debtAtom);
 
-    const [historicalDebt, setHistoricalDebt] = useAtom(historicalDebtAtom);
-    const resetHistoricalDebt = useResetAtom(historicalDebtAtom);
-    useDisconnected(resetHistoricalDebt);
+    const [historicalIssuedDebt, setHistoricalIssuedDebt] = useAtom(historicalIssuedDebtAtom);
+    const resetHistoricalIssuedDebt = useResetAtom(historicalIssuedDebtAtom);
+    useDisconnected(resetHistoricalIssuedDebt);
+
+    const [historicalActualDebt, setHistoricalActualDebt] = useAtom(historicalActualDebtAtom);
+    const resetHistoricalActualDebt = useResetAtom(historicalActualDebtAtom);
+    useDisconnected(resetHistoricalActualDebt);
 
     const setHistoricalOperation = useUpdateAtom(historicalOperationAtom);
     const resetHistoricalOperation = useResetAtom(historicalOperationAtom);
@@ -50,7 +57,7 @@ export default function useQueryDebt() {
     const setHistoricalClaim = useUpdateAtom(historicalClaimHZNAndZUSDAtom);
     const resetHistoricalClaim = useResetAtom(historicalOperationAtom);
     useDisconnected(resetHistoricalClaim);
-    
+
     const issueds = async () => {
         try {
             const issuesReponse = await request(
@@ -87,7 +94,7 @@ export default function useQueryDebt() {
             // }))
             return issuesReponse
         } catch (e) {
-            console.log("query报错",e)
+            console.log("query报错", e)
             return [];
         }
     }
@@ -113,10 +120,10 @@ export default function useQueryDebt() {
                     }
                 `
             )
-            console.log("burnedsReponse",burnedsReponse.burneds )
+            console.log("burnedsReponse", burnedsReponse.burneds)
             return burnedsReponse
         } catch (e) {
-            console.log("query报错",e)
+            console.log("query报错", e)
             return [];
         }
     }
@@ -143,10 +150,10 @@ export default function useQueryDebt() {
                     }
                 `
             )
-            console.log("claimsReponse",claimsReponse )
+            console.log("claimsReponse", claimsReponse)
             return claimsReponse
         } catch (e) {
-            console.log("query报错",e)
+            console.log("query报错", e)
             return [];
         }
     }
@@ -172,10 +179,10 @@ export default function useQueryDebt() {
                     }
                 `
             )
-            console.log("debtSnapshotsReponse",debtSnapshotsReponse)
+            console.log("debtSnapshotsReponse", debtSnapshotsReponse)
             return debtSnapshotsReponse
         } catch (e) {
-            console.log("query报错",e)
+            console.log("query报错", e)
             return [];
         }
     }
@@ -201,71 +208,74 @@ export default function useQueryDebt() {
                 claims,
                 debtSnapshot
             ]) {
-                let issuesAndBurns = issues.issueds!.map((b:any) => ({ isBurn: false, ...b }));
+                let issuesAndBurns = issues.issueds!.map((b: any) => ({ isBurn: false, ...b }));
                 issuesAndBurns = sortBy(
-                    issuesAndBurns.concat(burns.burneds!.map((b:any) => ({ isBurn: true, ...b }))),
+                    issuesAndBurns.concat(burns.burneds!.map((b: any) => ({ isBurn: true, ...b }))),
                     (d) => {
                         return d.timestamp
                     }
                 );
 
                 //============== load record of (Claimed/Burned/Minted) ==================//
-                /* abstract cliams and calculate all the claim record for HZN and zUSD(come from exchange fee) */ 
+                /* abstract cliams and calculate all the claim record for HZN and zUSD(come from exchange fee) */
                 setHistoricalClaim(claims.feesClaimeds)
-                /* --------------------------- */ 
-                let typeMintHistory = issues.issueds.map((b:any) => ({...b, type: HistoryType.Mint }))
-                let typeBurnHistory = burns.burneds.map((b:any) => ({ ...b, type: HistoryType.Burn }))
-                let typeClaimHistory = claims.feesClaimeds.map((b:any) => ({ ...b, type: HistoryType.Claim }))
-                const allTypeHistory = sortBy(concat(typeMintHistory,typeBurnHistory,typeClaimHistory),"timestamp")
-                console.log("====allTypeHistory",allTypeHistory)
+                /* --------------------------- */
+                let typeMintHistory = issues.issueds.map((b: any) => ({ ...b, type: HistoryType.Mint }))
+                let typeBurnHistory = burns.burneds.map((b: any) => ({ ...b, type: HistoryType.Burn }))
+                let typeClaimHistory = claims.feesClaimeds.map((b: any) => ({ ...b, type: HistoryType.Claim }))
+                const allTypeHistory = sortBy(concat(typeMintHistory, typeBurnHistory, typeClaimHistory), "timestamp")
+                console.log("====allTypeHistory", allTypeHistory)
                 setHistoricalOperation(allTypeHistory)
                 //==============================================================================
 
-                const debtHistory = debtSnapshot.debtSnapshots ?? [];
-                // We set historicalIssuanceAggregation array, to store all the cumulative
+                // We set historicalIssuanceAggregation array, to store all the cumulative ===========================================================
                 // values of every mint and burns
-                const historicalIssuanceAggregation: BN[] = [];
-                console.log("issuesAndBurns",issuesAndBurns)
-                issuesAndBurns.slice().forEach((event:any) => {
+                const historicalIssuanceAggregation: HistoricalDebtAndIssuanceData[] = [];
+                issuesAndBurns.slice().forEach((event: any) => {
                     const eventValue = toBN(event.value)
 
                     const multiplier = event.isBurn ? -1 : 1;
                     const aggregation = eventValue
                         .multipliedBy(multiplier)
-                        .plus(last(historicalIssuanceAggregation) ?? toBN(0));
+                        .plus(last(historicalIssuanceAggregation)?.issuanceDebt ?? toBN(0));
 
-                    historicalIssuanceAggregation.push(aggregation);
+                    historicalIssuanceAggregation.push({
+                        timestamp: Number(event.timestamp),
+                        issuanceDebt: aggregation
+                    });
                 });
-                console.log("historicalIssuanceAggregation",historicalIssuanceAggregation)
+                //push last record to the end if its not empty array
+                if (historicalIssuanceAggregation.length > 0) {
+                    historicalIssuanceAggregation.push({
+                        timestamp: new Date().getTime() / 1000,
+                        issuanceDebt: last(historicalIssuanceAggregation)?.issuanceDebt ?? zeroBN
+                    });
+                }
+                // console.log("historicalIssuanceAggregation",historicalIssuanceAggregation)
+                setHistoricalIssuedDebt(historicalIssuanceAggregation)
 
-
-                // We merge both actual & issuance debt into an array
-                let historicalDebtAndIssuance: HistoricalDebtAndIssuanceData[] = [];
+                // We merge both actual & issuance debt into an array ===========================================================
+                const debtHistory = debtSnapshot.debtSnapshots ?? [];
+                let historicalActualDebtRecord: HistoricalActualDebtData[] = [];
                 debtHistory
                     .slice()
                     .reverse()
-                    .forEach((debtSnapshot:any, i:number) => {
-                        historicalDebtAndIssuance.push({
-                            timestamp: debtSnapshot.timestamp * 1000,
-                            issuanceDebt: historicalIssuanceAggregation[i],
+                    .forEach((debtSnapshot: any, i: number) => {
+                        historicalActualDebtRecord.push({
+                            timestamp: debtSnapshot.timestamp,
                             actualDebt: toBN(debtSnapshot.debtBalanceOf || 0),
-                            index: i,
                         });
                     });
-
-                // Last occurrence is the current state of the debt
-                // Issuance debt = last occurrence of the historicalDebtAndIssuance array
-                historicalDebtAndIssuance.push({
-                    timestamp: new Date().getTime(),
-                    actualDebt: debtBalance || toBN(0),
-                    issuanceDebt: last(historicalIssuanceAggregation) ?? toBN(0),
-                    index: historicalDebtAndIssuance.length,
-                });
-
-                console.log("===historicalDebtAndIssuance",historicalDebtAndIssuance)
-                if (historicalDebt?.length != historicalDebtAndIssuance.length){
-                    setHistoricalDebt(historicalDebtAndIssuance)
-                }
+                //push last record to the end if its not empty array
+                // if (historicalActualDebtRecord.length > 0) {
+                //     historicalActualDebtRecord.push({
+                //         timestamp: new Date().getTime() / 1000,
+                //         actualDebt: last(historicalActualDebtRecord)?.actualDebt ?? zeroBN
+                //     });
+                // }
+                // console.log("===historicalDebtAndIssuance", historicalActualDebtRecord)
+                setHistoricalActualDebt(historicalActualDebtRecord)
+                // alert('refresh')
             }
         }
     )

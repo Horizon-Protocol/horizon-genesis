@@ -21,8 +21,8 @@ export default function Header() {
         flexWrap='wrap'
         sx={{
           "&.MuiGrid-container": {
-            padding: 2, // 16px
-            borderBottom: "1px solid #11263B",
+            padding: '25px 30px 0 30px', // 16px
+            // borderBottom: "1px solid #11263B",
           },
         }}
       >

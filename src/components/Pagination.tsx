@@ -61,11 +61,11 @@ export default function Pagination({
             }
         }
         setPaginationData(pagination)
-        updateHiddenIndex(1)
+        updateHiddenIndex(1,totalPage)
     }, [rowsCount,rowsPerPage])
 
-    const updateHiddenIndex = (pageNumber: number) => {
-        if (pageNumber > totalPageNumber || pageNumber < 1) return
+    const updateHiddenIndex = (pageNumber: number, updateTotalPage: number) => {
+        if (pageNumber > updateTotalPage || pageNumber < 1) return
         pageClick(pageNumber)
 
         setPaginationData(prev => {
@@ -123,7 +123,7 @@ export default function Pagination({
             >
                 <SvgIcon
                  onClick={()=>{
-                    updateHiddenIndex(selectedPageNumber-1)
+                    updateHiddenIndex(selectedPageNumber-1, totalPageNumber)
                 }}
                     sx={{
                         opacity: selectedPageNumber == 1 ? 0.2 : 1,
@@ -142,7 +142,7 @@ export default function Pagination({
                     } else {
                         return (
                             <Box onClick={() => {
-                                updateHiddenIndex(item.pageNumber)
+                                updateHiddenIndex(item.pageNumber, totalPageNumber)
                             }} sx={{
                                 cursor: 'pointer',
                                 display: hiddenIndexPagination.indexOf(item.pageNumber) != -1 ? 'block' : 'none',
@@ -161,7 +161,7 @@ export default function Pagination({
                 )}
                 <SvgIcon
                     onClick={()=>{
-                        updateHiddenIndex(selectedPageNumber+1)
+                        updateHiddenIndex(selectedPageNumber+1, totalPageNumber)
                     }}
                     sx={{
                         opacity: selectedPageNumber == totalPageNumber ? 0.2 : 1,

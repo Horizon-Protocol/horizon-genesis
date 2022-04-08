@@ -43,11 +43,12 @@ export default function InfoList({
             key={label}
             disableGutters
             sx={{
-              p: 0,
+              fontSize: '14px',
+              p: "2px 0px",
               color: warning ? "#FA2256" : "#B4E0FF"
             }}
           >
-            <ListItemIcon sx={{ color: "#B4E0FF", fontSize: 14, opacity: .5 }}>
+            <ListItemIcon sx={{ color: "#B4E0FF", fontSize: '14px', opacity: .5 }}>
               {label}
             </ListItemIcon>
             <ListItemText

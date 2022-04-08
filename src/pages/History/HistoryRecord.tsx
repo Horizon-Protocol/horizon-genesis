@@ -144,7 +144,7 @@ export default function HistoryRecord() {
     {
       field: "date",
       headerName: "Date (UTC)",
-      width: 190,
+      width: 180,
       editable: false,
       headerAlign: "left",
       renderCell({ value, row }) {
@@ -164,7 +164,7 @@ export default function HistoryRecord() {
     {
       field: "amount",
       headerName: "Amount",
-      width: 90,
+      width: 120,
       editable: false,
       headerAlign: "left",
       renderCell({ value, row }) {
@@ -299,7 +299,16 @@ export default function HistoryRecord() {
               ColumnSortedDescendingIcon: SortedDescendingIcon,
               ColumnSortedAscendingIcon: SortedAscendingIcon,
               ColumnUnsortedIcon: ColumnSelectorIcon,
-              NoRowsOverlay: () => <Box></Box>,
+              NoRowsOverlay: () => <Box sx={{
+                mt:'50px',
+                textAlign:'center',
+                width:"100%",
+                fontSize: '14px',
+                letterSpacing:'.5px',
+                fontWeight: 'bold',
+                color: COLOR.text,
+                opacity: .2,
+              }}>No Data Found</Box>
             }}
           />
         </Box>

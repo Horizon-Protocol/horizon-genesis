@@ -12,9 +12,10 @@ import { time } from "console";
 import GlobalPortfolio from "./GlobalPortfolio";
 import YourPortfolio from "./YourPortfolio";
 import { useEffect } from "react";
-import { globalDebtAtom, historicalDebtAtom } from "@atoms/record";
+import { globalDebtAtom, historicalActualDebtAtom, historicalIssuedDebtAtom } from "@atoms/record";
 import { useAtomValue } from "jotai/utils";
 import useWallet from "@hooks/useWallet";
+import { debtAtom } from "@atoms/debt";
 
 interface ToolTipCellPros {
     color: string;
@@ -225,30 +226,42 @@ export default function DebtTracker() {
         },
     })
 
-    const historicalDebt = useAtomValue(historicalDebtAtom);
+    const historicalIssuedDebt = useAtomValue(historicalIssuedDebtAtom);
+    const historicalActualDebt = useAtomValue(historicalActualDebtAtom);
     const globalDebt = useAtomValue(globalDebtAtom)
+    const { debtBalance } = useAtomValue(debtAtom);
 
     useEffect(() => {
-        if (historicalDebt?.length) {
-            const activeRows: (LineData | WhitespaceData)[] = []
-            for (let i = historicalDebt.length - 1; i >= 0; i--) {
-                var debt = historicalDebt[i]
-                const time = dayjs.unix(Number(debt.timestamp / 1000)).format("YYYY-MM-DD")
-                if (!activeRows.find(x => x.time == time) && debt.actualDebt != undefined) {
-                    activeRows.push({
+        // console.log("historicalActualDebt",historicalActualDebt)
+        if (historicalActualDebt?.length) {
+            const actualRows: (LineData | WhitespaceData)[] = []
+            for (let i = historicalActualDebt.length - 1; i >= 0; i--) {
+                var debt = historicalActualDebt[i]
+                const time = dayjs.unix(Number(debt.timestamp)).format("YYYY-MM-DD")
+                if (!actualRows.find(x => x.time == time) && debt.actualDebt != undefined) {
+                    actualRows.push({
                         time: time,
                         value: Number(debt.actualDebt)
                     })
                 }
             }
-            // if (historicalDebt.length != 1 && Number(historicalDebt[0].actualDebt) != 0){
-            acitveDebtLineSeries?.setData(activeRows.reverse())
-            // }
+            let tmp = actualRows.reverse()
+            tmp.push({
+                time: dayjs.unix(Number(new Date().getTime() / 1000)).format("YYYY-MM-DD"),
+                value: Number(debtBalance)
+            })
+            // console.log("actualRows", actualRows)
+            acitveDebtLineSeries?.setData(tmp)
+        }
+    }, [historicalActualDebt, acitveDebtLineSeries,debtBalance])
 
+    useEffect(() => {
+        console.log("historicalIssuedDebt", historicalIssuedDebt)
+        if (historicalIssuedDebt?.length) {
             const issuedRows: (LineData | WhitespaceData)[] = []
-            for (let i = historicalDebt.length - 1; i >= 0; i--) {
-                var debt = historicalDebt[i]
-                const time = dayjs.unix(Number(debt.timestamp / 1000)).format("YYYY-MM-DD")
+            for (let i = historicalIssuedDebt.length - 1; i >= 0; i--) {
+                var debt = historicalIssuedDebt[i]
+                const time = dayjs.unix(Number(debt.timestamp)).format("YYYY-MM-DD")
                 if (!issuedRows.find(x => x.time == time) && debt.issuanceDebt != undefined) {
                     issuedRows.push({
                         time: time,
@@ -256,13 +269,12 @@ export default function DebtTracker() {
                     })
                 }
             }
-            // if (historicalDebt.length != 1 && Number(historicalDebt[0].issuanceDebt) != 0){
+            // console.log("issuedRows", issuedRows)
             isuuedDebtLineSeries?.setData(issuedRows.reverse())
-            // }
         }
-    }, [historicalDebt, acitveDebtLineSeries, isuuedDebtLineSeries])
+    }, [historicalIssuedDebt, acitveDebtLineSeries, isuuedDebtLineSeries])
 
-    useEffect(()=>{
+    useEffect(() => {
         if (globalDebt?.length) {
             const globalRows: (LineData | WhitespaceData)[] = []
             for (let i = globalDebt?.length - 1; i >= 0; i--) {
@@ -277,7 +289,7 @@ export default function DebtTracker() {
             }
             globalDebtLineSeries?.setData(globalRows)
         }
-    },[globalDebt,globalDebtLineSeries])
+    }, [globalDebt, globalDebtLineSeries])
 
     return (
         <PageCard

@@ -43,13 +43,14 @@ export default function useFetchRewards() {
       upcomingExchangeReward: etherToBN(periodFees[0][0]),
       upcomingStakingReward: etherToBN(periodFees[0][1]),
     };
-    // console.log('===periodFees',[
-    //   formatNumber(etherToBN(periodFees[0][0])),
-    //   formatNumber(etherToBN(periodFees[0][1])),
-    //   formatNumber(etherToBN(periodFees[1][0])),
-    //   formatNumber(etherToBN(periodFees[1][1])),
-    //   // periodFees: formatNumber(etherToBN(periodFees[0][0]))
-    // ])
+    console.log('periodFees',periodFees)
+    console.log('===periodFees',[
+      formatNumber(etherToBN(periodFees[0][0])),
+      formatNumber(etherToBN(periodFees[0][1])),
+      formatNumber(etherToBN(periodFees[1][0])),
+      formatNumber(etherToBN(periodFees[1][1])),
+      // periodFees: formatNumber(etherToBN(periodFees[0][0]))
+    ])
     return result
   }, [account]);
 

@@ -11,14 +11,14 @@ import { atom, useAtom } from "jotai";
 import { debtAtom } from "@atoms/debt";
 import { useAtomValue } from "jotai/utils";
 import { first, last } from 'lodash';
-import { globalDebtAtom, historicalDebtAtom } from "@atoms/record";
+import { globalDebtAtom, historicalIssuedDebtAtom } from "@atoms/record";
 import useWallet from "@hooks/useWallet";
 
 export default function DebtOverview() {
 
     const { connected } = useWallet()
     const { debtBalance } = useAtomValue(debtAtom);
-    const historicalDebt = useAtomValue(historicalDebtAtom);
+    const historicalDebt = useAtomValue(historicalIssuedDebtAtom);
     const globalDebt = useAtomValue(globalDebtAtom);
 
     const dets = useMemo(() => {

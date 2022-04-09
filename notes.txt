@@ -1,5 +1,4 @@
 
-// WARN: we don't have RewardEscrowV2, it's new contract
 escrowedReward = RewardEscrowV2.balanceOf(walletAddress)
 
 tokenSaleEscrow = 0

@@ -2,7 +2,8 @@
 /* tslint:disable */
 /* eslint-disable */
 
-import { Contract, Signer, utils, providers } from "ethers";
+import { Contract, Signer, utils } from "ethers";
+import { Provider } from "@ethersproject/providers";
 import type { HZN, HZNInterface } from "../HZN";
 
 const _abi = [
@@ -254,10 +255,7 @@ export class HZN__factory {
   static createInterface(): HZNInterface {
     return new utils.Interface(_abi) as HZNInterface;
   }
-  static connect(
-    address: string,
-    signerOrProvider: Signer | providers.Provider
-  ): HZN {
+  static connect(address: string, signerOrProvider: Signer | Provider): HZN {
     return new Contract(address, _abi, signerOrProvider) as HZN;
   }
 }

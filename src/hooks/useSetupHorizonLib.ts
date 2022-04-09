@@ -28,6 +28,8 @@ export default function useSetupHorizonLib() {
           provider,
           signer,
         });
+        console.log("signer", signer);
+        window.horizon = horizon;
       } else if (rpcProvider) {
         horizon.setContractSettings({
           networkId: ChainId,

@@ -33,7 +33,7 @@ export default function useFetchAppData() {
     const res = await Promise.all([
       SynthetixState.lastDebtLedgerEntry(),
       Synthetix.totalSupply(),
-      Synthetix.totalIssuedSynthsExcludeEtherCollateral(
+      Synthetix.totalIssuedSynthsExcludeOtherCollateral(
         utils.formatBytes32String("zUSD"),
         {
           blockTag: "latest",
@@ -46,7 +46,7 @@ export default function useFetchAppData() {
 
     return [
       toBN(utils.formatUnits(res[0], 27)),
-      ...res.slice(1).map((item) => etherToBN(item)),
+      ...res.slice(1).map((val) => etherToBN(val)),
     ];
   }, []);
 
@@ -59,9 +59,12 @@ export default function useFetchAppData() {
       liquidationRatio,
       // liquidationDelay,
     ]) {
-      console.log({
+      console.log("====AppData", {
         lastDebtLedgerEntry: lastDebtLedgerEntry.toString(),
+        totalSupply: totalSupply.toString(),
         totalIssuedZUSDExclEth: totalIssuedZUSDExclEth.toString(),
+        targetRatio: targetRatio.toString(),
+        liquidationRatio: liquidationRatio.toString(),
         // liquidationDelay: liquidationDelay,
       });
       setLastDebtLedgerEntry(lastDebtLedgerEntry);

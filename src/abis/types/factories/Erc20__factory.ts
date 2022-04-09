@@ -2,7 +2,8 @@
 /* tslint:disable */
 /* eslint-disable */
 
-import { Contract, Signer, utils, providers } from "ethers";
+import { Contract, Signer, utils } from "ethers";
+import { Provider } from "@ethersproject/providers";
 import type { Erc20, Erc20Interface } from "../Erc20";
 
 const _abi = [
@@ -233,10 +234,7 @@ export class Erc20__factory {
   static createInterface(): Erc20Interface {
     return new utils.Interface(_abi) as Erc20Interface;
   }
-  static connect(
-    address: string,
-    signerOrProvider: Signer | providers.Provider
-  ): Erc20 {
+  static connect(address: string, signerOrProvider: Signer | Provider): Erc20 {
     return new Contract(address, _abi, signerOrProvider) as Erc20;
   }
 }

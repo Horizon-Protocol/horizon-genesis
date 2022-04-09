@@ -41,7 +41,9 @@ export const collateralDataAtom = atom((get) => {
       );
   const lockedCollateral = collateral.minus(transferable);
   const unstakedCollateral = collateral.minus(stakedCollateral);
-  const dashboardEscrowed = lockedCollateral.minus(stakedCollateral);
+  const dashboardEscrowed = toBN(
+    lockedCollateral.minus(stakedCollateral).toFixed(8)
+  );
 
   // console.log({
   //   stakedCollateral: stakedCollateral.toNumber(),

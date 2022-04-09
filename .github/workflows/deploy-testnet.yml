@@ -1,9 +1,9 @@
-name: Deploy Beta
+name: Deploy Dev
 
 on:
   push:
     branches:
-      - mui
+      - testnet
     paths-ignore:
       - ".github/workflows/deploy.yml"
 
@@ -33,7 +33,7 @@ jobs:
       - name: Build Bundle
         run: yarn build
         env:
-          VITE_APP_CHAIN_ID: 56
+          VITE_APP_CHAIN_ID: 97
           VITE_APP_COMMIT_VERSION: ${{ steps.get-commit-time.outputs.commitTime }}
 
       - name: Upload to S3

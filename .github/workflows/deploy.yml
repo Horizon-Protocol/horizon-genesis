@@ -1,4 +1,4 @@
-name: Deploy
+name: Deploy Mainnet
 
 on:
   push:
@@ -80,5 +80,5 @@ jobs:
           host: https://bark.etcd.run
           key: ${{ secrets.BARK_KEY }} # Your secret key
           title: "[Horizon] Genesis"
-          body: "Mainnet | Testnet"
+          body: "Mainnet"
           category: Horizon

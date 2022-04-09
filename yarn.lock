@@ -823,20 +823,20 @@
   resolved "https://registry.yarnpkg.com/@fontsource/raleway/-/raleway-4.5.0.tgz#d5c464abe655d2e2cb134c503db455b7af6c03a6"
   integrity sha512-Rzj90wbZQnNzazqzoiu5HzMEMdqMJLUVFOo699sinTXrZRm1aB5iX2HTiK2VlPnH4M6u8yYnJ7CebOyamfWlqw==
 
-"@horizon-protocol/contracts-interface@2.51.10":
-  version "2.51.10"
-  resolved "https://registry.yarnpkg.com/@horizon-protocol/contracts-interface/-/contracts-interface-2.51.10.tgz#d642991bed0a455d01143152438dabd89a41ca79"
-  integrity sha512-ZqHM/99HjJGn5W4XCZnwppmbD7wWOUmnwAxGL2TspeNb1bn5N7E8lDTik3tmb3vFWIc+5KX2r7YoZgplSz1Aag==
+"@horizon-protocol/contracts-interface@2.51.12":
+  version "2.51.12"
+  resolved "https://registry.yarnpkg.com/@horizon-protocol/contracts-interface/-/contracts-interface-2.51.12.tgz#4c45d0f773fdefffe798b8ee3073423ea9a21f8b"
+  integrity sha512-tKJA5UVKyj7YxjaoHcMkEJHtzbB1j5o6aaSp8hmN7I9TNTDNJJ/RZGnmEtoA7NJEUUzY8cJGPsxCfn8VXMYdsA==
   dependencies:
-    "@horizon-protocol/smart-contract" "2.50.8"
+    "@horizon-protocol/smart-contract" "2.50.9"
     ethers "5.5.2"
     lodash "^4.17.21"
     web3-utils "1.6.1"
 
-"@horizon-protocol/data@^2.1.45":
-  version "2.1.45"
-  resolved "https://registry.yarnpkg.com/@horizon-protocol/data/-/data-2.1.45.tgz#6cf42d2947f9ae933d6bd0c009c3ab7ab1b7c394"
-  integrity sha512-HEz5jTZN+d4twR3fG+Ju7aYy56eynCE9lzNl77FKhJYcmE6oNyuzJIRVzFvUPGNQ14XHAXTZWj4PKRvFBqK5RQ==
+"@horizon-protocol/data@2.2.4":
+  version "2.2.4"
+  resolved "https://registry.yarnpkg.com/@horizon-protocol/data/-/data-2.2.4.tgz#9dea5ea94ce5ada8c3e91e337f5a242a7d76e411"
+  integrity sha512-xzKUpJhlTgFkPH7kc2aABeo8m8BrSI2C3YPAcdu2iRKYxZeeppSklwX4rIJz7etxb+aEgQy3LOK9I3eqgAeCQg==
   dependencies:
     commander "6.1.0"
     csv-stringify "5.3.3"
@@ -858,10 +858,10 @@
     "@types/node" "^14.11.5"
     js-sha3 "^0.8.0"
 
-"@horizon-protocol/smart-contract@2.50.8":
-  version "2.50.8"
-  resolved "https://registry.yarnpkg.com/@horizon-protocol/smart-contract/-/smart-contract-2.50.8.tgz#de5490803d98c264c26135afb5cacd6c946a728e"
-  integrity sha512-L/GWVaCWeTWLerz0ymvPPQxn7NyHoPIsDijTjxX6ixgouKhwN4l5MhxbFfGokysrq2/lA88dDYty8XJv5HoAFA==
+"@horizon-protocol/smart-contract@2.50.9":
+  version "2.50.9"
+  resolved "https://registry.yarnpkg.com/@horizon-protocol/smart-contract/-/smart-contract-2.50.9.tgz#97224c154ae78f5bef6657295f618f71429e18f8"
+  integrity sha512-LtIUyjKb0w/LE/ubIUWCol+07WgJvi2gEQC3kFlcvGHZWTMtitw7Pt3fhne+NxXNmU5iLsULmWTPb4Z70gtKgQ==
   dependencies:
     abi-decoder "2.4.0"
     commander "8.1.0"

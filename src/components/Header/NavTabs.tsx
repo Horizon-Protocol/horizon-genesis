@@ -26,7 +26,7 @@ const tabs: LinkTabProps[] = [
   {
     to: "/home",
     label: "Home",
-    color: PAGE_COLOR.mint,
+    color: PAGE_COLOR.earn,
   },
   {
     to: "/mint",

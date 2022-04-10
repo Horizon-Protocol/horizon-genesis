@@ -1,4 +1,4 @@
-import { useCallback, useEffect } from "react";
+import { useCallback, useEffect, useState } from "react";
 import {
   BoxProps,
   Hidden,
@@ -41,16 +41,32 @@ export default function ContentWebLink({
     borderRadius='0px 0px 6px 6px'
   }
 
+  const [hightLight, setHightLight] = useState(false)
+
   return (
     <Box
       display='flex'
       bgcolor = {index < 1 ? 'transparent' : '#102637'}
       borderRadius={borderRadius}
+      // onMouseEnter={()=>{
+      //   setHightLight(true)
+      // }}
+      // onMouseLeave={()=>{
+      //   setHightLight(false)
+      // }}
       sx={{
+        opacity: index < 1 ? 1 : .4,
         cursor: "pointer",
-        ":hover": index < 1 ? {} :{
-          opacity: 0.4
+        ":hover": index < 1 ? 
+        {
+          opacity: 1
+        } :
+        {
+          opacity: 1
         },
+        ":hover #path":{
+          color: index < 1 ? COLOR.text : COLOR.safe
+        }
       }}
       // {...props}
     >
@@ -80,11 +96,12 @@ export default function ContentWebLink({
           pl:'13px'
         }}>
           <Typography
+            id='path'
             fontSize={19}
             fontWeight={300}
             lineHeight='22px'
             fontFamily='Raleway'
-            color='#2AD4B7'
+            color={COLOR.text}
           >
             <span style={{
               fontWeight: 'bold',

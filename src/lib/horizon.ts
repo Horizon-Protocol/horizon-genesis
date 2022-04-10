@@ -56,8 +56,10 @@ const horizon: Horizon = {
     this.synthsMap = keyBy(this.js.synths, "name");
     this.tokensMap = keyBy(this.js.tokens, "symbol");
 
-    // @ts-ignore
-    this.chainIdToNetwork = invert(this.js.networkToChainId);
+    this.chainIdToNetwork = invert(this.js.networkToChainId) as Record<
+      NetworkId,
+      NetworkName
+    >;
   },
 };
 

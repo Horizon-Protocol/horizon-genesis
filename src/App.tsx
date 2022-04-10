@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
 import { Switch, Route } from "react-router-dom";
-import ReactGA from "react-ga";
+import * as ReactGA from "react-ga";
 import { hotjar } from "react-hotjar";
 import { useAtomValue } from "jotai/utils";
 import {
@@ -101,13 +101,13 @@ function App() {
           right={0}
           bottom={0}
           left={0}
-          display='flex'
-          justifyContent='center'
-          alignItems='center'
+          display="flex"
+          justifyContent="center"
+          alignItems="center"
         >
           <Typography
-            variant='h3'
-            color='textPrimary'
+            variant="h3"
+            color="textPrimary"
             gutterBottom
             style={{
               fontWeight: 700,
@@ -131,8 +131,8 @@ function App() {
         )}
         <Box
           my={3}
-          display='flex'
-          justifyContent='center'
+          display="flex"
+          justifyContent="center"
           flexWrap={{
             xs: "wrap",
             md: "nowrap",
@@ -141,7 +141,7 @@ function App() {
           {!isEarnPage && (
             <Hidden lgDown>
               <Box
-                width='100%'
+                width="100%"
                 maxWidth={{
                   xs: 0,
                   sm: 220,
@@ -185,16 +185,16 @@ function App() {
             }
           >
             <Switch>
-              <Route path='/burn'>
+              <Route path="/burn">
                 <Burn />
               </Route>
-              <Route path='/claim'>
+              <Route path="/claim">
                 <Claim />
               </Route>
-              <Route path='/earn'>
+              <Route path="/earn">
                 <Earn />
               </Route>
-              <Route path='/'>
+              <Route path="/">
                 <Mint />
               </Route>
             </Switch>
@@ -215,7 +215,7 @@ function App() {
               right={0}
               bottom={0}
               zIndex={3}
-              width='100%'
+              width="100%"
               maxWidth={{
                 xs: "100%",
                 md: 300,
@@ -233,7 +233,7 @@ function App() {
                 xs: `2px solid ${palette.divider}`,
                 md: 0,
               })}
-              overflow='hidden'
+              overflow="hidden"
               sx={{
                 transition: "max-height 0.25s ease-in",
               }}

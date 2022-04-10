@@ -4,7 +4,7 @@ import numbro from "numbro";
 import { CurrencyKey, isFiatCurrency } from "./currencies";
 
 declare global {
-  interface BN extends bignumber {}
+  type BN = bignumber;
 }
 
 // ui defaults
@@ -105,13 +105,6 @@ export const formatCurrency = (
   isFiatCurrency(currencyKey)
     ? formatFiatCurrency(value, options)
     : formatCryptoCurrency(value, options);
-
-export const formatPercent = (
-  value: NumericValue,
-  options?: { minDecimals: number }
-) => {
-  return formatNumber(Number(value) * 100);
-};
 
 // TODO: figure out a robust way to get the correct precision.
 const getPrecision = (amount: NumericValue) => {

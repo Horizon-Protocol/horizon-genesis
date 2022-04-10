@@ -75,8 +75,8 @@ export function sanitiseValue(value: BN) {
 export function waitForGlobal(
   key: string,
   callback: () => void,
-  maxWait: number = 10000,
-  waited: number = 0
+  maxWait = 10000,
+  waited = 0
 ) {
   if (Reflect.has(window, key)) {
     callback();

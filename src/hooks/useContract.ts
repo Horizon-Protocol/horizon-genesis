@@ -10,7 +10,7 @@ import useRpcProvider from "./useRpcProvider";
 const useContract = <T>(
   address: string,
   abi: ContractInterface,
-  writable: boolean = false
+  writable = false
 ) => {
   const { provider } = useWallet();
 
@@ -39,27 +39,27 @@ export const useRpcContract = <T>(address: string, abi: ContractInterface) => {
   return contract as unknown as T;
 };
 
-export const useERC20 = (address: string, writable: boolean = false) => {
+export const useERC20 = (address: string, writable = false) => {
   return useContract<Erc20>(address, erc20Abi, writable);
 };
 
-export const usePHB = (writable: boolean = false) => {
+export const usePHB = (writable = false) => {
   return useERC20(TokenAddresses[Token.PHB], writable);
 };
 
-export const useHZN = (writable: boolean = false) => {
+export const useHZN = (writable = false) => {
   return useContract<HZN>(TokenAddresses[Token.HZN], hznAbi, writable);
 };
 
-export const useZUSDLP = (writable: boolean = false) => {
+export const useZUSDLP = (writable = false) => {
   return useERC20(TokenAddresses[Token.ZUSD_BUSD_LP], writable);
 };
 
-export const useLP = (writable: boolean = false) => {
+export const useLP = (writable = false) => {
   return useERC20(TokenAddresses[Token.HZN_BNB_LP], writable);
 };
 
-export const useLegacyLP = (writable: boolean = false) => {
+export const useLegacyLP = (writable = false) => {
   return useERC20(TokenAddresses[Token.HZN_BNB_LP_LEGACY], writable);
 };
 

@@ -30,10 +30,10 @@ export const AllPools: StakeCardProps[] = [
         To swap your existing PHB V1 tokens to PHB V2, click{" "}
         <Link
           color={COLOR.safe}
-          underline='hover'
+          underline="hover"
           fontWeight={700}
-          href='https://staker.phoenix.global/swap'
-          target='_blank'
+          href="https://staker.phoenix.global/swap"
+          target="_blank"
         >
           here
         </Link>
@@ -51,7 +51,7 @@ export const AllPools: StakeCardProps[] = [
       <>
         The PHB token has migrated to a new PHB V2 token and all rewards for
         this pool have ended. Read more{" "}
-        <Link href='https://staker.phoenix.global/swap' target='_blank'>
+        <Link href="https://staker.phoenix.global/swap" target="_blank">
           here
         </Link>
         .
@@ -113,7 +113,7 @@ export const AllPools: StakeCardProps[] = [
     desc: (
       <>
         This staking pool is no longer active, please unstake your HZN. You may
-        stake your HZN by minting zUSD in the 'Mint' tab.
+        stake your HZN by minting zUSD in the &#39;Mint&#39; tab.
       </>
     ),
   },
@@ -127,8 +127,8 @@ export const AllPools: StakeCardProps[] = [
         Due to the Pancakeswap migration, please unstake your tokens and go
         through the LP migration process{" "}
         <Link
-          href='https://v1exchange.pancakeswap.finance/#/migrate'
-          target='_blank'
+          href="https://v1exchange.pancakeswap.finance/#/migrate"
+          target="_blank"
         >
           here
         </Link>

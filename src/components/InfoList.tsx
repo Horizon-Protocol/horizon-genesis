@@ -16,11 +16,7 @@ interface Props {
   data: Info[];
 }
 
-export default function InfoList({
-  data,
-  className,
-  ...props
-}: Props & BoxProps) {
+export default function InfoList({ data, ...props }: Props & BoxProps) {
   return (
     <Box
       py={2}
@@ -28,7 +24,7 @@ export default function InfoList({
         xs: 0,
         sm: 3,
       }}
-      bgcolor='#091320'
+      bgcolor="#091320"
       {...props}
     >
       <List dense disablePadding>

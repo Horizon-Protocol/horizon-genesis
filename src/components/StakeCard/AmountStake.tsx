@@ -3,14 +3,13 @@ import { Box, Button, Collapse, Typography } from "@mui/material";
 import { alpha } from "@mui/material/styles";
 import { useSnackbar } from "notistack";
 import { useAtomValue } from "jotai/utils";
-import { Action } from "@utils/constants";
+import { Action, TokenName } from "@utils/constants";
 import { CARD_CONTENT, COLOR } from "@utils/theme/constants";
 import useRefresh from "@hooks/useRefreshEarn";
 import useTokenAllowance from "@hooks/useAllowance";
 import useStaking from "@hooks/staker/useStaking";
 import PrimaryButton from "@components/PrimaryButton";
 import { poolStateAtomFamily } from "@atoms/staker/pool";
-import { TokenName } from "@utils/constants";
 import { BNToEther, toBN, zeroBN, formatNumber } from "@utils/number";
 import { getWalletErrorMsg } from "@utils/helper";
 import AmountInput from "./AmountInput";
@@ -168,7 +167,7 @@ export default function AmountStake({
           }
         }
       }
-    } catch (e: any) {
+    } catch (e: unknown) {
       enqueueSnackbar(getWalletErrorMsg(e), { variant: "error" });
     }
     setSubmitting(false);
@@ -201,7 +200,7 @@ export default function AmountStake({
       <Box {...CARD_CONTENT}>
         {needApprove ? (
           <PrimaryButton
-            size='large'
+            size="large"
             fullWidth
             loading={loading}
             onClick={handleApprove}
@@ -214,33 +213,33 @@ export default function AmountStake({
         ) : (
           <>
             <Typography
-              variant='caption'
+              variant="caption"
               color={alpha(COLOR.text, 0.5)}
               fontSize={12}
               fontWeight={900}
-              letterSpacing='1px'
+              letterSpacing="1px"
               sx={{ textTransform: "uppercase" }}
             >
               {TokenName[token]} Staked
             </Typography>
-            <Box display='flex' alignItems='center'>
-              <Box flex='1' overflow='hidden'>
+            <Box display="flex" alignItems="center">
+              <Box flex="1" overflow="hidden">
                 <Typography
-                  variant='body1'
+                  variant="body1"
                   pr={1}
                   fontSize={24}
-                  fontFamily='Rawline'
+                  fontFamily="Rawline"
                   fontWeight={500}
-                  lineHeight='32px'
+                  lineHeight="32px"
                 >
                   {formatNumber(staked)}
                 </Typography>
               </Box>
               <Box
-                flex='0 0 120px'
-                display='flex'
-                justifyContent='space-between'
-                color='primary'
+                flex="0 0 120px"
+                display="flex"
+                justifyContent="space-between"
+                color="primary"
               >
                 {actions.map(({ key, label, disabled }) =>
                   disabled ? (
@@ -250,7 +249,7 @@ export default function AmountStake({
                       key={key}
                       disabled={disabled}
                       color={currentAction === key ? "primary" : "secondary"}
-                      size='small'
+                      size="small"
                       onClick={() => handleAction(key)}
                       sx={{
                         p: "0 20px",
@@ -276,7 +275,7 @@ export default function AmountStake({
             </Box>
             {finished && (
               <PrimaryButton
-                size='large'
+                size="large"
                 fullWidth
                 loading={loading}
                 onClick={handleSubmit}
@@ -292,7 +291,7 @@ export default function AmountStake({
         )}
       </Box>
       <Collapse in={!!currentAction}>
-        <Box position='relative' p={CARD_CONTENT.padding}>
+        <Box position="relative" p={CARD_CONTENT.padding}>
           <AmountInput
             token={token}
             logo={logo}

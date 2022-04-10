@@ -1,0 +1,7 @@
+# Ignore artifacts:
+dist
+public
+charting_library
+
+# Ignore all HTML files:
+*.html

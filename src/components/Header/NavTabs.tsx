@@ -1,6 +1,6 @@
 import { useMemo } from "react";
 import { useLocation, useHistory } from "react-router-dom";
-import ReactGA from "react-ga";
+import * as ReactGA from "react-ga";
 import { useAtomValue } from "jotai/utils";
 import { Badge, Tabs, Tab, TabProps } from "@mui/material";
 import { alpha, styled } from "@mui/material/styles";
@@ -43,7 +43,7 @@ const tabs: LinkTabProps[] = [
   },
 ];
 
-const getStyledTab: (color: string) => any = (color) =>
+const getStyledTab: (color: string) => unknown = (color) =>
   styled(Tab)(({ theme: { typography } }) => ({
     zIndex: 1,
     minHeight: 32,
@@ -92,9 +92,9 @@ export default function NavTabs() {
 
   return (
     <Tabs
-      variant='fullWidth'
+      variant="fullWidth"
       value={currentTab}
-      textColor='primary'
+      textColor="primary"
       onChange={(_, value) => {
         if (value !== pathname) {
           history.push(value);
@@ -128,7 +128,7 @@ export default function NavTabs() {
           label={
             hasAlert ? (
               <Badge
-                overlap='circular'
+                overlap="circular"
                 badgeContent={
                   <PriorityHigh
                     sx={{

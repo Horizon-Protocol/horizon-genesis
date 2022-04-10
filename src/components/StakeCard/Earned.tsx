@@ -56,14 +56,14 @@ export default function Earned({ token, earned }: Props) {
   }, [earned, enqueueSnackbar, refresh, stakingContract]);
 
   return (
-    <Box {...CARD_CONTENT} display='flex' alignItems='center'>
-      <Box flex='1' overflow='hidden'>
+    <Box {...CARD_CONTENT} display="flex" alignItems="center">
+      <Box flex="1" overflow="hidden">
         <Typography
-          variant='caption'
+          variant="caption"
           color={alpha(COLOR.text, 0.5)}
           fontSize={12}
           fontWeight={900}
-          letterSpacing='1px'
+          letterSpacing="1px"
         >
           HZN EARNED
         </Typography>
@@ -80,13 +80,13 @@ export default function Earned({ token, earned }: Props) {
           {({ countUpRef }) => (
             <Typography
               ref={countUpRef}
-              variant='body1'
+              variant="body1"
               paddingRight={8}
               fontSize={24}
-              fontFamily='Rawline'
+              fontFamily="Rawline"
               fontWeight={500}
-              textOverflow='ellipsis'
-              overflow='hidden'
+              textOverflow="ellipsis"
+              overflow="hidden"
               color={earned.isZero() ? undefined : COLOR.safe}
             />
           )}
@@ -94,7 +94,7 @@ export default function Earned({ token, earned }: Props) {
       </Box>
       <PrimaryButton
         loading={loading}
-        size='large'
+        size="large"
         disabled={earned.lte(0)}
         onClick={handleHarvest}
       >

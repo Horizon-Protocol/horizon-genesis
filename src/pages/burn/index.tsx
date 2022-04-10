@@ -307,10 +307,10 @@ export default function Burn() {
 
   return (
     <PageCard
-      mx='auto'
+      mx="auto"
       color={THEME_COLOR}
       headerBg={headerBg}
-      title='Burn'
+      title="Burn"
       description={
         <>
           Burn zUSD to unlock your staked HZN. This increases your
@@ -327,7 +327,7 @@ export default function Burn() {
       />
       {waitingPeriod || issuanceDelay ? (
         <Box mt={3}>
-          <Typography variant='h6' align='center'>
+          <Typography variant="h6" align="center">
             Burning blocked until: <br />
             {toFutureDate((waitingPeriod || issuanceDelay)!)}
           </Typography>
@@ -347,7 +347,7 @@ export default function Burn() {
           <PrimaryButton
             loading={loading}
             disabled={burnDisabled}
-            size='large'
+            size="large"
             fullWidth
             onClick={handleBurn}
           >

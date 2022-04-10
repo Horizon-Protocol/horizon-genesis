@@ -32,7 +32,7 @@ export default function useSetupHorizonLib() {
         window.horizon = horizon;
       } else if (rpcProvider) {
         horizon.setContractSettings({
-          networkId: ChainId,
+          networkId: ChainId as NetworkId,
           provider: rpcProvider,
         });
       }

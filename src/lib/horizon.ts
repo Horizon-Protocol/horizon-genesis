@@ -1,6 +1,6 @@
 import initHorizonJS, {
   NetworkId,
-  Network,
+  NetworkName,
   Token,
   Synth,
   HorizonJS,
@@ -36,7 +36,7 @@ export type Horizon = {
   synthsMap: SynthsMap | null;
   tokensMap: TokensMap | null;
   synthSummaryUtil: ethers.Contract | null;
-  chainIdToNetwork: Record<NetworkId, Network> | null;
+  chainIdToNetwork: Record<NetworkId, NetworkName> | null;
 };
 
 const horizon: Horizon = {

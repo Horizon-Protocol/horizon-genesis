@@ -831,10 +831,10 @@
   resolved "https://registry.yarnpkg.com/@fontsource/raleway/-/raleway-4.5.0.tgz#d5c464abe655d2e2cb134c503db455b7af6c03a6"
   integrity sha512-Rzj90wbZQnNzazqzoiu5HzMEMdqMJLUVFOo699sinTXrZRm1aB5iX2HTiK2VlPnH4M6u8yYnJ7CebOyamfWlqw==
 
-"@horizon-protocol/contracts-interface@2.52.1":
-  version "2.52.1"
-  resolved "https://registry.yarnpkg.com/@horizon-protocol/contracts-interface/-/contracts-interface-2.52.1.tgz#64870e0eda964e0776602482515ae5f170432508"
-  integrity sha512-LOhUyjjq4Xnd1A+CqtRpt85RvghPZ0KmWuD/uZwHJcTtyaovnBc71WYuxpYKk1b7VS1pP16F9lNjXXPVbeyhBg==
+"@horizon-protocol/contracts-interface@2.52.3":
+  version "2.52.3"
+  resolved "https://registry.yarnpkg.com/@horizon-protocol/contracts-interface/-/contracts-interface-2.52.3.tgz#a8e574ed3039aa3e68e93ca6b9567da01c1cfc3b"
+  integrity sha512-DJrAjEYCK1Zz+/6AL7aOpxpw5in5sC5sTf/89hAsN76xsksS9xQpeSOkqLmsOMq+Z0J1iYX7TkPxmeYsvVezKw==
   dependencies:
     "@horizon-protocol/smart-contract" "2.50.9"
     ethers "5.5.3"

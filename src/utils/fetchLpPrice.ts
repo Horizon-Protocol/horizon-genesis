@@ -30,7 +30,7 @@ export default async function useFetchLpPrice() {
   const staticFetcher = useCallback(async () => {
     const multiCallProvider = await getMultiCallProvider();
 
-    const calls = [];
+    const calls: any[] = [];
     for (const { token, token1 } of LpContracts) {
       const lpContract = tokenContractMap[token];
       const token1Contract = tokenContractMap[token1];

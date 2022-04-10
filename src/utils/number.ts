@@ -59,7 +59,7 @@ export const formatNumber = (
   const prefix = options?.prefix;
   const suffix = options?.suffix;
 
-  const formattedValue = [];
+  const formattedValue: any[] = [];
   if (prefix) {
     formattedValue.push(prefix);
   }

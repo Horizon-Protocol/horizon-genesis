@@ -205,9 +205,9 @@ function App() {
                 ? undefined
                 : {
                     xs: 480,
-                    sm: 600,
-                    lg: 640,
-                    xl: 640,
+                    sm: 640,
+                    // lg: 640,
+                    // xl: 640,
                   }
             }
           >
@@ -247,33 +247,29 @@ function App() {
           {!isEarnPage && (
             <Box
               pr={{
-                xs: 0,
-                sm: 0,
-                md: 1,
-                lg: 2,
+                // xs: 0,
+                // sm: 0,
+                // md: 1,
+                // lg: 2,
               }}
               position={{
                 xs: "fixed",
+                sm: "fixed",
                 md: "static",
               }}
               left={0}
               right={0}
               bottom={0}
               zIndex={3}
-              // width='100%'
               width={{
                 xs: "100%",
+                sm: "100%",
                 md: 300,
-                lg: 300,
               }}
-              // maxWidth={{
-              //   xs: "100%",
-              //   md: 320,
-              //   lg: 320,
-              // }}
               minWidth={{
+                xs: "100%",
+                sm: "100%",
                 md: 300,
-                lg: 300,
               }}
               maxHeight={{
                 xs: expanded ? "100%" : 170,

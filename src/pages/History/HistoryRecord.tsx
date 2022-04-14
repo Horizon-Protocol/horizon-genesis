@@ -16,14 +16,14 @@ import NoRowsOverlay from "@components/NoRowsOverlay";
 import DateRangeSelection from "./DateRangeSelection";
 import TypeSelection from "./TypeSelection";
 import { useAtomValue } from "jotai/utils";
-import { historicalOperationAtom, HistoryType } from "@atoms/record";
+import { historicalIsLoadingAtom, historicalOperationAtom, HistoryType } from "@atoms/record";
 import dayjs from "dayjs";
 import { formatNumber } from "@utils/number";
 import { HistoricalOperationData } from "@hooks/query/useQueryDebt";
 import { DateRange } from "@mui/lab/DateRangePicker/RangeTypes";
 import { BlockExplorer } from "@utils/helper";
 import { hznRateAtom } from "@atoms/exchangeRates";
-import { lineHeight } from "@mui/system";
+import useWallet from "@hooks/useWallet";
 
 interface HistoryDataProps {
   id: string;
@@ -42,6 +42,9 @@ export interface HistoryRangeDateProps {
 }
 
 export default function HistoryRecord() {
+  const { connected } = useWallet();
+  const historicalIsLoading = useAtomValue(historicalIsLoadingAtom)
+
   const [page, setPage] = useState(0);
   const [rowsPerPage, setRowsPerPage] = useState(5);
 
@@ -98,6 +101,7 @@ export default function HistoryRecord() {
               "DD/MM/YYYY hh:mm"
             ),
             amount: {
+              type: item.type,
               value: valueprefix + formatNumber(item.value ?? 0),
               rewards: rewardsprefix + formatNumber(item.rewards ?? 0),
             },
@@ -120,7 +124,12 @@ export default function HistoryRecord() {
             ? item
             : itemDate.isAfter(chooseStart) && itemDate.isBefore(chooseEnd);
         });
-      // console.log("===rows",rows)
+      console.log("计算结束",{
+        historicalOperationData,
+        historyType,
+        allDate,
+        rows
+      })
 
       setLoading(false);
       return rows;
@@ -168,6 +177,7 @@ export default function HistoryRecord() {
       editable: false,
       headerAlign: "left",
       renderCell({ value, row }) {
+        console.log(value)
         return (
           <Typography
             sx={{
@@ -178,11 +188,15 @@ export default function HistoryRecord() {
               lineHeight: "14px",
             }}
           >
+            {value.type == HistoryType.Claim && <>
             {value.rewards}
             <Box component="span" sx={{ ml: "4px", opacity: 0.5 }}>
               HZN
             </Box>
             <br />
+            </>}
+            
+            
             {value.value}
             <Box component="span" sx={{ ml: "4px", opacity: 0.5 }}>
               zUSD
@@ -213,11 +227,15 @@ export default function HistoryRecord() {
     },
   ];
 
+  useEffect(()=>{
+    // alert(historicalIsLoading)
+  },[])
+
   return (
     <Box>
       <NoRowsOverlay
         hidden={
-          historicalOperationData != null && historicalOperationData?.length > 0
+          historicalIsLoading ? true : historicalOperationData != null && historicalOperationData?.length > 0
         }
         noRowsTitle={
           <>
@@ -231,10 +249,13 @@ export default function HistoryRecord() {
       <Box
         sx={{
           display:
+            connected ? 
+
+            historicalIsLoading ? "block" :
             historicalOperationData != null &&
-            historicalOperationData.length > 0
-              ? "block"
-              : "none",
+            historicalOperationData.length > 0 ? "block" : "none"
+
+              : "none"
         }}
       >
         <Box
@@ -279,7 +300,7 @@ export default function HistoryRecord() {
         </Box>
         <Box sx={{ mt: "20px", width: "100%", overflow: "hidden" }}>
           <CustomDataGrid
-            loading={loading}
+            loading={historicalIsLoading}
             columns={columns}
             rows={dataRows}
             page={page}

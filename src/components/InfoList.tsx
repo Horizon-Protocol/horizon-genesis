@@ -10,7 +10,6 @@ import {
   ListItemText,
   SvgIcon,
 } from "@mui/material";
-import { width } from "@mui/system";
 
 export interface Info {
   label: string;

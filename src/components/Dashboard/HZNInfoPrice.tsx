@@ -20,21 +20,16 @@ export default function HZNInfoPrice({
 }: Props) {
   return (
     <Box
-      p={1}
-      // mx='auto'
-      // maxWidth={maxWidth}
       borderRadius='4px'
-      // border='1px solid #11263B'
       sx={{
-        // display:"flex",
-        // flexDirection:'column',
-        // justifyContent:'center',
-        // alignContent:'center'
+        display:'flex',
+        flexDirection:'column',
+        justifyContent:'center'
       }}
       {...props}
     >
-      <Typography sx={{opacity:0.5}} fontSize={12} color={COLOR.text} variant='caption'>{title}</Typography>
-      <Typography letterSpacing='1px' fontFamily='Rawline' fontSize={16} color={COLOR.safe} component='div' variant='subtitle1' fontWeight={700}>
+      <Typography lineHeight='14px' sx={{opacity:0.5}} fontSize={12} color={COLOR.text}>{title}</Typography>
+      <Typography lineHeight='19px' letterSpacing='1px' fontFamily='Rawline' fontSize={16} color={COLOR.safe} component='div' fontWeight={700}>
         {desc}
       </Typography>
     </Box>

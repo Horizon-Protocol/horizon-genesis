@@ -1,5 +1,6 @@
 import ActionLink from "@components/Alerts/ActionLink";
 import { Box, BoxProps, Typography } from "@mui/material";
+import { COLOR } from "@utils/theme/constants";
 
 export default function Header({
   color,
@@ -23,12 +24,11 @@ export default function Header({
         p='0 12px'
         mb={0}
         lineHeight='22px'
-        color='#C1D3E0'
+        color={COLOR.text}
       >
         {description}
       </Typography>
-      
-      <ActionLink href="https://docs.horizonprotocol.com/" target='_blank' showArrow={false}>LEARN MORE</ActionLink>
+      <ActionLink fontSize='12px !important' letterSpacing='1px' href="https://docs.horizonprotocol.com/" target='_blank' showArrow={false}>LEARN MORE</ActionLink>
     </Box>
   );
 }

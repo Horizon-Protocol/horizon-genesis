@@ -1,14 +1,12 @@
 import { useCallback, useEffect, useState } from "react";
 import {
   BoxProps,
-  Hidden,
-  Typography
+  Typography,
+  Box
 } from "@mui/material";
 import { styled } from "@mui/material/styles";
 import { useAtom } from "jotai";
 import { openLinkDropDownAtom } from "@atoms/wallet";
-import { Box, display } from "@mui/system";
-import logo from "@assets/logo.png";
 import { COLOR, BORDER_COLOR } from "@utils/theme/constants";
 import dropdown_arrow from "@assets/images/dropdown_arrow.png";
 
@@ -21,6 +19,8 @@ declare global {
     index: number,
     title: string,
     desc: string,
+    h?: string | number,
+    w?: string | number,
   }
 }
 
@@ -29,8 +29,10 @@ export default function ContentWebLink({
   index,
   title,
   desc,
+  h = '40px',
+  w = '289px',
   ...props
-}: BoxProps & ContentWebLinkProps) {
+}: ContentWebLinkProps & BoxProps) {
   const [openLinkDropDown, setOpenLinkDropDown] = useAtom(openLinkDropDownAtom);
   
   let borderRadius='6px'
@@ -71,8 +73,8 @@ export default function ContentWebLink({
       // {...props}
     >
       <Box sx={{
-        width: '47px',
-        height: '68px',
+        width: '40.5px',
+        height: '40px',
         display: typeof(icon) == "undefined" ? 'none' : 'flex',
         flexDirection: 'row-reverse',
         alignItems: 'center',
@@ -86,8 +88,8 @@ export default function ContentWebLink({
         display: 'flex',
         flexDirection: 'column',
         justifyContent: 'center',
-        width: '289px',
-        height: '68px'
+        width: w,
+        height: h
       }}>
         <Box sx={{
           display: 'flex',
@@ -109,12 +111,24 @@ export default function ContentWebLink({
             }}>HORIZON</span>
             {title}
           </Typography>
+
           <Img
           hidden = {typeof(icon) == "undefined"}
           sx={{
             transform: openLinkDropDown ?  "rotate(0deg)" : "rotate(180deg)",
             transition: "all .2s"
           }} height='14px' width='16px' src={dropdown_arrow}/>
+{/* <SvgIcon
+        sx={{
+          ml: 1,
+          width: 6,
+          height: 6,
+          transition: "transform ease 0.25s",
+          transform: !openLinkDropDown ? "rotate(180deg)" : undefined,
+        }}
+      >
+        <IconArrowUp />
+      </SvgIcon> */}
         </Box>
         <Typography
             fontSize={14}
@@ -123,6 +137,9 @@ export default function ContentWebLink({
             fontFamily='Raleway'
             color={COLOR.text}
             paddingLeft='13px'
+            sx={{
+              opacity: index == 0 ? 0.5 : 1
+            }}
           >
             {desc}
           </Typography>

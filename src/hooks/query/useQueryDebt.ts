@@ -10,7 +10,7 @@ import { useAtomValue, useResetAtom, useUpdateAtom } from "jotai/utils";
 import { useAtom } from "jotai";
 import { debtAtom } from "@atoms/debt";
 import useDisconnected from "@hooks/useDisconnected";
-import { historicalActualDebtAtom, historicalClaimHZNAndZUSDAtom, historicalIssuedDebtAtom, historicalOperationAtom, HistoryType } from "@atoms/record";
+import { historicalActualDebtAtom, historicalClaimHZNAndZUSDAtom, historicalIsLoadingAtom, historicalIssuedDebtAtom, historicalOperationAtom, HistoryType } from "@atoms/record";
 import dayjs from "dayjs";
 
 export type HistoricalDebtAndIssuanceData = {
@@ -53,6 +53,9 @@ export default function useQueryDebt() {
     const setHistoricalOperation = useUpdateAtom(historicalOperationAtom);
     const resetHistoricalOperation = useResetAtom(historicalOperationAtom);
     useDisconnected(resetHistoricalOperation);
+    const setHistoricalIsLoading = useUpdateAtom(historicalIsLoadingAtom)
+    const resetHistoricalIsLoading = useResetAtom(historicalIsLoadingAtom);
+    useDisconnected(resetHistoricalIsLoading);
 
     const setHistoricalClaim = useUpdateAtom(historicalClaimHZNAndZUSDAtom);
     const resetHistoricalClaim = useResetAtom(historicalOperationAtom);
@@ -223,9 +226,24 @@ export default function useQueryDebt() {
                 let typeMintHistory = issues.issueds.map((b: any) => ({ ...b, type: HistoryType.Mint }))
                 let typeBurnHistory = burns.burneds.map((b: any) => ({ ...b, type: HistoryType.Burn }))
                 let typeClaimHistory = claims.feesClaimeds.map((b: any) => ({ ...b, type: HistoryType.Claim }))
-                const allTypeHistory = sortBy(concat(typeMintHistory, typeBurnHistory, typeClaimHistory), "timestamp")
-                console.log("====allTypeHistory", allTypeHistory)
-                setHistoricalOperation(allTypeHistory)
+                let concatData = concat(typeMintHistory, typeBurnHistory, typeClaimHistory)
+                let allTypeHistory = sortBy(concatData, "timestamp")
+                // console.log("====allTypeHistory", allTypeHistory)
+
+                //if user has data and more than 0, loading end
+                // allTypeHistory = []
+                if (allTypeHistory.length > 0){
+                    setHistoricalIsLoading(false)
+                }
+                setHistoricalOperation(prev => {
+                    if (allTypeHistory.length == 0 && prev?.length == 0){
+                        //means this user doesn't has any record history, let user to stake
+                        setHistoricalIsLoading(false)
+                    }
+                    return (
+                        allTypeHistory
+                    )
+                })
                 //==============================================================================
 
                 // We set historicalIssuanceAggregation array, to store all the cumulative ===========================================================

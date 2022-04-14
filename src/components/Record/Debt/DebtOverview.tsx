@@ -1,13 +1,9 @@
 
-import { Typography } from "@mui/material";
-import { bgcolor, Box } from "@mui/system";
+import { Typography, Box } from "@mui/material";
 import { formatNumber } from "@utils/number";
-import { toBN } from "@utils/number";
-import { BigNumber } from "ethers";
 import { COLOR } from "@utils/theme/constants";
 import { alpha } from "@mui/material/styles";
 import { useMemo } from "react";
-import { atom, useAtom } from "jotai";
 import { debtAtom } from "@atoms/debt";
 import { useAtomValue } from "jotai/utils";
 import { first, last } from 'lodash';

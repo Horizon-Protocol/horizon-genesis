@@ -104,7 +104,7 @@ export default function Dashboard(props: BoxProps) {
   return (
     <>
       <Box
-        border={1}
+        // border={1}
         borderColor={BORDER_COLOR}
         width='100%'
         bgcolor='rgba(16, 38, 55, 0.3)'
@@ -130,30 +130,27 @@ export default function Dashboard(props: BoxProps) {
             justifyContent='space-between'
           >
             <HZNInfoPrice
-              width={140}
-              title='HZN STAKING'
+              width={150}
+              height='50px'
+              title='HZN STAKING APY'
               desc={<>
                 {stakingAPR * 100 && isEstimateAPR ? (
                   <Typography variant='overline' gutterBottom>
                     &#8776;{" "}
                   </Typography>
                 ) : null}
-                <span>{stakingAPR * 100 ? formatNumber(stakingAPR * 100) : "--"}</span>% APY
+                <span>{stakingAPR * 100 ? formatNumber(stakingAPR * 100) : "--"}</span>%
               </>}
               bgcolor='rgba(16, 38, 55, 0.3)'
-              sx={{
-              }}
             />
             <HZNInfoPrice
-              width={100}
+              width={110}
               title='HZN PRICE'
               desc={`$${formatPrice(hznRate.toNumber(), { mantissa: 4 })}`}
               bgcolor='rgba(16, 38, 55, 0.3)'
-              sx={{
-              }}
             />
           </Box>
-          <Box mt={2} bgcolor='rgba(16, 38, 55, 0.3)'>
+          <Box mt="10px" bgcolor='rgba(16, 38, 55, 0.3)'>
             <Balance data={balances} />
           </Box>
         </Box>

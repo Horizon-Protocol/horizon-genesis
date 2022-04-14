@@ -34,7 +34,7 @@ export default function RefreshButton(props: BoxProps) {
     >
       <SvgIcon
         sx={{
-          color: "text.primary",
+          color: COLOR.text,
           width: 14,
           animation: "circular-rotate 4s linear infinite",
           animationPlayState: refreshing ? "running" : "paused",
@@ -64,7 +64,7 @@ export default function RefreshButton(props: BoxProps) {
         <Typography
           fontSize={12}
           lineHeight="15px"
-          color="text.primary"
+          color={COLOR.text}
           whiteSpace="nowrap"
         >
           {time}

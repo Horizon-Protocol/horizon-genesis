@@ -9,17 +9,18 @@ import BannerUseOfZusd from "@components/Banner/BannerUseOfZusd";
 import information from "@assets/images/information.png";
 import hznIcon from "@assets/images/icon-hzn.png";
 import gridMint from "@assets/images/grid-mint.png";
-import { formatNumber } from "@utils/number";
 import { styled } from "@mui/material/styles";
-import { useHistory } from "react-router-dom";
 import zusdIcon from "@assets/images/zUSD-icon.png";
 import { COLOR, PAGE_COLOR } from "@utils/theme/constants";
 import { memo, useEffect } from "react";
+import { useAtomValue } from "jotai";
+import { ratiosPercentAtom } from "@atoms/app";
 
 const Img = styled("img")``;
 
 const TopCarousel = () => {
-    
+    const { targetCRatioPercent } = useAtomValue(ratiosPercentAtom);
+
     useEffect(()=>{
         console.log('refresh carousel')
     },[])
@@ -119,7 +120,7 @@ const TopCarousel = () => {
               }}
             />}
             title="WHAT ARE THE RISKS?"
-            desc={<>When staking HZN and minting zUSD you are<br />collateralizing the zUSD with HZN at an 800% ratio<br />(C-Ratio). You must maintain this 800% C-Ratio or <br />you cannot claim rewards or you can be potentially<br />liquidated if you reach a 200% C-Ratio.<br /></>}
+            desc={<>When staking HZN and minting zUSD you are<br />collateralizing the zUSD with HZN at an {targetCRatioPercent}% ratio<br />(C-Ratio). You must maintain this 800% C-Ratio or <br />you cannot claim rewards or you can be potentially<br />liquidated if you reach a 200% C-Ratio.<br /></>}
             highlightText="LEARN MORE"
             style={{
               cursor: 'pointer'

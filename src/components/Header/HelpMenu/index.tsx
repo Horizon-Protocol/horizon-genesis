@@ -5,8 +5,12 @@ import { ReactComponent as IconArrowUp } from "@assets/images/icon-arrow-up.svg"
 import { ReactComponent as IconDocument } from "@assets/images/icon-document.svg";
 import { ReactComponent as IconDiscord } from "@assets/images/icon-discord.svg";
 import { ReactComponent as IconTelegram } from "@assets/images/icon-telegram.svg";
+import { ReactComponent as IconHelp } from "@assets/images/icon-help.svg";
+import { ReactComponent as IconHelpSelected } from "@assets/images/icon-help-select.svg";
+
 import MenuItem from "./MenuItem";
 import { HelpOutline } from "@mui/icons-material";
+import { COLOR } from "@utils/theme/constants";
 
 export default function HelpMenu({ ...props }: BoxProps) {
   const [anchorEl, setAnchorEl] = useState<HTMLDivElement | null>(null);
@@ -28,12 +32,24 @@ export default function HelpMenu({ ...props }: BoxProps) {
       color = {!anchorEl ? 'rgb(180, 224, 255)' : 'rgba(42,212,183,1)'}
       {...props}
     >
-      <HelpOutline
+      {/* <HelpOutline
         sx={{
           mr: 1,
           fontSize: 12,
         }}
-      />
+      /> */}
+      <SvgIcon
+        sx={{
+          // stroke:"red",
+          // fill:'red',
+          // color:'red',
+          mr: '6px',
+          width: 13,
+          height: 13,
+        }}
+      >
+        {anchorEl ? <IconHelpSelected /> : <IconHelp />}
+      </SvgIcon>
       Help
       <SvgIcon
         sx={{
@@ -61,13 +77,13 @@ export default function HelpMenu({ ...props }: BoxProps) {
         }}
         sx={{
           ".MuiBackdrop-invisible": {
-            top: 90,
+            top: 80,
             bgcolor: "rgba(6, 14, 31, 0.7)",
             backdropFilter: "blur(8px)",
           },
           ".MuiPopover-paper": {
             boxShadow: 'none',
-            top:'98px !important',
+            top:'85px !important',
             maxWidth: 310,
             bgcolor: "#0B1828",
           },
@@ -78,7 +94,7 @@ export default function HelpMenu({ ...props }: BoxProps) {
           target="_blank"
           underline="none"
         >
-          <MenuItem px={2.5} height={40} width={220} isLink>
+          <MenuItem color={COLOR.text} px={2.5} height={40} width={220} isLink>
             <SvgIcon sx={{ height: 14, width: 14, mr: 1.5 }}>
               <IconDocument />
             </SvgIcon>
@@ -90,7 +106,7 @@ export default function HelpMenu({ ...props }: BoxProps) {
           target="_blank"
           underline="none"
         >
-          <MenuItem px={2.5} py={1.5} height={40} width={220} isLink>
+          <MenuItem color={COLOR.text} px={2.5} py={1.5} height={40} width={220} isLink>
             <SvgIcon sx={{ height: 16, width: 14, mr: 1.5 }}>
               <IconDiscord />
             </SvgIcon>
@@ -102,7 +118,7 @@ export default function HelpMenu({ ...props }: BoxProps) {
           target="_blank"
           underline="none"
         >
-          <MenuItem px={2.5} py={1.5} height={40} width={220} isLink>
+          <MenuItem color={COLOR.text} px={2.5} py={1.5} height={40} width={220} isLink>
             <SvgIcon sx={{ height: 14, width: 14, mr: 1.5 }}>
               <IconTelegram />
             </SvgIcon>

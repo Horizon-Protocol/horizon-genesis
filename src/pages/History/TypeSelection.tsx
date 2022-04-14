@@ -1,5 +1,4 @@
-import { Box, Popover } from "@mui/material";
-import { BoxProps, height } from "@mui/system";
+import { Box, Popover, BoxProps } from "@mui/material";
 import TypeCell from "./TypeCell";
 import dropdown_arrow from "@assets/images/dropdown_arrow.png";
 import { openLinkDropDownAtom } from "@atoms/wallet";

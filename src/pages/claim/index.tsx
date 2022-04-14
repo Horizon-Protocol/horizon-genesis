@@ -23,7 +23,7 @@ import { formatNumber, toBN, zeroBN } from "@utils/number";
 import { getWalletErrorMsg } from "@utils/helper";
 import { zAssets } from "@utils/zAssets";
 import { historicalClaimHZNAndZUSDAtom, historicalOperationAtom } from "@atoms/record";
-import { targetRatioAtom } from "@atoms/app";
+import { ratiosPercentAtom, targetRatioAtom } from "@atoms/app";
 import { secondsOfDays } from "@utils/date";
 
 const THEME_COLOR = PAGE_COLOR.claim;
@@ -39,7 +39,7 @@ export default function Claim() {
   const canClaim = useAtomValue(canClaimAtom);
   const targetRatio = useAtomValue(targetRatioAtom);
   const { currentCRatio } = useAtomValue(debtAtom);
-
+  const { targetCRatioPercent } = useAtomValue(ratiosPercentAtom);
   const lifeTimeClaimed = useMemo(
     () => {
       let ltHZN = zeroBN
@@ -222,7 +222,7 @@ export default function Claim() {
             letterSpacing:'0.5px',
             lineHeight:"14px"
           }}>
-          You need to restore your C-Ratio back to 800%<br/>
+          You need to restore your C-Ratio back to {targetCRatioPercent}%<br/>
           before you can claim your rewards.</Typography>
         )}
       </Box>

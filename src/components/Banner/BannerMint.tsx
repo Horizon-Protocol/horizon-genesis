@@ -1,5 +1,4 @@
 import { Box, Button, Typography } from "@mui/material";
-import { color } from "@mui/system";
 import { COLOR, PAGE_COLOR } from "@utils/theme/constants";
 import PrimaryButton from "@components/PrimaryButton";
 import mintBg from "@assets/bgs/hzn.png";
@@ -75,7 +74,7 @@ export default function BannerMint() {
       >
         MINT NOW
       </PrimaryButton>
-      <ActionLink showArrow={false} href={HZNBuyLink} target='_blank'>
+      <ActionLink underline="none" showArrow={false} href={HZNBuyLink} target='_blank'>
         <PrimaryButton
           size='large'
           fullWidth

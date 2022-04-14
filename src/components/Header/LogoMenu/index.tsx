@@ -11,7 +11,7 @@ import hznLogo from "@assets/tokens/hzn.png";
 interface Props {
     height?: number;
 }
-export default function LogoMenu({ height = 90 }: Props) {
+export default function LogoMenu({ height = 80 }: Props) {
     const [anchorEl, setAnchorEl] = useState<HTMLDivElement | null>(null);
 
     const [openLinkDropDown, setOpenLinkDropDown] = useAtom(openLinkDropDownAtom);
@@ -61,17 +61,17 @@ export default function LogoMenu({ height = 90 }: Props) {
                     horizontal: 50,
                 }}
                 sx={{
-                    top: height,
                     ".MuiBackdrop-invisible": {
-                        top: height,
+                        top: 80,
                         bgcolor: "rgba(6, 14, 31, 0.7)",
                         backdropFilter: "blur(8px)",
-                    },
-                    ".MuiPopover-paper": {
-                        mt: '-84px',
+                      },
+                      ".MuiPopover-paper": {
+                        boxShadow: 'none',
+                        top:'85px !important',
                         maxWidth: 310,
                         bgcolor: "#0B1828",
-                    },
+                      },
                 }}
             >
                 <Link
@@ -79,14 +79,14 @@ export default function LogoMenu({ height = 90 }: Props) {
                     target="_blank"
                     underline="none"
                 >
-                    <ContentWebLink index={1} title='EXCHANGE' desc='Trade Borderless Derivatives' />
+                    <ContentWebLink w={289} h={68} index={1} title='EXCHANGE' desc='Trade Borderless Derivatives' />
                 </Link>
                 <Link
                     href="https://dashboard.horizonprotocol.com"
                     target="_blank"
                     underline="none"
                 >
-                    <ContentWebLink index={2} title='DASHBOARD' desc='Track Real-Time Network Statistics' />
+                    <ContentWebLink w={289} h={68} index={2} title='DASHBOARD' desc='Track Real-Time Network Statistics' />
                 </Link>
             </Popover>
         </Box>

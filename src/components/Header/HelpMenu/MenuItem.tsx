@@ -31,7 +31,7 @@ export default function MenuItem({
           opacity: 1,
         },
         ":hover *": {
-          color: COLOR.safe,
+          // color: COLOR.safe,
         },
         ...sx,
       }}

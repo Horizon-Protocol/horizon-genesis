@@ -24,7 +24,10 @@ export default function PageCard({
     <Box
       width='100%'
       maxWidth={640}
-      border={1}
+      minWidth={{
+        md:640,
+        sm:"100%",
+      }}
       borderRadius={2.5}
       borderColor={BORDER_COLOR}
       overflow='hidden'
@@ -36,7 +39,7 @@ export default function PageCard({
         justifyContent='center'
         overflow='hidden'
         position='relative'
-        bgcolor='#0C111D'
+        bgcolor='rgba(8,12,22,0.3)'
         sx={{
           backgroundRepeat: "no-repeat",
           backgroundSize: "auto 180px",
@@ -59,7 +62,8 @@ export default function PageCard({
           color={color}
           title={title}
           description={description}
-          maxWidth={420}
+          height={184}
+          width={450}
           py={3}
         />
       </Box>

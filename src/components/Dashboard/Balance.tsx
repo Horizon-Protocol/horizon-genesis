@@ -84,9 +84,8 @@ export default function Balance({ data }: Props) {
     }}>
       <List sx={{
         height: showMore ? '100%' : '100%',
-        // height: '100%',
         overflow: 'hidden',
-        // pb: '24px',
+        padding: '10px 2px',
         position: 'relative'
       }} dense disablePadding>
         {data.map(({ sectionHeader, showWalletIcon, importToken, label, value }) => (

@@ -1,7 +1,5 @@
-import { jsx } from "@emotion/react";
-import { Typography, BoxProps } from "@mui/material";
+import { Typography, BoxProps, Box } from "@mui/material";
 import { styled } from "@mui/material/styles";
-import { Box } from "@mui/system"
 import { useState } from "react";
 
 const Img = styled("img")``;

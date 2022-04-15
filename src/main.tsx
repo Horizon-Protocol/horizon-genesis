@@ -52,7 +52,7 @@ render(
           </StyledEngineProvider>
         </Web3ReactProvider>
         {/* The rest of your application */}
-        <ReactQueryDevtools initialIsOpen={true} />
+        <ReactQueryDevtools position="bottom-right" />
       </QueryClientProvider>
     </JotaiProvider>
   </StrictMode>,

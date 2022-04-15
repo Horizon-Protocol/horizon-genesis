@@ -13,6 +13,7 @@ import cakeLogo from "@assets/tokens/cake.png";
 export const AllPools: StakeCardProps[] = [
   {
     token: Token.PHB,
+    finished: true,
     bg: phbBg,
     color: "#FC4C07",
     logo: phbLogo,

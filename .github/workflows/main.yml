@@ -5,7 +5,7 @@ on:
     branches:
       - main
     paths-ignore:
-      - ".github/workflows/deploy-testnet.yml"
+      - ".github/workflows/testnet.yml"
 
 jobs:
   setup:

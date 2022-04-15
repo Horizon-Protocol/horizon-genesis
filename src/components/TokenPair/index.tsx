@@ -142,9 +142,9 @@ export default function TokenPair({
         color={COLOR.danger}
         fontSize={10}
         fontWeight={500}
-        letterSpacing='0.36px'
-        lineHeight='14px'
-        textAlign='center'
+        letterSpacing="0.36px"
+        lineHeight="14px"
+        textAlign="center"
       >
         {state.error}
       </Typography>

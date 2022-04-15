@@ -1,5 +1,6 @@
 import { useCallback, useRef, SyntheticEvent } from "react";
 import { Box, Link, InputBase, Typography } from "@mui/material";
+import { trimStart } from "lodash";
 import NumberFormat from "react-number-format";
 import { formatNumber, NumericValue } from "@utils/number";
 import { BORDER_COLOR, COLOR } from "@utils/theme/constants";
@@ -61,21 +62,18 @@ export default function TokenInput({
     [amount, max, onInput]
   );
 
-  const handleUserInput = useCallback(
-    (e: SyntheticEvent) => {
-      maxRef.current = false;
-      onUserInput?.();
-    },
-    [onUserInput]
-  );
+  const handleUserInput = useCallback(() => {
+    maxRef.current = false;
+    onUserInput?.();
+  }, [onUserInput]);
 
   return (
     <Box
-      display='flex'
+      display="flex"
       border={1}
       borderRadius={1}
       borderColor={BORDER_COLOR}
-      p='16px 24px'
+      p="16px 24px"
       py={2}
       px={{
         xs: 1,
@@ -83,13 +81,13 @@ export default function TokenInput({
       }}
       bgcolor={bgColor || "#091320"}
     >
-      <Box display='flex' alignItems='center'>
+      <Box display="flex" alignItems="center">
         <TokenLogo token={token} logo={logo} />
-        <Box display='flex' flexDirection='column' p='10px 12px' fontSize={24}>
+        <Box display="flex" flexDirection="column" p="10px 12px" fontSize={24}>
           <Typography
             fontSize={12}
-            letterSpacing='0.43px'
-            lineHeight='14px'
+            letterSpacing="0.43px"
+            lineHeight="14px"
             color={labelColor}
           >
             {label}
@@ -101,14 +99,14 @@ export default function TokenInput({
               sm: 24,
             }}
             fontWeight={700}
-            letterSpacing='0.86px'
-            lineHeight='28px'
+            letterSpacing="0.86px"
+            lineHeight="28px"
           >
             {token}
           </Typography>
         </Box>
       </Box>
-      <Box display='flex' flexDirection='column' flexGrow={1} flexShrink={1}>
+      <Box display="flex" flexDirection="column" flexGrow={1} flexShrink={1}>
         <NumberFormat
           value={input}
           onValueChange={(values) => {
@@ -120,7 +118,7 @@ export default function TokenInput({
             //   values,
             // });
             if (input !== values.value) {
-              onInput(values.value, maxRef.current);
+              onInput(trimStart(values.value, "."), maxRef.current);
             }
             maxRef.current = false;
           }}
@@ -130,7 +128,7 @@ export default function TokenInput({
           allowNegative={false}
           thousandSeparator
           isNumericString
-          placeholder='0.0'
+          placeholder="0.0"
           disabled={disabled}
           customInput={InputBase}
           inputProps={{
@@ -151,18 +149,18 @@ export default function TokenInput({
           }}
         />
         <Box
-          display='flex'
-          justifyContent='flex-end'
+          display="flex"
+          justifyContent="flex-end"
           flexWrap={{
             xs: "wrap",
             md: "nowrap",
           }}
         >
           <Typography
-            component='span'
+            component="span"
             fontSize={12}
             fontWeight={700}
-            color='#6E89A6'
+            color="#6E89A6"
           >
             {balanceLabel
               ? balanceLabel
@@ -172,9 +170,9 @@ export default function TokenInput({
           </Typography>
           {maxButtonLabel && max?.gt(0) ? (
             <Link
-              href='#'
-              underline='none'
-              color='inherit'
+              href="#"
+              underline="none"
+              color="inherit"
               onClick={handleClickMax}
               sx={{
                 p: "0 0 0 4px",

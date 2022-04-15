@@ -1,6 +1,7 @@
 import { useCallback, useMemo, useRef } from "react";
 import { Box, Button, InputBase, Typography } from "@mui/material";
 import NumberFormat from "react-number-format";
+import { trimStart } from "lodash";
 import prettyMilliseconds from "pretty-ms";
 import PrimaryButton from "@components/PrimaryButton";
 import { TokenName } from "@utils/constants";
@@ -56,34 +57,34 @@ export default function AmountInput({
   return (
     <Box>
       <Box
-        display='flex'
-        alignItems='center'
+        display="flex"
+        alignItems="center"
         borderRadius={2.5}
         border={1}
-        borderColor='divider'
-        overflow='hidden'
+        borderColor="divider"
+        overflow="hidden"
       >
         <Box
-          component='span'
+          component="span"
           padding={1.5}
-          display=' inline-flex'
-          alignItems='center'
+          display=" inline-flex"
+          alignItems="center"
         >
           {logo ? (
-            <Box component='img' src={logo} alt={""} mr={1} height={22} />
+            <Box component="img" src={logo} alt={""} mr={1} height={22} />
           ) : null}
           <Typography>{TokenName[token]}</Typography>
         </Box>
         <NumberFormat
           value={input}
           onValueChange={(values) => {
-            onInput(values.value, maxRef.current);
+            onInput(trimStart(values.value, "."), maxRef.current);
             maxRef.current = false;
           }}
           allowNegative={false}
           thousandSeparator
           isNumericString
-          placeholder='0.0'
+          placeholder="0.0"
           customInput={InputBase}
           sx={{
             flex: 1,
@@ -95,7 +96,7 @@ export default function AmountInput({
           }}
         />
         <Button
-          size='small'
+          size="small"
           sx={{
             minWidth: 48,
             fontWeight: 700,
@@ -106,12 +107,12 @@ export default function AmountInput({
           Max
         </Button>
       </Box>
-      <Box display='flex' justifyContent='space-between' mb={2.5}>
-        <Typography variant='overline' color='textSecondary'>
+      <Box display="flex" justifyContent="space-between" mb={2.5}>
+        <Typography variant="overline" color="textSecondary">
           {lockDownTime && `Lock: ${lockDownTime}`}
         </Typography>
         <Typography
-          variant='overline'
+          variant="overline"
           color={amount.gt(max) ? "error" : COLOR.text}
           fontSize={10}
           fontWeight={700}
@@ -120,7 +121,7 @@ export default function AmountInput({
         </Typography>
       </Box>
       <PrimaryButton
-        size='large'
+        size="large"
         fullWidth
         disabled={disabled || amount.lte(0) || amount.gt(max)}
         onClick={onSubmit}

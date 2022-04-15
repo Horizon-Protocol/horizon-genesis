@@ -30,12 +30,13 @@ export default function Earned({ token, earned }: Props) {
   );
 
   const countUpRef = useRef<HTMLElement>(null);
-  useCountUp({
+  const { start } = useCountUp({
     ref: countUpRef,
     end,
     decimals: 2,
     duration: 1,
   });
+  useEffect(start, [end, start]);
 
   const handleHarvest = useCallback(async () => {
     if (stakingContract) {

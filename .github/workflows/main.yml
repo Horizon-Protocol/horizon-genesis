@@ -22,9 +22,12 @@ jobs:
       - uses: actions/cache@v2
         id: yarn-cache
         with:
-          path: ${{ steps.yarn-cache-dir-path.outputs.dir }}
           key: ${{ runner.os }}-yarn-${{ hashFiles('**/yarn.lock') }}
+          path: |
+            ${{ steps.yarn-cache-dir-path.outputs.dir }}
+            node_modules
       - name: Install dependencies
+        if: steps.yarn-cache.outputs.cache-hit != 'true'
         run: yarn install --frozen-lockfile
 
   build:
@@ -49,11 +52,17 @@ jobs:
       - uses: actions/cache@v2
         id: yarn-cache
         with:
-          path: ${{ steps.yarn-cache-dir-path.outputs.dir }}
           key: ${{ runner.os }}-yarn-${{ hashFiles('**/yarn.lock') }}
-      - name: Install dependencies
-        run: yarn install --frozen-lockfile
+          path: |
+            ${{ steps.yarn-cache-dir-path.outputs.dir }}
+            node_modules
+      - uses: actions/cache@v2
+        id: build-cache
+        with:
+          key: genesis-build-${{ matrix.type[0] }}-${{ github.event.pull_request.head.sha }}
+          path: dist
       - name: Build Bundle
+        if: steps.build-cache.outputs.cache-hit != 'true'
         run: yarn build
         env:
           VITE_APP_CHAIN_ID: ${{ matrix.type[0] }}
@@ -69,16 +78,11 @@ jobs:
           AWS_REGION: ap-southeast-1
           SOURCE_DIR: dist
 
-  notify:
-    runs-on: ubuntu-latest
-    needs: build
-
-    steps:
-      - name: Bark Notification
+      - name: Send Notification
         uses: lxzxl/bark-action@2.0.2
         with:
           host: https://bark.etcd.run
           key: ${{ secrets.BARK_KEY }} # Your secret key
-          title: "[Horizon] Genesis"
+          title: "Horizon | Genesis"
           body: "Mainnet"
           category: Horizon

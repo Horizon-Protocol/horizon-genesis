@@ -36,7 +36,7 @@
     "pretty-ms": "^7.0.1",
     "react": "^17.0.0",
     "react-compound-timer": "^1.2.0",
-    "react-countup-es": "^4.4.3",
+    "react-countup": "^6.2.0",
     "react-dom": "^17.0.0",
     "react-ga": "^3.3.0",
     "react-hotjar": "^3.0.1",

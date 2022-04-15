@@ -1,8 +1,8 @@
-import { useCallback, useState, useMemo } from "react";
+import { useCallback, useState, useMemo, useRef, useEffect } from "react";
 import { Box, Typography } from "@mui/material";
 import { alpha } from "@mui/material/styles";
 import { useSnackbar } from "notistack";
-import CountUp from "react-countup-es";
+import { useCountUp } from "react-countup";
 import { CARD_CONTENT, COLOR } from "@utils/theme/constants";
 import useRefreshEarn from "@hooks/useRefreshEarn";
 import PrimaryButton from "@components/PrimaryButton";
@@ -28,6 +28,14 @@ export default function Earned({ token, earned }: Props) {
     () => parseFloat(formatNumber(earned).replace(/,/g, "")),
     [earned]
   );
+
+  const countUpRef = useRef<HTMLElement>(null);
+  useCountUp({
+    ref: countUpRef,
+    end,
+    decimals: 2,
+    duration: 1,
+  });
 
   const handleHarvest = useCallback(async () => {
     if (stakingContract) {
@@ -68,29 +76,17 @@ export default function Earned({ token, earned }: Props) {
           HZN EARNED
         </Typography>
 
-        <CountUp
-          start={0}
-          end={end}
-          delay={0.1}
-          duration={end === 0 ? 0 : 2}
-          decimals={2}
-          preserveValue
-          // separator=','
-        >
-          {({ countUpRef }) => (
-            <Typography
-              ref={countUpRef}
-              variant="body1"
-              paddingRight={8}
-              fontSize={24}
-              fontFamily="Rawline"
-              fontWeight={500}
-              textOverflow="ellipsis"
-              overflow="hidden"
-              color={earned.isZero() ? undefined : COLOR.safe}
-            />
-          )}
-        </CountUp>
+        <Typography
+          ref={countUpRef}
+          variant="body1"
+          paddingRight={8}
+          fontSize={24}
+          fontFamily="Rawline"
+          fontWeight={500}
+          textOverflow="ellipsis"
+          overflow="hidden"
+          color={earned.isZero() ? undefined : COLOR.safe}
+        />
       </Box>
       <PrimaryButton
         loading={loading}

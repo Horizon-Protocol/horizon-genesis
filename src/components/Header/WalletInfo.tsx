@@ -30,7 +30,6 @@ export default function WalletInfo(props: BoxProps) {
         sx={{
           color: COLOR.text,
           p: "4px 0px 4px 12px",
-          // border: "1px solid rgba(55,133,185,0.25)",
           backgroundColor: 'rgba(16, 38, 55, 0.3)',
           height:'36px'
         }}

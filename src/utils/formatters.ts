@@ -34,5 +34,5 @@ export const formatPrice = (value: number, format: numbro.Format = {}) => {
 };
 
 export const formatAddress = (address: string, startsize = 2, endsize = 4) => {
-  return `${address.slice(0, startsize)}...${address.slice(-endsize)}`;
+  return `${address.slice(0, startsize)}...${address.slice(-endsize)}`.toLowerCase();
 };

@@ -20,13 +20,14 @@ export default function MenuItem({
       alignItems="center"
       justifyContent="space-between"
       letterSpacing="0.5px"
-      color="text.primary"
-      bgcolor={COLOR_BG_40}
+      color={COLOR.text}
+      bgcolor='rgb(16,38,55)'
       borderRadius={1}
       sx={{
         cursor: "pointer",
         opacity: isLink ? 0.5 : 1,
         ":hover": {
+          color: COLOR.safe,
           bgcolor: COLOR_BG,
           opacity: 1,
         },

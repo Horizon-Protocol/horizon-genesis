@@ -104,7 +104,14 @@ export default function useReponsiveChart(
             //     }
             // });
             // chartInstanceRef.current = chart;
-
+            chart.applyOptions({
+                handleScale: {
+                    axisPressedMouseMove: {
+                        time: true,
+                        price: false,
+                    },
+                },
+            });
             onReady?.(chart, chartRef.current)
         }
     }, [onReady, chartRef])

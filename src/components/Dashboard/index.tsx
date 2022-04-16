@@ -134,11 +134,7 @@ export default function Dashboard(props: BoxProps) {
               height='50px'
               title='HZN STAKING APY'
               desc={<>
-                {stakingAPR * 100 && isEstimateAPR ? (
-                  <Typography variant='overline' gutterBottom>
-                    &#8776;{" "}
-                  </Typography>
-                ) : null}
+                {stakingAPR * 100 && isEstimateAPR ? '≈' : null}
                 <span>{stakingAPR * 100 ? formatNumber(stakingAPR * 100) : "--"}</span>%
               </>}
               bgcolor='rgba(16, 38, 55, 0.3)'

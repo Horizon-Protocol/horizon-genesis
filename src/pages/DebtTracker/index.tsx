@@ -3,12 +3,11 @@ import DebtOverview from "@components/Record/Debt/DebtOverview";
 import useReponsiveChart from "@hooks/useReponsiveChart";
 import { Box, Typography } from "@mui/material";
 import { BarPrice, BusinessDay, IChartApi, ISeriesApi, LineData, LineSeriesPartialOptions, MouseEventParams, Point, PriceFormat, WhitespaceData } from "lightweight-charts";
-import { padStart, values } from "lodash";
+import { first, maxBy, minBy, padStart, values } from "lodash";
 import { COLOR } from "@utils/theme/constants";
 import { formatFiatCurrency, formatNumber } from "@utils/number";
 import { useState } from "react";
 import dayjs from "dayjs";
-import { time } from "console";
 import GlobalPortfolio from "./GlobalPortfolio";
 import YourPortfolio from "./YourPortfolio";
 import { useEffect } from "react";
@@ -16,6 +15,7 @@ import { globalDebtAtom, historicalActualDebtAtom, historicalIssuedDebtAtom } fr
 import { useAtomValue } from "jotai/utils";
 import useWallet from "@hooks/useWallet";
 import { debtAtom } from "@atoms/debt";
+import { sortBy } from "lodash"
 
 interface ToolTipCellPros {
     color: string;
@@ -231,10 +231,80 @@ export default function DebtTracker() {
     const globalDebt = useAtomValue(globalDebtAtom)
     const { debtBalance } = useAtomValue(debtAtom);
 
+     
+    const EmptyActiveIsuuedDebtData: () => LineData[] = () => {
+        let emptyData:LineData[] = []
+        for (let i = 0; i < 30; i++) {
+            const temp = (new Date()).getTime()
+            const today = dayjs(new Date())
+            const targetDay = today.subtract(i, 'day')
+            emptyData.push({
+                time: targetDay.format("YYYY-MM-DD"),
+                value: 0,
+            })
+        }
+        return emptyData.reverse()
+    }
+
+    const setSeriesData = (series: ISeriesApi<"Line"> | null, data: LineData[]) => {
+        // console.log('beforeData',data)
+
+        if (data.length <= 0) return
+        //get maximum and minimum
+        console.log("maximumdata",data)
+        let maximumValue = Number((maxBy(data, 'value') as LineData).value)
+        let minimumValue = Number((minBy(data, 'value') as LineData).value)
+        if (maximumValue == 0 && minimumValue == 0){
+            maximumValue = 100;
+        }
+        series?.applyOptions({
+            ...series.options,
+            autoscaleInfoProvider: () => ({
+                priceRange: {
+                    minValue: minimumValue,
+                    maxValue: maximumValue,
+                },
+                margins: {
+                    above: 0,
+                    below: 0,
+                },
+            }),
+        })
+        //fill the empty date data from the first date to today
+        //dayjs today
+        let todayDate = dayjs(new Date())
+        //dayjs the first day
+        let firstTime = ((data[0] as LineData).time as string)
+        let firstDate = dayjs(firstTime)
+        //duration day
+        const totolDay = todayDate.diff(firstDate,'day') + 1
+        const fullyData: LineData[] = []
+        let preValue: number = 0
+        for (let i = 0;i < totolDay;i++){
+            const targetDate = firstDate.add(i, 'day')
+            const targetDateFormat = targetDate.format("YYYY-MM-DD")
+            const dataItem = data.find(item => dayjs(item.time as string).format("YYYY-MM-DD") == targetDateFormat)
+            if (dataItem) {
+                preValue = dataItem.value
+                fullyData.push(dataItem)
+            }else{
+                fullyData.push({
+                    time: targetDateFormat,
+                    value: preValue
+                })
+            }
+        }
+        // console.log('fullyData',fullyData)
+        series?.setData(fullyData)
+    }
+
     useEffect(() => {
-        // console.log("historicalActualDebt",historicalActualDebt)
-        if (historicalActualDebt?.length) {
-            const actualRows: (LineData | WhitespaceData)[] = []
+        let seriesData:LineData[] = []
+        //zero month data
+        if (historicalActualDebt == undefined || historicalActualDebt.length <= 0){
+            seriesData = EmptyActiveIsuuedDebtData()
+        }else {
+            const actualRows: LineData[] = []
             for (let i = historicalActualDebt.length - 1; i >= 0; i--) {
                 var debt = historicalActualDebt[i]
                 const time = dayjs.unix(Number(debt.timestamp)).format("YYYY-MM-DD")
@@ -250,15 +320,18 @@ export default function DebtTracker() {
                 time: dayjs.unix(Number(new Date().getTime() / 1000)).format("YYYY-MM-DD"),
                 value: Number(debtBalance)
             })
-            // console.log("actualRows", actualRows)
-            acitveDebtLineSeries?.setData(tmp)
+            seriesData = tmp
         }
+        setSeriesData(acitveDebtLineSeries, seriesData)
     }, [historicalActualDebt, acitveDebtLineSeries,debtBalance])
 
     useEffect(() => {
-        console.log("historicalIssuedDebt", historicalIssuedDebt)
-        if (historicalIssuedDebt?.length) {
-            const issuedRows: (LineData | WhitespaceData)[] = []
+        let seriesData:LineData[] = []
+        //zero month data
+        if (historicalActualDebt == undefined || historicalActualDebt.length <= 0){
+            seriesData = EmptyActiveIsuuedDebtData()
+        }else {
+            const issuedRows:LineData[] = []
             for (let i = historicalIssuedDebt.length - 1; i >= 0; i--) {
                 var debt = historicalIssuedDebt[i]
                 const time = dayjs.unix(Number(debt.timestamp)).format("YYYY-MM-DD")
@@ -269,14 +342,14 @@ export default function DebtTracker() {
                     })
                 }
             }
-            // console.log("issuedRows", issuedRows)
-            isuuedDebtLineSeries?.setData(issuedRows.reverse())
+            seriesData = issuedRows.reverse()
         }
+        setSeriesData(isuuedDebtLineSeries,seriesData)
     }, [historicalIssuedDebt, acitveDebtLineSeries, isuuedDebtLineSeries])
 
     useEffect(() => {
         if (globalDebt?.length) {
-            const globalRows: (LineData | WhitespaceData)[] = []
+            const globalRows:LineData[] = []
             for (let i = globalDebt?.length - 1; i >= 0; i--) {
                 var gdebt = globalDebt[i]
                 const time = dayjs.unix(Number(gdebt.id)).format("YYYY-MM-DD")
@@ -287,7 +360,16 @@ export default function DebtTracker() {
                     })
                 }
             }
-            globalDebtLineSeries?.setData(globalRows)
+            console.log('globalRows',globalRows)
+            setSeriesData(globalDebtLineSeries, globalRows)
+            // setSeriesData(globalDebtLineSeries, [
+            //     { time: '2022-04-06', value: 13.78 },
+            //     { time: '2022-04-09', value: 18.78 },
+            //     { time: '2022-04-12', value: 20.78 },
+            //     { time: '2022-04-13', value: 15.78 },
+            //     { time: '2022-04-15', value: 55.78 },
+            //     { time: '2022-04-16', value: 25.78 },
+            // ])
         }
     }, [globalDebt, globalDebtLineSeries])
 

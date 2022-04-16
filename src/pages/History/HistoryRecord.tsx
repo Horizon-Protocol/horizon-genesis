@@ -46,7 +46,7 @@ export default function HistoryRecord() {
   const historicalIsLoading = useAtomValue(historicalIsLoadingAtom)
 
   const [page, setPage] = useState(0);
-  const [rowsPerPage, setRowsPerPage] = useState(5);
+  const [rowsPerPage, setRowsPerPage] = useState(10);
 
   const historicalOperationData = useAtomValue(historicalOperationAtom);
   const [historyType, setHistoryType] = useState<HistoryType>(HistoryType.All);

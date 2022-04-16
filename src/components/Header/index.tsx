@@ -1,4 +1,4 @@
-import { Box, Grid, Hidden } from "@mui/material";
+import { Box, Grid, Hidden, useMediaQuery } from "@mui/material";
 import ConnectButton from "@components/ConnectButton";
 import useWallet from "@hooks/useWallet";
 import NavTabs from "./NavTabs";
@@ -9,9 +9,13 @@ import { useAtom } from "jotai";
 import LogoMenu from "./LogoMenu";
 import HelpMenu from "./HelpMenu";
 import RefreshButton from "./RefreshButton";
+import { useTheme } from "@mui/material/styles";
 
 export default function Header() {
   const { connected } = useWallet();
+
+  const { breakpoints } = useTheme();
+  const needWrap = useMediaQuery(breakpoints.down("md"));
 
   return (
     <>
@@ -21,8 +25,7 @@ export default function Header() {
         flexWrap='wrap'
         sx={{
           "&.MuiGrid-container": {
-            padding: '25px 30px 0 30px', // 16px
-            // borderBottom: "1px solid #11263B",
+            padding: '25px 30px 0 30px',
           },
         }}
       >
@@ -81,17 +84,19 @@ export default function Header() {
               <WalletInfo />
             </>
           ) : (
+            <Box sx={{width: '163px !important', height: '36px'}}>
             <ConnectButton
               sx={{
                 px: 2,
                 py: 0,
-                height: 32,
+                height:"36px",             
                 display: "flex",
                 alignItems: "center",
                 fontSize: 12,
                 lineHeight: "22px",
               }}
             />
+            </Box>
           )}
         </Grid>
       </Grid>

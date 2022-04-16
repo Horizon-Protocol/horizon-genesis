@@ -322,7 +322,9 @@ export default function DebtTracker() {
             })
             seriesData = tmp
         }
-        setSeriesData(acitveDebtLineSeries, seriesData)
+        if (connected){
+            setSeriesData(acitveDebtLineSeries, seriesData)
+        }
     }, [historicalActualDebt, acitveDebtLineSeries,debtBalance])
 
     useEffect(() => {
@@ -344,7 +346,9 @@ export default function DebtTracker() {
             }
             seriesData = issuedRows.reverse()
         }
-        setSeriesData(isuuedDebtLineSeries,seriesData)
+        if (connected){
+            setSeriesData(isuuedDebtLineSeries,seriesData)
+        }
     }, [historicalIssuedDebt, acitveDebtLineSeries, isuuedDebtLineSeries])
 
     useEffect(() => {
@@ -360,16 +364,8 @@ export default function DebtTracker() {
                     })
                 }
             }
-            console.log('globalRows',globalRows)
+            // console.log('globalRows',globalRows)
             setSeriesData(globalDebtLineSeries, globalRows)
-            // setSeriesData(globalDebtLineSeries, [
-            //     { time: '2022-04-06', value: 13.78 },
-            //     { time: '2022-04-09', value: 18.78 },
-            //     { time: '2022-04-12', value: 20.78 },
-            //     { time: '2022-04-13', value: 15.78 },
-            //     { time: '2022-04-15', value: 55.78 },
-            //     { time: '2022-04-16', value: 25.78 },
-            // ])
         }
     }, [globalDebt, globalDebtLineSeries])
 

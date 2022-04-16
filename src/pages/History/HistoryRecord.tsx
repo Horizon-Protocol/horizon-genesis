@@ -223,10 +223,6 @@ export default function HistoryRecord() {
     },
   ];
 
-  useEffect(()=>{
-    // alert(historicalIsLoading)
-  },[])
-
   return (
     <Box>
       <NoRowsOverlay

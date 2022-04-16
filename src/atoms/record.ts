@@ -22,6 +22,6 @@ export const tokenSaleEscrowAtom = atomWithReset<TokenSaleEscrowProps | null>(nu
 
 export const historicalIssuedDebtAtom = atomWithReset<HistoricalDebtAndIssuanceData[]>([])
 export const historicalActualDebtAtom = atomWithReset<HistoricalActualDebtData[]>([])
-export const historicalOperationAtom = atomWithReset<HistoricalOperationData[]>([])
+export const historicalOperationAtom = atomWithReset<HistoricalOperationData[] | null>(null)
 export const historicalIsLoadingAtom = atomWithReset<boolean>(true)
 export const historicalClaimHZNAndZUSDAtom = atomWithReset<HistoricalClaimHZNAndZusdData[]>([])

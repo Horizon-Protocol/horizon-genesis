@@ -1,5 +1,5 @@
-import { Box, BoxProps } from "@mui/material";
-import { useEffect, useState } from "react";
+import { Box, BoxProps, TextFieldProps } from "@mui/material";
+import { useState } from "react";
 import AdapterDateFns from '@mui/lab/AdapterDateFns';
 import LocalizationProvider from '@mui/lab/LocalizationProvider';
 import DateRangePicker, { DateRange } from '@mui/lab/DateRangePicker';
@@ -9,7 +9,6 @@ import { styled } from "@mui/material/styles";
 import SvgIcon from "@mui/material/SvgIcon";
 import ArrowBackIosNewIcon from '@mui/icons-material/ArrowBackIosNew';
 import ArrowForwardIosIcon from '@mui/icons-material/ArrowForwardIos';
-import { MuiTextFieldProps } from "@mui/lab/internal/pickers/PureDateInput";
 import "./dateStyle.css";
 
 const Img = styled("img")``;
@@ -84,7 +83,12 @@ export default function DateRangeSelection({dateRangeValue, selectDateRange, ...
                 okText={''}
                 showToolbar={false}
                 onChange={selectDateRange}
-                renderInput={(startProps: MuiTextFieldProps, endProps: MuiTextFieldProps) => {
+                // renderInput={(props) => (
+                //     <TextField {...props} helperText="valid mask" />
+                //   )}
+                renderInput={(startProps: TextFieldProps, endProps: TextFieldProps) => {
+                    console.log('renderInput',props)
+                    // startProps, endProps
                     return (
                         <Box onClick={() => {
                             setOpen(!open)

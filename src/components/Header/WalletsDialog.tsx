@@ -50,7 +50,7 @@ const StyledListItemText = styled(ListItemText)({
   ".MuiListItemText-primary": {
     textAlign: "center",
     fontWeight: 500,
-    textTransform: "lowercase",
+    textTransform: "uppercase",
   },
 });
 
@@ -129,7 +129,7 @@ export default function WalletsDialog(
           sx={{
             fontSize: "20px",
             fontWeight: 600,
-            textTransform: "lowercase",
+            textTransform: "uppercase",
             lineHeight: "28px",
           }}
         >

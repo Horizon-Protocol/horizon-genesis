@@ -27,8 +27,7 @@ export default function MenuItem({
         cursor: "pointer",
         opacity: isLink ? 0.5 : 1,
         ":hover": {
-          // color: COLOR.safe,
-          bgcolor: COLOR_BG,
+          color: COLOR.safe,
           opacity: 1,
         },
         ":hover *": {

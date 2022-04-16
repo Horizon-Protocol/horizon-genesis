@@ -31,7 +31,8 @@ export default function WalletInfo(props: BoxProps) {
           color: COLOR.text,
           p: "4px 0px 4px 12px",
           backgroundColor: 'rgba(16, 38, 55, 0.3)',
-          height:'36px'
+          height:'36px',
+          textTransform: "lowercase",
         }}
         startIcon={
           <Avatar

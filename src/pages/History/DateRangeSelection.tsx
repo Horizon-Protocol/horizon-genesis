@@ -83,9 +83,6 @@ export default function DateRangeSelection({dateRangeValue, selectDateRange, ...
                 okText={''}
                 showToolbar={false}
                 onChange={selectDateRange}
-                // renderInput={(props) => (
-                //     <TextField {...props} helperText="valid mask" />
-                //   )}
                 renderInput={(startProps: TextFieldProps, endProps: TextFieldProps) => {
                     console.log('renderInput',props)
                     // startProps, endProps

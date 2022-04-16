@@ -3,13 +3,10 @@ import { useAtomValue } from "jotai/utils";
 import { Box, BoxProps, Typography } from "@mui/material";
 import { alpha } from "@mui/material/styles";
 import { CARD_CONTENT, COLOR } from "@utils/theme/constants";
-import { Token, TokenShortName, TokenName } from "@utils/constants";
+import { TokenShortName, TokenName } from "@utils/constants";
 import { formatNumber } from "@utils/number";
 import { formatPrice } from "@utils/formatters";
-import { getApy } from "@utils/apy";
-import { hznRateAtom } from "@atoms/exchangeRates";
-import { tokenPriceAtomFamily } from "@atoms/staker/price";
-import { poolStateAtomFamily } from "@atoms/staker/pool";
+import { farmInfoFamilyAtom } from "@atoms/staker/farm";
 
 const ItemProps: BoxProps = {
   p: "4px 0",
@@ -25,73 +22,48 @@ export default function Stats({
   token: TokenEnum;
   finished?: boolean;
 }) {
-  const hznRate = useAtomValue(hznRateAtom);
-  const stakeTokenPrice = useAtomValue(tokenPriceAtomFamily(token));
-  const { totalStaked, rewardsPerBlock, isRoundActive } = useAtomValue(
-    poolStateAtomFamily(token)
-  );
+  const farmInfo = useAtomValue(farmInfoFamilyAtom(token));
 
   const priceUSD = useMemo(
-    () => formatPrice(stakeTokenPrice, { mantissa: 4 }),
-    [stakeTokenPrice]
+    () => formatPrice(farmInfo.price, { mantissa: 4 }),
+    [farmInfo.price]
   );
-
-  const apy = useMemo(() => {
-    if (!isRoundActive) {
-      return 0;
-    }
-
-    if (token === Token.HZN) {
-      return getApy(1, 1, totalStaked, rewardsPerBlock);
-    }
-
-    const hznPrice = hznRate.toNumber();
-
-    return getApy(stakeTokenPrice, hznPrice, totalStaked, rewardsPerBlock);
-  }, [
-    isRoundActive,
-    token,
-    stakeTokenPrice,
-    hznRate,
-    totalStaked,
-    rewardsPerBlock,
-  ]);
 
   return (
     <Box p={CARD_CONTENT.padding}>
       {!finished && (
         <Box {...ItemProps}>
           <Typography
-            variant='body1'
+            variant="body1"
             color={alpha(COLOR.text, 0.5)}
             fontSize={14}
           >
             APY
           </Typography>
           <Typography
-            variant='body1'
+            variant="body1"
             fontSize={14}
             fontWeight={700}
-            fontFamily='Rawline'
+            fontFamily="Rawline"
             color={COLOR.safe}
           >
-            {apy ? `${formatNumber(apy)} %` : "- -"}
+            {farmInfo.apy ? `${formatNumber(farmInfo.apy)} %` : "- -"}
           </Typography>
         </Box>
       )}
       {!finished && (
         <Box {...ItemProps}>
           <Typography
-            variant='body1'
+            variant="body1"
             color={alpha(COLOR.text, 0.5)}
             fontSize={14}
           >
             {TokenName[token]} Value
           </Typography>
           <Typography
-            variant='body1'
+            variant="body1"
             fontSize={14}
-            fontFamily='Rawline'
+            fontFamily="Rawline"
             color={COLOR.text}
           >
             ${priceUSD}
@@ -100,21 +72,21 @@ export default function Stats({
       )}
       <Box {...ItemProps}>
         <Typography
-          variant='body1'
+          variant="body1"
           color={alpha(COLOR.text, 0.5)}
           fontSize={14}
         >
           Total Staked
         </Typography>
         <Typography
-          variant='body1'
+          variant="body1"
           fontSize={14}
-          fontFamily='Rawline'
+          fontFamily="Rawline"
           color={COLOR.text}
         >
-          {formatNumber(totalStaked)}
+          {formatNumber(farmInfo.totalStaked)}
           <Typography
-            component='span'
+            component="span"
             fontSize={14}
             color={alpha(COLOR.text, 0.5)}
           >

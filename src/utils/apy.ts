@@ -1,4 +1,4 @@
-import { BLOCKS_PER_YEAR } from "@utils/constants";
+import { BLOCKS_PER_YEAR, BSC_BLOCK_TIME } from "@utils/constants";
 
 /**
  * Get the APY value in %
@@ -11,28 +11,19 @@ import { BLOCKS_PER_YEAR } from "@utils/constants";
 export const getApy = (
   stakingTokenPrice: number,
   rewardTokenPrice: number,
-  totalStaked: BN,
-  rewardsPerBlock: BN
+  totalStaked: number,
+  rewardsPerSecond: number
 ): number => {
-  // console.log({
-  //   stakingTokenPrice,
-  //   rewardTokenPrice,
-  //   totalStaked: utils.formatEther(totalStaked),
-  //   rewardsPerBlock: utils.formatEther(rewardsPerBlock),
-  // });
-  const totalRewardPricePerYear = rewardsPerBlock
-    .multipliedBy(BLOCKS_PER_YEAR)
-    .multipliedBy(rewardTokenPrice);
+  const totalRewardPricePerYear =
+    rewardsPerSecond * BSC_BLOCK_TIME * BLOCKS_PER_YEAR * rewardTokenPrice;
 
-  const totalStakingTokenInPool = totalStaked.multipliedBy(stakingTokenPrice);
+  const totalStakingTokenInPool = totalStaked * stakingTokenPrice;
 
-  if (totalStakingTokenInPool.eq(0)) {
+  if (!totalStakingTokenInPool) {
     return 0;
   }
-  const apyPercent = totalRewardPricePerYear
-    .div(totalStakingTokenInPool)
-    .multipliedBy(100);
+  const apyPercent = (100 * totalRewardPricePerYear) / totalStakingTokenInPool;
   // console.log("apy:", apy.toString(), formatBalance(apy));
 
-  return apyPercent.toNumber();
+  return apyPercent;
 };

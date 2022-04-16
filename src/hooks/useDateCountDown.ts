@@ -1,7 +1,6 @@
 import { useEffect, useMemo } from "react";
 import { useTimer } from "react-compound-timer";
-import differenceInMilliseconds from "date-fns/differenceInMilliseconds";
-import isDate from "date-fns/isDate";
+import { differenceInMilliseconds, isDate } from "date-fns";
 
 const DAY_MILLI_SECONDS = 1000 * 3600 * 24;
 const MINUTE_MILLI_SECONDS = 1000 * 60;

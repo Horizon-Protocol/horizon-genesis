@@ -1,11 +1,11 @@
 declare module "@horizon-protocol/data" {
-  var graphAPIEndpoints: {
+  const graphAPIEndpoints: {
     hzn: string;
     rates: string;
     liquidations: string;
   };
 
-  var pageResults: <T>(params: {
+  const pageResults: <T>(params: {
     api: string;
     max?: number;
     query: {
@@ -147,6 +147,6 @@ declare module "@horizon-protocol/data" {
     ): Promise<FlaggedAccounts[]>;
   }
 
-  var hzn: HZN;
-  var liquidations: Liquidations;
+  const hzn: HZN;
+  const liquidations: Liquidations;
 }

@@ -4,7 +4,7 @@
 export type { Erc20 } from "./Erc20";
 export type { HZN } from "./HZN";
 export type { Staking } from "./Staking";
-
+export * as factories from "./factories";
 export { Erc20__factory } from "./factories/Erc20__factory";
 export { HZN__factory } from "./factories/HZN__factory";
 export { Staking__factory } from "./factories/Staking__factory";

@@ -1,6 +1,6 @@
 import { useCallback, useEffect, useMemo } from "react";
 import { Box, BoxProps, Typography } from "@mui/material";
-import { useSetState } from "ahooks";
+import useSetState, { SetState } from "ahooks/es/useSetState";
 import numbro from "numbro";
 import { toBN } from "@utils/number";
 import { COLOR } from "@utils/theme/constants";
@@ -45,11 +45,7 @@ export interface TokenPairProps {
   toToken: TokenProps;
   arrowImg?: string;
   state: InputState;
-  setState: (
-    patch:
-      | Partial<InputState>
-      | ((prevState: InputState) => Partial<InputState>)
-  ) => void;
+  setState: SetState<InputState>;
 }
 
 /**

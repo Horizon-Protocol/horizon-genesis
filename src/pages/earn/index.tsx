@@ -12,7 +12,8 @@ import some from "lodash/some";
 import values from "lodash/values";
 import StakeCard from "@components/StakeCard";
 import { COLOR } from "@utils/theme/constants";
-import useFetchPrice from "@hooks/staker/useFetchPrice";
+import useFetchFarms from "@hooks/staker/useFetchFarms";
+import useFetchMarketPrices from "@hooks/staker/useFetchMarketPrices";
 import { AllPools } from "./utils";
 
 const toggleSx = {
@@ -28,7 +29,8 @@ const toggleSx = {
 } as const;
 
 export default function Home() {
-  useFetchPrice();
+  useFetchFarms();
+  useFetchMarketPrices();
 
   const [showFinish, setShowFinish] = useState(false);
   const [finishAlert, setFinishAlert] = useState<{
@@ -58,22 +60,22 @@ export default function Home() {
 
   return (
     <Box
-      p='0 24px'
-      display='flex'
-      flexWrap='wrap'
-      justifyContent='center'
-      alignItems='flex-start'
+      p="0 24px"
+      display="flex"
+      flexWrap="wrap"
+      justifyContent="center"
+      alignItems="flex-start"
     >
       <Box
-        width='100%'
+        width="100%"
         mb={2}
-        display='flex'
-        flexDirection='column'
-        alignItems='center'
+        display="flex"
+        flexDirection="column"
+        alignItems="center"
       >
         <Badge
           invisible={!hasAnyFinishAlert}
-          overlap='circular'
+          overlap="circular"
           badgeContent={
             <PriorityHigh
               sx={{
@@ -96,7 +98,7 @@ export default function Home() {
           }}
         >
           <ToggleButtonGroup
-            color='primary'
+            color="primary"
             value={showFinish}
             exclusive
             onChange={handleChange}
@@ -130,9 +132,9 @@ export default function Home() {
           <Typography
             mt={3}
             fontSize={14}
-            fontWeight='bold'
-            color='#FA2256'
-            letterSpacing='0.5px'
+            fontWeight="bold"
+            color="#FA2256"
+            letterSpacing="0.5px"
           >
             These pools are no longer active. Please unstake your tokens.
           </Typography>

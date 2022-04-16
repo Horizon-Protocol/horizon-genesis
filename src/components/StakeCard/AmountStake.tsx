@@ -3,13 +3,13 @@ import { Box, Button, Collapse, Typography } from "@mui/material";
 import { alpha } from "@mui/material/styles";
 import { useSnackbar } from "notistack";
 import { useAtomValue } from "jotai/utils";
+import { farmInfoFamilyAtom, userFarmInfoFamilyAtom } from "@atoms/staker/farm";
 import { Action, TokenName } from "@utils/constants";
 import { CARD_CONTENT, COLOR } from "@utils/theme/constants";
 import useRefresh from "@hooks/useRefreshEarn";
 import useTokenAllowance from "@hooks/useAllowance";
 import useStaking from "@hooks/staker/useStaking";
 import PrimaryButton from "@components/PrimaryButton";
-import { poolStateAtomFamily } from "@atoms/staker/pool";
 import { BNToEther, toBN, zeroBN, formatNumber } from "@utils/number";
 import { getWalletErrorMsg } from "@utils/helper";
 import AmountInput from "./AmountInput";
@@ -66,8 +66,12 @@ export default function AmountStake({
   const { loading, needApprove, handleApprove, checkApprove } =
     useTokenAllowance(token);
 
-  const { lockDownSeconds, isRoundActive, available, staked, withdrawable } =
-    useAtomValue(poolStateAtomFamily(token));
+  const { lockDownSeconds, isRoundActive } = useAtomValue(
+    farmInfoFamilyAtom(token)
+  );
+  const { available, staked, withdrawable } = useAtomValue(
+    userFarmInfoFamilyAtom(token)
+  );
 
   const inputMax: BN = useMemo(() => {
     if (currentAction === Action.Stake) {

@@ -11,7 +11,10 @@ export enum Action {
 export enum Token {
   PHB = "PHB",
   PHB_LEGACY = "PHB Legacy",
+  WBNB = "WBNB",
+  BUSD = "BUSD",
   HZN = "HZN",
+  ZUSD = "zUSD",
   ZUSD_BUSD_LP = "zUSD-BUSD LP",
   HZN_BNB_LP = "HZN-BNB LP",
   HZN_BNB_LP_LEGACY = "HZN-BNB LP Legacy",
@@ -20,7 +23,10 @@ export enum Token {
 export const TokenName = {
   [Token.PHB]: "PHB",
   [Token.PHB_LEGACY]: "PHB",
+  [Token.WBNB]: "WBNB",
+  [Token.BUSD]: "BUSD",
   [Token.HZN]: "HZN",
+  [Token.ZUSD]: "zUSD",
   [Token.ZUSD_BUSD_LP]: "zUSD-BUSD",
   [Token.HZN_BNB_LP]: "HZN-BNB",
   [Token.HZN_BNB_LP_LEGACY]: "HZN-BNB",
@@ -29,7 +35,10 @@ export const TokenName = {
 export const TokenShortName = {
   [Token.PHB]: "PHB",
   [Token.PHB_LEGACY]: "PHB",
+  [Token.WBNB]: "WBNB",
+  [Token.BUSD]: "BUSD",
   [Token.HZN]: "HZN",
+  [Token.ZUSD]: "zUSD",
   [Token.ZUSD_BUSD_LP]: "LP",
   [Token.HZN_BNB_LP]: "LP",
   [Token.HZN_BNB_LP_LEGACY]: "LP",
@@ -102,7 +111,10 @@ export const TOKEN_ADDRESS: {
   56: {
     [Token.PHB]: "0x0409633A72D846fc5BBe2f98D88564D35987904D",
     [Token.PHB_LEGACY]: "0xdff88a0a43271344b760b58a35076bf05524195c",
+    [Token.WBNB]: "0xbb4cdb9cbd36b01bd1cbaebf2de08d9173bc095c",
+    [Token.BUSD]: "0xe9e7CEA3DedcA5984780Bafc599bD69ADd087D56",
     [Token.HZN]: "0xc0eff7749b125444953ef89682201fb8c6a917cd",
+    [Token.ZUSD]: "",
     [Token.ZUSD_BUSD_LP]: "0xc3bf4e0ea6b76c8edd838e14be2116c862c88bdf",
     [Token.HZN_BNB_LP]: "0xDc9a574b9B341D4a98cE29005b614e1E27430E74",
     // [Token.HZN_BNB_LP_DEPRECATED]: "0xf7fcd7e7b3853bf59bca9183476f218ed07ed3b0",
@@ -111,10 +123,13 @@ export const TOKEN_ADDRESS: {
   97: {
     [Token.PHB]: "0xf09f5e21f86692c614d2d7b47e3b9729dc1c436f",
     [Token.PHB_LEGACY]: "0xf09f5e21f86692c614d2d7b47e3b9729dc1c436f",
+    [Token.WBNB]: "0xae13d989daC2f0dEbFf460aC112a837C89BAa7cd",
+    [Token.BUSD]: "0xeD24FC36d5Ee211Ea25A80239Fb8C4Cfd80f12Ee",
     [Token.HZN]: "0xd582733b8ce3b84fcfad9373626c89c7d5606e30",
-    [Token.ZUSD_BUSD_LP]: "0x74ba52975dd4f0a9cde1b8d4d54b808ef9d0a3f8",
-    [Token.HZN_BNB_LP]: "0x74ba52975dd4f0a9cde1b8d4d54b808ef9d0a3f8",
-    [Token.HZN_BNB_LP_LEGACY]: "0x74ba52975dd4f0a9cde1b8d4d54b808ef9d0a3f8",
+    [Token.ZUSD]: "",
+    [Token.ZUSD_BUSD_LP]: "0x575Cb459b6E6B8187d3Ef9a25105D64011874820",
+    [Token.HZN_BNB_LP]: "0xdadd300a217603ad399c822919c7df1c9b682663",
+    [Token.HZN_BNB_LP_LEGACY]: "0xdadd300a217603ad399c822919c7df1c9b682663",
   },
 };
 
@@ -127,7 +142,10 @@ export const STAKING_CONTRACT_ADDRESS: {
   56: {
     [Token.PHB]: "0xa1771DCfb7822C8853D7E64B86E58f7f1eB5e33E",
     [Token.PHB_LEGACY]: "0xD4552F3e19B91BeD5EF2c76a67ABdbFfeD5caEEC",
+    [Token.WBNB]: "",
+    [Token.BUSD]: "",
     [Token.HZN]: "0x67D5a94F444DF4bBA254645065a4137fc665Bf98",
+    [Token.ZUSD]: "",
     [Token.ZUSD_BUSD_LP]: "0x5646aA2F9408C7c2eE1dC7db813C8B687A959a85",
     [Token.HZN_BNB_LP]: "0x84838d0AB37857fAd5979Fcf6BDDf8ddb1cC1dA8",
     // [Token.HZN_BNB_LP_DEPRECATED]: "0x56075e576E59B323E84348877655c56De7cfD6d8",
@@ -136,7 +154,10 @@ export const STAKING_CONTRACT_ADDRESS: {
   97: {
     [Token.PHB]: "0x04f8bd779921F3df6EF0E98e4D2fb00D77ae051B",
     [Token.PHB_LEGACY]: "0x04f8bd779921F3df6EF0E98e4D2fb00D77ae051B",
+    [Token.WBNB]: "",
+    [Token.BUSD]: "",
     [Token.HZN]: "0x19b0E3B2413104b48Dc543A036CF808D5Fcb9d6F",
+    [Token.ZUSD]: "",
     [Token.ZUSD_BUSD_LP]: "0x19b0E3B2413104b48Dc543A036CF808D5Fcb9d6F",
     [Token.HZN_BNB_LP]: "0x19b0E3B2413104b48Dc543A036CF808D5Fcb9d6F",
     [Token.HZN_BNB_LP_LEGACY]: "0x19b0E3B2413104b48Dc543A036CF808D5Fcb9d6F",

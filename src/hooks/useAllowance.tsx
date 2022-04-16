@@ -1,21 +1,30 @@
 import { useCallback, useState } from "react";
-import { useAtom } from "jotai";
+import { useAtomValue } from "jotai/utils";
+import { useQueryClient } from "react-query";
 import { useSnackbar } from "notistack";
+import { userFarmInfoFamilyAtom } from "@atoms/staker/farm";
 import { StakingAddresses, TokenAddresses } from "@utils/constants";
 import { BNToEther, etherToBN, toBN } from "@utils/number";
 import { getWalletErrorMsg } from "@utils/helper";
-import { poolStateAtomFamily } from "@atoms/staker/pool";
 import useWallet from "./useWallet";
 import { useERC20 } from "./useContract";
+import { CONTRACT } from "@utils/queryKeys";
 
 const minAllowance = toBN(1_000_000);
 
 export default function useTokenAllowance(token: TokenEnum) {
   const { account } = useWallet();
   const [loading, setLoading] = useState<boolean>(false);
+  const queryClient = useQueryClient();
   const { enqueueSnackbar } = useSnackbar();
 
-  const [{ allowance }, setPoolState] = useAtom(poolStateAtomFamily(token));
+  const refreshFarms = useCallback(() => {
+    queryClient.refetchQueries([CONTRACT, "farms"], {
+      fetching: false,
+    });
+  }, [queryClient]);
+
+  const { allowance } = useAtomValue(userFarmInfoFamilyAtom(token));
 
   const tokenContract = useERC20(TokenAddresses[token], true);
 
@@ -29,7 +38,7 @@ export default function useTokenAllowance(token: TokenEnum) {
           ? minAllowance
           : totalBN;
         const tx = await tokenContract.approve(
-          StakingAddresses[token],
+          StakingAddresses[token]!,
           BNToEther(approveAmountBN)
         );
         enqueueSnackbar(
@@ -42,7 +51,7 @@ export default function useTokenAllowance(token: TokenEnum) {
         );
         const res = await tx.wait(1);
         console.log("approve", res);
-        setPoolState({ allowance: etherToBN(total) });
+        await refreshFarms();
       } catch (e: any) {
         enqueueSnackbar(getWalletErrorMsg(e), {
           variant: "error",
@@ -50,7 +59,7 @@ export default function useTokenAllowance(token: TokenEnum) {
       }
       setLoading(false);
     }
-  }, [account, tokenContract, token, enqueueSnackbar, setPoolState]);
+  }, [account, tokenContract, token, enqueueSnackbar, refreshFarms]);
 
   const checkApprove = useCallback(
     async (amount: BN) => {

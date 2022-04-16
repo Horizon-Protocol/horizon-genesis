@@ -1,6 +1,5 @@
-import format from "date-fns/format";
 import padStart from "lodash/padStart";
-import getISOWeeksInYear from "date-fns/getISOWeeksInYear";
+import { format, getISOWeeksInYear } from "date-fns";
 
 export const WEEKS_IN_YEAR = getISOWeeksInYear(new Date());
 

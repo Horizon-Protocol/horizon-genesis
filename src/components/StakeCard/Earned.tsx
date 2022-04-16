@@ -12,7 +12,7 @@ import useStaking from "@hooks/staker/useStaking";
 
 interface Props {
   token: TokenEnum;
-  earned: BN;
+  earned: number;
 }
 
 export default function Earned({ token, earned }: Props) {
@@ -86,13 +86,13 @@ export default function Earned({ token, earned }: Props) {
           fontWeight={500}
           textOverflow="ellipsis"
           overflow="hidden"
-          color={earned.isZero() ? undefined : COLOR.safe}
+          color={earned ? COLOR.safe : undefined}
         />
       </Box>
       <PrimaryButton
         loading={loading}
         size="large"
-        disabled={earned.lte(0)}
+        disabled={earned <= 0}
         onClick={handleHarvest}
       >
         Harvest

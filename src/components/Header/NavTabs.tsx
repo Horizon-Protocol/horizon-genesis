@@ -1,12 +1,14 @@
 import { useMemo } from "react";
 import { useLocation, useHistory } from "react-router-dom";
 import * as ReactGA from "react-ga";
-import { useAtomValue } from "jotai/utils";
-import { Badge, Tabs, Tab, TabProps } from "@mui/material";
+import { useAtomValue, useUpdateAtom } from "jotai/utils";
+import { Badge, Tabs, Tab, TabProps, Box } from "@mui/material";
 import { alpha, styled } from "@mui/material/styles";
 import { PriorityHigh } from "@mui/icons-material";
-import { PAGE_COLOR } from "@utils/theme/constants";
+import { COLOR_BG_40, COLOR_BG, PAGE_COLOR } from "@utils/theme/constants";
 import { hasRewardsAtom } from "@atoms/feePool";
+import path from "path/posix";
+import { openLinkDropDownAtom } from "@atoms/wallet";
 
 type StyledTabType = (props: TabProps) => JSX.Element;
 
@@ -22,7 +24,12 @@ interface StyledTabProps extends LinkTabProps {
 
 const tabs: LinkTabProps[] = [
   {
-    to: "/",
+    to: "/home",
+    label: "Home",
+    color: PAGE_COLOR.earn,
+  },
+  {
+    to: "/mint",
     label: "Mint",
     color: PAGE_COLOR.mint,
   },
@@ -48,29 +55,38 @@ const getStyledTab: (color: string) => unknown = (color) =>
     zIndex: 1,
     minHeight: 32,
     minWidth: 72,
-    padding: "4px 10px",
+    padding: "4px 12px",
     borderRadius: 1,
-    bgcolor: "transparent",
     ...typography.subtitle1,
     textTransform: "none",
-    letterSpacing: "0.57px",
+    letterSpacing: "1px",
     fontWeight: 500,
     overflow: "visible",
     ":hover": {
       color,
+      fontWeight: "bold",
+      backgroundColor: COLOR_BG,
+      height: "36px",
     },
     ":focus": {
-      color,
+      // color,
     },
-    "&.Mui-selected	": {
+    "&.MuiTab-root": {
+      color: "rgb(193, 211, 224,0.5)",
+      background: COLOR_BG_40,
+    },
+    "&.Mui-selected": {
       color,
-      textShadow: `0 0 4px ${alpha(color, 0.5)}`,
+      fontWeight: "bold",
+      backgroundColor: COLOR_BG,
+      height: "36px",
     },
   }));
 
 export default function NavTabs() {
   const history = useHistory();
   const { pathname } = useLocation();
+  const setOpenLinkDropDown = useUpdateAtom(openLinkDropDownAtom);
 
   const hasRewards = useAtomValue(hasRewardsAtom);
 
@@ -105,9 +121,9 @@ export default function NavTabs() {
       }}
       sx={{
         minHeight: 32,
+        height: 38,
         p: "1px",
         borderRadius: 1,
-        border: `1px solid rgba(55,133,185,0.25)`,
         overflow: "visible",
         ".MuiTabs-scroller": {
           overflow: "visible !important",
@@ -117,7 +133,7 @@ export default function NavTabs() {
           bottom: 0,
           height: "100%",
           borderRadius: 1,
-          backgroundColor: "#1A2E47",
+          backgroundColor: COLOR_BG,
         },
       }}
     >
@@ -129,22 +145,16 @@ export default function NavTabs() {
             hasAlert ? (
               <Badge
                 overlap="circular"
-                badgeContent={
-                  <PriorityHigh
-                    sx={{
-                      fontSize: 10,
-                    }}
-                  />
-                }
+                badgeContent={<Box />}
                 sx={{
                   ".MuiBadge-badge": {
                     display: "flex",
-                    minWidth: 16,
-                    width: 16,
-                    height: 16,
+                    minWidth: 12,
+                    width: 12,
+                    height: 12,
                     p: 0,
                     top: -6,
-                    right: -8,
+                    right: -0,
                     bgcolor: "#F5841F",
                     color: "white",
                   },

@@ -50,7 +50,7 @@ export default function AboveTarget({
       return {
         color: COLOR.danger,
         title: "Attention Required",
-        content: `Your account is flagged for liquidation. You have ${formatted} to clear this flag or you may be at risk of liquidation if your c-ratio drops below ${formatCRatioToPercent(
+        content: `Your account is still flagged for liquidation. You have ${formatted} to clear this flag or you may be at risk of liquidation if your c-ratio drops below ${formatCRatioToPercent(
           targetRatio
         )}%.`,
       };
@@ -70,7 +70,7 @@ export default function AboveTarget({
 
       const tx = await Liquidations.checkAndRemoveAccountInLiquidation(account);
       const res = await tx.wait(1);
-      console.log("res", res);
+      // console.log("res", res);
       refresh();
     } catch (e: any) {
       enqueueSnackbar(

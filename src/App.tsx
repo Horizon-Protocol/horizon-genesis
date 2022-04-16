@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import { Switch, Route } from "react-router-dom";
+import { Switch, Route, Redirect } from "react-router-dom";
 import * as ReactGA from "react-ga";
 import { hotjar } from "react-hotjar";
 import { useAtomValue } from "jotai/utils";
@@ -10,6 +10,7 @@ import {
   Button,
   Typography,
   BoxProps,
+  Container,
 } from "@mui/material";
 import { ExpandLess, ExpandMore } from "@mui/icons-material";
 import { useTheme } from "@mui/material/styles";
@@ -17,12 +18,13 @@ import { readyAtom } from "@atoms/app";
 import useSetupHorizonLib from "@hooks/useSetupHorizonLib";
 import useFetchAppData from "@hooks/useFetchAppData";
 import useFetchDebtData from "@hooks/useFetchDebtData";
-import useFetchZAssets from "@hooks/useFetchZAssets";
+import useFetchZAssetsBalance from "@hooks/useFetchZAssetsBalance";
 import useFetchFeePool from "@hooks/useFetchFeePool";
 import useFetchRewards from "@hooks/useFetchRewards";
 import useFetchHorizonData from "@hooks/useFetchHorizonData";
 import useRefresh from "@hooks/useRefresh";
 import useIsEarnPage from "@hooks/useIsEarnPage";
+import Home from "@pages/Home";
 import Mint from "@pages/mint";
 import Burn from "@pages/burn";
 import Claim from "@pages/claim";
@@ -31,6 +33,14 @@ import Header from "@components/Header";
 import Dashboard from "@components/Dashboard";
 import Alerts from "@components/Alerts";
 import AlertDashboard from "@components/Alerts/Dashboard";
+import Record from "@components/Record";
+import DebtTracker from "@pages/DebtTracker";
+import Escrow from "@pages/Escrow";
+import History from "@pages/History";
+import useQueryDebt from "@hooks/query/useQueryDebt";
+import useQueryGlobalDebt from "@hooks/query/useQueryGlobalDebt";
+import useEscrowDataQuery from "@hooks/Escrowed/useEscrowDataQuery";
+import dayjs from "dayjs";
 
 const AppDisabled = !!import.meta.env.VITE_APP_DISABLED;
 
@@ -44,6 +54,7 @@ if (import.meta.env.PROD) {
 function App() {
   const { breakpoints } = useTheme();
   const downMD = useMediaQuery(breakpoints.down("md"));
+  const downLG = useMediaQuery(breakpoints.down("lg"));
 
   const isEarnPage = useIsEarnPage();
 
@@ -52,12 +63,15 @@ function App() {
   const [expanded, setExpanded] = useState(false);
 
   useSetupHorizonLib();
+  useQueryDebt();
   useFetchAppData();
   useFetchDebtData();
-  useFetchZAssets();
+  useFetchZAssetsBalance();
   useFetchFeePool();
   useFetchRewards();
   useFetchHorizonData();
+  useEscrowDataQuery();
+  useQueryGlobalDebt();
 
   const refresh = useRefresh();
 
@@ -89,6 +103,16 @@ function App() {
       sm: 2,
       md: 0,
     },
+  };
+
+  const recordProps: BoxProps = {
+    mb: 0,
+    // bgcolor:'red',
+    right: 0,
+    top: 0,
+    position: downLG ? "static" : "absolute",
+    display: downLG ? "flex" : "block",
+    justifyContent: "space-around",
   };
 
   return (
@@ -129,6 +153,7 @@ function App() {
             <AlertDashboard {...alertProps} />
           </>
         )}
+        {!isEarnPage && downLG && <Record {...recordProps} />}
         <Box
           my={3}
           display="flex"
@@ -141,6 +166,7 @@ function App() {
           {!isEarnPage && (
             <Hidden lgDown>
               <Box
+                position="relative"
                 width="100%"
                 maxWidth={{
                   xs: 0,
@@ -148,7 +174,9 @@ function App() {
                   lg: 320,
                 }}
                 flexShrink={1}
-              />
+              >
+                <Record {...recordProps} />
+              </Box>
             </Hidden>
           )}
           <Box
@@ -178,13 +206,22 @@ function App() {
                 ? undefined
                 : {
                     xs: 480,
-                    sm: 600,
-                    lg: 640,
-                    xl: 640,
+                    sm: 640,
+                    // lg: 640,
+                    // xl: 640,
                   }
             }
           >
             <Switch>
+              <Route
+                exact
+                path="/"
+                render={() => <Redirect to="/home" push />}
+              />
+              {/* <CacheRoute path="/home"><Home /></CacheRoute> */}
+              <Route path="/home">
+                <Home />
+              </Route>
               <Route path="/burn">
                 <Burn />
               </Route>
@@ -194,32 +231,48 @@ function App() {
               <Route path="/earn">
                 <Earn />
               </Route>
-              <Route path="/">
+              <Route path="/mint">
                 <Mint />
+              </Route>
+              <Route path="/debtTracker">
+                <DebtTracker />
+              </Route>
+              <Route path="/escrow">
+                <Escrow />
+              </Route>
+              <Route path="/history">
+                <History />
               </Route>
             </Switch>
           </Box>
           {!isEarnPage && (
             <Box
-              pr={{
-                xs: 0,
-                sm: 0,
-                md: 1,
-                lg: 2,
-              }}
+              pr={
+                {
+                  // xs: 0,
+                  // sm: 0,
+                  // md: 1,
+                  // lg: 2,
+                }
+              }
               position={{
                 xs: "fixed",
+                sm: "fixed",
                 md: "static",
               }}
               left={0}
               right={0}
               bottom={0}
               zIndex={3}
-              width="100%"
-              maxWidth={{
+              width={{
                 xs: "100%",
+                sm: "100%",
                 md: 300,
-                lg: 320,
+              }}
+              minWidth={{
+                xs: "100%",
+                sm: "100%",
+                md: 300,
               }}
               maxHeight={{
                 xs: expanded ? "100%" : 170,

@@ -27,7 +27,7 @@ const toggleSx = {
   letterSpacing: "1px",
 } as const;
 
-export default function Home() {
+export default function Earn() {
   useFetchPrice();
 
   const [showFinish, setShowFinish] = useState(false);

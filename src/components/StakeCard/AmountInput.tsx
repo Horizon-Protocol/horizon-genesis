@@ -40,7 +40,7 @@ export default function AmountInput({
   const setMax = useCallback(() => {
     if (!amount.eq(max)) {
       maxRef.current = true;
-      onInput(formatNumber(max, { decimals: 6 }), true);
+      onInput(formatNumber(max, { mantissa: 6 }), true);
     }
   }, [amount, max, onInput]);
 

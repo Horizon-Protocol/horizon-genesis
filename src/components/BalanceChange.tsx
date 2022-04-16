@@ -20,6 +20,10 @@ export interface Props {
     from: BN;
     to: BN;
   };
+  escrowed: {
+    from: BN;
+    to: BN;
+  };
   gapImg?: string;
 }
 
@@ -29,13 +33,14 @@ export default function BalanceChange({
   debt,
   staked,
   transferrable,
+  escrowed,
   gapImg,
   ...props
 }: Props & BoxProps) {
   const data = useMemo(
     () => [
       {
-        label: "C-Ratio",
+        label: "Current C-Ratio",
         from: `${formatCRatioToPercent(cRatio.from)} %`,
         to: `${formatCRatioToPercent(cRatio.to)} %`,
       },
@@ -45,14 +50,19 @@ export default function BalanceChange({
         to: `$${formatNumber(debt.to)} zUSD`,
       },
       {
-        label: "Staked",
+        label: "Staked HZN",
         from: `${formatNumber(staked.from)} HZN`,
         to: `${formatNumber(staked.to)} HZN`,
       },
       {
-        label: "Transferrable",
+        label: "Transferrable HZN",
         from: `${formatNumber(transferrable.from)} HZN`,
         to: `${formatNumber(transferrable.to)} HZN`,
+      },
+      {
+        label: "Escrowed HZN",
+        from: `${formatNumber(escrowed.from)} HZN`,
+        to: `${formatNumber(escrowed.to)} HZN`,
       },
     ],
     [cRatio, debt, staked, transferrable]

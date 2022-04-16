@@ -28,9 +28,18 @@ export const secondsToTime = (seconds: number) => {
   )}`;
 };
 
+export const TimeToSecond = (date: Date) => {
+  // return Date.parse(date) / 1000;
+};
+
 export const toFutureDate = (seconds: number) => {
   return formatShortDateWithTime(
     new Date(new Date().getTime() + seconds * 1000)
   );
 };
-export const getCurrentTimestampSeconds = () => Date.now() / 1000;
+
+export const getTodayTimestampSeconds = () => Date.now() / 1000;
+
+export const secondsOfDays = (days: number) => {
+  return days * 24 * 60 * 60;
+}

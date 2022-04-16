@@ -67,11 +67,11 @@ jobs:
       - name: Upload to S3
         uses: jakejarvis/s3-sync-action@master
         with:
-          args: --acl public-read --follow-symlinks --delete
+          args: --follow-symlinks --delete
         env:
           AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
           AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
-          AWS_S3_BUCKET: horizon-genesis-dev
+          AWS_S3_BUCKET: horizon-genesis-v2
           AWS_REGION: ap-southeast-1
           SOURCE_DIR: dist
 

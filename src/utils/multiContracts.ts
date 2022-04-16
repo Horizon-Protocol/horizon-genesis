@@ -30,4 +30,3 @@ Object.values(Token).forEach((token) => {
   );
 });
 
-console.log("====tokenContractMap", tokenContractMap);

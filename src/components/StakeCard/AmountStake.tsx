@@ -115,7 +115,7 @@ export default function AmountStake({
         { variant: "info" }
       );
       const res = await tx.wait(1);
-      console.log("Stake:", res);
+      // console.log("Stake:", res);
       enqueueSnackbar(`Successfully staked ${formatNumber(amount)} ${token}`, {
         variant: "success",
       });
@@ -137,7 +137,7 @@ export default function AmountStake({
         { variant: "info" }
       );
       const res = await tx.wait(1);
-      console.log("Unstake:", res);
+      // console.log("Unstake:", res);
       enqueueSnackbar(
         `Successfully unstaked ${formatNumber(amount)} ${token}`,
         {
@@ -155,14 +155,14 @@ export default function AmountStake({
       if (token && stakingContract) {
         setSubmitting(true);
         if (finished && withdrawable.gt(0)) {
-          console.log("Unstake all", withdrawable.toNumber());
+          // console.log("Unstake all", withdrawable.toNumber());
           await handleUnstake(withdrawable);
         } else if (currentAction && amount.gt(0)) {
           if (currentAction === Action.Stake) {
-            console.log("Stake", amount.toNumber());
+            // console.log("Stake", amount.toNumber());
             await handleStake(amount);
           } else if (currentAction === Action.Unstake) {
-            console.log("Unstake", amount.toNumber());
+            // console.log("Unstake", amount.toNumber());
             await handleUnstake(amount);
           }
         }

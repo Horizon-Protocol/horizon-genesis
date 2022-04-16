@@ -5,8 +5,8 @@ interface Props {
   img?: string;
 }
 
-const gapSize = 12;
-const arrowSize = 50;
+const gapSize = 5;
+const arrowSize = 30;
 
 export default function InputGap({ img }: Props) {
   return (

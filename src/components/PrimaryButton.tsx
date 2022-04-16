@@ -4,6 +4,7 @@ import { COLOR } from "@utils/theme/constants";
 
 interface Props extends ButtonProps {
   loading?: boolean;
+  bgColor?: string;
 }
 
 export default function PrimaryButton({
@@ -11,6 +12,7 @@ export default function PrimaryButton({
   disabled,
   children,
   sx,
+  bgColor = COLOR.safe,
   ...props
 }: Props) {
   return (
@@ -23,17 +25,17 @@ export default function PrimaryButton({
         fontWeight: 700,
         color: "#1E1F25",
         borderRadius: 1,
-        background: COLOR.safe,
+        background: bgColor,
         boxShadow: "none",
         letterSpacing: "2px",
         whiteSpace: "nowrap",
         alignItems: "center",
         ":hover": {
-          background: alpha(COLOR.safe, 0.8),
+          background: alpha(bgColor, 0.8),
           color: "#1E1F25",
         },
         ":disabled": {
-          background: alpha(COLOR.safe, 0.2),
+          background: alpha(bgColor, 0.2),
           boxShadow: "none",
           color: "#1E1F25",
         },

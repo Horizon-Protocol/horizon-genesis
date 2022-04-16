@@ -1,5 +1,5 @@
 import { useCallback, useMemo, useState } from "react";
-import { Box } from "@mui/material";
+import { Box, Typography } from "@mui/material";
 import { ethers } from "ethers";
 import { useSnackbar } from "notistack";
 import { useAtomValue } from "jotai/utils";
@@ -8,19 +8,23 @@ import {
   rewardsAtom,
   nextClaimCountDownAtom,
   canClaimAtom,
+  nextClaimCountDownDurationAtom,
 } from "@atoms/feePool";
 import horizon from "@lib/horizon";
 import useWallet from "@hooks/useWallet";
-import { PAGE_COLOR } from "@utils/theme/constants";
+import { COLOR,PAGE_COLOR } from "@utils/theme/constants";
 import headerBg from "@assets/images/claim.svg";
 import PageCard from "@components/PageCard";
 import RewardCard from "@components/Claim/RewardCard";
 import InfoList, { Info } from "@components/InfoList";
 import PrimaryButton from "@components/PrimaryButton";
 import useRefresh from "@hooks/useRefresh";
-import { formatNumber } from "@utils/number";
+import { formatNumber, toBN, zeroBN } from "@utils/number";
 import { getWalletErrorMsg } from "@utils/helper";
 import { zAssets } from "@utils/zAssets";
+import { historicalClaimHZNAndZUSDAtom, historicalOperationAtom } from "@atoms/record";
+import { ratiosPercentAtom, targetRatioAtom } from "@atoms/app";
+import { secondsOfDays } from "@utils/date";
 
 const THEME_COLOR = PAGE_COLOR.claim;
 
@@ -28,35 +32,80 @@ export default function Claim() {
   const { connected } = useWallet();
 
   const { enqueueSnackbar } = useSnackbar();
+  const historicalClaim = useAtomValue(historicalClaimHZNAndZUSDAtom)
 
   const { escrowedReward } = useAtomValue(debtAtom);
-  const { stakingReward, exchangeReward } = useAtomValue(rewardsAtom);
+  const { stakingReward, exchangeReward, upcomingStakingReward, upcomingExchangeReward } = useAtomValue(rewardsAtom);
   const canClaim = useAtomValue(canClaimAtom);
+  const targetRatio = useAtomValue(targetRatioAtom);
+  const { currentCRatio } = useAtomValue(debtAtom);
+  const { targetCRatioPercent } = useAtomValue(ratiosPercentAtom);
+  const lifeTimeClaimed = useMemo(
+    () => {
+      let ltHZN = zeroBN
+      let ltzUSD = zeroBN 
+      historicalClaim.forEach(element => {
+        ltHZN = ltHZN.plus(element.rewards)
+        ltzUSD = ltzUSD.plus(element.value)
+      });
+      return ({
+        ltHZN,
+        ltzUSD
+      })
+    },
+    [historicalClaim]
+  );
+
+  const ableToClaim = useMemo(()=>{
+    // console.log("ableToClaim", {
+    //   currentCRatio: formatNumber(currentCRatio),
+    //   targetRatio: formatNumber(targetRatio)
+    // })
+    if (currentCRatio.gt(targetRatio)){
+      return false
+    }else{
+      return canClaim
+    }
+  },[canClaim,targetRatio])
 
   const currentTotalRewards = useMemo(
+    // dayjs.duration()
     () => stakingReward.plus(exchangeReward),
     [stakingReward, exchangeReward]
   );
 
   const nextClaimCountDown = useAtomValue(nextClaimCountDownAtom);
 
+  const nextClaimCountDownDuration = useAtomValue(nextClaimCountDownDurationAtom);
+  const warning = useMemo(()=>{
+    if (0 < nextClaimCountDownDuration && nextClaimCountDownDuration < secondsOfDays(2)){
+      return true
+    }
+    return false
+  },[nextClaimCountDownDuration])
+
   const infoList: Info[] = [
     {
-      label: "Next Reward Claim Period",
+      label: "Next Reward Claim",
       value: nextClaimCountDown,
     },
     {
-      label: "Claim Period Ends",
+      label: "Current Claim Period Ends",
       value: nextClaimCountDown,
+      warning: warning,
     },
     {
-      label: "Total Rewards this Period",
-      value: `${formatNumber(currentTotalRewards)} HZN`,
+      label: "Lifetime Claimed Rewards",
+      value: `${formatNumber(lifeTimeClaimed.ltHZN)} HZN / ${formatNumber(lifeTimeClaimed.ltzUSD)} zUSD`,
     },
-    {
-      label: "Total Claimed Rewards",
-      value: `${formatNumber(escrowedReward)} HZN`,
-    },
+    // {
+    //   label: "Total Rewards this Period",
+    //   value: `${formatNumber(currentTotalRewards)} HZN`,
+    // }, 
+    // {
+    //   label: "Total Claimed Rewards",
+    //   value: `${formatNumber(escrowedReward)} HZN`,
+    // },
     // {
     //   label: "Lifetime Rewards",
     //   value: "0.00 HZN",
@@ -96,18 +145,57 @@ export default function Claim() {
         </>
       }
     >
+      <Typography sx={{
+        width: "100%",
+        textAlign: "center",
+        fontWeight: "bold",
+        fontSize: "12px",
+        mb: "10px"
+      }}>
+        CLAIMABLE REWARDS
+      </Typography>
       <Box display='flex' justifyContent='space-between'>
-        <RewardCard label='Staking Rewards' amount={stakingReward} />
+        <RewardCard label='STAKING REWARDS' amount={stakingReward} />
         <RewardCard
-          label='Exchange Rewards'
+          label='EXCHANGE REWARDS'
           amount={exchangeReward}
           token={zAssets.zUSD}
-          disabled
-          help={
-            <>
-              Available when <br /> Horizon Exchange launches
-            </>
-          }
+        />
+      </Box>
+      <Typography sx={{
+        width: "100%",
+        textAlign: "center",
+        fontWeight: "bold",
+        fontSize: "12px",
+        mt:"20px",
+        mb:"10px"
+      }}>
+        UPCOMING REWARDS
+      </Typography>
+      <Box display='flex' justifyContent='space-between'>
+        <RewardCard
+        height={87}
+        upcoming={true} 
+        label={<><Box
+        component="span"
+           sx={{
+             fontSize: 7,
+              color:COLOR.text, 
+             opacity:.5
+        }}>ESTIMATED</Box><br />STAKING REWARDS</>}
+        amount={upcomingStakingReward} />
+        <RewardCard
+          height={87}
+          upcoming={true} 
+          label={<><Box
+            component="span"
+               sx={{
+                 fontSize: 7,
+                  color:COLOR.text, 
+                 opacity:.5
+            }}>ACCRUED</Box><br />EXCHANGE REWARDS</>}
+          amount={upcomingExchangeReward}
+          token={zAssets.zUSD}
         />
       </Box>
       <Box mt={3}>
@@ -117,13 +205,25 @@ export default function Claim() {
         {connected && (
           <PrimaryButton
             loading={loading}
-            disabled={!canClaim}
+            disabled={!ableToClaim}
             size='large'
             fullWidth
             onClick={handleClaim}
           >
             Claim Now
           </PrimaryButton>
+        )}
+        {currentCRatio.gt(targetRatio) && (
+          <Typography sx={{
+            mt:'10px',
+            textAlign:'center',
+            color:'#FA2256',
+            fontSize:"12px",
+            letterSpacing:'0.5px',
+            lineHeight:"14px"
+          }}>
+          You need to restore your C-Ratio back to {targetCRatioPercent}%<br/>
+          before you can claim your rewards.</Typography>
         )}
       </Box>
     </PageCard>

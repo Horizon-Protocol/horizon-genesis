@@ -41,7 +41,7 @@ export default function useTokenAllowance(token: TokenEnum) {
           { variant: "info" }
         );
         const res = await tx.wait(1);
-        console.log("approve", res);
+        // console.log("approve", res);
         setPoolState({ allowance: etherToBN(total) });
       } catch (e: any) {
         enqueueSnackbar(getWalletErrorMsg(e), {
@@ -55,7 +55,7 @@ export default function useTokenAllowance(token: TokenEnum) {
   const checkApprove = useCallback(
     async (amount: BN) => {
       if (allowance && amount.lte(allowance)) {
-        console.log("already approved", allowance.toString());
+        // console.log("already approved", allowance.toString());
         return;
       }
 

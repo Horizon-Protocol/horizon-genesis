@@ -1,3 +1,6 @@
+import { HelpOutline } from "@mui/icons-material";
+import { ReactComponent as ClaimbleTip } from "@assets/images/claimbleTip.svg";
+
 import {
   Box,
   BoxProps,
@@ -5,11 +8,13 @@ import {
   ListItem,
   ListItemIcon,
   ListItemText,
+  SvgIcon,
 } from "@mui/material";
 
 export interface Info {
   label: string;
   value: string | JSX.Element;
+  warning?: boolean;  // if left under 2 days, show the red warning
 }
 
 interface Props {
@@ -28,24 +33,39 @@ export default function InfoList({ data, ...props }: Props & BoxProps) {
       {...props}
     >
       <List dense disablePadding>
-        {data.map(({ label, value }) => (
+        {data.map(({ label, value, warning = false }) => (
           <ListItem
             key={label}
             disableGutters
             sx={{
-              p: 0,
+              fontSize: '14px',
+              p: "2px 0px",
+              color: warning ? "#FA2256" : "#B4E0FF"
             }}
           >
-            <ListItemIcon sx={{ color: "#5897C1", fontSize: 14 }}>
+            <ListItemIcon sx={{ color: "#B4E0FF", fontSize: '14px', opacity: .5 }}>
               {label}
             </ListItemIcon>
             <ListItemText
-              primary={value}
+              // primary={value}
               sx={{
+                fontSize: '12px',
                 textAlign: "right",
-                color: "#88ABC3",
+                color: "#B4E0FF",
               }}
             />
+            {value}
+            {warning &&
+              <SvgIcon
+                sx={{
+                  ml: '4px',
+                  height: "10px",
+                  width:'10px',
+                }}
+              >
+                <ClaimbleTip />
+              </SvgIcon>
+            }
           </ListItem>
         ))}
       </List>

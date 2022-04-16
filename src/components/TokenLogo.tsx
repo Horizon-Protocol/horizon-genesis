@@ -12,9 +12,10 @@ export default function TokenLogo({ token = Token.HZN, logo }: Props) {
 
   return (
     <Box
-      width={50}
-      height={50}
+      width={32}
+      height={32}
       display='flex'
+      // marginTop="18px"
       flexDirection='column'
       justifyContent='center'
       alignItems='center'

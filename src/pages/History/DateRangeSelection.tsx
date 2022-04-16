@@ -10,6 +10,7 @@ import SvgIcon from "@mui/material/SvgIcon";
 import ArrowBackIosNewIcon from '@mui/icons-material/ArrowBackIosNew';
 import ArrowForwardIosIcon from '@mui/icons-material/ArrowForwardIos';
 import "./dateStyle.css";
+import { MuiTextFieldProps } from "@mui/lab/internal/pickers/PureDateInput";
 
 const Img = styled("img")``;
 
@@ -83,7 +84,7 @@ export default function DateRangeSelection({dateRangeValue, selectDateRange, ...
                 okText={''}
                 showToolbar={false}
                 onChange={selectDateRange}
-                renderInput={(startProps, endProps) => {
+                renderInput={(startProps: MuiTextFieldProps, endProps: MuiTextFieldProps) => {
                     return (
                         <Box onClick={() => {
                             setOpen(!open)

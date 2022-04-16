@@ -61,7 +61,7 @@ export interface TokenPairProps {
  */
 export const formatInputValue = (inputValue: string): string => {
   if (toBN(inputValue).lt(0)) {
-    // console.log("not enough", inputValue);
+    console.log("not enough", inputValue);
     return "0";
   }
   return (

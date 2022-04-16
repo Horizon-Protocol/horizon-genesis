@@ -8,7 +8,6 @@ import {
   SortedAscendingIcon,
   ColumnSelectorIcon,
 } from "@components/TableSortIcon";
-import iconNoTransaction from "@assets/wallets/no-transaction.svg";
 import Pagination from "@components/Pagination";
 import TypeCell from "./TypeCell";
 import ActionLink from "@components/Alerts/ActionLink";
@@ -19,11 +18,10 @@ import { useAtomValue } from "jotai/utils";
 import { historicalIsLoadingAtom, historicalOperationAtom, HistoryType } from "@atoms/record";
 import dayjs from "dayjs";
 import { formatNumber } from "@utils/number";
-import { HistoricalOperationData } from "@hooks/query/useQueryDebt";
-import { DateRange } from "@mui/lab/DateRangePicker/RangeTypes";
 import { BlockExplorer } from "@utils/helper";
 import { hznRateAtom } from "@atoms/exchangeRates";
 import useWallet from "@hooks/useWallet";
+import { DateRange } from "@mui/lab";
 
 interface HistoryDataProps {
   id: string;
@@ -195,8 +193,6 @@ export default function HistoryRecord() {
             </Box>
             <br />
             </>}
-            
-            
             {value.value}
             <Box component="span" sx={{ ml: "4px", opacity: 0.5 }}>
               zUSD

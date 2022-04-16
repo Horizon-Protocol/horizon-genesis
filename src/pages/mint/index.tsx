@@ -250,10 +250,10 @@ export default function Mint() {
 
   return (
     <PageCard
-      mx='auto'
+      mx="auto"
       color={THEME_COLOR}
       headerBg={headerBg}
-      title='Mint'
+      title="Mint"
       description={
         <>
           Mint zUSD by staking your HZN. <br />
@@ -281,7 +281,7 @@ export default function Mint() {
           <PrimaryButton
             loading={loading}
             disabled={mintDisabled}
-            size='large'
+            size="large"
             fullWidth
             onClick={handleMint}
           >

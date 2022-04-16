@@ -8,7 +8,7 @@ import {
 declare global {
   type CurrencyKey = ICurrencyKey;
   type Synth = ISynth;
-  type Synths = ISynths;
+  type Synths = typeof ISynths;
   type Token = IToken;
 }
 

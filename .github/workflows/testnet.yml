@@ -56,7 +56,7 @@ jobs:
       - uses: actions/cache@v2
         id: build-cache
         with:
-          key: genesis-build-97-${{ github.event.pull_request.head.sha }}
+          key: genesis-build-97-${{ github.sha }}
           path: dist
       - name: Build Bundle
         if: steps.build-cache.outputs.cache-hit != 'true'

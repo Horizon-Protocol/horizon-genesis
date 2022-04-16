@@ -1,6 +1,6 @@
 import { useCallback, useEffect, useMemo } from "react";
 import { Box, BoxProps, Typography } from "@mui/material";
-import { useSetState } from "ahooks";
+import useSetState, { SetState } from "ahooks/es/useSetState";
 import numbro from "numbro";
 import { toBN } from "@utils/number";
 import { COLOR } from "@utils/theme/constants";
@@ -45,11 +45,7 @@ export interface TokenPairProps {
   toToken: TokenProps;
   arrowImg?: string;
   state: InputState;
-  setState: (
-    patch:
-      | Partial<InputState>
-      | ((prevState: InputState) => Partial<InputState>)
-  ) => void;
+  setState: SetState<InputState>;
 }
 
 /**
@@ -61,7 +57,7 @@ export interface TokenPairProps {
  */
 export const formatInputValue = (inputValue: string): string => {
   if (toBN(inputValue).lt(0)) {
-    // console.log("not enough", inputValue);
+    console.log("not enough", inputValue);
     return "0";
   }
   return (
@@ -75,8 +71,12 @@ export const formatInputValue = (inputValue: string): string => {
 };
 
 export const isExceedMax = (stringAmount: string, max?: BN) => {
+  console.log('isExceedMax',{
+    stringAmount: stringAmount.toString(),
+    max: max?.toString()
+  })
   if (stringAmount && max) {
-    return toBN(stringAmount).gt(max);
+    return Number(toBN(stringAmount).toFixed(6)) > Number((max.toFixed(6)));
   }
   return false;
 };
@@ -93,7 +93,10 @@ export default function TokenPair({
     (input, isMax = false) => {
       const { toPairInput, max } = fromToken;
       const stringAmount = (isMax ? max?.toString() : input) || "";
-      // console.log("setFromInput", isMax, input, stringAmount);
+      // console.log("setFromInput", {
+      //   input: formatInputValue(stringAmount),
+      //   inputto: formatInputValue(toPairInput(stringAmount))
+      // });
       setState(() => ({
         fromInput: stringAmount && formatInputValue(stringAmount),
         toInput: stringAmount && formatInputValue(toPairInput(stringAmount)),
@@ -116,16 +119,14 @@ export default function TokenPair({
     (input, isMax = false) => {
       const { toPairInput, max } = toToken;
       const { max: maxFrom } = fromToken;
-      const stringAmount = (isMax ? max?.toString() : input) || "";
-      // console.log("setToInput", isMax, input, stringAmount);
-      const fromStringAmount = toPairInput(stringAmount);
+      const stringToAmount = (isMax ? max?.toString() : input) || "";
+      // console.log("setToInput", isMax, input, stringToAmount);
+      const fromStringAmount = toPairInput(stringToAmount);
       setState(() => ({
-        toInput: stringAmount && formatInputValue(stringAmount),
-        fromInput: stringAmount && formatInputValue(fromStringAmount),
+        toInput: stringToAmount && formatInputValue(stringToAmount),
+        fromInput: stringToAmount && formatInputValue(fromStringAmount),
         isMax,
-        error: isExceedMax(fromStringAmount, maxFrom)
-          ? "Insufficient balance"
-          : "",
+        error: isExceedMax(fromStringAmount, maxFrom) ? "Insufficient balance" : "",
       }));
     },
     [setState, fromToken, toToken]
@@ -138,12 +139,11 @@ export default function TokenPair({
   return (
     <Box {...props}>
       <Typography
-        minHeight={24}
+        minHeight={20}
         color={COLOR.danger}
-        fontSize={10}
+        fontSize={12}
         fontWeight={500}
-        letterSpacing="0.36px"
-        lineHeight="14px"
+        letterSpacing="0.5px"
         textAlign="center"
       >
         {state.error}

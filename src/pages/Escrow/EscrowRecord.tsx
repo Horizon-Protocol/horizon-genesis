@@ -1,59 +1,62 @@
 import { Box, BoxProps, TableCellProps, Typography } from "@mui/material";
-import Table from "@mui/material/Table";
-import TableBody from "@mui/material/TableBody";
-import TableCell from "@mui/material/TableCell";
-import TableContainer from "@mui/material/TableContainer";
-import TableHead from "@mui/material/TableHead";
-import TablePagination from "@mui/material/TablePagination";
-import TableRow from "@mui/material/TableRow";
 import { useState } from "react";
-import { COLOR, COLOR_BG_30 } from "@utils/theme/constants";
+import { COLOR } from "@utils/theme/constants";
 import Pagination from "@components/Pagination";
-import { DataGrid, GridColDef } from "@mui/x-data-grid";
+import { GridColDef } from "@mui/x-data-grid";
 import CustomDataGrid from "@components/CustomDataGrid";
 import {
   SortedDescendingIcon,
   SortedAscendingIcon,
   ColumnSelectorIcon,
 } from "@components/TableSortIcon";
-import iconNoTransaction from "@assets/wallets/no-transaction.svg";
 import NoRowsOverlay from "@components/NoRowsOverlay";
 import { useAtomValue } from "jotai/utils";
 import { rewardsEscrowAtom } from "@atoms/record";
-import { formatNumber } from "@utils/number";
+import { BNWithDecimals, formatNumber } from "@utils/number";
 import dayjs from "dayjs";
 
 interface RowsData {
   id?: string;
-  claimDate: string;
-  unlockDate: string;
-  amount: string | JSX.Element;
+  claimDate?: number;
+  unlockDate?: number;
+  amount?: number ;
 }
 
-function createData(
-  claimDate: string,
-  unlockDate: string,
-  amount: string | JSX.Element
-): RowsData {
-  return { claimDate, unlockDate, amount };
-}
+// function createData(
+//   claimDate: string,
+//   unlockDate: string,
+//   amount?: number
+// ): RowsData {
+//   return { claimDate, unlockDate, amount };
+// }
 
 export default function EscrowRecord() {
   const [page, setPage] = useState(0);
   const [rowsPerPage, setRowsPerPage] = useState(5);
 
   const rewardsEscrow = useAtomValue(rewardsEscrowAtom);
-  const rows = rewardsEscrow?.schedule
+  // const rows = rewardsEscrow?.schedule
+  //   ? rewardsEscrow?.schedule?.map((item, index) => {
+  //       return {
+  //         id: formatNumber(item.entryID),
+  //         unlockDate: dayjs(Number(item.endTime) * 1000).format(
+  //           "MMM DD, YYYY hh:mm"
+  //         ),
+  //         claimDate: dayjs(Number(item.endTime) * 1000)
+  //           .subtract(52, "w")
+  //           .format("MMM DD, YYYY hh:mm"),
+  //         // amount: formatNumber(BNWithDecimals(item.escrowAmount)),
+  //         amount: item.escrowAmount,
+  //       };
+  //     })
+  //   : [];
+    const rows = rewardsEscrow?.schedule
     ? rewardsEscrow?.schedule?.map((item, index) => {
         return {
-          id: formatNumber(item.entryID),
-          unlockDate: dayjs(Number(item.endTime) * 1000).format(
-            "DD/MM/YYYY hh:mm"
-          ),
-          claimDate: dayjs(Number(item.endTime) * 1000)
-            .subtract(52, "w")
-            .format("DD/MM/YYYY hh:mm"),
-          amount: formatNumber(item.escrowAmount),
+          id: item.entryID,
+          unlockDate: item.endTime,
+          claimDate: item.endTime,
+          amount: item.escrowAmount,
         };
       })
     : [];
@@ -76,7 +79,7 @@ export default function EscrowRecord() {
       width: 190,
       editable: false,
       headerAlign: "left",
-      renderCell({ value, row }) {
+      renderCell({ value }) {
         return (
           <Typography
             sx={{
@@ -85,7 +88,7 @@ export default function EscrowRecord() {
               color: COLOR.text,
             }}
           >
-            {value}
+            {dayjs(Number(value) * 1000).subtract(52, "w").format("MMM DD, YYYY hh:mm")}
           </Typography>
         );
       },
@@ -96,7 +99,7 @@ export default function EscrowRecord() {
       width: 140,
       editable: false,
       headerAlign: "left",
-      renderCell({ value, row }) {
+      renderCell({ value }) {
         return (
           <Typography
             sx={{
@@ -105,7 +108,7 @@ export default function EscrowRecord() {
               color: COLOR.safe,
             }}
           >
-            {value}
+            {dayjs(Number(value) * 1000).format("MMM DD, YYYY hh:mm")}
           </Typography>
         );
       },
@@ -115,6 +118,7 @@ export default function EscrowRecord() {
       headerName: "Amount",
       type: "number",
       width: 130,
+      sortable: true,
       editable: false,
       headerAlign: "right",
       renderCell({ value, row }) {
@@ -126,7 +130,7 @@ export default function EscrowRecord() {
               color: COLOR.text,
             }}
           >
-            {value}
+            {formatNumber(value)}
             <span
               style={{
                 marginLeft: "4px",

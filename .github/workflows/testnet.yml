@@ -56,7 +56,7 @@ jobs:
       - uses: actions/cache@v2
         id: build-cache
         with:
-          key: genesis-build-97-${{ github.event.pull_request.head.sha }}
+          key: genesis-build-97-${{ github.sha }}
           path: dist
       - name: Build Bundle
         if: steps.build-cache.outputs.cache-hit != 'true'
@@ -75,11 +75,14 @@ jobs:
           AWS_REGION: ap-southeast-1
           SOURCE_DIR: dist
 
-      - name: Send Notification
-        uses: lxzxl/bark-action@2.0.2
+      - name: Notify Telegram
+        uses: appleboy/telegram-action@master
         with:
-          host: https://bark.etcd.run
-          key: ${{ secrets.BARK_KEY }} # Your secret key
-          title: "Horizon | Genesis"
-          body: "Public Testnet"
-          category: Horizon
+          to: ${{ secrets.TG_DEV_CHAN_ID }}
+          token: ${{ secrets.TG_DEV_BOT_TOKEN }}
+          format: markdown
+          message: |
+            *Genesis | Testnet*
+
+            ${{ github.repository }}
+            `${{ github.actor }}` ${{ github.event.commits[0].message }}

@@ -94,6 +94,16 @@ export function waitForGlobal(
 }
 
 export function getWalletErrorMsg(e: any, defaultMsg = "Operation Failed") {
+  console.log('getWalletErrorMsg',e)
+
+  if (isString(e?.data?.message)) {
+    return e.data.message;
+  }
+
+  if (isString(e?.data?.error)) {
+    return e.data.error;
+  }
+
   // Binance Wallet
   if (isString(e?.error)) {
     return e.error;

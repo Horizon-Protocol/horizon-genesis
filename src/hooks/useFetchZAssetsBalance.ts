@@ -1,7 +1,7 @@
 import { useQuery } from "react-query";
 import { useAtomValue, useResetAtom, useUpdateAtom } from "jotai/utils";
 import { BigNumber, ethers } from "ethers";
-import erc20Abi from "@abis/erc20.json";
+import erc20Abi from "@contracts/abis/Erc20.json";
 import useWallet from "@hooks/useWallet";
 import { toBN, zeroBN } from "@utils/number";
 import { zAssetsBalanceAtom, ZAssetsBalance, zUSDBalanceAtom, zAssetsBalanceInfoAtom } from "@atoms/balances";

@@ -56,7 +56,7 @@ export default function useFetchExchangeRates() {
 
   useQuery([CONTRACT, PUBLIC, "exchangeRates"], fetcher, {
     onSuccess(rates) {
-      console.log("====rates", rates);
+      // console.log("====rates", rates);
       setRates(rates);
     },
   });

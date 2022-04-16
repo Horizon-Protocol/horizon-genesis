@@ -5,7 +5,7 @@ import { ethers } from "ethers";
 import horizon from "@lib/horizon";
 import { rewardsAtom, resetAtom } from "@atoms/feePool";
 import { CONTRACT } from "@utils/queryKeys";
-import { etherToBN, formatNumber } from "@utils/number";
+import { etherToBN, formatNumber, toBN } from "@utils/number";
 import useWallet from "./useWallet";
 import useDisconnected from "./useDisconnected";
 
@@ -49,7 +49,6 @@ export default function useFetchRewards() {
       formatNumber(etherToBN(periodFees[0][1])),
       formatNumber(etherToBN(periodFees[1][0])),
       formatNumber(etherToBN(periodFees[1][1])),
-      // periodFees: formatNumber(etherToBN(periodFees[0][0]))
     ])
     return result
   }, [account]);

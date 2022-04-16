@@ -32,16 +32,18 @@ export default function PresetCRatioOption({
       sx={{
         fontSize: 13,
         width: {
-          xs: "30%",
-          sm: 150,
+          xs: "32%",
+          sm: 152,
         },
         borderRadius: 1,
         flexDirection: "column",
         alignItems: "stretch",
-        bgcolor: "#0A1624",
+        bgcolor: "rgba(8, 12, 22, 0.3)",
         overflow: "hidden",
-        opacity: disabled ? 0.2 : 1,
-        cursor: disabled ? "not-allowed" : "pointer",
+        opacity: disabled ? 0.2 : active ? 1 : 0.75,
+        cursor: disabled ? "not-allowed !important" : "pointer",
+        pointerEvents: "all !important",
+        ":hover": {opacity: disabled ? 0.2 : 1}
       }}
       {...props}
     >
@@ -49,15 +51,18 @@ export default function PresetCRatioOption({
         component='span'
         lineHeight='24px'
         bgcolor={({ palette }) =>
-          active ? color : alpha(palette.divider, 0.5)
+          active ? color : "#102637"
         }
-        color={!disabled && active ? "#0A1624" : "#62B5DB"}
-        fontSize={13}
+        color={!disabled && active ? "#0A1624" : "rgba(180, 224, 255, 0.5)"}
+        fontSize={{
+          xs: '10px',
+          md: '12px'
+        }}
         fontWeight={{
           xs: 400,
           sm: 700,
         }}
-        letterSpacing='0.43px'
+        letterSpacing='1px'
         sx={{
           textTransform: "uppercase",
         }}
@@ -75,28 +80,38 @@ export default function PresetCRatioOption({
         justifyContent='center'
         alignItems='center'
         flexDirection={{
-          xs: "column",
+          xs: "row",
           sm: "row",
         }}
       >
         <Box
           component='span'
-          color={!disabled && active ? color : "#6E89A6"}
+          color={!disabled && active ? color : "rgba(180, 224, 255, 1)"}
           // fontFamily: "Rawline",
-          fontSize={22}
-          letterSpacing='0.92px'
+          fontSize={{
+            xs:'18px',
+            md:'24px'
+          }}
+          letterSpacing='0.5px'
           lineHeight='30px'
+          fontFamily='Rawline'
+          marginTop={-0.625}
         >
           {percent.toFixed(0)}%
         </Box>
         <Box
           component='span'
           ml={1}
-          color={!disabled && active ? color : "#6E89A6"}
-          fontSize={12}
+          color={!disabled && active ? color : "rgba(180, 224, 255, 1)"}
+          fontSize={{
+            xs:'10px',
+            md:'12px'
+          }}
           letterSpacing='0.5px'
           lineHeight='14px'
           whiteSpace='nowrap'
+          fontFamily='Raleway'
+          textAlign='left'
         >
           Target <br /> C-Ratio
         </Box>

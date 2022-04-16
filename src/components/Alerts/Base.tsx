@@ -25,7 +25,7 @@ export default function BaseAlert({
       display='flex'
       borderRadius='4px'
       borderTop={`2px solid ${baseColor}`}
-      bgcolor='rgba(16, 38, 55, 0.3)'
+      bgcolor={COLOR.bgColor}
       color={baseColor}
       {...props}
     >
@@ -47,8 +47,9 @@ export default function BaseAlert({
         <Typography
           marginTop={0.5}
           fontSize={12}
-          lineHeight='18px'
+          lineHeight='16px'
           color='text.secondary'
+          letterSpacing='.5px'
         >
           {content}
         </Typography>

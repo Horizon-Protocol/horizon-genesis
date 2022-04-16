@@ -1,10 +1,8 @@
 import { useState, useEffect, useMemo } from "react";
 import { Contract, ContractInterface } from "ethers";
-import erc20Abi from "@abis/erc20.json";
-import hznAbi from "@abis/HZN.json";
-import { Erc20, HZN } from "@abis/types";
+import erc20Abi from "@contracts/abis/Erc20.json";
+import { Erc20 } from "@contracts/typings";
 import useWallet from "@hooks/useWallet";
-import { TokenAddresses, Token } from "@utils/constants";
 import useRpcProvider from "./useRpcProvider";
 
 const useContract = <T>(
@@ -41,26 +39,6 @@ export const useRpcContract = <T>(address: string, abi: ContractInterface) => {
 
 export const useERC20 = (address: string, writable = false) => {
   return useContract<Erc20>(address, erc20Abi, writable);
-};
-
-export const usePHB = (writable = false) => {
-  return useERC20(TokenAddresses[Token.PHB], writable);
-};
-
-export const useHZN = (writable = false) => {
-  return useContract<HZN>(TokenAddresses[Token.HZN], hznAbi, writable);
-};
-
-export const useZUSDLP = (writable = false) => {
-  return useERC20(TokenAddresses[Token.ZUSD_BUSD_LP], writable);
-};
-
-export const useLP = (writable = false) => {
-  return useERC20(TokenAddresses[Token.HZN_BNB_LP], writable);
-};
-
-export const useLegacyLP = (writable = false) => {
-  return useERC20(TokenAddresses[Token.HZN_BNB_LP_LEGACY], writable);
 };
 
 export default useContract;

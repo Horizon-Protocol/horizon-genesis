@@ -11,11 +11,6 @@ export default function useFetchHorizonData() {
   const fetcher = useCallback<QueryFunction>(async () => {
     const top1000Holders = await hznData.hzn.holders({ max: 1000 });
 
-    if (import.meta.env.DEV) {
-      console.log({
-        top1000Holders,
-      });
-    }
     setTop1000Holders(top1000Holders);
   }, [setTop1000Holders]);
 

@@ -4,6 +4,8 @@ import { nextClaimCountDownAtom, feePeriodDatesAtom } from "@atoms/feePool";
 import useNextClaimCountDown from "@hooks/useNextClaimTimer";
 import { COLOR } from "@utils/theme/constants";
 import dayjs from "dayjs";
+import Tooltip from "@components/Tooltip";
+import ToolTipContent from "@components/Tooltip/ToolTipContent";
 
 export default function ClaimCountDown(props: BoxProps) {
   useNextClaimCountDown();
@@ -18,15 +20,19 @@ export default function ClaimCountDown(props: BoxProps) {
         justifyContent: 'space-between',
         alignContent: 'center'
       }}>
-        <Typography
-          variant='caption'
-          fontWeight={700}
-          letterSpacing='0.43px'
-          fontSize='12px'
-          color={COLOR.text}
-        >
-          NEXT REWARD CLAIM
-        </Typography>
+        <Tooltip
+          title={<ToolTipContent title='NEXT REWARD CLAIM' conetnt='NEXT REWARD CLAIM' />}
+          placement='top' >
+          <Typography
+            variant='caption'
+            fontWeight={700}
+            letterSpacing='0.43px'
+            fontSize='12px'
+            color={COLOR.text}
+          >
+            NEXT REWARD CLAIM
+          </Typography>
+        </Tooltip>
         <Typography
           variant='h5'
           color={COLOR.safe}
@@ -40,7 +46,7 @@ export default function ClaimCountDown(props: BoxProps) {
       </Box>
       <LinearProgress
         variant='determinate'
-        value={nextClaimProgress > 0 ? (nextClaimProgress > 100 ? 100 :nextClaimProgress) : 0}
+        value={nextClaimProgress > 0 ? (nextClaimProgress > 100 ? 100 : nextClaimProgress) : 0}
         valueBuffer={100}
         sx={{
           height: 10,
@@ -69,7 +75,7 @@ export default function ClaimCountDown(props: BoxProps) {
           letterSpacing='0.43px'
           color={COLOR.text}
         >
-          {nextClaimProgress > 0 ? (nextClaimProgress > 100 ? 100 :nextClaimProgress.toFixed()) : 0}%
+          {nextClaimProgress > 0 ? (nextClaimProgress > 100 ? 100 : nextClaimProgress.toFixed()) : 0}%
         </Typography>
         <Typography
           color='#5D6588'

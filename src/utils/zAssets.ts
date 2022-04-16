@@ -1,13 +1,13 @@
 import { capitalize, uniq } from "lodash";
 import horizon from "@lib/horizon";
 
-export enum zAssets {
-  zUSD = "zUSD",
-}
+// export enum zAssets {
+//   zUSD = "zUSD",
+// }
 
-declare global {
-  type zAssetsEnum = zAssets;
-}
+// declare global {
+//   type zAssetsEnum = zAssets;
+// }
 
 const FullNameFix: { [k: string]: string } = {
   zCAKE: "PancakeSwap",

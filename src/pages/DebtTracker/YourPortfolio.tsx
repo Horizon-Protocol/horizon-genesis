@@ -1,7 +1,5 @@
 import { Box, BoxProps, Hidden, Typography } from "@mui/material";
 import { COLOR } from "@utils/theme/constants";
-import PieChart from "./PieChart";
-import useWallet from "@hooks/useWallet";
 import YourZAssetPortfolio from "./YourZAssetPortfolio";
 import useFilterZAssets from "@hooks/useFilterZAssets";
 import { sumBy } from "lodash";
@@ -9,7 +7,6 @@ import { formatNumber } from "@utils/number";
 
 export default function YourPortfolio() {
 
-    const { connectWallet, connected, deactivate } = useWallet();
     const zAssets = sumBy(useFilterZAssets({zUSDIncluded:true}),"amountUSD")
 
     return (
@@ -19,18 +16,25 @@ export default function YourPortfolio() {
                 sm: 2,
             },
             width: {
-                xs: '90%',
+                xs: '100%',
                 sm: '340px',
             },
             height: "300px",
             display: 'flex',
             flexDirection: 'column',
             alignItems: 'center',
-            // backgroundColor: "green",
+            backgroundColor: {
+                xs:"rgba(16, 38, 55, 0.3)",
+                md: 'transparent'
+            },
             // ml: 'auto',
             mr: {
                 xs: '0px',
                 sm: '-50px',
+            },
+            pt:{
+                xs: '15px',
+                md: 0
             }
         }}
         >
@@ -40,7 +44,7 @@ export default function YourPortfolio() {
                 fontWeight: 'bold',
                 textAlign: 'center',
                 lineHeight: '19px',
-                mb: 1
+                letterSpacing: '1px',
             }}>YOUR PORTFOLIO
                 <br />
                 <span style={{
@@ -70,7 +74,7 @@ const ListItem = ({ text, props, index }: ListItemProps) => {
             height: '59px',
             justifyContent: 'space-around',
             alignItems: 'center',
-            backgroundColor: index !== undefined ? index % 2 == 0 ? 'rgba(16, 38, 55, 0.3)' : 'transparent' : 'transparent'
+            backgroundColor: index !== undefined ? index % 2 == 0 ? COLOR.bgColor : 'transparent' : 'transparent'
         }}>
             {text.map((item, index) =>
                 <Typography key={index} sx={{

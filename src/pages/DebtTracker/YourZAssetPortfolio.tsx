@@ -12,34 +12,25 @@ import {
 import NoRowsOverlay from "@components/NoRowsOverlay";
 import useFilterZAssets from "@hooks/useFilterZAssets";
 import { formatNumber, formatPercent } from "@utils/number";
+import useIsMobile from "@hooks/useIsMobile";
+
+const rowsPerPage = 100
 
 export default function YourZAssetPortfolio() {
   const rows = useFilterZAssets({ zUSDIncluded: true });
-
-  const [page, setPage] = useState(0);
-  const [rowsPerPage, setRowsPerPage] = useState(5);
-
-  const handleChangePage = (event: unknown, newPage: number) => {
-    setPage(newPage);
-  };
-
-  const handleChangeRowsPerPage = (
-    event: React.ChangeEvent<HTMLInputElement>
-  ) => {
-    setRowsPerPage(+event.target.value);
-    setPage(0);
-  };
-
+  const [page, setPage] = useState(0)
+  const isMobile = useIsMobile()
   const columns: GridColDef[] = [
     {
       field: "name",
       headerName: "zAsset",
-      width: 75,
+      width: isMobile ? 100 : 75,
       editable: false,
-      headerAlign: "left",
+      headerAlign: "center",
       renderCell({ value, row }) {
         return (
           <Typography
+            pl={isMobile ? '20px' : '5px'}
             sx={{
               fontSize: "12px",
               letterSpacing: "0.5px",
@@ -55,7 +46,7 @@ export default function YourZAssetPortfolio() {
       field: "amount",
       headerName: "Balance",
       type: "number",
-      width: 80,
+      width: isMobile ? 100 : 80,
       editable: false,
       headerAlign: "left",
       renderCell({ value, row }) {
@@ -78,7 +69,7 @@ export default function YourZAssetPortfolio() {
     {
       field: "amountUSD",
       headerName: "Value",
-      width: 66,
+      width: isMobile ? 80 : 66,
       editable: false,
       headerAlign: "left",
       renderCell({ value, row }) {
@@ -100,7 +91,7 @@ export default function YourZAssetPortfolio() {
       field: "percent",
       headerName: "Portfolio%",
       type: "number",
-      width: 95,
+      width: isMobile ? 110 : 95,
       editable: false,
       headerAlign: "right",
       renderCell({ value, row }) {
@@ -121,7 +112,7 @@ export default function YourZAssetPortfolio() {
 
   //cause the design need hide all component includes sort area, so now rowsoverlay doesn't fit here
   return (
-    <Box sx={{ mt: "20px", width: "100%" }}>
+    <Box sx={{ mt: "15px", width: "100%" }}>
       <NoRowsOverlay
         hidden={rows.length > 0}
         noRowsTitle={
@@ -136,6 +127,7 @@ export default function YourZAssetPortfolio() {
       <Box
         sx={{
           width: "100%",
+          height: '300px',
           overflow: "hidden",
           display: rows.length > 0 ? "block" : "none",
         }}
@@ -144,7 +136,7 @@ export default function YourZAssetPortfolio() {
           columns={columns}
           rows={rows}
           page={page}
-          autoHeight
+          // autoHeight
           pageSize={rowsPerPage}
           hideFooterPagination
           rowHeight={44}
@@ -165,15 +157,6 @@ export default function YourZAssetPortfolio() {
           }}
         />
       </Box>
-      <Pagination
-        {...{ mt: "18px" }}
-        rowsCount={rows.length}
-        currentPage={page}
-        rowsPerPage={rowsPerPage}
-        pageClick={(index) => {
-          setPage(index - 1);
-        }}
-      />
     </Box>
   );
 }

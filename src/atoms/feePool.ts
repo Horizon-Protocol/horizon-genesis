@@ -52,6 +52,10 @@ export const rewardsAtom = atomWithReset({
   upcomingExchangeReward: zeroBN,
   upcomingStakingReward: zeroBN,
 });
+
+//estimated staking rewards
+export const weekStakingPoolRewardsAtom = atomWithReset<number>(0)
+
 // total rewards
 export const hasRewardsAtom = selectAtom(
   rewardsAtom,

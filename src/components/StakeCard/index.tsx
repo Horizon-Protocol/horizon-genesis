@@ -11,12 +11,11 @@ import {
 } from "@mui/material";
 import { useAtomValue } from "jotai/utils";
 import { detailAtom } from "@atoms/wallet";
-import { poolStateAtomFamily } from "@atoms/staker/pool";
+import { userFarmInfoFamilyAtom } from "@atoms/staker/farm";
 import defaultTheme from "@utils/theme";
 import { ConnectorNames, TokenName } from "@utils/constants";
 import { registerToken, RegisterTokenConf } from "@utils/wallet";
 import useWallet from "@hooks/useWallet";
-import useFetchPoolState from "@hooks/staker/useFetchPoolState";
 import ExternalLink from "@components/Staker/ExternalLink";
 import { CARD_CONTENT, COLOR } from "@utils/theme/constants";
 import ConnectButton from "../ConnectButton";
@@ -64,6 +63,9 @@ export default function StakeCard({
 }: StakeCardProps) {
   const { connected } = useWallet();
   const wallet = useAtomValue(detailAtom);
+  const { earned, staked, withdrawable } = useAtomValue(
+    userFarmInfoFamilyAtom(token)
+  );
   const canRegisterToken = useMemo(
     () =>
       wallet?.connectorId === ConnectorNames.Injected &&
@@ -71,18 +73,9 @@ export default function StakeCard({
     [token, wallet?.connectorId]
   );
 
-  useFetchPoolState(token);
-
-  const { earned, staked, withdrawable } = useAtomValue(
-    poolStateAtomFamily(token)
-  );
-
   useEffect(() => {
     if (finished) {
-      setFinishAlert?.(
-        token,
-        !(earned.eq(0) && staked.eq(0) && withdrawable.eq(0))
-      );
+      setFinishAlert?.(token, !!(earned || staked || withdrawable.lt(0)));
     }
   }, [earned, finished, setFinishAlert, staked, token, withdrawable]);
 
@@ -98,11 +91,11 @@ export default function StakeCard({
 
   return (
     <Card
-      variant='outlined'
+      variant="outlined"
       sx={{
         maxWidth: 340,
         flex: "0 0 340px",
-        bgcolor: "rgba(16, 38, 55, 0.3)",
+        bgcolor: COLOR.bgColor,
         backgroundRepeat: "no-repeat",
         backgroundSize: "auto 160px",
         backgroundPosition: "top -12px right -12px",
@@ -119,9 +112,9 @@ export default function StakeCard({
           <Typography
             color={COLOR.text}
             fontSize={14}
-            lineHeight='22px'
+            lineHeight="22px"
             minHeight={22 * 3}
-            letterSpacing='0.5px'
+            letterSpacing="0.5px"
           >
             {desc}
           </Typography>
@@ -130,8 +123,8 @@ export default function StakeCard({
           wallet &&
           canRegisterToken && (
             <Avatar
-              component='span'
-              variant='circular'
+              component="span"
+              variant="circular"
               src={wallet.logo}
               alt={wallet.label}
               sx={{
@@ -182,7 +175,7 @@ export default function StakeCard({
             />
           ) : (
             <Box {...CARD_CONTENT}>
-              <ConnectButton fullWidth size='large' />
+              <ConnectButton fullWidth size="large" />
             </Box>
           )}
         </CardContent>

@@ -2,7 +2,7 @@ import { Box, BoxProps, Typography } from "@mui/material";
 import { alpha } from "@mui/material/styles";
 import SvgIcon from "@mui/material/SvgIcon";
 import { ReactComponent as IconRefresh } from "@assets/images/icon-refresh.svg";
-import { COLOR, COLOR_BG, COLOR_BG_50 } from "@utils/theme/constants";
+import { COLOR, COLOR_BG_50 } from "@utils/theme/constants";
 import useRefresh, { useIsRefrshing } from "@hooks/useRefresh";
 
 export default function RefreshButton(props: BoxProps) {
@@ -25,9 +25,10 @@ export default function RefreshButton(props: BoxProps) {
       bgcolor={COLOR_BG_50}
       onClick={refresh}
       sx={{
+        backgroundColor:'rgba(16, 38, 55, 0.4)',
         cursor: "pointer",
         ":hover": {
-          bgcolor: COLOR_BG,
+          bgcolor: 'rgba(16, 38, 55, 1)',
         },
       }}
       {...props}

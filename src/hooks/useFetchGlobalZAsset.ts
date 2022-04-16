@@ -1,7 +1,7 @@
 import { readyAtom } from "@atoms/app";
 import horizon from "@lib/horizon";
 import { formatNumber, toBN, zeroBN } from "@utils/number";
-import { GRAPH_DEBT, CONTRACT, PUBLIC } from "@utils/queryKeys";
+import { CONTRACT, PUBLIC } from "@utils/queryKeys";
 import { useAtomValue, useResetAtom, useUpdateAtom } from "jotai/utils";
 import { useCallback, useEffect } from "react";
 import { useQuery } from "react-query";
@@ -37,7 +37,7 @@ export default function useFetchGlobalZAsset() {
         // }
     }, [appReady])
 
-    useQuery([GRAPH_DEBT, PUBLIC, "globalZAsset"], fetcher, {
+    useQuery([PUBLIC, "globalZAsset"], fetcher, {
         onSuccess(synthTotalSupplies) {
             const supplyData:GlobalSupplyDataProps[] = [];
             let totalValue = 0;

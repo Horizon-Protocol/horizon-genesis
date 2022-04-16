@@ -18,7 +18,7 @@ export default function WalletIndicator(props: ChipProps) {
   }
 
   return (
-    // <Tooltip title='refresh' placement='top'>
+    // <Tooltip contentDesc='refresh' placement='top'>
     <Chip
       variant='outlined'
       avatar={

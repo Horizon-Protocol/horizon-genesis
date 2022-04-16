@@ -1,6 +1,5 @@
 import { useCallback, useMemo } from "react";
 import { Box, BoxProps, Link, Typography } from "@mui/material";
-import { HelpOutline } from "@mui/icons-material";
 import { useAtomValue } from "jotai/utils";
 import { presetCRatioPercentsAtom, targetRatioAtom } from "@atoms/app";
 import { cRatioToPercent } from "@utils/number";
@@ -8,6 +7,8 @@ import { debtAtom } from "@atoms/debt";
 import useWallet from "@hooks/useWallet";
 import Tooltip from "@components/Tooltip";
 import PresetCRatioOption from "./CRatioOption";
+import ToolTipContent from "./Tooltip/ToolTipContent";
+import ActionLink from "@components/Alerts/ActionLink";
 
 interface Props extends Omit<BoxProps, "onChange"> {
   color: string;
@@ -63,25 +64,20 @@ export default function PresetCRatioOptions({
   return (
     <Box width='100%' {...props}>
       <Tooltip
+        tooltipWidth={261}
         title={
-          <>
+          <ToolTipContent title='Preset Strategies' conetnt={<>
             Preset strategies help you manage your C-Ratio based on different
             risk tolerances. Maintaining a higher C-Ratio will lower your risk
-            of liquidation, but also reduce your rewards from debt. To learn
-            more about staking strategies, click{" "}
-            <Link
-              href='https://docs.horizonprotocol.com/#strategies'
-              target='_blank'
-            >
-              here
-            </Link>
-          </>
+            of liquidation, but also reduce your rewards from debt.
+            <ActionLink fontSize='12px !important' letterSpacing='1px' href="https://academy.horizonprotocol.com/horizon-genesis/staking-on-horizon-genesis/c-ratio-strategies" target='_blank' showArrow={false}><br></br>LEARN MORE</ActionLink>
+          </>} />
         }
         placement='top'
+        // sx={{width:'450px'}}
       >
-        <Typography variant='subtitle2' component='div' align='center'>
+        <Typography variant='subtitle2' component='div' align='center' textTransform={'uppercase'} fontWeight='700' letterSpacing="1px" fontSize="12px" sx={{ cursor: 'help', color: "#B4E0FF" }}>
           Preset Strategies
-          <HelpOutline fontSize='inherit' />
         </Typography>
       </Tooltip>
       <Box mt={1} display='flex' justifyContent='space-between'>

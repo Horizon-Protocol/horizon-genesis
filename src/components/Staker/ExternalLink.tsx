@@ -1,5 +1,6 @@
 import { Box, Button, ButtonProps, Link } from "@mui/material";
 import { CallMade } from "@mui/icons-material";
+import { COLOR } from "@utils/theme/constants";
 
 interface Props extends ButtonProps {
   href?: string;
@@ -32,7 +33,7 @@ export default function ExternalLink({
           color: "primary.main",
           height: 32,
           borderRadius: 4,
-          bgcolor: "rgba(16, 38, 55, 0.3)",
+          bgcolor: COLOR.bgColor,
           boxShadow: "none",
         }}
         {...props}

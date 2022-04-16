@@ -33,7 +33,8 @@ const NoRowsOverLay = ({ hidden, noRowsTitle, noRowsbtnTitle, btnClick }: NoRows
         sx={{
           mt: '18px',
           width: '180px',
-          height: '36px'
+          height: '36px',
+          fontSize: '12px'
         }}
         color='primary'
         onClick={btnClick}

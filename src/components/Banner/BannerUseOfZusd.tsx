@@ -1,11 +1,11 @@
-import { Box, Button, Grid, Typography } from "@mui/material";
+import { Box, Button, Grid, SvgIcon, Typography } from "@mui/material";
 import { styled } from "@mui/material/styles";
 import { COLOR, PAGE_COLOR } from "@utils/theme/constants";
-import zusdIcon from '@assets/images/zUSD-icon.png'
 import ActionLink from "@components/Alerts/ActionLink";
 const Img = styled("img")``;
 import { useHistory } from "react-router-dom";
 import { LINK_EXCHANGE } from "@utils/constants";
+import { ReactComponent as IconzUSD } from "@assets/images/zUSD.svg";
 
 export default function BannerUseOfZusd() {
   const history = useHistory()
@@ -33,20 +33,24 @@ export default function BannerUseOfZusd() {
   
   return (
     <Box
-      height='240px'
+      height={{
+        xs: '250px',
+        sm: '220px'
+      }}
       width='100%'
       display='flex'
       flexDirection='column'
       alignItems='center'
       justifyContent='center'
     >
-      <Img
-        src={zusdIcon}
-        sx={{
-          width: "32px",
-          height: "32px",
-        }}
-      />
+      <SvgIcon
+      sx={{
+        width: "64px",
+          height: "64px",
+      }}
+      >
+        <IconzUSD />
+      </SvgIcon>
       <Typography
         textAlign='center'
         fontSize={14}
@@ -55,34 +59,39 @@ export default function BannerUseOfZusd() {
         fontFamily='Raleway'
         letterSpacing={1}
         mt='14px'
+        color='white'
       >
         WHAT CAN I DO WITH MY zUSD?
       </Typography>
       <Typography
         textAlign='center'
-        fontSize={12}
+        fontSize={{
+          xs:12,
+          sm:14
+        }}
+        lineHeight='19px'
         fontWeight='normal'
         fontFamily='Rawline'
-        lineHeight='16px'
         letterSpacing={1}
         color='rgba(180, 224, 255, 0.75)'
         sx={{
           mt:'10px'
         }}
+        width='80%'
       >
-        You can use zUSD to purchase other synthetic <br/>assets (zAssets) on Horizon Exchange, trade it on <br/>a DEX, or supply liquidity to the zUSD stablecoin <br/>pool to earn yield.
+        You can use zUSD to purchase other synthetic assets (zAssets) on Horizon Exchange, trade it on a DEX, or supply liquidity to the zUSD stablecoin pool to earn yield.
       </Typography>
       <Box
-        width='190px'
+        // width='190px'
         height='20px'
         display='flex'
         alignItems='center'
         justifyContent='space-around'
-        marginTop='10px'
+        marginTop='15px'
       >
-        <ActionLink href={LINK_EXCHANGE} target='_blank'>TRADE</ActionLink>
-        <ActionLink href={""} target='_blank' color={COLOR.warning} to='/'>SUPPLY</ActionLink>
-        <ActionLink color={COLOR.text} to='/earn'>EARN</ActionLink>
+        <ActionLink fontSize='12px !important' href={LINK_EXCHANGE} target='_blank'>TRADE</ActionLink>
+        <ActionLink marginLeft='20px' fontSize='12px !important' href={"https://pancakeswap.finance/add/0xe9e7CEA3DedcA5984780Bafc599bD69ADd087D56/0xF0186490B18CB74619816CfC7FeB51cdbe4ae7b9"} target='_blank' color={COLOR.warning} >SUPPLY</ActionLink>
+        <ActionLink marginLeft='20px' fontSize='12px !important' color={COLOR.text} to='/earn'>EARN</ActionLink>
       </Box>
     </Box>
   );

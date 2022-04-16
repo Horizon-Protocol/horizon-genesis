@@ -1,4 +1,3 @@
-
 import { readyAtom } from "@atoms/app";
 import horizon from "@lib/horizon";
 import { CONTRACT } from "@utils/queryKeys";
@@ -7,7 +6,7 @@ import { useCallback, useEffect } from "react";
 import { useQuery } from "react-query";
 import { utils, BigNumberish, ethers, BigNumber } from "ethers";
 import useWallet from "@hooks/useWallet";
-import { etherToBN, formatNumber, toBN, zeroBN } from "@utils/number";
+import { BNWithDecimals, etherToBN, formatNumber, toBN, zeroBN } from "@utils/number";
 import { flatten, flattenDeep } from "lodash";
 import { rewardsEscrowAtom } from "@atoms/record";
 import useDisconnected from "@hooks/useDisconnected";
@@ -17,12 +16,13 @@ export type RewardEscrowV2Props = {
     schedule: RecordEscrowRowProps[] | [];
     totalEscrowed: BN;
     totalVested?: BN;
+    vestingEntriesId: BN[]
 }
 
 export type RecordEscrowRowProps = {
     endTime: BN;
     entryID: BN;
-    escrowAmount: BN;
+    escrowAmount: number;
 }
 
 export default function useEscrowDataQuery() {
@@ -54,7 +54,6 @@ export default function useEscrowDataQuery() {
             const vestingEntriesPromise = [];
             const vestingEntriesIdPromise:Promise<any>[] = [];
             const totalVestingEntries = Number(numVestingEntries);
-            // console.log('totalVestingEntries',totalVestingEntries)
 
             const VESTING_ENTRIES_PAGINATION = 50;
             for (let index = 0; index < totalVestingEntries; index += VESTING_ENTRIES_PAGINATION) {
@@ -67,19 +66,21 @@ export default function useEscrowDataQuery() {
 
             const vestingEntries = flatten(await Promise.all(vestingEntriesPromise));
             const vestingEntriesId = flattenDeep(await Promise.all(vestingEntriesIdPromise));
-            // console.log('vestingEntries',vestingEntries)
+            console.log('vestingEntriesId',vestingEntriesId.map(item => item.toNumber()))
 
             let claimableAmount = zeroBN;
             if (vestingEntriesId != null) {
                 claimableAmount = await RewardEscrowV2.getVestingQuantity(account, vestingEntriesId);
             }
+            console.log('claimableAmount',formatNumber(BNWithDecimals(claimableAmount)))
 
             const unorderedSchedule:RecordEscrowRowProps[] = [];
             // console.log('vestingEntries',vestingEntries)
             vestingEntries.forEach((item) => {
                 const endTime = item[0]
                 const entryID = item[1]
-                const escrowAmount = item[2]
+                // const escrowAmount = item[1]
+                const escrowAmount = Number(item[1]) / 1e18
                 // if (escrowAmount?.lt(0)) {
                     unorderedSchedule.push({
                         endTime,
@@ -89,11 +90,14 @@ export default function useEscrowDataQuery() {
                 // }
             });
 
+            unorderedSchedule.sort((a, b) => a.endTime < b.endTime ? 1 : -1);
+
             const result = {
                 claimableAmount: claimableAmount,
                 schedule: unorderedSchedule,
                 totalEscrowed: totalEscrowed,
                 totalVested: totalVested,
+                vestingEntriesId: vestingEntriesId
             };
             // console.log('useEscrowDataQueryresult',result)
             return result

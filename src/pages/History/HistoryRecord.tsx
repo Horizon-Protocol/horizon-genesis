@@ -1,4 +1,4 @@
-import { Box, Typography, Link } from "@mui/material";
+import { Box, Typography, Link, Grid } from "@mui/material";
 import { useState, useMemo, useEffect } from "react";
 import { COLOR } from "@utils/theme/constants";
 import { GridColDef } from "@mui/x-data-grid";
@@ -8,7 +8,6 @@ import {
   SortedAscendingIcon,
   ColumnSelectorIcon,
 } from "@components/TableSortIcon";
-import iconNoTransaction from "@assets/wallets/no-transaction.svg";
 import Pagination from "@components/Pagination";
 import TypeCell from "./TypeCell";
 import ActionLink from "@components/Alerts/ActionLink";
@@ -19,12 +18,10 @@ import { useAtomValue } from "jotai/utils";
 import { historicalIsLoadingAtom, historicalOperationAtom, HistoryType } from "@atoms/record";
 import dayjs from "dayjs";
 import { formatNumber } from "@utils/number";
-import { HistoricalOperationData } from "@hooks/query/useQueryDebt";
-import { DateRange } from "@mui/lab/DateRangePicker/RangeTypes";
 import { BlockExplorer } from "@utils/helper";
 import { hznRateAtom } from "@atoms/exchangeRates";
 import useWallet from "@hooks/useWallet";
-
+import { DateRange } from "@mui/x-date-pickers-pro";
 interface HistoryDataProps {
   id: string;
   type: HistoryType;
@@ -46,7 +43,7 @@ export default function HistoryRecord() {
   const historicalIsLoading = useAtomValue(historicalIsLoadingAtom)
 
   const [page, setPage] = useState(0);
-  const [rowsPerPage, setRowsPerPage] = useState(5);
+  const [rowsPerPage, setRowsPerPage] = useState(10);
 
   const historicalOperationData = useAtomValue(historicalOperationAtom);
   const [historyType, setHistoryType] = useState<HistoryType>(HistoryType.All);
@@ -61,6 +58,10 @@ export default function HistoryRecord() {
   const chooseStart = dayjs(historyDateRange[0]);
   const chooseEnd = dayjs(historyDateRange[1]);
 
+  const clearDisable = useMemo(()=>{
+     return historyType === HistoryType.All && historyDateRange[0] == null && historyDateRange[1] == null
+  },[historyType,historyDateRange])
+
   const dataRows = useMemo(() => {
     if (historicalOperationData) {
       const allDate =
@@ -69,14 +70,6 @@ export default function HistoryRecord() {
       const rows = historicalOperationData
         .map((item) => {
           if (item.type != HistoryType.Claim) {
-            // let value = Number(item.value)
-            // let rateValue = hznRate.toNumber()
-            // let rewards =  value / rateValue
-            // console.log("value-rate",{
-            //     value,
-            //     rateValue,
-            //     rewards
-            // })
             item.rewards = (Number(item.value) / hznRate.toNumber()).toString();
           }
           let valueprefix = "";
@@ -98,7 +91,7 @@ export default function HistoryRecord() {
             type: item.type,
             timestamp: item.timestamp,
             date: dayjs(Number(item.timestamp) * 1000).format(
-              "DD/MM/YYYY hh:mm"
+              "MMM DD, YYYY hh:mm"
             ),
             amount: {
               type: item.type,
@@ -115,22 +108,10 @@ export default function HistoryRecord() {
         })
         .filter((item) => {
           const itemDate = dayjs(Number(item.timestamp) * 1000);
-          // console.log('===chooseStartend',{
-          //     chooseStart:chooseStart,
-          //     chooseEnd:chooseEnd,
-          //     item:itemDate
-          // })
           return allDate
             ? item
             : itemDate.isAfter(chooseStart) && itemDate.isBefore(chooseEnd);
         });
-      console.log("计算结束",{
-        historicalOperationData,
-        historyType,
-        allDate,
-        rows
-      })
-
       setLoading(false);
       return rows;
     } else {
@@ -154,6 +135,7 @@ export default function HistoryRecord() {
       field: "date",
       headerName: "Date (UTC)",
       width: 180,
+      sortable: false,
       editable: false,
       headerAlign: "left",
       renderCell({ value, row }) {
@@ -174,10 +156,10 @@ export default function HistoryRecord() {
       field: "amount",
       headerName: "Amount",
       width: 120,
+      sortable: false,
       editable: false,
       headerAlign: "left",
       renderCell({ value, row }) {
-        console.log(value)
         return (
           <Typography
             sx={{
@@ -189,14 +171,12 @@ export default function HistoryRecord() {
             }}
           >
             {value.type == HistoryType.Claim && <>
-            {value.rewards}
-            <Box component="span" sx={{ ml: "4px", opacity: 0.5 }}>
-              HZN
-            </Box>
-            <br />
+              {value.rewards}
+              <Box component="span" sx={{ ml: "4px", opacity: 0.5 }}>
+                HZN
+              </Box>
+              <br />
             </>}
-            
-            
             {value.value}
             <Box component="span" sx={{ ml: "4px", opacity: 0.5 }}>
               zUSD
@@ -215,21 +195,11 @@ export default function HistoryRecord() {
       headerAlign: "center",
       renderCell({ value, row }) {
         return (
-          <Link
-            href={BlockExplorer.txLink((value as string).split("-")[0])}
-            target="_blank"
-            underline="none"
-          >
-            <ActionLink>VIEW</ActionLink>
-          </Link>
+            <ActionLink target="_blank" href={BlockExplorer.txLink((value as string).split("-")[0])}>VIEW</ActionLink>
         );
       },
     },
   ];
-
-  useEffect(()=>{
-    // alert(historicalIsLoading)
-  },[])
 
   return (
     <Box>
@@ -249,30 +219,30 @@ export default function HistoryRecord() {
       <Box
         sx={{
           display:
-            connected ? 
+            connected ?
 
-            historicalIsLoading ? "block" :
-            historicalOperationData != null &&
-            historicalOperationData.length > 0 ? "block" : "none"
+              historicalIsLoading ? "block" :
+                historicalOperationData != null &&
+                  historicalOperationData.length > 0 ? "block" : "none"
 
               : "none"
         }}
       >
-        <Box
+        <Grid container columnSpacing={{xs:'1px',md:'10px'}} alignItems='center'
           sx={{
-            display: "flex",
-            // flexWrap:'wrap',
-            alignItems: "center",
-            justifyContent: "space-between",
+            width:'100%',
+            // backgroundColor:'red'
           }}
         >
+          <Grid item md={5} xs={5.5}>
           <TypeSelection
             typeValue={historyType}
             selectType={(type) => {
               setHistoryType(type);
             }}
-            {...{ width: "44%" }}
           />
+          </Grid>
+          <Grid item md={6} xs={6.5}>
           <DateRangeSelection
             dateRangeValue={historyDateRange}
             selectDateRange={(rangeDate: DateRange<Date>) => {
@@ -280,24 +250,28 @@ export default function HistoryRecord() {
                 setHistoryDateRange(rangeDate);
               }
             }}
-            {...{ width: "44%" }}
           />
+          </Grid>
+          <Grid item md={1} xs={12}>
           <Typography
             onClick={() => {
               setHistoryType(HistoryType.All);
               setHistoryDateRange([null, null]);
             }}
             sx={{
-              width: "8%",
+              textAlign:'center',
               fontSize: "12px",
               color: COLOR.safe,
+              opacity: clearDisable ? .2 : 1,
               fontWeight: "700",
               cursor: "pointer",
+              mt:{xs:'15px',md:0}
             }}
           >
             Clear
           </Typography>
-        </Box>
+          </Grid>
+        </Grid>
         <Box sx={{ mt: "20px", width: "100%", overflow: "hidden" }}>
           <CustomDataGrid
             loading={historicalIsLoading}
@@ -321,11 +295,11 @@ export default function HistoryRecord() {
               ColumnSortedAscendingIcon: SortedAscendingIcon,
               ColumnUnsortedIcon: ColumnSelectorIcon,
               NoRowsOverlay: () => <Box sx={{
-                mt:'50px',
-                textAlign:'center',
-                width:"100%",
+                mt: '50px',
+                textAlign: 'center',
+                width: "100%",
                 fontSize: '14px',
-                letterSpacing:'.5px',
+                letterSpacing: '.5px',
                 fontWeight: 'bold',
                 color: COLOR.text,
                 opacity: .2,

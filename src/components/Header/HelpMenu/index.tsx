@@ -5,7 +5,7 @@ import { ReactComponent as IconArrowUp } from "@assets/images/icon-arrow-up.svg"
 import { ReactComponent as IconDocument } from "@assets/images/icon-document.svg";
 import { ReactComponent as IconDiscord } from "@assets/images/icon-discord.svg";
 import { ReactComponent as IconTelegram } from "@assets/images/icon-telegram.svg";
-import { ReactComponent as IconHelp } from "@assets/images/icon-help.svg";
+import { ReactComponent as IconHelp } from "@assets/images/iconfont-help.svg";
 import { ReactComponent as IconHelpSelected } from "@assets/images/icon-help-select.svg";
 
 import MenuItem from "./MenuItem";
@@ -25,30 +25,29 @@ export default function HelpMenu({ ...props }: BoxProps) {
 
   return (
     <MenuItem
+      // onMouseEnter={() => {
+      //   setHighLight(true)
+      // }}
+      // onMouseLeave={() => {
+      //   setHighLight(false)
+      // }}
       width={86}
       height={36}
       lineHeight="36px"
       onClick={handleOpen}
-      color = {!anchorEl ? 'rgb(180, 224, 255)' : 'rgba(42,212,183,1)'}
+      color={!anchorEl ? 'rgb(180, 224, 255)' : 'rgba(42,212,183,1)'}
       {...props}
     >
-      {/* <HelpOutline
-        sx={{
-          mr: 1,
-          fontSize: 12,
-        }}
-      /> */}
       <SvgIcon
         sx={{
-          // stroke:"red",
-          // fill:'red',
-          // color:'red',
           mr: '6px',
           width: 13,
           height: 13,
         }}
       >
-        {anchorEl ? <IconHelpSelected /> : <IconHelp />}
+        {/* <IconDocument /> */}
+        <IconHelp />
+        {/* {highLight ? <IconHelpSelected /> : anchorEl ? <IconHelpSelected /> : <IconHelp />} */}
       </SvgIcon>
       Help
       <SvgIcon
@@ -83,14 +82,14 @@ export default function HelpMenu({ ...props }: BoxProps) {
           },
           ".MuiPopover-paper": {
             boxShadow: 'none',
-            top:'85px !important',
+            top: '85px !important',
             maxWidth: 310,
             bgcolor: "#0B1828",
           },
         }}
       >
         <Link
-          href="https://docs.horizonprotocol.com/"
+          href="https://academy.horizonprotocol.com/"
           target="_blank"
           underline="none"
         >
@@ -98,7 +97,7 @@ export default function HelpMenu({ ...props }: BoxProps) {
             <SvgIcon sx={{ height: 14, width: 14, mr: 1.5 }}>
               <IconDocument />
             </SvgIcon>
-            Documentation
+            Academy
           </MenuItem>
         </Link>
         <Link

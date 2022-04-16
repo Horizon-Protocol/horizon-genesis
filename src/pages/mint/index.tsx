@@ -6,7 +6,6 @@ import { useSnackbar } from "notistack";
 import horizon from "@lib/horizon";
 import { PAGE_COLOR } from "@utils/theme/constants";
 import { Token } from "@utils/constants";
-import { zAssets } from "@utils/zAssets";
 import {
   formatCRatioToPercent,
   formatNumber,
@@ -81,7 +80,7 @@ export default function Mint() {
   const toToken: TokenProps = useMemo(
     () => ({
       disabled: !connected,
-      token: zAssets.zUSD,
+      token: Token.ZUSD,
       label: "MINT",
       color: THEME_COLOR,
       bgColor: "#0A1624",
@@ -173,7 +172,6 @@ export default function Mint() {
     //   changedTransferable: changedTransferable.toNumber(),
     // });
 
-
     return {
       cRatio: {
         from: currentCRatio,
@@ -250,10 +248,10 @@ export default function Mint() {
 
   return (
     <PageCard
-      mx='auto'
+      mx="auto"
       color={THEME_COLOR}
       headerBg={headerBg}
-      title='Mint'
+      title="Mint"
       description={
         <>
           Mint zUSD by staking your HZN. <br />
@@ -261,6 +259,7 @@ export default function Mint() {
           allowing you to earn weekly staking rewards.
         </>
       }
+      href="https://academy.horizonprotocol.com/horizon-genesis/staking-on-horizon-genesis/mint-burn-and-claim#mint"
     >
       <PresetCRatioOptions
         color={THEME_COLOR}
@@ -268,20 +267,20 @@ export default function Mint() {
         onChange={handleSelectPresetCRatio}
       />
       <TokenPair
-        mt={1}
+        mt={0}
         fromToken={fromToken}
         toToken={toToken}
         arrowImg={arrowImg}
         state={state}
         setState={setState}
       />
-      <BalanceChange my={2} changed={!!state.fromInput} {...changedBalance} />
+      <BalanceChange my={2.5} changed={!!state.fromInput} {...changedBalance} />
       <Box>
         {connected && (
           <PrimaryButton
             loading={loading}
             disabled={mintDisabled}
-            size='large'
+            size="large"
             fullWidth
             onClick={handleMint}
           >

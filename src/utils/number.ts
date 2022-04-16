@@ -72,6 +72,10 @@ export const formatNumber = (
   return formattedValue.join("");
 };
 
+export const ellipsisWithLength = (content: string,maxLength: number) => {
+    return content.length > maxLength ? content.substring(0,maxLength) + "..." : content
+}
+
 export const formatCryptoCurrency = (
   value: NumericValue,
   { sign: prefix, currencyKey: suffix, ...format }: FormatCurrencyOptions = {}
@@ -110,17 +114,7 @@ export const formatPercent = (
   return formatNumber(Number(value) * 100);
 };
 
-export const formatUnitsWithDecimals = (
-  value: BN | undefined,
-  decimal = 1e18
-) => {
-  if (!value) {
-    value = zeroBN;
-  }
-  return Number(value) / decimal;
-};
-
-export const formatBNWithDecimals = (value: BN | undefined, decimal = 1e18) => {
+export const BNWithDecimals = (value: BN | undefined, decimal = 1e18) => {
   if (!value) {
     value = zeroBN;
   }
@@ -169,6 +163,7 @@ export function cRatioToPercent(cRatio: BN): number {
   const cRatioPercent = cRatio.isZero() ? toBN(0) : toBN(100).div(cRatio);
   return cRatioPercent.isNaN() ? 0 : Number(cRatioPercent.toFixed(2));
 }
+
 export function formatCRatioToPercent(cRatio: BN): string {
   const cRatioPercent = cRatioToPercent(cRatio);
 

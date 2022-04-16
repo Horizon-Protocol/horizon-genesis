@@ -2,7 +2,7 @@ import { rewardsEscrowAtom, tokenSaleEscrowAtom } from "@atoms/record";
 import useWallet from "@hooks/useWallet";
 import { useAtomValue } from "jotai/utils";
 import { useMemo } from "react";
-import { formatBNWithDecimals } from "@utils/number";
+import { BNWithDecimals, formatNumber } from "@utils/number";
 import useTokenSaleEscrowQuery from "./useTokenSaleEscrowQuery";
 import useEscrowDataQuery from "./useEscrowDataQuery";
 import { ethers } from "ethers";
@@ -22,19 +22,17 @@ export default function useEscrowCalculations(){
 		const stakingEscrowBalance = rewardsEscrow?.totalEscrowed
 		const stakingClaimableBalance = rewardsEscrow?.claimableAmount
 		const stakingVestedBalance = rewardsEscrow?.totalVested
-
-		// const tokenSaleEscrowBalance = formatUnitsWithDecimals(tokenSaleEscrow?.totalEscrowed)
-		// const tokenSaleClaimableBalance = formatUnitsWithDecimals(tokenSaleEscrow?.claimableAmount)
-		// const tokenSaleVestedBalance = formatUnitsWithDecimals(tokenSaleEscrow?.totalVested)
-
-		const totalEscrowBalance = formatBNWithDecimals(stakingEscrowBalance)/* + tokenSaleEscrowBalance;*/
-		const totalClaimableBalance = formatBNWithDecimals(stakingClaimableBalance)/* + tokenSaleClaimableBalance;*/
-		const totalVestedBalance = formatBNWithDecimals(stakingVestedBalance)/* + tokenSaleVestedBalance;*/
+		
+		const totalEscrowBalance = BNWithDecimals(stakingEscrowBalance)/* + tokenSaleEscrowBalance;*/
+		const totalClaimableBalance = BNWithDecimals(stakingClaimableBalance)/* + tokenSaleClaimableBalance;*/
+		const totalVestedBalance = BNWithDecimals(stakingVestedBalance)/* + tokenSaleVestedBalance;*/
+		const vestingEntriesId = rewardsEscrow?.vestingEntriesId
 
 		const result = {
 			totalEscrowBalance,
 			totalClaimableBalance,
-			totalVestedBalance
+			totalVestedBalance,
+			vestingEntriesId
 		}
 		return result
 	}, [rewardsEscrow, tokenSaleEscrow]);

@@ -1,21 +1,20 @@
 import { useMemo } from "react";
 import { useHistory, useLocation } from "react-router-dom";
 import { Box, Typography, BoxProps, useMediaQuery } from "@mui/material";
-import { alpha, useTheme, styled } from "@mui/material/styles";
-import { COLOR } from "@utils/theme/constants";
-import debtTracker from "@assets/images/debtTracker.png";
-import debtTrackerSelected from "@assets/images/debtTracker-selected.png";
-import escrow from "@assets/images/escrow.png";
-import escrowSelected from "@assets/images/escrow-selected.png";
-import historyU from "@assets/images/history.png";
-import historySelected from "@assets/images/history-selected.png";
+import { useTheme, styled } from "@mui/material/styles";
 import RecordButton from "./Debt/RecordButton";
+import { ReactComponent as IconDebtTracker } from "@assets/images/debtTracker.svg";
+import { ReactComponent as IconDebtTrackerSelected } from "@assets/images/debtTracker-selected.svg";
+import { ReactComponent as IconEscrow } from "@assets/images/escrow.svg";
+import { ReactComponent as IconEscrowSelected } from "@assets/images/escrow-selected.svg";
+import { ReactComponent as IconHistory } from "@assets/images/history.svg";
+import { ReactComponent as IconHistorySelected } from "@assets/images/history-selected.svg";
 
 const Img = styled("img")``;
 
 export interface RecordButtonProps {
-  img: string;
-  selectedImg: string;
+  img: JSX.Element;
+  selectedImg: JSX.Element;
   selected: boolean;
   title: string | JSX.Element;
   to: string;
@@ -42,8 +41,8 @@ export default function Record(props: BoxProps) {
   const recordButtons = useMemo<RecordButtonProps[]>(
     () => [
       {
-        img: debtTracker,
-        selectedImg: debtTrackerSelected,
+        img: <IconDebtTracker />,
+        selectedImg: <IconDebtTrackerSelected />,
         selected: "/debtTracker" === pathname,
         title: (
           <>
@@ -55,15 +54,15 @@ export default function Record(props: BoxProps) {
         to: "debtTracker",
       },
       {
-        img: escrow,
-        selectedImg: escrowSelected,
+        img: <IconEscrow />,
+        selectedImg: <IconEscrowSelected />,
         selected: "/escrow" === pathname,
         title: "Escrow",
         to: "escrow",
       },
       {
-        img: historyU,
-        selectedImg: historySelected,
+        img: <IconHistory />,
+        selectedImg: <IconHistorySelected />,
         selected: "/history" === pathname,
         title: "History",
         to: "history",

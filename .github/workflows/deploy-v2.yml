@@ -1,4 +1,4 @@
-name: Deploy Genesis v2.0
+name: Deploy 2.0
 
 on:
   push:
@@ -56,7 +56,7 @@ jobs:
       - uses: actions/cache@v2
         id: build-cache
         with:
-          key: genesis-build-97-${{ github.event.pull_request.head.sha }}
+          key: genesis-build-97-${{ github.sha }}
           path: dist
       - name: Build Bundle
         if: steps.build-cache.outputs.cache-hit != 'true'
@@ -81,5 +81,5 @@ jobs:
           host: https://bark.etcd.run
           key: ${{ secrets.BARK_KEY }} # Your secret key
           title: "Horizon | Genesis"
-          body: "v2.0"
+          body: "2.0"
           category: Horizon

@@ -98,12 +98,6 @@ export default function useReponsiveChart(
                     options
                 )
             );
-            // chart.subscribeCrosshairMove((param) => {
-            //     if (param != null && param != undefined) {
-            //         onCrosshairMove?.(param, chart, chartRef.current)
-            //     }
-            // });
-            // chartInstanceRef.current = chart;
             chart.applyOptions({
                 handleScale: {
                     axisPressedMouseMove: {
@@ -118,35 +112,11 @@ export default function useReponsiveChart(
 
     useEffect(() => {
         initChart()
+        return () => {
+            chartRef.current?.remove();
+            chartRef.current = null;
+        };
     }, [])
-
-
-    // useEffect(() => {
-    //     // 监听
-    //     window.addEventListener('resize', handleResize);
-    //     // 销毁
-    //     return () => window.removeEventListener('resize', handleResize)
-    // }, []);
-
-    // const handleResize = () => {
-    //     const width = window.innerWidth
-    //     const height = window.innerHeight
-    //     // console.log('=====window=====',{
-    //     //     width: window.innerWidth,
-    //     //     height: window.innerHeight
-    //     // }) 
-    //     if (chartInstanceRef.current) {
-    //         if (width < 600) {
-    //             console.log('=====window=====', {
-    //                 width: window.innerWidth,
-    //             })
-    //             chartInstanceRef.current.resize(width, 250);
-    //         }else{
-    //             chartInstanceRef.current.resize(550, 250);
-    //         }
-    //     }
-
-    // };
 
     return {
         bindRef(instance: HTMLDivElement) {

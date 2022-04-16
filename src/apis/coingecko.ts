@@ -1,33 +1,39 @@
 import fetch from "cross-fetch";
 
-const ENDPOINT =
-  "https://api.coingecko.com/api/v3/simple/price?ids=red-pulse,binance-usd,zasset-zusd&vs_currencies=USD";
+const API_PRICE =
+  "https://api.coingecko.com/api/v3/simple/price?ids=red-pulse,wbnb,binance-usd,horizon-protocol,zasset-zusd&vs_currencies=USD";
 
-type Names = "binance-usd" | "zasset-zusd" | "red-pulse";
-type Result = { [k in Names]: { usd: number } };
+interface PriceResult {
+  "red-pulse": {
+    usd: number;
+  };
+  wbnb: {
+    usd: number;
+  };
+  "binance-usd": {
+    usd: number;
+  };
+  "horizon-protocol": {
+    usd: number;
+  };
+  "zasset-zusd": {
+    usd: number;
+  };
+}
 
-export async function fetchPrice(): Promise<{
-  phb: number;
-  busd: number;
-  zusd: number;
-}> {
+export async function fetchMarketPrices(): Promise<MarketPrices> {
   try {
-    const res = await fetch(ENDPOINT);
-    const data: Result = await res.json();
-
-    let phbPrice = data["red-pulse"].usd;
-
-    // TODO
-    if (phbPrice && phbPrice < 0.1) {
-      phbPrice = phbPrice * 100;
-    }
+    const res = await fetch(API_PRICE);
+    const data: PriceResult = await res.json();
 
     return {
-      phb: phbPrice,
-      busd: data["binance-usd"].usd,
-      zusd: data["zasset-zusd"].usd,
+      PHB: data["red-pulse"].usd,
+      WBNB: data["wbnb"].usd,
+      BUSD: data["binance-usd"].usd,
+      HZN: data["horizon-protocol"].usd,
+      zUSD: data["zasset-zusd"].usd,
     };
   } catch (error) {
-    return { phb: 0, busd: 0, zusd: 0 };
+    return {};
   }
 }

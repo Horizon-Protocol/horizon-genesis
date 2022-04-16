@@ -1,23 +1,25 @@
 import { useCallback, useRef, SyntheticEvent } from "react";
-import { Box, Link, InputBase, Typography } from "@mui/material";
+import { Box, Link, InputBase, Typography, SvgIcon } from "@mui/material";
 import { trimStart } from "lodash";
 import NumberFormat from "react-number-format";
 import { formatNumber, NumericValue } from "@utils/number";
 import { BORDER_COLOR, COLOR } from "@utils/theme/constants";
-import TokenLogo from "@components/TokenLogo";
+import { ReactComponent as IconHZN } from "@assets/images/hzn.svg";
+import { ReactComponent as IconzUSD } from "@assets/images/zUSD.svg";
+import { Token } from "@utils/constants";
 
 declare global {
   interface TokenInputProps {
     disabled?: boolean;
-    token: TokenEnum | zAssetsEnum;
+    token: TokenEnum;
     label: string;
     balanceLabel?: JSX.Element | string;
     maxButtonLabel?: JSX.Element | string;
+    zUSDBalance?: BN;
     max?: BN;
     color?: string;
     labelColor?: string;
     bgColor?: string;
-    logo?: string;
     input: string;
     inputPrefix?: string;
     onInput(v: string, max?: boolean): void;
@@ -38,8 +40,8 @@ export default function TokenInput({
   amount,
   balanceLabel,
   maxButtonLabel,
+  zUSDBalance,
   max,
-  logo,
   color,
   labelColor,
   bgColor,
@@ -70,7 +72,7 @@ export default function TokenInput({
   return (
     <Box
       display="flex"
-      border={1}
+      border={0}
       borderRadius={1}
       borderColor={BORDER_COLOR}
       p="16px 24px"
@@ -79,14 +81,31 @@ export default function TokenInput({
         xs: 1,
         sm: 3,
       }}
-      bgcolor={bgColor || "#091320"}
+      bgcolor={"rgba(16, 38, 55, 0.4)"}
     >
       <Box display="flex" alignItems="center">
-        <TokenLogo token={token} logo={logo} />
+        {/* <TokenLogo token={token} logo={logo} /> */}
+        <SvgIcon
+          sx={{
+            width: {
+              xs:'30px',
+              md:'50px'
+            },
+            height: {
+              xs:'30px',
+              md:'50px'
+            }
+          }}
+        >
+          {token == Token.HZN ? <IconHZN/> : <IconzUSD/>}
+        </SvgIcon>
         <Box display="flex" flexDirection="column" p="10px 12px" fontSize={24}>
           <Typography
-            fontSize={12}
-            letterSpacing="0.43px"
+            fontSize={{
+              xs:'10px',
+              md:'12px'
+            }}
+            letterSpacing="0.5px"
             lineHeight="14px"
             color={labelColor}
           >
@@ -99,7 +118,7 @@ export default function TokenInput({
               sm: 24,
             }}
             fontWeight={700}
-            letterSpacing="0.86px"
+            letterSpacing="1px"
             lineHeight="28px"
           >
             {token}
@@ -134,14 +153,20 @@ export default function TokenInput({
           inputProps={{
             inputMode: "decimal",
           }}
+          // decimalScale={3}
           sx={{
             ".MuiInputBase-input": {
               color: invalid ? COLOR.danger : COLOR.text,
               fontFamily: "Rawline",
-              fontSize: 24,
+              fontSize: {
+                xs: 20,
+                md: 24
+              },
               fontWeight: 700,
-              lineHeight: "26px",
+              lineHeight: "28px",
               textAlign: "right",
+              height: "28px",
+              padding: "8px 0 2px 0",
               "&.Mui-disabled": {
                 WebkitTextFillColor: "initial",
               },
@@ -159,13 +184,14 @@ export default function TokenInput({
           <Typography
             component="span"
             fontSize={12}
-            fontWeight={700}
+            fontWeight={400}
+            letterSpacing={0.5}
             color="#6E89A6"
           >
             {balanceLabel
               ? balanceLabel
-              : max
-              ? `Balance: ${formatNumber(max)} ${token}`
+              : zUSDBalance
+              ? `Balance: ${formatNumber(zUSDBalance)} ${token}`
               : ""}
           </Typography>
           {maxButtonLabel && max?.gt(0) ? (

@@ -4,6 +4,7 @@ import { Box, Typography, BoxProps, useMediaQuery } from "@mui/material";
 import { alpha, useTheme, styled } from "@mui/material/styles";
 import { COLOR } from "@utils/theme/constants";
 import { RecordButtonProps } from "..";
+import SvgIcon from "@mui/material/SvgIcon";
 
 const Img = styled("img")``;
 
@@ -37,17 +38,18 @@ export default function RecordButton(data: RecordButtonProps) {
                 mb: downLG ? "0px" : "20px",
             }}
         >
-            <Img
-                src={hightLight ? selectedImg : selected ? selectedImg : img}
+            <SvgIcon
                 sx={{
                     width: "40px",
                     height: "40px",
                 }}
-            />
+            >
+                {hightLight ? selectedImg : selected ? selectedImg : img}
+            </SvgIcon>
+
             <Typography
                 sx={{
                     color: hightLight ? COLOR.safe : selected ? COLOR.safe : alpha(COLOR.text, 0.75),
-                    fontWeight: selected ? "bold" : "normal",
                     lineHeight: "16px",
                     fontSize: "14px",
                     mt: "5px",

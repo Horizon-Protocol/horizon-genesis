@@ -1,8 +1,9 @@
-import { Box, styled, Typography } from "@mui/material";
+import { Box, Typography } from "@mui/material";
 import { PAGE_COLOR } from "@utils/theme/constants";
 import information from "@assets/images/information.png";
 import { ratiosPercentAtom } from "@atoms/app";
 import { useAtomValue } from "jotai";
+import { styled } from "@mui/material/styles";
 
 const Img = styled("img")``;
 

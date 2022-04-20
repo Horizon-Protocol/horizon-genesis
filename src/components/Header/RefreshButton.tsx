@@ -25,9 +25,10 @@ export default function RefreshButton(props: BoxProps) {
       bgcolor={COLOR_BG_50}
       onClick={refresh}
       sx={{
+        backgroundColor:'rgba(16, 38, 55, 0.4)',
         cursor: "pointer",
         ":hover": {
-          bgcolor: COLOR_BG,
+          bgcolor: 'rgba(16, 38, 55, 1)',
         },
       }}
       {...props}

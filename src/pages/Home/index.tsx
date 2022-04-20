@@ -122,7 +122,7 @@ export default function Home() {
           sm: "90px",
         }}
         sx={{
-          mt: "30px",
+          mt: "29px",
           mb: "50px",
           width: "100%",
           height: "300px",

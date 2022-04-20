@@ -21,7 +21,7 @@ export default function MenuItem({
       justifyContent="space-between"
       letterSpacing="0.5px"
       color={COLOR.text}
-      bgcolor='rgb(16,38,55)'
+      bgcolor='rgba(16, 38, 55, 0.4)'
       borderRadius={1}
       sx={{
         cursor: "pointer",
@@ -29,9 +29,10 @@ export default function MenuItem({
         ":hover": {
           color: COLOR.safe,
           opacity: 1,
+          backgroundColor: 'rgba(16, 38, 55, 1)'
         },
         ":hover *": {
-          // color: COLOR.safe,
+          color: COLOR.safe,
         },
         ...sx,
       }}

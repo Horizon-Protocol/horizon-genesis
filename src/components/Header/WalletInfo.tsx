@@ -18,6 +18,12 @@ export default function WalletInfo(props: BoxProps) {
       alignItems='center'
       whiteSpace='nowrap'
       textAlign='center'
+      sx={{
+        backgroundColor: 'rgba(16, 38, 55, 0.4)',
+        ":hover":{
+          backgroundColor: 'rgba(16, 38, 55, 1)',
+        }
+      }}
       {...props}
     >
       {/* <Network /> */}
@@ -30,7 +36,6 @@ export default function WalletInfo(props: BoxProps) {
         sx={{
           color: COLOR.text,
           p: "4px 0px 4px 12px",
-          backgroundColor: 'rgba(16, 38, 55, 0.3)',
           height:'36px',
           textTransform: "lowercase",
         }}
@@ -71,7 +76,6 @@ export default function WalletInfo(props: BoxProps) {
           boxShadow='0px 0px 4px rgba(42, 212, 183, 0.5)'
         />
         </Box>
-        
       </Button>
     </Box>
   );

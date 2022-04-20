@@ -18,11 +18,11 @@ export const AllPools: StakeCardProps[] = [
     color: "#FC4C07",
     logo: phbLogo,
     links: [
-      {
-        href: "https://www.binance.com/en/trade/PHB_BTC",
-        logo: bnbLogo,
-        text: "Buy PHB",
-      },
+      // {
+      //   href: "https://www.binance.com/en/trade/PHB_BTC",
+      //   logo: bnbLogo,
+      //   text: "Buy PHB",
+      // },
     ],
     desc: (
       <>

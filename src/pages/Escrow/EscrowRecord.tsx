@@ -1,26 +1,18 @@
 import { Box, BoxProps, TableCellProps, Typography } from "@mui/material";
-import Table from "@mui/material/Table";
-import TableBody from "@mui/material/TableBody";
-import TableCell from "@mui/material/TableCell";
-import TableContainer from "@mui/material/TableContainer";
-import TableHead from "@mui/material/TableHead";
-import TablePagination from "@mui/material/TablePagination";
-import TableRow from "@mui/material/TableRow";
 import { useState } from "react";
-import { COLOR, COLOR_BG_30 } from "@utils/theme/constants";
+import { COLOR } from "@utils/theme/constants";
 import Pagination from "@components/Pagination";
-import { DataGrid, GridColDef } from "@mui/x-data-grid";
+import { GridColDef } from "@mui/x-data-grid";
 import CustomDataGrid from "@components/CustomDataGrid";
 import {
   SortedDescendingIcon,
   SortedAscendingIcon,
   ColumnSelectorIcon,
 } from "@components/TableSortIcon";
-import iconNoTransaction from "@assets/wallets/no-transaction.svg";
 import NoRowsOverlay from "@components/NoRowsOverlay";
 import { useAtomValue } from "jotai/utils";
 import { rewardsEscrowAtom } from "@atoms/record";
-import { formatNumber } from "@utils/number";
+import { BNWithDecimals, formatNumber } from "@utils/number";
 import dayjs from "dayjs";
 
 interface RowsData {
@@ -53,7 +45,7 @@ export default function EscrowRecord() {
           claimDate: dayjs(Number(item.endTime) * 1000)
             .subtract(52, "w")
             .format("DD/MM/YYYY hh:mm"),
-          amount: formatNumber(item.escrowAmount),
+          amount: formatNumber(BNWithDecimals(item.escrowAmount)),
         };
       })
     : [];

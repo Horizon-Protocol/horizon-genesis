@@ -79,7 +79,7 @@ export default function useEscrowDataQuery() {
             vestingEntries.forEach((item) => {
                 const endTime = item[0]
                 const entryID = item[1]
-                const escrowAmount = item[2]
+                const escrowAmount = item[1]
                 // if (escrowAmount?.lt(0)) {
                     unorderedSchedule.push({
                         endTime,

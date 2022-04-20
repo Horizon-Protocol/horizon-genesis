@@ -67,14 +67,6 @@ export default function HistoryRecord() {
       const rows = historicalOperationData
         .map((item) => {
           if (item.type != HistoryType.Claim) {
-            // let value = Number(item.value)
-            // let rateValue = hznRate.toNumber()
-            // let rewards =  value / rateValue
-            // console.log("value-rate",{
-            //     value,
-            //     rateValue,
-            //     rewards
-            // })
             item.rewards = (Number(item.value) / hznRate.toNumber()).toString();
           }
           let valueprefix = "";
@@ -113,22 +105,10 @@ export default function HistoryRecord() {
         })
         .filter((item) => {
           const itemDate = dayjs(Number(item.timestamp) * 1000);
-          // console.log('===chooseStartend',{
-          //     chooseStart:chooseStart,
-          //     chooseEnd:chooseEnd,
-          //     item:itemDate
-          // })
           return allDate
             ? item
             : itemDate.isAfter(chooseStart) && itemDate.isBefore(chooseEnd);
         });
-      console.log("计算结束",{
-        historicalOperationData,
-        historyType,
-        allDate,
-        rows
-      })
-
       setLoading(false);
       return rows;
     } else {
@@ -175,7 +155,6 @@ export default function HistoryRecord() {
       editable: false,
       headerAlign: "left",
       renderCell({ value, row }) {
-        console.log(value)
         return (
           <Typography
             sx={{
@@ -187,11 +166,11 @@ export default function HistoryRecord() {
             }}
           >
             {value.type == HistoryType.Claim && <>
-            {value.rewards}
-            <Box component="span" sx={{ ml: "4px", opacity: 0.5 }}>
-              HZN
-            </Box>
-            <br />
+              {value.rewards}
+              <Box component="span" sx={{ ml: "4px", opacity: 0.5 }}>
+                HZN
+              </Box>
+              <br />
             </>}
             {value.value}
             <Box component="span" sx={{ ml: "4px", opacity: 0.5 }}>
@@ -241,11 +220,11 @@ export default function HistoryRecord() {
       <Box
         sx={{
           display:
-            connected ? 
+            connected ?
 
-            historicalIsLoading ? "block" :
-            historicalOperationData != null &&
-            historicalOperationData.length > 0 ? "block" : "none"
+              historicalIsLoading ? "block" :
+                historicalOperationData != null &&
+                  historicalOperationData.length > 0 ? "block" : "none"
 
               : "none"
         }}
@@ -313,11 +292,11 @@ export default function HistoryRecord() {
               ColumnSortedAscendingIcon: SortedAscendingIcon,
               ColumnUnsortedIcon: ColumnSelectorIcon,
               NoRowsOverlay: () => <Box sx={{
-                mt:'50px',
-                textAlign:'center',
-                width:"100%",
+                mt: '50px',
+                textAlign: 'center',
+                width: "100%",
                 fontSize: '14px',
-                letterSpacing:'.5px',
+                letterSpacing: '.5px',
                 fontWeight: 'bold',
                 color: COLOR.text,
                 opacity: .2,

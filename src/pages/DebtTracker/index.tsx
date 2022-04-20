@@ -3,7 +3,7 @@ import DebtOverview from "@components/Record/Debt/DebtOverview";
 import useReponsiveChart from "@hooks/useReponsiveChart";
 import { Box, Typography } from "@mui/material";
 import { BarPrice, BusinessDay, IChartApi, ISeriesApi, LineData, LineSeriesPartialOptions, MouseEventParams, Point, PriceFormat, WhitespaceData } from "lightweight-charts";
-import { first, maxBy, minBy, padStart, values } from "lodash";
+import { first, max, maxBy, minBy, padStart, takeRight, values } from "lodash";
 import { COLOR } from "@utils/theme/constants";
 import { formatFiatCurrency, formatNumber } from "@utils/number";
 import { useState } from "react";
@@ -16,6 +16,8 @@ import { useAtomValue } from "jotai/utils";
 import useWallet from "@hooks/useWallet";
 import { debtAtom } from "@atoms/debt";
 import { sortBy } from "lodash"
+import { useMemo } from "react";
+import { kMaxLength } from "buffer";
 
 interface ToolTipCellPros {
     color: string;
@@ -230,7 +232,6 @@ export default function DebtTracker() {
     const historicalActualDebt = useAtomValue(historicalActualDebtAtom);
     const globalDebt = useAtomValue(globalDebtAtom)
     const { debtBalance } = useAtomValue(debtAtom);
-
      
     const EmptyActiveIsuuedDebtData: () => LineData[] = () => {
         let emptyData:LineData[] = []
@@ -245,6 +246,18 @@ export default function DebtTracker() {
         }
         return emptyData.reverse()
     }
+
+    const dataMaxLength = useMemo(()=>{
+        let maxLength = 30
+        if (historicalIssuedDebt.length > 0){
+            //get the first date and calculate how many days from today
+            const firstData = historicalIssuedDebt[0]
+            let todayDate = dayjs(new Date())
+            maxLength = todayDate.diff(firstData.timestamp * 1000,'day') + 2
+            // alert(maxLength)
+        }
+        return maxLength
+    },[ historicalIssuedDebt])
 
     const setSeriesData = (series: ISeriesApi<"Line"> | null, data: LineData[]) => {
         // console.log('beforeData',data)
@@ -295,7 +308,8 @@ export default function DebtTracker() {
             }
         }
         // console.log('fullyData',fullyData)
-        series?.setData(fullyData)
+        // series?.setData(fullyData)
+        series?.setData(takeRight(fullyData,dataMaxLength))
     }
 
     useEffect(() => {
@@ -347,13 +361,13 @@ export default function DebtTracker() {
             seriesData = issuedRows.reverse()
         }
         if (connected){
-            setSeriesData(isuuedDebtLineSeries,seriesData)
+            setSeriesData(isuuedDebtLineSeries, seriesData)
         }
     }, [historicalIssuedDebt, acitveDebtLineSeries, isuuedDebtLineSeries])
 
     useEffect(() => {
         if (globalDebt?.length) {
-            const globalRows:LineData[] = []
+            let globalRows:LineData[] = []
             for (let i = globalDebt?.length - 1; i >= 0; i--) {
                 var gdebt = globalDebt[i]
                 const time = dayjs.unix(Number(gdebt.id)).format("YYYY-MM-DD")
@@ -367,7 +381,7 @@ export default function DebtTracker() {
             // console.log('globalRows',globalRows)
             setSeriesData(globalDebtLineSeries, globalRows)
         }
-    }, [globalDebt, globalDebtLineSeries])
+    }, [globalDebt, globalDebtLineSeries, historicalActualDebt])
 
     return (
         <PageCard

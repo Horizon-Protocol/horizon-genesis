@@ -8,7 +8,7 @@ import PrimaryButton from "@components/PrimaryButton";
 import useEscrowCalculations from "@hooks/Escrowed/useEscrowCalculations";
 import { useMemo } from "react";
 import { format } from "path";
-import { formatNumber,formatUnitsWithDecimals, zeroBN } from "@utils/number";
+import { formatNumber,BNWithDecimals, zeroBN } from "@utils/number";
 
 export default function Escrow() {
 
@@ -63,7 +63,7 @@ export default function Escrow() {
                                     <EscrowedCard 
                                     title="TOTAL UNLOCKED" 
                                     color={totalClaimableBalance.gt(zeroBN) ? COLOR.safe : COLOR.text} 
-                                    amount={formatNumber(formatUnitsWithDecimals(totalVestedBalance))} />
+                                    amount={formatNumber(BNWithDecimals(totalVestedBalance))} />
                                 </Box>
                             </Grid>
                         </Grid>

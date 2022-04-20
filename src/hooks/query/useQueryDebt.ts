@@ -86,7 +86,7 @@ export default function useQueryDebt() {
                     }
                 `
             )
-            // console.log("issuesReponse",issuesReponse.issueds)
+            console.log("issuesReponse",issuesReponse.issueds)
             // console.log("issuesReponse",issuesReponse.issueds.map(item => {
             //     const time = dayjs.unix(Number(item.timestamp)).format("YYYY-MM-DD")
             //     const value = Number(item.value)

@@ -1,7 +1,7 @@
 import { Box, Button, Typography } from "@mui/material";
 import { COLOR, PAGE_COLOR } from "@utils/theme/constants";
 import PrimaryButton from "@components/PrimaryButton";
-import mintBg from "@assets/bgs/hzn.png";
+import mintBg from "@assets/images/slidemint.png";
 import { useHistory } from "react-router-dom";
 import { HZNBuyLink } from "@utils/constants";
 import ActionLink from "@components/Alerts/ActionLink";
@@ -12,16 +12,18 @@ export default function BannerMint() {
 
   return (
     <Box
-      height='240px'
+      height='207px'
       width='100%'
+      // bgcolor='blue'
       display='flex'
       flexDirection='column'
       alignItems='center'
       justifyContent='center'
-      bgcolor='red'
-      style={{
-        background: `url(${mintBg}) no-repeat`,
-        backgroundSize: "100% 100%",
+      sx={{
+        backgroundImage: mintBg && `url(${mintBg})`,
+        backgroundSize: "auto 100%",
+        backgroundPositionX:'center',
+        backgroundRepeat: "no-repeat",
       }}
       px={{
         xs: 7,
@@ -29,70 +31,81 @@ export default function BannerMint() {
       }}
     >
       <Typography
+        marginTop='20px'
         component='div'
         textAlign='center'
         fontSize={{
           xs: '20px',
-          sm: '34px',
+          sm: '36px',
         }}
-        fontWeight='bold'
+        color='#fff'
+        fontWeight='400'
         variant="h5"
         fontFamily='Raleway'
-        lineHeight='4opx'
+        lineHeight='42px'
         letterSpacing={2}
       >
         <span style={{
-          color: PAGE_COLOR.mint
+          color: PAGE_COLOR.mint,
+          fontWeight: 'bold'
         }}>MINT </span>
-        SYNTHETIC ASSETS<br/>AND <span style={{
-          color: PAGE_COLOR.mint
+        SYNTHETIC ASSETS<br />AND <span style={{
+          color: PAGE_COLOR.mint,
+          fontWeight: 'bold'
         }}>EARN</span> REWARDS
       </Typography>
       <Typography
         textAlign='center'
-        fontSize={12}
+        fontSize={14}
         fontWeight='normal'
         lineHeight='16px'
         fontFamily='Raleway'
         letterSpacing={1}
         mt='4px'
+        color='rgba(180, 224, 255, 0.75)'
       >
-        Stake HZN to mint zUSD (a USD stablecoin) and <br/>earn rewards.
+        Stake HZN to mint zUSD (a USD stablecoin) and <br />earn rewards.
       </Typography>
-      <Box sx={{display:'flex'}}>
-      <PrimaryButton
-        size='large'
-        fullWidth
-        sx={{
-          height: 28,
-          width: 122,
-          mt: '13px'
-        }}
-        onClick={()=>{
-          history.push('mint')
-        }}
-      >
-        MINT NOW
-      </PrimaryButton>
-      <ActionLink underline="none" showArrow={false} href={HZNBuyLink} target='_blank'>
+      <Box sx={{ display: 'flex' }}>
         <PrimaryButton
-          size='large'
-          fullWidth
           sx={{
-            ml: '10px',
-            backgroundColor:"transparent",
-            border: `1px solid ${COLOR.safe}`,
-            color: COLOR.safe,
+            letterSpacing: '1px',
+            borderRadius: '2px',
+            fontSize: '12px',
             height: 28,
             width: 122,
-            mt: '13px'
+            mt: '20px'
+          }}
+          onClick={() => {
+            history.push('mint')
           }}
         >
-          GET HZN
+          MINT NOW
         </PrimaryButton>
-      </ActionLink>
+        <ActionLink underline="none" showArrow={false} href={HZNBuyLink} target='_blank'>
+          <PrimaryButton
+            sx={{
+              letterSpacing: '1px',
+              borderRadius: '2px',
+              fontSize: '12px',
+              ml: '10px',
+              backgroundColor: "transparent",
+              border: `1px solid ${COLOR.safe}`,
+              color: COLOR.safe,
+              height: 28,
+              width: 122,
+              mt: '20px',
+              ":hover":{
+                color:'#1E1F25',
+                backgroundColor: 'rgba(42, 212, 183, 1)'
+              }
+            }}
+          >
+            GET HZN
+          </PrimaryButton>
+        </ActionLink>
       </Box>
-      
+
     </Box>
   );
 }

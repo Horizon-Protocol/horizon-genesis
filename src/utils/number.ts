@@ -110,17 +110,7 @@ export const formatPercent = (
   return formatNumber(Number(value) * 100);
 };
 
-export const formatUnitsWithDecimals = (
-  value: BN | undefined,
-  decimal = 1e18
-) => {
-  if (!value) {
-    value = zeroBN;
-  }
-  return Number(value) / decimal;
-};
-
-export const formatBNWithDecimals = (value: BN | undefined, decimal = 1e18) => {
+export const BNWithDecimals = (value: BN | undefined, decimal = 1e18) => {
   if (!value) {
     value = zeroBN;
   }

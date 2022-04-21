@@ -140,7 +140,8 @@ export default function Claim() {
         fontWeight: "bold",
         fontSize: "12px",
         mb: "10px",
-        color:COLOR.text
+        color:COLOR.text,
+        letterSpacing: '1px'
       }}>
         CLAIMABLE REWARDS
       </Typography>
@@ -165,7 +166,8 @@ export default function Claim() {
         fontSize: "12px",
         mt: "20px",
         mb: "10px",
-        color:COLOR.text
+        color:COLOR.text,
+        letterSpacing: '1px'
       }}>
         UPCOMING REWARDS
       </Typography>

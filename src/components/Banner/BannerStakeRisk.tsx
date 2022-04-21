@@ -1,9 +1,10 @@
 import { Box, SvgIcon, Typography } from "@mui/material";
-import { PAGE_COLOR } from "@utils/theme/constants";
+import { COLOR, PAGE_COLOR } from "@utils/theme/constants";
 import { ratiosPercentAtom } from "@atoms/app";
 import { useAtomValue } from "jotai";
 import { styled } from "@mui/material/styles";
 import { ReactComponent as IconAlert } from "@assets/images/alert.svg";
+import ActionLink from "@components/Alerts/ActionLink";
 
 const Img = styled("img")``;
 
@@ -53,18 +54,21 @@ export default function BannerStakeRisk() {
       >
         <>When staking HZN and minting zUSD you are<br />collateralizing the zUSD with HZN at an {targetCRatioPercent}% ratio<br />(C-Ratio). You must maintain this {targetCRatioPercent}% C-Ratio or <br />you cannot claim rewards or you can be potentially<br />liquidated if you reach a 200% C-Ratio.<br /></>
       </Typography>
-      <Box component='span'
-        onClick={() => {
-          window.open("https://docs.horizonprotocol.com/");
-        }}
+      <ActionLink
+        href={"https://docs.horizonprotocol.com/"}
+        target='_blank'
+        showArrow={false}
         sx={{
           marginTop: '10px',
           fontSize: '12px',
           fontWeight: 'bold',
+          marginLeft: '7px',
           color: PAGE_COLOR.mint,
           cursor: 'pointer'
         }}
-      >LEARN MORE</Box>
+      >
+        LEARN MORE
+      </ActionLink>
     </Box>
   );
 }

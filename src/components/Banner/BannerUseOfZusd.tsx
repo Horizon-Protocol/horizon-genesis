@@ -33,7 +33,7 @@ export default function BannerUseOfZusd() {
   
   return (
     <Box
-      height='207px'
+      height='auto'
       width='100%'
       display='flex'
       flexDirection='column'

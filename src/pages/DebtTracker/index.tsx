@@ -6,7 +6,7 @@ import { BarPrice, BusinessDay, IChartApi, ISeriesApi, LineData, LineSeriesParti
 import { last, max, maxBy, minBy, padStart, takeRight } from "lodash";
 import { COLOR } from "@utils/theme/constants";
 import { formatFiatCurrency, formatNumber } from "@utils/number";
-import { useState } from "react";
+import { useCallback, useState } from "react";
 import dayjs from "dayjs";
 import GlobalPortfolio from "./GlobalPortfolio";
 import YourPortfolio from "./YourPortfolio";
@@ -234,7 +234,8 @@ export default function DebtTracker() {
     const globalDebt = useAtomValue(globalDebtAtom)
     const { debtBalance } = useAtomValue(debtAtom);
 
-    const EmptyActiveIsuuedDebtData: () => LineData[] = () => {
+    
+    const EmptyActiveIsuuedDebtData = useCallback<() => LineData[]>(() => {
         let emptyData: LineData[] = []
         for (let i = 0; i < 30; i++) {
             const temp = (new Date()).getTime()
@@ -245,8 +246,8 @@ export default function DebtTracker() {
                 value: 0,
             })
         }
-        return emptyData.reverse()
-    }
+        return connected ? emptyData.reverse() : []
+    },[connected])
 
     const dataMaxLength = useMemo(() => {
         let maxLength = 30
@@ -345,8 +346,12 @@ export default function DebtTracker() {
             })
             seriesData = tmp
         }
-        setSeriesData(acitveDebtLineSeries, seriesData)
-    }, [historicalActualDebt, acitveDebtLineSeries, debtBalance])
+        if (connected) {
+            setSeriesData(acitveDebtLineSeries, seriesData)
+        }else{
+            acitveDebtLineSeries?.setData([])
+        }
+    }, [historicalActualDebt, acitveDebtLineSeries, debtBalance, connected])
 
     useEffect(() => {
         let seriesData: LineData[] = []
@@ -367,8 +372,12 @@ export default function DebtTracker() {
             }
             seriesData = issuedRows.reverse()
         }
-        setSeriesData(isuuedDebtLineSeries, seriesData)
-    }, [historicalIssuedDebt, isuuedDebtLineSeries])
+        if (connected) {
+            setSeriesData(isuuedDebtLineSeries, seriesData)
+        }else{
+            isuuedDebtLineSeries?.setData([])
+        }
+    }, [historicalIssuedDebt, isuuedDebtLineSeries, connected])
 
     useEffect(() => {
         if (globalDebt?.length) {

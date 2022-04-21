@@ -192,7 +192,7 @@ export default function Claim() {
               opacity: .5
             }}>ACCRUED</Box><br />EXCHANGE REWARDS</>}
           amount={upcomingExchangeReward}
-          token={zAssets.zUSD}
+          svg={<IconzUSD />}
         />
       </Box>
       <Box mt={3}>

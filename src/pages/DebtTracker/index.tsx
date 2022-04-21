@@ -345,7 +345,7 @@ export default function DebtTracker() {
             })
             seriesData = tmp
         }
-        // setSeriesData(acitveDebtLineSeries, seriesData)
+        setSeriesData(acitveDebtLineSeries, seriesData)
     }, [historicalActualDebt, acitveDebtLineSeries, debtBalance])
 
     useEffect(() => {

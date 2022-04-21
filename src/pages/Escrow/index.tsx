@@ -90,7 +90,7 @@ const EscrowedCard = ({ unlockCard, title, color, amount }: EscrowedCardProps) =
             flexDirection: 'column',
             justifyContent: 'center',
             alignItems: 'center',
-            backgroundColor: alpha(COLOR.bgColor, 1),
+            backgroundColor: COLOR.bgColor,
         }}>
             {unlockCard && <SvgIcon
                 sx={{

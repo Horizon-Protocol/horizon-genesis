@@ -6,90 +6,97 @@ import GridCrad from "@components/Banner/GridCrad";
 import { useAtomValue } from "jotai/utils";
 import { hasRewardsAtom } from "@atoms/feePool";
 import { LINK_EXCHANGE } from "@utils/constants";
-import gridMint from "@assets/images/grid-mint.png";
 import { useHistory } from "react-router-dom";
 import useUserStakingData from "@hooks/useUserStakingData";
 import TopCarousel from "./TopCarousel";
-
-const gridCards: GridCardProps[] = [
-  {
-    titleColor: PAGE_COLOR.mint,
-    icon: gridMint,
-    title: "Mint",
-    desc: (
-      <>
-        Stake HZN to mint zUSD and
-        <br />
-        earn 194.14% APY
-      </>
-    ),
-  },
-  {
-    titleColor: PAGE_COLOR.burn,
-    icon: "",
-    title: "Burn",
-    desc: (
-      <>
-        Burn zUSD to unstake HZN and
-        <br />
-        increase your C-Ratio
-      </>
-    ),
-  },
-  {
-    titleColor: COLOR.text,
-    icon: "",
-    title: "Claim",
-    desc: (
-      <>
-        Claim your weekly staking and
-        <br />
-        exchange rewards
-      </>
-    ),
-  },
-  {
-    titleColor: COLOR.text,
-    icon: "",
-    title: "Trade",
-    desc: (
-      <>
-        Trade between zAssets on
-        <br />
-        Horizon Exchange
-      </>
-    ),
-  },
-  {
-    titleColor: COLOR.text,
-    icon: "",
-    title: "Earn",
-    desc: (
-      <>
-        Supply liquidity and stake LPs to
-        <br />
-        earn yield
-      </>
-    ),
-  },
-  {
-    titleColor: COLOR.text,
-    icon: "",
-    title: "Learn",
-    desc: (
-      <>
-        Learn what’s under the hood for
-        <br />
-        Horizon Protocol
-      </>
-    ),
-  },
-];
+import { formatNumber } from "@utils/number";
+import { ReactComponent as IconMint } from "@assets/images/mint.svg";
+import { ReactComponent as IconBurn } from "@assets/images/burn.svg";
+import { ReactComponent as IconClaim } from "@assets/images/claim.svg";
+import { ReactComponent as IconTrade } from "@assets/images/trade.svg";
+import { ReactComponent as IconEarn } from "@assets/images/earn.svg";
+import { ReactComponent as IconLearn } from "@assets/images/learn.svg";
 
 export default function Home() {
   const hasRewards = useAtomValue(hasRewardsAtom);
   const history = useHistory();
-  const { stakingAPR } = useUserStakingData();
+  const { stakingAPR, isEstimateAPR } = useUserStakingData();
+
+  const gridCards: GridCardProps[] = [
+    {
+      titleColor: PAGE_COLOR.mint,
+      icon: <IconMint />,
+      title: "Mint",
+      desc: (
+        <>
+          Stake HZN to mint zUSD and
+          <br />
+          {stakingAPR * 100 && isEstimateAPR ? '≈' : null}
+          <span>{stakingAPR * 100 ? formatNumber(stakingAPR * 100) : "--"}</span>% APY
+        </>
+      ),
+    },
+    {
+      titleColor: PAGE_COLOR.burn,
+      icon: <IconBurn />,
+      title: "Burn",
+      desc: (
+        <>
+          Burn zUSD to unstake HZN and
+          <br />
+          increase your C-Ratio
+        </>
+      ),
+    },
+    {
+      titleColor: COLOR.text,
+      icon: <IconClaim/>,
+      title: "Claim",
+      desc: (
+        <>
+          Claim your weekly staking and
+          <br />
+          exchange rewards
+        </>
+      ),
+    },
+    {
+      titleColor: COLOR.text,
+      icon: <IconTrade/>,
+      title: "Trade",
+      desc: (
+        <>
+          Trade between zAssets on
+          <br />
+          Horizon Exchange
+        </>
+      ),
+    },
+    {
+      titleColor: COLOR.text,
+      icon: <IconEarn/>,
+      title: "Earn",
+      desc: (
+        <>
+          Supply liquidity and stake LPs to
+          <br />
+          earn yield
+        </>
+      ),
+    },
+    {
+      titleColor: COLOR.text,
+      icon: <IconLearn/>,
+      title: "Learn",
+      desc: (
+        <>
+          Learn what’s under the hood for
+          <br />
+          Horizon Protocol
+        </>
+      ),
+    },
+  ];
 
   useEffect(() => {}, []);
 

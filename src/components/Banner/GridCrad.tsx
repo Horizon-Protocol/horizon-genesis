@@ -1,4 +1,4 @@
-import { Typography, BoxProps, Box } from "@mui/material";
+import { Typography, BoxProps, Box, SvgIcon } from "@mui/material";
 import { styled } from "@mui/material/styles";
 import { useState } from "react";
 
@@ -8,7 +8,7 @@ declare global {
     interface GridCardProps {
         onClick?: () => void;
         titleColor: string
-        icon: string,
+        icon: JSX.Element,
         title: string,
         desc: string | JSX.Element,
         showAlert?: boolean
@@ -54,7 +54,20 @@ export default function GridCrad({
                 cursor: "pointer",
             }}
         >
-            <Img
+
+<SvgIcon
+          sx={{
+            position: 'absolute',
+            left: 0,
+            top: '-5px',
+            width: "46px",
+            height: "46px",
+            opacity: imgOpacity
+          }}
+        >
+          {icon}
+        </SvgIcon>
+            {/* <Img
                 src={icon}
                 sx={{
                     position: 'absolute',
@@ -64,7 +77,9 @@ export default function GridCrad({
                     height: "46px",
                     opacity: imgOpacity
                 }}
-            />
+            /> */}
+
+
             {showAlert && (<Box sx={{
                 position: 'absolute',
                 right: '8px',

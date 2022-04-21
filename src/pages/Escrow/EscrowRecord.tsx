@@ -40,11 +40,11 @@ export default function EscrowRecord() {
         return {
           id: formatNumber(item.entryID),
           unlockDate: dayjs(Number(item.endTime) * 1000).format(
-            "DD/MM/YYYY hh:mm"
+            "MMM d, YYYY hh:mm"
           ),
           claimDate: dayjs(Number(item.endTime) * 1000)
             .subtract(52, "w")
-            .format("DD/MM/YYYY hh:mm"),
+            .format("MMM d, YYYY hh:mm"),
           amount: formatNumber(BNWithDecimals(item.escrowAmount)),
         };
       })

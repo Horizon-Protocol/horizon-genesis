@@ -175,7 +175,7 @@ export const REACT_QUERY_DEFAULT_OPTIONS: Partial<DefaultOptions["queries"]> = {
 //horizon subgraphs endpoint
 export const GRAPH_ENDPOINT = {
   56: "https://api.thegraph.com/subgraphs/name/rout-horizon/bsc4-issuance",
-  97: "https://api.thegraph.com/subgraphs/name/rout-horizon/chapel3-issuance",
+  97: "https://api.thegraph.com/subgraphs/name/rout-horizon/chapel14-issuance",
 }[ChainId]!;
 
 export const LINK_EXCHANGE = {

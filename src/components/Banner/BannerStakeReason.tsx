@@ -61,6 +61,7 @@ export default function BannerStakeReason() {
         fontFamily='Raleway'
         letterSpacing={1}
         mt='14px'
+        color='white'
       >
         WHY STAKE HZN?
       </Typography>

@@ -97,7 +97,7 @@ export default function useQueryDebt() {
             // }))
             return issuesReponse
         } catch (e) {
-            console.log("query报错", e)
+            console.log("query报错issuesReponse", e)
             return [];
         }
     }
@@ -126,7 +126,7 @@ export default function useQueryDebt() {
             console.log("burnedsReponse", burnedsReponse.burneds)
             return burnedsReponse
         } catch (e) {
-            console.log("query报错", e)
+            console.log("query报错burnedsReponse", e)
             return [];
         }
     }
@@ -156,7 +156,7 @@ export default function useQueryDebt() {
             console.log("claimsReponse", claimsReponse)
             return claimsReponse
         } catch (e) {
-            console.log("query报错", e)
+            console.log("query报错claimsReponse", e)
             return [];
         }
     }
@@ -185,7 +185,7 @@ export default function useQueryDebt() {
             console.log("debtSnapshotsReponse", debtSnapshotsReponse)
             return debtSnapshotsReponse
         } catch (e) {
-            console.log("query报错", e)
+            console.log("query报错debtSnapshotsReponse", e)
             return [];
         }
     }

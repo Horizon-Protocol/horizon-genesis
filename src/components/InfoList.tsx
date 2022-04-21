@@ -29,7 +29,8 @@ export default function InfoList({ data, ...props }: Props & BoxProps) {
         xs: 0,
         sm: 3,
       }}
-      bgcolor="#091320"
+      borderRadius='4px'
+      bgcolor="rgba(8, 12, 22, 0.3)"
       {...props}
     >
       <List dense disablePadding>

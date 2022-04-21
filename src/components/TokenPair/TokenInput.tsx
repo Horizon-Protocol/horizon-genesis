@@ -1,15 +1,17 @@
 import { useCallback, useRef, SyntheticEvent } from "react";
-import { Box, Link, InputBase, Typography } from "@mui/material";
+import { Box, Link, InputBase, Typography, SvgIcon } from "@mui/material";
 import { trimStart } from "lodash";
 import NumberFormat from "react-number-format";
 import { formatNumber, NumericValue } from "@utils/number";
 import { BORDER_COLOR, COLOR } from "@utils/theme/constants";
-import TokenLogo from "@components/TokenLogo";
+import { ReactComponent as IconHZN } from "@assets/images/hzn.svg";
+import { ReactComponent as IconzUSD } from "@assets/images/zUSD.svg";
+import { Token } from "@utils/constants";
 
 declare global {
   interface TokenInputProps {
     disabled?: boolean;
-    token: TokenEnum | zAssetsEnum;
+    token: TokenEnum;
     label: string;
     balanceLabel?: JSX.Element | string;
     maxButtonLabel?: JSX.Element | string;
@@ -17,7 +19,6 @@ declare global {
     color?: string;
     labelColor?: string;
     bgColor?: string;
-    logo?: string;
     input: string;
     inputPrefix?: string;
     onInput(v: string, max?: boolean): void;
@@ -39,7 +40,6 @@ export default function TokenInput({
   balanceLabel,
   maxButtonLabel,
   max,
-  logo,
   color,
   labelColor,
   bgColor,
@@ -82,7 +82,16 @@ export default function TokenInput({
       bgcolor={bgColor || "#091320"}
     >
       <Box display="flex" alignItems="center">
-        <TokenLogo token={token} logo={logo} />
+        {/* <TokenLogo token={token} logo={logo} /> */}
+        <SvgIcon
+          sx={{
+            width: '50px',
+            height: '50px'
+          }}
+        >
+          {token == Token.HZN ? <IconHZN/> : <IconzUSD/>}
+          
+        </SvgIcon>
         <Box display="flex" flexDirection="column" p="10px 12px" fontSize={24}>
           <Typography
             fontSize={12}

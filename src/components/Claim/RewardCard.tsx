@@ -1,5 +1,4 @@
-import { Box, BoxProps } from "@mui/material";
-import TokenLogo from "@components/TokenLogo";
+import { Box, BoxProps, SvgIcon } from "@mui/material";
 import { COLOR, BORDER_COLOR } from "@utils/theme/constants";
 import { formatNumber, zeroBN } from "@utils/number";
 import { Token } from "@utils/constants";
@@ -7,10 +6,11 @@ import { Token } from "@utils/constants";
 interface Props {
   label: string | JSX.Element;
   amount: BN;
-  token?: TokenEnum | zAssetsEnum;
+  token?: string;
   disabled?: boolean;
   help?: string | JSX.Element;
   upcoming?: boolean;
+  svg?: JSX.Element;
 }
 
 export default function RewardCard({
@@ -20,6 +20,7 @@ export default function RewardCard({
   disabled,
   help,
   upcoming = false,
+  svg,
   ...props
 }: Props & BoxProps) {
   return (
@@ -28,6 +29,7 @@ export default function RewardCard({
       bgcolor={COLOR.bgColor}
       height={123}
       position="relative"
+      borderRadius='4px'
       {...props}
     >
       <Box
@@ -41,7 +43,14 @@ export default function RewardCard({
           opacity: disabled ? 0.5 : 1,
         }}
       >
-        {!upcoming && <TokenLogo token={token} />}
+        {!upcoming && <SvgIcon
+          sx={{
+            width: '32px',
+            height: '32px'
+          }}
+        >
+          {svg}
+        </SvgIcon>}
         <Box
           component="span"
           mt="5px"
@@ -61,8 +70,8 @@ export default function RewardCard({
             upcoming
               ? "white"
               : amount.isGreaterThan(zeroBN)
-              ? COLOR.safe
-              : "white"
+                ? COLOR.safe
+                : "white"
           }
           fontSize={upcoming ? 18 : 24}
           fontWeight={700}

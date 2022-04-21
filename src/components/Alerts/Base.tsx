@@ -25,7 +25,7 @@ export default function BaseAlert({
       display='flex'
       borderRadius='4px'
       borderTop={`2px solid ${baseColor}`}
-      bgcolor='rgba(16, 38, 55, 0.3)'
+      bgcolor={COLOR.bgColor}
       color={baseColor}
       {...props}
     >

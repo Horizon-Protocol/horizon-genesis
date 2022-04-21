@@ -6,7 +6,6 @@ import { useSnackbar } from "notistack";
 import horizon from "@lib/horizon";
 import { PAGE_COLOR } from "@utils/theme/constants";
 import { Token } from "@utils/constants";
-import { zAssets } from "@utils/zAssets";
 import {
   formatCRatioToPercent,
   formatNumber,
@@ -81,7 +80,7 @@ export default function Mint() {
   const toToken: TokenProps = useMemo(
     () => ({
       disabled: !connected,
-      token: zAssets.zUSD,
+      token: Token.ZUSD,
       label: "MINT",
       color: THEME_COLOR,
       bgColor: "#0A1624",

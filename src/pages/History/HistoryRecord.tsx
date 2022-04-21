@@ -88,7 +88,7 @@ export default function HistoryRecord() {
             type: item.type,
             timestamp: item.timestamp,
             date: dayjs(Number(item.timestamp) * 1000).format(
-              "DD/MM/YYYY hh:mm"
+              "MMM d, YYYY hh:mm"
             ),
             amount: {
               type: item.type,

@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg width="512px" height="512px" viewBox="0 0 512 512" version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
+    <title>Artboard</title>
+    <g id="Artboard" stroke="none" stroke-width="1" fill="none" fill-rule="evenodd">
+        <g id="trade" transform="translate(0.000000, 3.000000)" fill-rule="nonzero">
+            <polygon id="Path" fill="#3377FF" points="511 252.922922 434.312255 177 383.187092 227.615616 408.749674 252.922922 255.375188 404.768767 204.250025 354.154155 229.812607 328.845845 242.593897 341.500502 242.593897 265.57758 165.906153 265.57758 178.687444 278.231233 102 354.154155 255.375188 506"></polygon>
+            <polygon id="Path" fill="#2AD4B7" points="409 151.845845 255.625326 0 0 253.077078 76.6875376 329 127.812663 278.384384 102.25005 253.077078 255.625326 101.23063 306.750552 151.845845 281.187939 177.153151 268.406633 164.499498 268.406633 240.42242 345.094471 240.42242 332.313165 227.768767"></polygon>
+        </g>
+    </g>
+</svg>

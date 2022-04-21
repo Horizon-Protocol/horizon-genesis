@@ -1,14 +1,13 @@
 import PageCard from "@components/PageCard";
-import { Box, Grid, Typography } from "@mui/material";
+import { Box, Grid, SvgIcon, Typography } from "@mui/material";
 import { COLOR } from "@utils/theme/constants";
 import { alpha } from "@mui/material/styles";
 import EscrowRecord from "./EscrowRecord";
-import TokenLogo from "@components/TokenLogo";
 import PrimaryButton from "@components/PrimaryButton";
 import useEscrowCalculations from "@hooks/Escrowed/useEscrowCalculations";
-import { useMemo } from "react";
-import { format } from "path";
-import { formatNumber,BNWithDecimals, zeroBN } from "@utils/number";
+import { formatNumber, BNWithDecimals, zeroBN } from "@utils/number";
+import { ReactComponent as IconHZN } from "@assets/images/hzn.svg";
+import { lineHeight } from "@mui/system";
 
 export default function Escrow() {
 
@@ -38,10 +37,10 @@ export default function Escrow() {
                         <Box sx={{
                             height: '182px',
                         }}>
-                            <EscrowedCard unlockCard 
-                            title="AVAILABLE HZN" 
-                            color={totalClaimableBalance.gt(zeroBN) ? COLOR.safe : COLOR.text} 
-                            amount={formatNumber(totalClaimableBalance)} />
+                            <EscrowedCard unlockCard
+                                title="AVAILABLE HZN"
+                                color={totalClaimableBalance.gt(zeroBN) ? COLOR.safe : COLOR.text}
+                                amount={formatNumber(totalClaimableBalance)} />
                         </Box>
                     </Grid>
                     <Grid item xs={6}>
@@ -50,20 +49,20 @@ export default function Escrow() {
                                 <Box sx={{
                                     height: '86px',
                                 }}>
-                                    <EscrowedCard 
-                                    title="Total ESCROWED" 
-                                    color={COLOR.safe} 
-                                    amount={formatNumber(totalEscrowBalance)} />
+                                    <EscrowedCard
+                                        title="TOTAL ESCROWED"
+                                        color={COLOR.safe}
+                                        amount={formatNumber(totalEscrowBalance)} />
                                 </Box>
                             </Grid>
                             <Grid item xs={12}>
                                 <Box sx={{
                                     height: '86px',
                                 }}>
-                                    <EscrowedCard 
-                                    title="TOTAL UNLOCKED" 
-                                    color={totalClaimableBalance.gt(zeroBN) ? COLOR.safe : COLOR.text} 
-                                    amount={formatNumber(BNWithDecimals(totalVestedBalance))} />
+                                    <EscrowedCard
+                                        title="TOTAL UNLOCKED"
+                                        color={totalClaimableBalance.gt(zeroBN) ? COLOR.safe : COLOR.text}
+                                        amount={formatNumber(BNWithDecimals(totalVestedBalance))} />
                                 </Box>
                             </Grid>
                         </Grid>
@@ -74,10 +73,6 @@ export default function Escrow() {
         </PageCard>
     )
 }
-
-// ["Total ESCROWED","TOTAL UNLOCKED"][index]}
-// COLOR.safe : COLOR.text,
-
 
 interface EscrowedCardProps {
     unlockCard?: boolean,
@@ -97,7 +92,15 @@ const EscrowedCard = ({ unlockCard, title, color, amount }: EscrowedCardProps) =
             alignItems: 'center',
             backgroundColor: alpha(COLOR.bgColor, 1),
         }}>
-            {unlockCard && <TokenLogo />}
+            {unlockCard && <SvgIcon
+                sx={{
+                    mb: '10px',
+                    width: "32px",
+                    height: "32px",
+                }}
+            >
+                <IconHZN />
+            </SvgIcon>}
             <Typography sx={{
                 alignSelf: 'center',
                 verticalAlign: "center",
@@ -106,18 +109,21 @@ const EscrowedCard = ({ unlockCard, title, color, amount }: EscrowedCardProps) =
                 color: COLOR.text,
                 fontSize: "12px",
                 letterSpacing: "1px",
-                lineHeight: "25px"
+                lineHeight: "14px",
+                textTransform: 'uppercase'
             }}>
                 {title}<br />
                 <span style={{
                     fontSize: "24px",
                     color: color,
-                    fontWeight: "bold"
+                    fontWeight: "bold",
+                    lineHeight: '30px'
                 }}>{amount}</span>
                 <span style={{
                     marginLeft: '4px',
                     fontSize: "16px",
-                    opacity: .5
+                    opacity: .5,
+                    lineHeight: '30px'
                 }}>HZN</span>
             </Typography>
             {unlockCard && <PrimaryButton

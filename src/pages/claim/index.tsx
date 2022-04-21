@@ -12,7 +12,7 @@ import {
 } from "@atoms/feePool";
 import horizon from "@lib/horizon";
 import useWallet from "@hooks/useWallet";
-import { COLOR,PAGE_COLOR } from "@utils/theme/constants";
+import { COLOR, PAGE_COLOR } from "@utils/theme/constants";
 import headerBg from "@assets/images/claim.svg";
 import PageCard from "@components/PageCard";
 import RewardCard from "@components/Claim/RewardCard";
@@ -21,10 +21,11 @@ import PrimaryButton from "@components/PrimaryButton";
 import useRefresh from "@hooks/useRefresh";
 import { formatNumber, toBN, zeroBN } from "@utils/number";
 import { getWalletErrorMsg } from "@utils/helper";
-import { zAssets } from "@utils/zAssets";
 import { historicalClaimHZNAndZUSDAtom, historicalOperationAtom } from "@atoms/record";
 import { ratiosPercentAtom, targetRatioAtom } from "@atoms/app";
 import { secondsOfDays } from "@utils/date";
+import { ReactComponent as IconHZN } from "@assets/images/hzn.svg";
+import { ReactComponent as IconzUSD } from "@assets/images/zUSD.svg";
 
 const THEME_COLOR = PAGE_COLOR.claim;
 
@@ -43,7 +44,7 @@ export default function Claim() {
   const lifeTimeClaimed = useMemo(
     () => {
       let ltHZN = zeroBN
-      let ltzUSD = zeroBN 
+      let ltzUSD = zeroBN
       historicalClaim.forEach(element => {
         ltHZN = ltHZN.plus(element.rewards)
         ltzUSD = ltzUSD.plus(element.value)
@@ -56,17 +57,17 @@ export default function Claim() {
     [historicalClaim]
   );
 
-  const ableToClaim = useMemo(()=>{
+  const ableToClaim = useMemo(() => {
     // console.log("ableToClaim", {
     //   currentCRatio: formatNumber(currentCRatio),
     //   targetRatio: formatNumber(targetRatio)
     // })
-    if (currentCRatio.gt(targetRatio)){
+    if (currentCRatio.gt(targetRatio)) {
       return false
-    }else{
+    } else {
       return canClaim
     }
-  },[canClaim,targetRatio])
+  }, [canClaim, targetRatio])
 
   const currentTotalRewards = useMemo(
     // dayjs.duration()
@@ -77,12 +78,12 @@ export default function Claim() {
   const nextClaimCountDown = useAtomValue(nextClaimCountDownAtom);
 
   const nextClaimCountDownDuration = useAtomValue(nextClaimCountDownDurationAtom);
-  const warning = useMemo(()=>{
-    if (0 < nextClaimCountDownDuration && nextClaimCountDownDuration < secondsOfDays(2)){
+  const warning = useMemo(() => {
+    if (0 < nextClaimCountDownDuration && nextClaimCountDownDuration < secondsOfDays(2)) {
       return true
     }
     return false
-  },[nextClaimCountDownDuration])
+  }, [nextClaimCountDownDuration])
 
   const infoList: Info[] = [
     {
@@ -98,18 +99,6 @@ export default function Claim() {
       label: "Lifetime Claimed Rewards",
       value: `${formatNumber(lifeTimeClaimed.ltHZN)} HZN / ${formatNumber(lifeTimeClaimed.ltzUSD)} zUSD`,
     },
-    // {
-    //   label: "Total Rewards this Period",
-    //   value: `${formatNumber(currentTotalRewards)} HZN`,
-    // }, 
-    // {
-    //   label: "Total Claimed Rewards",
-    //   value: `${formatNumber(escrowedReward)} HZN`,
-    // },
-    // {
-    //   label: "Lifetime Rewards",
-    //   value: "0.00 HZN",
-    // },
   ];
 
   const refresh = useRefresh();
@@ -150,16 +139,23 @@ export default function Claim() {
         textAlign: "center",
         fontWeight: "bold",
         fontSize: "12px",
-        mb: "10px"
+        mb: "10px",
+        color:COLOR.text
       }}>
         CLAIMABLE REWARDS
       </Typography>
       <Box display='flex' justifyContent='space-between'>
-        <RewardCard label='STAKING REWARDS' amount={stakingReward} />
+        <RewardCard
+          label='STAKING REWARDS'
+          amount={stakingReward} 
+          token='HZN'
+          svg={<IconHZN />}
+          />
         <RewardCard
           label='EXCHANGE REWARDS'
           amount={exchangeReward}
-          token={zAssets.zUSD}
+          token='zUSD'
+          svg={<IconzUSD />}
         />
       </Box>
       <Typography sx={{
@@ -167,32 +163,33 @@ export default function Claim() {
         textAlign: "center",
         fontWeight: "bold",
         fontSize: "12px",
-        mt:"20px",
-        mb:"10px"
+        mt: "20px",
+        mb: "10px",
+        color:COLOR.text
       }}>
         UPCOMING REWARDS
       </Typography>
       <Box display='flex' justifyContent='space-between'>
         <RewardCard
-        height={87}
-        upcoming={true} 
-        label={<><Box
-        component="span"
-           sx={{
-             fontSize: 7,
-              color:COLOR.text, 
-             opacity:.5
-        }}>ESTIMATED</Box><br />STAKING REWARDS</>}
-        amount={upcomingStakingReward} />
-        <RewardCard
           height={87}
-          upcoming={true} 
+          upcoming={true}
           label={<><Box
             component="span"
-               sx={{
-                 fontSize: 7,
-                  color:COLOR.text, 
-                 opacity:.5
+            sx={{
+              fontSize: 7,
+              color: COLOR.text,
+              opacity: .5
+            }}>ESTIMATED</Box><br />STAKING REWARDS</>}
+          amount={upcomingStakingReward} />
+        <RewardCard
+          height={87}
+          upcoming={true}
+          label={<><Box
+            component="span"
+            sx={{
+              fontSize: 7,
+              color: COLOR.text,
+              opacity: .5
             }}>ACCRUED</Box><br />EXCHANGE REWARDS</>}
           amount={upcomingExchangeReward}
           token={zAssets.zUSD}
@@ -215,15 +212,15 @@ export default function Claim() {
         )}
         {currentCRatio.gt(targetRatio) && (
           <Typography sx={{
-            mt:'10px',
-            textAlign:'center',
-            color:'#FA2256',
-            fontSize:"12px",
-            letterSpacing:'0.5px',
-            lineHeight:"14px"
+            mt: '10px',
+            textAlign: 'center',
+            color: '#FA2256',
+            fontSize: "12px",
+            letterSpacing: '0.5px',
+            lineHeight: "14px"
           }}>
-          You need to restore your C-Ratio back to {targetCRatioPercent}%<br/>
-          before you can claim your rewards.</Typography>
+            You need to restore your C-Ratio back to {targetCRatioPercent}%<br />
+            before you can claim your rewards.</Typography>
         )}
       </Box>
     </PageCard>

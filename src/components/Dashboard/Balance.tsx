@@ -6,7 +6,7 @@ import { detailAtom } from "@atoms/wallet";
 import { useAtomValue } from "jotai/utils";
 import useWallet from "@hooks/useWallet";
 import { COLOR } from "@utils/theme/constants";
-import { ConnectorNames, Token, TokenName } from "@utils/constants";
+import { ConnectorNames, Token } from "@utils/constants";
 import { registerToken, RegisterTokenConf } from "@utils/wallet";
 
 interface Data {

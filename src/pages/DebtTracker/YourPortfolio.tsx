@@ -40,6 +40,7 @@ export default function YourPortfolio() {
                 fontWeight: 'bold',
                 textAlign: 'center',
                 lineHeight: '19px',
+                letterSpacing: '1px',
                 mb: 1
             }}>YOUR PORTFOLIO
                 <br />
@@ -70,7 +71,7 @@ const ListItem = ({ text, props, index }: ListItemProps) => {
             height: '59px',
             justifyContent: 'space-around',
             alignItems: 'center',
-            backgroundColor: index !== undefined ? index % 2 == 0 ? 'rgba(16, 38, 55, 0.3)' : 'transparent' : 'transparent'
+            backgroundColor: index !== undefined ? index % 2 == 0 ? COLOR.bgColor : 'transparent' : 'transparent'
         }}>
             {text.map((item, index) =>
                 <Typography key={index} sx={{

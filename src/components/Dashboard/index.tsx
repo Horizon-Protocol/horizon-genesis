@@ -107,7 +107,7 @@ export default function Dashboard(props: BoxProps) {
         // border={1}
         borderColor={BORDER_COLOR}
         width='100%'
-        bgcolor='rgba(16, 38, 55, 0.3)'
+        bgcolor={COLOR.bgColor}
         borderRadius={{
           xs: 0,
           md: 2.5, // 10px
@@ -137,16 +137,16 @@ export default function Dashboard(props: BoxProps) {
                 {stakingAPR * 100 && isEstimateAPR ? '≈' : null}
                 <span>{stakingAPR * 100 ? formatNumber(stakingAPR * 100) : "--"}</span>%
               </>}
-              bgcolor='rgba(16, 38, 55, 0.3)'
+              bgcolor={COLOR.bgColor}
             />
             <HZNInfoPrice
               width={110}
               title='HZN PRICE'
               desc={`$${formatPrice(hznRate.toNumber(), { mantissa: 4 })}`}
-              bgcolor='rgba(16, 38, 55, 0.3)'
+              bgcolor={COLOR.bgColor}
             />
           </Box>
-          <Box mt="10px" bgcolor='rgba(16, 38, 55, 0.3)'>
+          <Box mt="10px" bgcolor={COLOR.bgColor}>
             <Balance data={balances} />
           </Box>
         </Box>

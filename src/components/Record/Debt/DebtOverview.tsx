@@ -41,7 +41,7 @@ export default function DebtOverview() {
             {dets.map((debt, index) =>
                 <Typography key={index} sx={{
                     py: '22px',
-                    backgroundColor: alpha(COLOR.bgColor, 1),
+                    backgroundColor: COLOR.bgColor,
                     width: "32%",
                     textAlign: "center",
                     color: ["#3377FF", COLOR.safe, COLOR.warning][index],

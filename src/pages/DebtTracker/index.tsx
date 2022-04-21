@@ -3,7 +3,7 @@ import DebtOverview from "@components/Record/Debt/DebtOverview";
 import useReponsiveChart from "@hooks/useReponsiveChart";
 import { Box, Typography } from "@mui/material";
 import { BarPrice, BusinessDay, IChartApi, ISeriesApi, LineData, LineSeriesPartialOptions, MouseEventParams, Point, PriceFormat, WhitespaceData } from "lightweight-charts";
-import { first, max, maxBy, minBy, padStart, takeRight, values } from "lodash";
+import { last, max, maxBy, minBy, padStart, takeRight } from "lodash";
 import { COLOR } from "@utils/theme/constants";
 import { formatFiatCurrency, formatNumber } from "@utils/number";
 import { useState } from "react";
@@ -15,9 +15,7 @@ import { globalDebtAtom, historicalActualDebtAtom, historicalIssuedDebtAtom } fr
 import { useAtomValue } from "jotai/utils";
 import useWallet from "@hooks/useWallet";
 import { debtAtom } from "@atoms/debt";
-import { sortBy } from "lodash"
 import { useMemo } from "react";
-import { kMaxLength } from "buffer";
 
 interface ToolTipCellPros {
     color: string;
@@ -86,6 +84,7 @@ export default function DebtTracker() {
         },
     }
 
+    const [chart, setChart] = useState<IChartApi>();
     const [acitveDebtLineSeries, setAcitveDebtLineSeries] = useState<ISeriesApi<"Line"> | null>(null);
     const [isuuedDebtLineSeries, setIsuuedDebtLineSeries] = useState<ISeriesApi<"Line"> | null>(null);
     const [globalDebtLineSeries, setGlobalDebtLineSeries] = useState<ISeriesApi<"Line"> | null>(null);
@@ -118,6 +117,7 @@ export default function DebtTracker() {
             },
         },
         onReady(chart, container) {
+
             const acitveDebt = chart.addLineSeries({
                 priceLineVisible: false,
                 lastValueVisible: false,
@@ -142,6 +142,7 @@ export default function DebtTracker() {
                 ...rightPriceConfig
             })
 
+            setChart(chart)
             setAcitveDebtLineSeries(acitveDebt)
             setIsuuedDebtLineSeries(isuuedDebt)
             setGlobalDebtLineSeries(globalDebt)
@@ -232,9 +233,9 @@ export default function DebtTracker() {
     const historicalActualDebt = useAtomValue(historicalActualDebtAtom);
     const globalDebt = useAtomValue(globalDebtAtom)
     const { debtBalance } = useAtomValue(debtAtom);
-     
+
     const EmptyActiveIsuuedDebtData: () => LineData[] = () => {
-        let emptyData:LineData[] = []
+        let emptyData: LineData[] = []
         for (let i = 0; i < 30; i++) {
             const temp = (new Date()).getTime()
             const today = dayjs(new Date())
@@ -247,27 +248,53 @@ export default function DebtTracker() {
         return emptyData.reverse()
     }
 
-    const dataMaxLength = useMemo(()=>{
+    const dataMaxLength = useMemo(() => {
         let maxLength = 30
-        if (historicalIssuedDebt.length > 0){
+        if (historicalIssuedDebt.length > 0) {
             //get the first date and calculate how many days from today
             const firstData = historicalIssuedDebt[0]
             let todayDate = dayjs(new Date())
-            maxLength = todayDate.diff(firstData.timestamp * 1000,'day') + 2
+            maxLength = todayDate.diff(firstData.timestamp * 1000, 'day') + 2
             // alert(maxLength)
         }
         return maxLength
-    },[ historicalIssuedDebt])
+    }, [historicalIssuedDebt])
 
     const setSeriesData = (series: ISeriesApi<"Line"> | null, data: LineData[]) => {
         // console.log('beforeData',data)
-
         if (data.length <= 0) return
-        //get maximum and minimum
-        console.log("maximumdata",data)
-        let maximumValue = Number((maxBy(data, 'value') as LineData).value)
-        let minimumValue = Number((minBy(data, 'value') as LineData).value)
-        if (maximumValue == 0 && minimumValue == 0){
+        //fill the empty date data from the first date to today
+        //dayjs today
+        let todayDate = dayjs(new Date())
+        //dayjs the first day
+        let firstTime = ((data[0] as LineData).time as string)
+        let firstDate = dayjs(firstTime)
+        //duration day
+        const totolDay = todayDate.diff(firstDate, 'day') + 1
+        const fullyData: LineData[] = []
+        let preValue: number = 0
+        for (let i = 0; i < totolDay; i++) {
+            const targetDate = firstDate.add(i, 'day')
+            const targetDateFormat = targetDate.format("YYYY-MM-DD")
+            const dataItem = data.find(item => dayjs(item.time as string).format("YYYY-MM-DD") == targetDateFormat)
+            if (dataItem) {
+                preValue = dataItem.value
+                fullyData.push(dataItem)
+            } else {
+                fullyData.push({
+                    time: targetDateFormat,
+                    value: preValue
+                })
+            }
+        }
+        // console.log('fullyData',fullyData)
+        // series?.setData(fullyData)
+        const maxData = takeRight(fullyData, dataMaxLength)
+        series?.setData(maxData)
+        //get maximum and minimum - Y-axis
+        let maximumValue = Number((maxBy(maxData, 'value') as LineData).value)
+        let minimumValue = Number((minBy(maxData, 'value') as LineData).value)
+        if (maximumValue == 0 && minimumValue == 0) {
             maximumValue = 100;
         }
         series?.applyOptions({
@@ -283,41 +310,23 @@ export default function DebtTracker() {
                 },
             }),
         })
-        //fill the empty date data from the first date to today
-        //dayjs today
-        let todayDate = dayjs(new Date())
-        //dayjs the first day
-        let firstTime = ((data[0] as LineData).time as string)
-        let firstDate = dayjs(firstTime)
-        //duration day
-        const totolDay = todayDate.diff(firstDate,'day') + 1
-        const fullyData: LineData[] = []
-        let preValue: number = 0
-        for (let i = 0;i < totolDay;i++){
-            const targetDate = firstDate.add(i, 'day')
-            const targetDateFormat = targetDate.format("YYYY-MM-DD")
-            const dataItem = data.find(item => dayjs(item.time as string).format("YYYY-MM-DD") == targetDateFormat)
-            if (dataItem) {
-                preValue = dataItem.value
-                fullyData.push(dataItem)
-            }else{
-                fullyData.push({
-                    time: targetDateFormat,
-                    value: preValue
-                })
+        //set the time range - X-axis
+        if (chart != null && chart != undefined) {
+            if (maxData[0] != undefined && last(maxData) != undefined && maxData.length > 0){
+                chart.timeScale().setVisibleRange({
+                    from: maxData[0].time,
+                    to: maxData[maxData.length - 1].time,
+                });
             }
         }
-        // console.log('fullyData',fullyData)
-        // series?.setData(fullyData)
-        series?.setData(takeRight(fullyData,dataMaxLength))
     }
 
     useEffect(() => {
-        let seriesData:LineData[] = []
+        let seriesData: LineData[] = []
         //zero month data
-        if (historicalActualDebt == undefined || historicalActualDebt.length <= 0){
+        if (historicalActualDebt == undefined || historicalActualDebt.length <= 0) {
             seriesData = EmptyActiveIsuuedDebtData()
-        }else {
+        } else {
             const actualRows: LineData[] = []
             for (let i = historicalActualDebt.length - 1; i >= 0; i--) {
                 var debt = historicalActualDebt[i]
@@ -336,18 +345,16 @@ export default function DebtTracker() {
             })
             seriesData = tmp
         }
-        if (connected){
-            setSeriesData(acitveDebtLineSeries, seriesData)
-        }
-    }, [historicalActualDebt, acitveDebtLineSeries,debtBalance])
+        // setSeriesData(acitveDebtLineSeries, seriesData)
+    }, [historicalActualDebt, acitveDebtLineSeries, debtBalance])
 
     useEffect(() => {
-        let seriesData:LineData[] = []
+        let seriesData: LineData[] = []
         //zero month data
-        if (historicalActualDebt == undefined || historicalActualDebt.length <= 0){
+        if (historicalActualDebt == undefined || historicalActualDebt.length <= 0) {
             seriesData = EmptyActiveIsuuedDebtData()
-        }else {
-            const issuedRows:LineData[] = []
+        } else {
+            const issuedRows: LineData[] = []
             for (let i = historicalIssuedDebt.length - 1; i >= 0; i--) {
                 var debt = historicalIssuedDebt[i]
                 const time = dayjs.unix(Number(debt.timestamp)).format("YYYY-MM-DD")
@@ -360,14 +367,12 @@ export default function DebtTracker() {
             }
             seriesData = issuedRows.reverse()
         }
-        if (connected){
-            setSeriesData(isuuedDebtLineSeries, seriesData)
-        }
-    }, [historicalIssuedDebt, acitveDebtLineSeries, isuuedDebtLineSeries])
+        setSeriesData(isuuedDebtLineSeries, seriesData)
+    }, [historicalIssuedDebt, isuuedDebtLineSeries])
 
     useEffect(() => {
         if (globalDebt?.length) {
-            let globalRows:LineData[] = []
+            let globalRows: LineData[] = []
             for (let i = globalDebt?.length - 1; i >= 0; i--) {
                 var gdebt = globalDebt[i]
                 const time = dayjs.unix(Number(gdebt.id)).format("YYYY-MM-DD")
@@ -378,7 +383,7 @@ export default function DebtTracker() {
                     })
                 }
             }
-            // console.log('globalRows',globalRows)
+            console.log('globalRows',globalRows)
             setSeriesData(globalDebtLineSeries, globalRows)
         }
     }, [globalDebt, globalDebtLineSeries, historicalActualDebt])
@@ -397,7 +402,7 @@ export default function DebtTracker() {
             }
         >
             <DebtOverview />
-            <Typography sx={{ fontSize: "12px", color: COLOR.text, textAlign: "center", mt: 3 }}>DEBT OVER TIME</Typography>
+            <Typography sx={{ letterSpacing:'1px', fontWeight:'bold', fontSize: "12px", color: COLOR.text, textAlign: "center", mt: 3 }}>DEBT OVER TIME</Typography>
             <Box position="relative" ref={bindRef} sx={{
                 mt: "5px",
                 width: document.body.clientWidth < 500 ? document.body.clientWidth : 570,//  window.innerWidth < 400 ? window.innerWidth - 50 : 570,
@@ -469,7 +474,7 @@ const ToolTip = ({
             <Box sx={{
                 // height: '82px',
                 width: '100%',
-                backgroundColor: 'rgba(16, 38, 55, 0.3)',
+                backgroundColor: COLOR.bgColor,
                 display: 'flex',
                 flexDirection: 'column',
                 px: '12px',
@@ -477,7 +482,7 @@ const ToolTip = ({
                 justifyContent: 'space-between'
             }}>
                 {debts?.map((value, index) => (
-                    <Box sx={{
+                    <Box key={index} sx={{
                         display: 'flex',
                         alignItems: 'center',
                         mt: '3px',

@@ -64,7 +64,8 @@ export default function GlobalPortfolio() {
             <Typography sx={{
                 color: COLOR.text,
                 fontSize: '12px',
-                fontWeight: 'bold'
+                fontWeight: 'bold',
+                letterSpacing:'1px'
             }}>GLOBAL PORTFOLIO</Typography>
             <PieChart rows={topZAssets} />
             <Box sx={{

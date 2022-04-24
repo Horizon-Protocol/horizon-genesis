@@ -40,7 +40,6 @@ import History from "@pages/History";
 import useQueryDebt from "@hooks/query/useQueryDebt";
 import useQueryGlobalDebt from "@hooks/query/useQueryGlobalDebt";
 import useEscrowDataQuery from "@hooks/Escrowed/useEscrowDataQuery";
-import dayjs from "dayjs";
 
 const AppDisabled = !!import.meta.env.VITE_APP_DISABLED;
 

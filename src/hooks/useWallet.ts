@@ -1,4 +1,4 @@
-import { useCallback, useMemo, useState } from "react";
+import { useCallback, useEffect, useMemo, useState } from "react";
 import { useSnackbar } from "notistack";
 import { providers } from "ethers";
 import { useWeb3React, UnsupportedChainIdError } from "@web3-react/core";

@@ -1,5 +1,5 @@
 import { atom } from "jotai";
-import { atomWithReset, atomWithStorage } from "jotai/utils";
+import { atomWithReset } from "jotai/utils";
 import { HistoricalActualDebtData, HistoricalClaimHZNAndZusdData, HistoricalDebtAndIssuanceData, HistoricalOperationData } from "@hooks/query/useQueryDebt";
 import { GloablDebt } from "@hooks/query/useQueryGlobalDebt";
 import { GlobalZAssetsPoolProps } from "@hooks/useFetchGlobalZAsset";

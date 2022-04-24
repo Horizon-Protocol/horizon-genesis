@@ -5,8 +5,8 @@ import { Box, Typography } from "@mui/material";
 import { BarPrice, BusinessDay, IChartApi, ISeriesApi, LineData, LineSeriesPartialOptions, MouseEventParams, Point, PriceFormat, WhitespaceData } from "lightweight-charts";
 import { last, max, maxBy, minBy, padStart, takeRight } from "lodash";
 import { COLOR } from "@utils/theme/constants";
-import { formatFiatCurrency, formatNumber } from "@utils/number";
-import { useCallback, useState } from "react";
+import { formatFiatCurrency, formatNumber, zeroBN } from "@utils/number";
+import { useCallback, useRef, useState } from "react";
 import dayjs from "dayjs";
 import GlobalPortfolio from "./GlobalPortfolio";
 import YourPortfolio from "./YourPortfolio";
@@ -16,22 +16,56 @@ import { useAtomValue } from "jotai/utils";
 import useWallet from "@hooks/useWallet";
 import { debtAtom } from "@atoms/debt";
 import { useMemo } from "react";
+import ToolTip, { ToolTipProps } from "./DebtChartTooltip"
 
-interface ToolTipCellPros {
-    color: string;
-    title: string;
-    value: string;
+const leftPriceConfig: Partial<LineSeriesPartialOptions> = {
+    lineWidth: 2,
+    scaleMargins: {
+        top: 0.2,
+        bottom: 0.1,
+    },
+    priceFormat: {
+        type: "custom",
+        formatter(priceValue: BarPrice) {
+            //   return priceValue + "dsds"
+            return formatFiatCurrency(priceValue, { prefix: "$" });
+            // return formatFiatCurrency(priceValue, {
+            //     prefix: "$",
+            //     average: true,
+            //     mantissa: 4,
+            //     optionalMantissa: true,
+            //     spaceSeparated: true
+            // });
+        },
+    },
 }
 
-interface ToolTipProps {
-    toolTipDisplay: string,
-    left?: string,
-    top?: string,
-    time?: string,
-    debts?: ToolTipCellPros[]
+const rightPriceConfig: Partial<LineSeriesPartialOptions> = {
+    lineWidth: 2,
+    scaleMargins: {
+        top: 0.2,
+        bottom: 0.1,
+    },
+    priceFormat: {
+        type: "custom",
+        formatter(priceValue: BarPrice) {
+            //   return priceValue + "dsds"
+            return formatFiatCurrency(priceValue, {
+                prefix: "$",
+                average: true,
+                mantissa: 2,
+                optionalMantissa: true,
+                spaceSeparated: true
+            });
+        },
+    },
 }
 
 export default function DebtTracker() {
+    //cause active debt hitorical data need to add the last active data, so need to check the last active debt and activehistorydebt in dep
+    const historicalActualDebtLength= useRef<Number>(0)
+    const preDebtBalance = useRef<BN>(zeroBN)
+
     const { connected } = useWallet();
     const [toolTipProps, setToolTipProps] = useState<ToolTipProps>({
         toolTipDisplay: 'none',
@@ -41,53 +75,25 @@ export default function DebtTracker() {
         debts: []
     })
 
-    const leftPriceConfig: Partial<LineSeriesPartialOptions> = {
-        lineWidth: 2,
-        scaleMargins: {
-            top: 0.2,
-            bottom: 0.1,
-        },
-        priceFormat: {
-            type: "custom",
-            formatter(priceValue: BarPrice) {
-                //   return priceValue + "dsds"
-                return formatFiatCurrency(priceValue, { prefix: "$" });
-                // return formatFiatCurrency(priceValue, {
-                //     prefix: "$",
-                //     average: true,
-                //     mantissa: 4,
-                //     optionalMantissa: true,
-                //     spaceSeparated: true
-                // });
-            },
-        },
-    }
-
-    const rightPriceConfig: Partial<LineSeriesPartialOptions> = {
-        lineWidth: 2,
-        scaleMargins: {
-            top: 0.2,
-            bottom: 0.1,
-        },
-        priceFormat: {
-            type: "custom",
-            formatter(priceValue: BarPrice) {
-                //   return priceValue + "dsds"
-                return formatFiatCurrency(priceValue, {
-                    prefix: "$",
-                    average: true,
-                    mantissa: 2,
-                    optionalMantissa: true,
-                    spaceSeparated: true
-                });
-            },
-        },
-    }
-
+    const [loading, setLoading] = useState<boolean>(true)
     const [chart, setChart] = useState<IChartApi>();
     const [acitveDebtLineSeries, setAcitveDebtLineSeries] = useState<ISeriesApi<"Line"> | null>(null);
     const [isuuedDebtLineSeries, setIsuuedDebtLineSeries] = useState<ISeriesApi<"Line"> | null>(null);
     const [globalDebtLineSeries, setGlobalDebtLineSeries] = useState<ISeriesApi<"Line"> | null>(null);
+    
+    const EmptyActiveIsuuedDebtData = useCallback<() => LineData[]>(() => {
+        let emptyData: LineData[] = []
+        for (let i = 0; i < 30; i++) {
+            const temp = (new Date()).getTime()
+            const today = dayjs(new Date())
+            const targetDay = today.subtract(i, 'day')
+            emptyData.push({
+                time: targetDay.format("YYYY-MM-DD"),
+                value: 0,
+            })
+        }
+        return connected ? emptyData.reverse() : []
+    },[connected])
 
     const { bindRef } = useReponsiveChart({
         rightPriceScale: {
@@ -117,7 +123,6 @@ export default function DebtTracker() {
             },
         },
         onReady(chart, container) {
-
             const acitveDebt = chart.addLineSeries({
                 priceLineVisible: false,
                 lastValueVisible: false,
@@ -154,7 +159,6 @@ export default function DebtTracker() {
                 const toolTipHeight = 112
                 const toolTipMargin = 10
                 const leftPriceWidth = 48
-                const rightPriceWidth = 62
 
                 let point = param.point as Point
                 if (!param.time || point.x < 0 || point.x > width || point.y < 0 || point.y > height) {
@@ -176,14 +180,6 @@ export default function DebtTracker() {
                 }
 
                 const businessTime = param.time as BusinessDay
-
-                // console.log("oncross", {
-                //     acitveDebtLineSeries: acitveDebt,
-                //     param: param,
-                //     chart: chart,
-                //     container: container
-                // })
-
                 const acitveDebtValue = formatFiatCurrency(param.seriesPrices.get(acitveDebt) as BarPrice, { prefix: "$", mantissa: 2 })
                 const issuedDebtValue = formatFiatCurrency(param.seriesPrices.get(isuuedDebt) as BarPrice, { prefix: "$", mantissa: 2 })
                 const globalDebtValue = formatFiatCurrency(param.seriesPrices.get(globalDebt) as BarPrice, { prefix: "$", mantissa: 2 })
@@ -233,22 +229,7 @@ export default function DebtTracker() {
     const historicalActualDebt = useAtomValue(historicalActualDebtAtom);
     const globalDebt = useAtomValue(globalDebtAtom)
     const { debtBalance } = useAtomValue(debtAtom);
-
     
-    const EmptyActiveIsuuedDebtData = useCallback<() => LineData[]>(() => {
-        let emptyData: LineData[] = []
-        for (let i = 0; i < 30; i++) {
-            const temp = (new Date()).getTime()
-            const today = dayjs(new Date())
-            const targetDay = today.subtract(i, 'day')
-            emptyData.push({
-                time: targetDay.format("YYYY-MM-DD"),
-                value: 0,
-            })
-        }
-        return connected ? emptyData.reverse() : []
-    },[connected])
-
     const dataMaxLength = useMemo(() => {
         let maxLength = 30
         if (historicalIssuedDebt.length > 0) {
@@ -322,7 +303,26 @@ export default function DebtTracker() {
         }
     }
 
+    useEffect(()=>{
+        if (!connected && acitveDebtLineSeries && isuuedDebtLineSeries){
+            acitveDebtLineSeries?.setData([])
+            isuuedDebtLineSeries?.setData([])
+        }
+    },[connected])
+
     useEffect(() => {
+        //do not refesh 
+        if (preDebtBalance.current?.isEqualTo(debtBalance) && historicalActualDebtLength.current == historicalActualDebt.length){
+            console.log('出现')
+            setLoading(false)
+            return
+        }
+        setLoading(true)
+        console.log('消失')
+
+        historicalActualDebtLength.current = historicalActualDebt.length
+        preDebtBalance.current = debtBalance
+        // generate data
         let seriesData: LineData[] = []
         //zero month data
         if (historicalActualDebt == undefined || historicalActualDebt.length <= 0) {
@@ -346,14 +346,14 @@ export default function DebtTracker() {
             })
             seriesData = tmp
         }
-        if (connected) {
-            setSeriesData(acitveDebtLineSeries, seriesData)
-        }else{
-            acitveDebtLineSeries?.setData([])
-        }
-    }, [historicalActualDebt, acitveDebtLineSeries, debtBalance, connected])
+        setSeriesData(acitveDebtLineSeries, seriesData)
+        // console.log('debtBalance改变')
+    }, [historicalActualDebt, acitveDebtLineSeries , debtBalance])
 
     useEffect(() => {
+        setLoading(true)
+        console.log('消失')
+
         let seriesData: LineData[] = []
         //zero month data
         if (historicalActualDebt == undefined || historicalActualDebt.length <= 0) {
@@ -372,14 +372,13 @@ export default function DebtTracker() {
             }
             seriesData = issuedRows.reverse()
         }
-        if (connected) {
-            setSeriesData(isuuedDebtLineSeries, seriesData)
-        }else{
-            isuuedDebtLineSeries?.setData([])
-        }
-    }, [historicalIssuedDebt, isuuedDebtLineSeries, connected])
+        setSeriesData(isuuedDebtLineSeries, seriesData)
+    }, [historicalIssuedDebt, isuuedDebtLineSeries])
 
     useEffect(() => {
+        setLoading(true)
+        console.log('消失')
+
         if (globalDebt?.length) {
             let globalRows: LineData[] = []
             for (let i = globalDebt?.length - 1; i >= 0; i--) {
@@ -392,10 +391,11 @@ export default function DebtTracker() {
                     })
                 }
             }
-            console.log('globalRows',globalRows)
+            // console.log('globalRows',globalRows)
             setSeriesData(globalDebtLineSeries, globalRows)
         }
-    }, [globalDebt, globalDebtLineSeries, historicalActualDebt])
+        //historicalActualDebt and historicalIssuedDebt will affect the glbal maxlength data, add them in dep
+    }, [globalDebt, globalDebtLineSeries, historicalActualDebt, historicalIssuedDebt])
 
     return (
         <PageCard
@@ -410,6 +410,7 @@ export default function DebtTracker() {
                 </>
             }
         >
+            <Box display={loading ? 'none' : 'block'}>loading....</Box>
             <DebtOverview />
             <Typography sx={{ letterSpacing:'1px', fontWeight:'bold', fontSize: "12px", color: COLOR.text, textAlign: "center", mt: 3 }}>DEBT OVER TIME</Typography>
             <Box position="relative" ref={bindRef} sx={{
@@ -437,94 +438,3 @@ export default function DebtTracker() {
     )
 }
 
-interface ToolTipCellPros {
-    color: string;
-    title: string;
-    value: string;
-}
-
-interface ToolTipProps {
-    toolTipDisplay: string,
-    left?: string,
-    top?: string,
-    time?: string,
-    debts?: ToolTipCellPros[]
-}
-
-const ToolTip = ({
-    toolTipDisplay,
-    left,
-    top,
-    time,
-    debts,
-}: ToolTipProps) => {
-    return (
-        <Box sx={{
-            width: '224px',
-            // height: '112px',
-            position: 'absolute',
-            display: toolTipDisplay,
-            fontSize: '12px',
-            color: '#131722',
-            zIndex: 1000,
-            top: top,
-            left: left,
-            backgroundColor: '#11192A',
-            borderRadius: '2px'
-        }}>
-            <Typography sx={{
-                textAlign: 'center',
-                color: 'white',
-                py: 'auto',
-                fontSize: '12px',
-                lineHeight: '30px',
-                letterSpacing: '1px'
-            }}>{time}</Typography>
-            <Box sx={{
-                // height: '82px',
-                width: '100%',
-                backgroundColor: COLOR.bgColor,
-                display: 'flex',
-                flexDirection: 'column',
-                px: '12px',
-                py: '10px',
-                justifyContent: 'space-between'
-            }}>
-                {debts?.map((value, index) => (
-                    <Box key={index} sx={{
-                        display: 'flex',
-                        alignItems: 'center',
-                        mt: '3px',
-                    }}>
-                        <Box sx={{
-                            height: '10px',
-                            width: '10px',
-                            backgroundColor: debts[index].color,
-                            border: '1px solid #FFFFFF',
-                            borderRadius: '50%'
-                        }} />
-                        <Typography sx={{
-                            color: debts[index].color,
-                            fontSize: '12px',
-                            letterSpacing: '0.5px',
-                            ml: '10px'
-                        }}>
-                            {debts[index].title}
-                        </Typography>
-                        <Typography sx={{
-                            color: COLOR.text,
-                            fontSize: '12px',
-                            letterSpacing: '0.5px',
-                            // mr: '0px',
-                            ml: 'auto',
-                            textAlign: 'right',
-                            // backgroundColor:'red'
-                        }}>
-                            {debts[index].value}
-                        </Typography>
-                    </Box>
-                ))}
-            </Box>
-        </Box>
-    )
-}

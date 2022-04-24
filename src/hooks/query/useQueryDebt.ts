@@ -12,6 +12,7 @@ import { debtAtom } from "@atoms/debt";
 import useDisconnected from "@hooks/useDisconnected";
 import { historicalActualDebtAtom, historicalClaimHZNAndZUSDAtom, historicalIsLoadingAtom, historicalIssuedDebtAtom, historicalOperationAtom, HistoryType } from "@atoms/record";
 import dayjs from "dayjs";
+import { count } from "console";
 
 export type HistoricalDebtAndIssuanceData = {
     timestamp: number;
@@ -191,6 +192,8 @@ export default function useQueryDebt() {
     }
 
     const fetcher = useCallback(async () => {
+        // console.log('账户变更,重新获取表格数据')
+        // alert(count)
         const res = await Promise.all([
             issueds(),
             burneds(),
@@ -263,14 +266,20 @@ export default function useQueryDebt() {
                     });
                 });
                 //push last record to the end if its not empty array
-                if (historicalIssuanceAggregation.length > 0) {
-                    historicalIssuanceAggregation.push({
-                        timestamp: new Date().getTime() / 1000,
-                        issuanceDebt: last(historicalIssuanceAggregation)?.issuanceDebt ?? zeroBN
-                    });
-                }
+                // if (historicalIssuanceAggregation.length > 0) {
+                //     historicalIssuanceAggregation.push({
+                //         timestamp: new Date().getTime() / 1000,
+                //         issuanceDebt: last(historicalIssuanceAggregation)?.issuanceDebt ?? zeroBN
+                //     });
+                // }
                 // console.log("historicalIssuanceAggregation",historicalIssuanceAggregation)
-                setHistoricalIssuedDebt(historicalIssuanceAggregation)
+                if (historicalIssuanceAggregation.length != historicalIssuedDebt.length){
+                    console.log('更新了issueddebt',{
+                        response: historicalIssuanceAggregation,
+                        atom: historicalIssuedDebt
+                    })
+                    setHistoricalIssuedDebt(historicalIssuanceAggregation)
+                }
 
                 // We merge both actual & issuance debt into an array ===========================================================
                 const debtHistory = debtSnapshot.debtSnapshots ?? [];
@@ -292,8 +301,14 @@ export default function useQueryDebt() {
                 //     });
                 // }
                 // console.log("===historicalDebtAndIssuance", historicalActualDebtRecord)
-                setHistoricalActualDebt(historicalActualDebtRecord)
-                // alert('refresh')
+                // no need update the line chart if the value returns the same
+                if (debtSnapshot.debtSnapshots.length != historicalActualDebt.length){
+                    console.log('更新了activedebt',{
+                        response: debtSnapshot.debtSnapshots,
+                        atom: historicalActualDebt
+                    })
+                    setHistoricalActualDebt(historicalActualDebtRecord)
+                }
             }
         }
     )

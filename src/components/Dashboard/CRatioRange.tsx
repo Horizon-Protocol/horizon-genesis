@@ -7,13 +7,11 @@ import { currentCRatioPercentAtom, debtAtom } from "@atoms/debt";
 import { formatNumber } from "@utils/number";
 import { COLOR } from "@utils/theme/constants";
 import Tooltip from "@components/Tooltip";
-import SvgIcon from "@mui/material/SvgIcon";
-import { ReactComponent as IconRefresh } from "@assets/images/icon-refresh.svg";
 import useWallet from "@hooks/useWallet";
 import { useIsFetching, useQueryClient } from "react-query";
 import { WALLET } from "@utils/queryKeys";
 import { useCallback } from "react";
-import { hznRateAtom } from "@atoms/exchangeRates";
+import ActionLink from "@components/Alerts/ActionLink";
 
 const getColorByRatioPercent = (
   ratioPercent: number,
@@ -167,12 +165,11 @@ export default function CRatioRange(props: BoxProps) {
       <Tooltip
         title={
           <>
-            Your Current C-Ratio is based on your{" "}
+            This is based on{" "}
             <code>HZN Balance * HZN Price / Debt</code>. Maintaining a C-Ratio
             of {targetCRatioPercent}% or more will allow you to claim rewards.
             If your C-ratio goes below the liquidation ratio of{" "}
-            {liquidationRatioPercent}% for more than 3 days, your account will
-            be at risk of liquidation.
+            {liquidationRatioPercent}% for more than 3 days, a liquidation penalty may incur. <ActionLink fontSize='12px !important' letterSpacing='1px' href="https://docs.horizonprotocol.com/" target='_blank' showArrow={false}>Learn More.</ActionLink>
           </>
         }
         placement='top'

@@ -150,7 +150,7 @@ export const STAKING_CONTRACT_ADDRESS: {
 
 const EnvChainId = parseInt(import.meta.env.VITE_APP_CHAIN_ID);
 
-export const ChainId = [56, 97].indexOf(EnvChainId) > -1 ? EnvChainId : 97;
+export const ChainId = [56, 97].indexOf(EnvChainId) > -1 ? EnvChainId : 56;
 
 export const ChainName = CHAIN_NAME_MAP[ChainId];
 export const ChainExplorerUrl = CHAIN_EXPLORER_URL_MAP[ChainId];
@@ -179,6 +179,6 @@ export const GRAPH_ENDPOINT = {
 }[ChainId]!;
 
 export const LINK_EXCHANGE = {
-  56: "https://exchange-testnet.horizonprotocol.com/",
+  56: "https://exchange.horizonprotocol.com/",
   97: "https://exchange-testnet.horizonprotocol.com/",
 }[ChainId]!;

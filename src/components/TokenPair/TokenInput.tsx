@@ -143,6 +143,7 @@ export default function TokenInput({
           inputProps={{
             inputMode: "decimal",
           }}
+          decimalScale={3}
           sx={{
             ".MuiInputBase-input": {
               color: invalid ? COLOR.danger : COLOR.text,

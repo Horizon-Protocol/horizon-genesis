@@ -70,7 +70,7 @@ export default function TokenInput({
   return (
     <Box
       display="flex"
-      border={1}
+      border={0}
       borderRadius={1}
       borderColor={BORDER_COLOR}
       p="16px 24px"
@@ -79,7 +79,7 @@ export default function TokenInput({
         xs: 1,
         sm: 3,
       }}
-      bgcolor={bgColor || "#091320"}
+      bgcolor={"rgba(16, 38, 55, 0.4)"}
     >
       <Box display="flex" alignItems="center">
         {/* <TokenLogo token={token} logo={logo} /> */}
@@ -95,7 +95,7 @@ export default function TokenInput({
         <Box display="flex" flexDirection="column" p="10px 12px" fontSize={24}>
           <Typography
             fontSize={12}
-            letterSpacing="0.43px"
+            letterSpacing="0.5px"
             lineHeight="14px"
             color={labelColor}
           >
@@ -108,7 +108,7 @@ export default function TokenInput({
               sm: 24,
             }}
             fontWeight={700}
-            letterSpacing="0.86px"
+            letterSpacing="1px"
             lineHeight="28px"
           >
             {token}
@@ -149,8 +149,10 @@ export default function TokenInput({
               fontFamily: "Rawline",
               fontSize: 24,
               fontWeight: 700,
-              lineHeight: "26px",
+              lineHeight: "28px",
               textAlign: "right",
+              height: "28px",
+              padding: "8px 0 2px 0",
               "&.Mui-disabled": {
                 WebkitTextFillColor: "initial",
               },
@@ -168,7 +170,8 @@ export default function TokenInput({
           <Typography
             component="span"
             fontSize={12}
-            fontWeight={700}
+            fontWeight={400}
+            letterSpacing={0.5}
             color="#6E89A6"
           >
             {balanceLabel

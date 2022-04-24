@@ -134,12 +134,11 @@ export default function TokenPair({
   return (
     <Box {...props}>
       <Typography
-        minHeight={24}
+        minHeight={20}
         color={COLOR.danger}
-        fontSize={10}
+        fontSize={12}
         fontWeight={500}
-        letterSpacing="0.36px"
-        lineHeight="14px"
+        letterSpacing="0.5px"
         textAlign="center"
       >
         {state.error}

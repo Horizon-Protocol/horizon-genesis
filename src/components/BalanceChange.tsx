@@ -70,12 +70,14 @@ export default function BalanceChange({
 
   return (
     <Box
-      py={2}
+      pt={2.5}
+      pb={1.25}
       px={{
         xs: 1,
-        sm: 3,
+        sm: 3.75,
       }}
-      bgcolor='#091320'
+      bgcolor='rgba(8, 12, 22, 0.3)'
+      borderRadius={'4px'}
       {...props}
     >
       <List dense disablePadding>
@@ -84,7 +86,7 @@ export default function BalanceChange({
             key={label}
             disableGutters
             sx={{
-              p: "6px 0",
+              p: "0 0 10px 0",
               flexWrap: {
                 xs: "wrap",
                 sm: "nowrap",
@@ -93,8 +95,9 @@ export default function BalanceChange({
           >
             <ListItemIcon
               sx={{
-                color: "#5897C1",
+                color: "rgba(180, 224, 255, 0.5)",
                 fontSize: 14,
+                lineHeight: "16px",
                 mb: {
                   xs: 1,
                   sm: 0,
@@ -112,7 +115,7 @@ export default function BalanceChange({
               width='100%'
               justifyContent='flex-end'
             >
-              <Box component='span' fontSize={14} color='#88ABC3'>
+              <Box component='span' fontSize={14} color='rgba(180, 224, 255, 0.5)' lineHeight='16px'>
                 {from}
               </Box>
               {changed && (
@@ -120,7 +123,7 @@ export default function BalanceChange({
                   <Box
                     component='span'
                     display='inline-block'
-                    width={48}
+                    width={36}
                     sx={{
                       backgroundPosition: "center",
                       backgroundRepeat: "no-repeat",
@@ -131,7 +134,7 @@ export default function BalanceChange({
                   >
                     {gapImg ? "" : "=>"}
                   </Box>
-                  <Box component='span' fontSize={14} color='#88ABC3'>
+                  <Box component='span' fontSize={14} color='rgba(180, 224, 255, 1)' lineHeight='16px'>
                     {to}
                   </Box>
                 </>

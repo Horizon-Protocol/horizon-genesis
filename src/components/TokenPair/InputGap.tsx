@@ -22,10 +22,10 @@ export default function InputGap({ img }: Props) {
         borderColor='#0F1B2C'
         zIndex={1}
         sx={{
-          backgroundSize: "65%",
+          backgroundSize: "100%",
           backgroundRepeat: "no-repeat",
           backgroundPosition: "center",
-          backgroundColor: "#091320",
+          backgroundColor: "#0F1B2C",
           backgroundImage: img && `url(${img})`,
           transform: "translateX(-50%)",
         }}

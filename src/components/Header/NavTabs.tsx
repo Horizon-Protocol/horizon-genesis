@@ -60,11 +60,10 @@ const getStyledTab: (color: string) => unknown = (color) =>
     ...typography.subtitle1,
     textTransform: "none",
     letterSpacing: "1px",
-    fontWeight: 500,
+    fontWeight: 400,
     overflow: "visible",
     ":hover": {
-      color,
-      fontWeight: "bold",
+      color: color + "!important",
       backgroundColor: COLOR_BG,
       height: "36px",
     },
@@ -77,7 +76,6 @@ const getStyledTab: (color: string) => unknown = (color) =>
     },
     "&.Mui-selected": {
       color,
-      fontWeight: "bold",
       backgroundColor: COLOR_BG,
       height: "36px",
     },

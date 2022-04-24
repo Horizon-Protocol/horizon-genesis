@@ -346,7 +346,7 @@ export default function Burn() {
         </Box>
       ) : null}
       <TokenPair
-        mt={2}
+        mt={0}
         fromToken={fromToken}
         toToken={toToken}
         arrowImg={arrowImg}

@@ -126,7 +126,7 @@ export default function CRatioRange(props: BoxProps) {
   );
 
   return (
-    <Box py={3} textAlign='center' {...props} sx={{
+    <Box pt={3.5} pb={2.25} textAlign='center' {...props} sx={{
       position: "relative"
     }}>
       {/* <SvgIcon
@@ -155,8 +155,8 @@ export default function CRatioRange(props: BoxProps) {
       </SvgIcon> */}
       <Typography
         variant='h6'
-        fontSize={22}
-        letterSpacing='0.92px'
+        fontSize={26}
+        letterSpacing='1px'
         lineHeight='26px'
         textAlign='center'
         fontWeight='bold'
@@ -182,9 +182,13 @@ export default function CRatioRange(props: BoxProps) {
           m='8px 0 0px'
           lineHeight='14px'
           letterSpacing='0.5px'
+          color="#B4E0FF"
+          fontSize="14px"
+          fontWeight="400"
+          sx={{cursor:"help"}}
         >
           Current C-Ratio
-          <HelpOutline fontSize='inherit' />
+          
         </Typography>
       </Tooltip>
       {[liquidationPrice, targetPrice].map((item, index) => {

@@ -50,7 +50,6 @@ export default function RecordButton(data: RecordButtonProps) {
             <Typography
                 sx={{
                     color: hightLight ? COLOR.safe : selected ? COLOR.safe : alpha(COLOR.text, 0.75),
-                    fontWeight: selected ? "bold" : "normal",
                     lineHeight: "16px",
                     fontSize: "14px",
                     mt: "5px",

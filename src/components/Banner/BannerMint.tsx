@@ -36,7 +36,7 @@ export default function BannerMint() {
         textAlign='center'
         fontSize={{
           xs: '20px',
-          sm: '36px',
+          sm: '38px',
         }}
         color='#fff'
         fontWeight='400'
@@ -61,7 +61,7 @@ export default function BannerMint() {
         lineHeight='16px'
         fontFamily='Raleway'
         letterSpacing={1}
-        mt='4px'
+        mt='10px'
         color='rgba(180, 224, 255, 0.75)'
       >
         Stake HZN to mint zUSD (a USD stablecoin) and <br />earn rewards.
@@ -69,30 +69,30 @@ export default function BannerMint() {
       <Box sx={{ display: 'flex' }}>
         <PrimaryButton
           sx={{
-            letterSpacing: '1px',
+            letterSpacing: '2px',
             borderRadius: '2px',
             fontSize: '12px',
-            height: 28,
-            width: 122,
+            height: 36,
+            width: 138,
             mt: '20px'
           }}
           onClick={() => {
             history.push('mint')
           }}
         >
-          MINT NOW
+          STAKE NOW
         </PrimaryButton>
         <ActionLink underline="none" showArrow={false} href={HZNBuyLink} target='_blank'>
           <PrimaryButton
             sx={{
-              letterSpacing: '1px',
+              letterSpacing: '2px',
               borderRadius: '2px',
               fontSize: '12px',
               ml: '10px',
               backgroundColor: "transparent",
               border: `1px solid ${COLOR.safe}`,
               color: COLOR.safe,
-              height: 28,
+              height: 36,
               width: 122,
               mt: '20px',
               ":hover":{

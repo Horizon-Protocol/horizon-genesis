@@ -119,7 +119,7 @@ export default function Home() {
       justifyContent='center'
       py={{
         xs: 1,
-        sm: 3,
+        sm: 6,
       }}
     >
       <TopCarousel />

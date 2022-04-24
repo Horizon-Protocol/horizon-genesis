@@ -109,7 +109,8 @@ export default function Balance({ data }: Props) {
         height: '24px',
         fontSize: '10px',
         // position: 'absolute',
-        backgroundColor: 'rgba(16, 38, 55, 1)'
+        backgroundColor: 'rgba(16, 38, 55, 1)',
+        ":hover": {opacity: 0.75}
       }}>
         {showMore ? 'Show Less' : 'Show More'}
         <SvgIcon

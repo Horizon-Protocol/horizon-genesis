@@ -79,9 +79,8 @@ export default function PresetCRatioOptions({
         }
         placement='top'
       >
-        <Typography variant='subtitle2' component='div' align='center'>
+        <Typography variant='subtitle2' component='div' align='center' textTransform={'uppercase'} fontWeight='700' letterSpacing="1px" fontSize="12px" sx={{cursor:'help', color:"#B4E0FF"}}>
           Preset Strategies
-          <HelpOutline fontSize='inherit' />
         </Typography>
       </Tooltip>
       <Box mt={1} display='flex' justifyContent='space-between'>

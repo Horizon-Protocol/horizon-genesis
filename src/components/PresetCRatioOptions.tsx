@@ -1,6 +1,5 @@
 import { useCallback, useMemo } from "react";
 import { Box, BoxProps, Link, Typography } from "@mui/material";
-import { HelpOutline } from "@mui/icons-material";
 import { useAtomValue } from "jotai/utils";
 import { presetCRatioPercentsAtom, targetRatioAtom } from "@atoms/app";
 import { cRatioToPercent } from "@utils/number";
@@ -8,6 +7,7 @@ import { debtAtom } from "@atoms/debt";
 import useWallet from "@hooks/useWallet";
 import Tooltip from "@components/Tooltip";
 import PresetCRatioOption from "./CRatioOption";
+import ToolTipContent from "./Tooltip/ToolTipContent";
 
 interface Props extends Omit<BoxProps, "onChange"> {
   color: string;
@@ -64,7 +64,7 @@ export default function PresetCRatioOptions({
     <Box width='100%' {...props}>
       <Tooltip
         title={
-          <>
+          <ToolTipContent title='Preset Strategies' conetnt={<>
             Preset strategies help you manage your C-Ratio based on different
             risk tolerances. Maintaining a higher C-Ratio will lower your risk
             of liquidation, but also reduce your rewards from debt. To learn
@@ -75,11 +75,11 @@ export default function PresetCRatioOptions({
             >
               here
             </Link>
-          </>
+          </>} />
         }
         placement='top'
       >
-        <Typography variant='subtitle2' component='div' align='center' textTransform={'uppercase'} fontWeight='700' letterSpacing="1px" fontSize="12px" sx={{cursor:'help', color:"#B4E0FF"}}>
+        <Typography variant='subtitle2' component='div' align='center' textTransform={'uppercase'} fontWeight='700' letterSpacing="1px" fontSize="12px" sx={{ cursor: 'help', color: "#B4E0FF" }}>
           Preset Strategies
         </Typography>
       </Tooltip>

@@ -72,6 +72,10 @@ export const formatNumber = (
   return formattedValue.join("");
 };
 
+export const ellipsisWithLength = (content: string,maxLength: number) => {
+    return content.length > maxLength ? content.substring(0,maxLength) + "..." : content
+}
+
 export const formatCryptoCurrency = (
   value: NumericValue,
   { sign: prefix, currencyKey: suffix, ...format }: FormatCurrencyOptions = {}

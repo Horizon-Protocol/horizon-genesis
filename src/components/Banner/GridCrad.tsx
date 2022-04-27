@@ -78,8 +78,6 @@ export default function GridCrad({
                     opacity: imgOpacity
                 }}
             /> */}
-
-
             {showAlert && (<Box sx={{
                 position: 'absolute',
                 right: '8px',

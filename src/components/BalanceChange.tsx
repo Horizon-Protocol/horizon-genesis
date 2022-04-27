@@ -1,6 +1,6 @@
-import { useMemo } from "react";
+import { useMemo, useState } from "react";
 import { Box, BoxProps, List, ListItem, ListItemIcon } from "@mui/material";
-import { formatCRatioToPercent, formatNumber } from "@utils/number";
+import { ellipsisWithLength, formatCRatioToPercent, formatNumber, toBN } from "@utils/number";
 
 export interface Props {
   changed: boolean;
@@ -37,6 +37,57 @@ export default function BalanceChange({
   gapImg,
   ...props
 }: Props & BoxProps) {
+  // const maxDebtLength = useMemo(()=>{
+  //   const minimum = 15
+  //   const maximum = minimum * 2 //+ 2
+  //   const totalLength = formatNumber(debt.from).length + (changed ? formatNumber(debt.to).length : 0)
+  //   const maxLength = totalLength > maximum ? minimum : maximum
+  //   return maxLength
+  // },[debt])
+
+  // const maxStakedLength = useMemo(()=>{
+  //   const minimum = 14 
+  //   const maximum = minimum * 2 //+ 2
+  //   const totalLength = formatNumber(staked.from).length + (changed ? formatNumber(staked.to).length : 0)
+  //   const maxLength = totalLength > maximum ? minimum : maximum
+  //   return maxLength
+  // },[staked])
+
+  // const maxTransferrableLength = useMemo(()=>{
+  //   const minimum = 14
+  //   const maximum = minimum * 2 //+ 2
+  //   const totalLength = formatNumber(transferrable.from).length + (changed ? formatNumber(transferrable.to).length : 0)
+  //   const maxLength = totalLength > maximum ? minimum : maximum
+  //   return maxLength
+  // },[transferrable])
+
+
+  const maxValueLength = useMemo(()=>{
+    const debtMinimum = 15
+    const stakedMinimum = 13
+    const transferrableMinimum = 13
+    const escrowedMinimum = 14
+
+    const totalDebtLength = formatNumber(debt.from).length + (changed ? formatNumber(debt.to).length : 0)
+    const maxDebtLength = totalDebtLength > 2*debtMinimum ? debtMinimum : 2*debtMinimum
+
+    const totalStakedLength = (changed ? formatNumber(staked.from).length : 0) + formatNumber(staked.to).length
+    const maxStakedLength = totalStakedLength >  2*stakedMinimum ? stakedMinimum : 2*stakedMinimum
+
+    const totalTransferrableLength = formatNumber(transferrable.from).length + (changed ? formatNumber(transferrable.to).length : 0)
+    const maxTransferrableLength = totalTransferrableLength >  2*transferrableMinimum ? transferrableMinimum : 2*transferrableMinimum
+
+    const totalEscrowedLength = formatNumber(escrowed.from).length + (changed ? formatNumber(escrowed.to).length : 0)
+    const maxEscrowedLength = totalEscrowedLength >  2*escrowedMinimum ? escrowedMinimum : 2*escrowedMinimum
+
+    return {
+      maxDebtLength,
+      maxStakedLength,
+      maxTransferrableLength,
+      maxEscrowedLength
+    }
+  },[debt,staked,transferrable,escrowed])
+
   const data = useMemo(
     () => [
       {
@@ -46,23 +97,23 @@ export default function BalanceChange({
       },
       {
         label: "Debt",
-        from: `$${formatNumber(debt.from)} zUSD`,
-        to: `$${formatNumber(debt.to)} zUSD`,
+        from: `$${ellipsisWithLength(formatNumber(debt.from),maxValueLength.maxDebtLength)} zUSD`,
+        to: `$${ellipsisWithLength(formatNumber(debt.to),maxValueLength.maxDebtLength)} zUSD`,
       },
       {
         label: "Staked HZN",
-        from: `${formatNumber(staked.from)} HZN`,
-        to: `${formatNumber(staked.to)} HZN`,
+        from: `${ellipsisWithLength(formatNumber(staked.from),maxValueLength.maxStakedLength)} HZN`,
+        to: `${ellipsisWithLength(formatNumber(staked.to),maxValueLength.maxStakedLength)} HZN`,
       },
       {
         label: "Transferrable HZN",
-        from: `${formatNumber(transferrable.from)} HZN`,
-        to: `${formatNumber(transferrable.to)} HZN`,
+        from: `${ellipsisWithLength(formatNumber(transferrable.from),maxValueLength.maxTransferrableLength)} HZN`,
+        to: `${ellipsisWithLength(formatNumber(transferrable.to),maxValueLength.maxTransferrableLength)} HZN`,
       },
       {
         label: "Escrowed HZN",
-        from: `${formatNumber(escrowed.from)} HZN`,
-        to: `${formatNumber(escrowed.to)} HZN`,
+        from: `${ellipsisWithLength(formatNumber(escrowed.from),maxValueLength.maxEscrowedLength)} HZN`,
+        to: `${ellipsisWithLength(formatNumber(escrowed.to),maxValueLength.maxEscrowedLength)} HZN`,
       },
     ],
     [cRatio, debt, staked, transferrable]

@@ -5,6 +5,7 @@ import useNextClaimCountDown from "@hooks/useNextClaimTimer";
 import { COLOR } from "@utils/theme/constants";
 import dayjs from "dayjs";
 import Tooltip from "@components/Tooltip";
+import ToolTipContent from "@components/Tooltip/ToolTipContent";
 
 export default function ClaimCountDown(props: BoxProps) {
   useNextClaimCountDown();
@@ -19,7 +20,9 @@ export default function ClaimCountDown(props: BoxProps) {
         justifyContent: 'space-between',
         alignContent: 'center'
       }}>
-        <Tooltip title={'NEXT REWARD CLAIM'} placement='top' >
+        <Tooltip
+          title={<ToolTipContent title='NEXT REWARD CLAIM' conetnt='NEXT REWARD CLAIM' />}
+          placement='top' >
           <Typography
             variant='caption'
             fontWeight={700}

@@ -1,6 +1,5 @@
 import { useMemo } from "react";
 import { Box, Typography, LinearProgress, BoxProps } from "@mui/material";
-import { HelpOutline } from "@mui/icons-material";
 import { useAtomValue } from "jotai/utils";
 import { ratiosPercentAtom } from "@atoms/app";
 import { currentCRatioPercentAtom, debtAtom } from "@atoms/debt";
@@ -12,6 +11,7 @@ import { useIsFetching, useQueryClient } from "react-query";
 import { WALLET } from "@utils/queryKeys";
 import { useCallback } from "react";
 import ActionLink from "@components/Alerts/ActionLink";
+import ToolTipContent from "@components/Tooltip/ToolTipContent";
 
 const getColorByRatioPercent = (
   ratioPercent: number,
@@ -163,7 +163,7 @@ export default function CRatioRange(props: BoxProps) {
         {currentCRatioPercent ? formatNumber(currentCRatioPercent) : "--"}%
       </Typography>
       <Tooltip
-        title={
+        title={<ToolTipContent title='Current C-Ratio' conetnt={
           <>
             This is based on{" "}
             <code>HZN Balance * HZN Price / Debt</code>. Maintaining a C-Ratio
@@ -171,7 +171,7 @@ export default function CRatioRange(props: BoxProps) {
             If your C-ratio goes below the liquidation ratio of{" "}
             {liquidationRatioPercent}% for more than 3 days, a liquidation penalty may incur. <ActionLink fontSize='12px !important' letterSpacing='1px' href="https://docs.horizonprotocol.com/" target='_blank' showArrow={false}>Learn More.</ActionLink>
           </>
-        }
+        } />}
         placement='top'
       >
         <Typography
@@ -182,10 +182,9 @@ export default function CRatioRange(props: BoxProps) {
           color="#B4E0FF"
           fontSize="14px"
           fontWeight="400"
-          sx={{cursor:"help"}}
+          sx={{ cursor: "help" }}
         >
           Current C-Ratio
-          
         </Typography>
       </Tooltip>
       {[liquidationPrice, targetPrice].map((item, index) => {

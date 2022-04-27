@@ -2,10 +2,10 @@ import PageCard from "@components/PageCard";
 import DebtOverview from "@components/Record/Debt/DebtOverview";
 import useReponsiveChart from "@hooks/useReponsiveChart";
 import { Box, Typography } from "@mui/material";
-import { BarPrice, BusinessDay, IChartApi, ISeriesApi, LineData, LineSeriesPartialOptions, MouseEventParams, Point, PriceFormat, WhitespaceData } from "lightweight-charts";
-import { last, max, maxBy, minBy, padStart, takeRight } from "lodash";
+import { BarPrice, BusinessDay, IChartApi, isBusinessDay, ISeriesApi, LineData, LineSeriesPartialOptions, MouseEventParams, Point, PriceFormat, WhitespaceData } from "lightweight-charts";
+import { max, maxBy, minBy, padStart, takeRight } from "lodash";
 import { COLOR } from "@utils/theme/constants";
-import { formatFiatCurrency, formatNumber, zeroBN } from "@utils/number";
+import { formatFiatCurrency, toBN, zeroBN } from "@utils/number";
 import { useCallback, useRef, useState } from "react";
 import dayjs from "dayjs";
 import GlobalPortfolio from "./GlobalPortfolio";
@@ -17,6 +17,8 @@ import useWallet from "@hooks/useWallet";
 import { debtAtom } from "@atoms/debt";
 import { useMemo } from "react";
 import ToolTip, { ToolTipProps } from "./DebtChartTooltip"
+import { DebtData } from "@hooks/query/useQueryDebt";
+import { GloablDebt } from "@hooks/query/useQueryGlobalDebt";
 
 const leftPriceConfig: Partial<LineSeriesPartialOptions> = {
     lineWidth: 2,
@@ -62,11 +64,7 @@ const rightPriceConfig: Partial<LineSeriesPartialOptions> = {
 }
 
 export default function DebtTracker() {
-    //cause active debt hitorical data need to add the last active data, so need to check the last active debt and activehistorydebt in dep
-    const historicalActualDebtLength= useRef<Number>(0)
-    const preDebtBalance = useRef<BN>(zeroBN)
-
-    const { connected } = useWallet();
+    const { connected, account } = useWallet();
     const [toolTipProps, setToolTipProps] = useState<ToolTipProps>({
         toolTipDisplay: 'none',
         left: '0',
@@ -75,12 +73,17 @@ export default function DebtTracker() {
         debts: []
     })
 
-    const [loading, setLoading] = useState<boolean>(true)
     const [chart, setChart] = useState<IChartApi>();
     const [acitveDebtLineSeries, setAcitveDebtLineSeries] = useState<ISeriesApi<"Line"> | null>(null);
     const [isuuedDebtLineSeries, setIsuuedDebtLineSeries] = useState<ISeriesApi<"Line"> | null>(null);
     const [globalDebtLineSeries, setGlobalDebtLineSeries] = useState<ISeriesApi<"Line"> | null>(null);
-    
+
+    const historicalIssuedDebt = useAtomValue(historicalIssuedDebtAtom);
+    const historicalActualDebt = useAtomValue(historicalActualDebtAtom);
+    const globalDebt = useAtomValue(globalDebtAtom)
+    const { debtBalance } = useAtomValue(debtAtom);
+
+    //cause active debt hitorical data need to add the last active data, so need to check the last active debt and activehistorydebt in dep
     const EmptyActiveIsuuedDebtData = useCallback<() => LineData[]>(() => {
         let emptyData: LineData[] = []
         for (let i = 0; i < 30; i++) {
@@ -225,26 +228,168 @@ export default function DebtTracker() {
         },
     })
 
-    const historicalIssuedDebt = useAtomValue(historicalIssuedDebtAtom);
-    const historicalActualDebt = useAtomValue(historicalActualDebtAtom);
-    const globalDebt = useAtomValue(globalDebtAtom)
-    const { debtBalance } = useAtomValue(debtAtom);
-    
-    const dataMaxLength = useMemo(() => {
+    //max data length
+    const seriesDataMaxLength = useMemo(() => {
         let maxLength = 30
-        if (historicalIssuedDebt.length > 0) {
-            //get the first date and calculate how many days from today
-            const firstData = historicalIssuedDebt[0]
-            let todayDate = dayjs(new Date())
-            maxLength = todayDate.diff(firstData.timestamp * 1000, 'day') + 2
-            // alert(maxLength)
+        if (historicalIssuedDebt.length > 0 || historicalActualDebt.length > 0) {
+            const todayDate = dayjs(new Date())
+            const maxIssuedLength = historicalIssuedDebt.length > 0 ? todayDate.diff(historicalIssuedDebt[0].timestamp * 1000, 'day') + 2 : 0
+            const maxActualLength = historicalActualDebt.length > 0 ? todayDate.diff(historicalActualDebt[0].timestamp * 1000, 'day') + 2 : 0
+            const maxValue = max([maxLength,maxIssuedLength,maxActualLength])
+            if (maxValue != undefined){
+                maxLength = maxValue
+            }
         }
         return maxLength
-    }, [historicalIssuedDebt])
+    }, [historicalIssuedDebt, historicalActualDebt, globalDebt])
 
-    const setSeriesData = (series: ISeriesApi<"Line"> | null, data: LineData[]) => {
-        // console.log('beforeData',data)
-        if (data.length <= 0) return
+    const preHistoricalIssuedDebtLength = useRef<Number>(0)
+    const preHistoricalActualDebtLength = useRef<Number>(0)
+    const preGlobalActualDebtLength = useRef<Number>(0)
+    const preDebtBalance = useRef<BN>(zeroBN)
+
+    useEffect(()=>{
+        // setActiveLoading(preHistoricalIssuedDebtLength.current != historicalIssuedDebt.length)
+        if (preHistoricalIssuedDebtLength.current == historicalIssuedDebt.length &&
+            preHistoricalActualDebtLength.current == historicalActualDebt.length &&
+            preGlobalActualDebtLength.current == globalDebt?.length &&
+            debtBalance.isEqualTo(preDebtBalance.current)){
+                return
+        }
+        // console.log({ })
+        const issuedDebtData = takeRight(leftSeriesData(historicalIssuedDebt),seriesDataMaxLength)
+        const activeDebtData = takeRight(leftSeriesData(historicalActualDebt, true),seriesDataMaxLength)
+        const globalDebtData = takeRight(rightSeriesData(globalDebt),seriesDataMaxLength)
+       
+        if (isuuedDebtLineSeries) {
+            isuuedDebtLineSeries.setData(issuedDebtData)
+            preHistoricalIssuedDebtLength.current = historicalIssuedDebt.length
+        }
+        if (acitveDebtLineSeries) {
+            acitveDebtLineSeries.setData(activeDebtData)
+            preHistoricalActualDebtLength.current = historicalActualDebt.length
+        }
+        if (globalDebtLineSeries) {
+            globalDebtLineSeries.setData(globalDebtData)
+            preGlobalActualDebtLength.current = globalDebt.length
+        }
+        //set Y-range
+        setYRange(isuuedDebtLineSeries,issuedDebtData)
+        setYRange(acitveDebtLineSeries,activeDebtData)
+        setYRange(globalDebtLineSeries,globalDebtData)
+        
+        //set X-range load all three series firstdata and lastdata, get the min and max date
+        if (chart != null 
+            && chart != undefined 
+            ) {
+                let maxTimeArr = []
+                if (issuedDebtData.length > 0 ){
+                    maxTimeArr.push(issuedDebtData[0].time)
+                }
+                if (activeDebtData.length > 0 ){
+                    maxTimeArr.push(activeDebtData[0].time)
+                }
+                if (globalDebtData.length > 0 ){
+                    maxTimeArr.push(globalDebtData[0].time)
+                }
+                let maxStart = (max(maxTimeArr) as BusinessDay)
+                const newdate = new Date(maxStart.year, maxStart.month - 1, maxStart.day)
+                const substractDay = dayjs(newdate).subtract(5,'day').format("YYYY-MM-DD")
+                console.log('maxdate',{
+                    maxStart: maxStart,
+                    newdate: newdate,
+                    year: (maxStart as BusinessDay).year,
+                    month: (maxStart as BusinessDay).month,
+                    day: (maxStart as BusinessDay).day,
+                    substractDay: substractDay,
+                })
+                chart.timeScale().setVisibleRange({
+                    from: maxStart ? substractDay : dayjs(new Date()).format("YYYY-MM-DD"),
+                    to: dayjs(new Date()).format("YYYY-MM-DD"),
+                });
+        }
+    },[
+        historicalIssuedDebt, 
+        historicalActualDebt, 
+        globalDebt,
+        isuuedDebtLineSeries,
+        acitveDebtLineSeries,
+        globalDebtLineSeries,
+        debtBalance,
+        seriesDataMaxLength,
+        connected
+    ])
+
+    useEffect(()=>{
+        if (!connected){
+            if (isuuedDebtLineSeries) {
+                isuuedDebtLineSeries.setData([])
+                preHistoricalIssuedDebtLength.current = -1
+            }
+            if (acitveDebtLineSeries) {
+                acitveDebtLineSeries.setData([])
+                preHistoricalActualDebtLength.current = -1
+            }
+        }else{
+            // tt()
+            // queryClient.cancelQueries([GRAPH_DEBT,'activeaissued'])
+            // queryClient.fetchQuery([GRAPH_DEBT,'activeaissued'])
+        }
+    },[connected])
+
+    const leftSeriesData = (debtData: DebtData[], addLastActiveDebt?: boolean) => {
+        // generate data
+        let seriesData: LineData[] = []
+        //zero month data
+        if (debtData.length <= 0 || !connected) {
+            seriesData = EmptyActiveIsuuedDebtData()
+        } else {
+            const seriesRows: LineData[] = []
+            for (let i = debtData.length - 1; i >= 0; i--) {
+                var debt = debtData[i]
+                const time = dayjs.unix(Number(debt.timestamp)).format("YYYY-MM-DD")
+                if (!seriesRows.find(x => x.time == time) && debt.debt != undefined) {
+                    seriesRows.push({
+                        time: time,
+                        value: Number(debt.debt)
+                    })
+                }
+            }
+            seriesData = seriesRows.reverse()
+            if (addLastActiveDebt){
+                seriesData.push({
+                    time: dayjs.unix(Number(new Date().getTime() / 1000)).format("YYYY-MM-DD"),
+                    value: Number(debtBalance)
+                })
+                preDebtBalance.current = debtBalance
+            }
+        }
+        return fillEmptyDayData(seriesData)
+    }
+
+    const rightSeriesData = (globalDebtData: GloablDebt[] | null) => {
+        let seriesData: LineData[] = []
+        if (globalDebtData?.length) {
+            const globalRows: LineData[] = []
+            for (let i = globalDebtData?.length - 1; i >= 0; i--) {
+                var gdebt = globalDebtData[i]
+                const time = dayjs.unix(Number(gdebt.id)).format("YYYY-MM-DD")
+                if (!globalRows.find(x => x.time == time) && gdebt.totalDebt != undefined) {
+                    globalRows.push({
+                        time: time,
+                        value: Number(gdebt.totalDebt)
+                    })
+                }
+            }
+            seriesData = globalRows
+        }
+        return fillEmptyDayData(seriesData)
+    }
+
+    const fillEmptyDayData = (data: LineData[]) => {
+        if (data.length <= 0){
+            return
+        }
         //fill the empty date data from the first date to today
         //dayjs today
         let todayDate = dayjs(new Date())
@@ -269,13 +414,16 @@ export default function DebtTracker() {
                 })
             }
         }
-        // console.log('fullyData',fullyData)
-        // series?.setData(fullyData)
-        const maxData = takeRight(fullyData, dataMaxLength)
-        series?.setData(maxData)
+        return fullyData
+    }
+
+    const setYRange = (series: ISeriesApi<"Line"> | null, data: LineData[]) => {
         //get maximum and minimum - Y-axis
-        let maximumValue = Number((maxBy(maxData, 'value') as LineData).value)
-        let minimumValue = Number((minBy(maxData, 'value') as LineData).value)
+        if (data.length <= 0){
+            return
+        }
+        let maximumValue = Number((maxBy(data, 'value') as LineData).value)
+        let minimumValue = Number((minBy(data, 'value') as LineData).value)
         if (maximumValue == 0 && minimumValue == 0) {
             maximumValue = 100;
         }
@@ -292,110 +440,7 @@ export default function DebtTracker() {
                 },
             }),
         })
-        //set the time range - X-axis
-        if (chart != null && chart != undefined) {
-            if (maxData[0] != undefined && last(maxData) != undefined && maxData.length > 0){
-                chart.timeScale().setVisibleRange({
-                    from: maxData[0].time,
-                    to: maxData[maxData.length - 1].time,
-                });
-            }
-        }
     }
-
-    useEffect(()=>{
-        if (!connected && acitveDebtLineSeries && isuuedDebtLineSeries){
-            acitveDebtLineSeries?.setData([])
-            isuuedDebtLineSeries?.setData([])
-        }
-    },[connected])
-
-    useEffect(() => {
-        //do not refesh 
-        if (preDebtBalance.current?.isEqualTo(debtBalance) && historicalActualDebtLength.current == historicalActualDebt.length){
-            console.log('出现')
-            setLoading(false)
-            return
-        }
-        setLoading(true)
-        console.log('消失')
-
-        historicalActualDebtLength.current = historicalActualDebt.length
-        preDebtBalance.current = debtBalance
-        // generate data
-        let seriesData: LineData[] = []
-        //zero month data
-        if (historicalActualDebt == undefined || historicalActualDebt.length <= 0) {
-            seriesData = EmptyActiveIsuuedDebtData()
-        } else {
-            const actualRows: LineData[] = []
-            for (let i = historicalActualDebt.length - 1; i >= 0; i--) {
-                var debt = historicalActualDebt[i]
-                const time = dayjs.unix(Number(debt.timestamp)).format("YYYY-MM-DD")
-                if (!actualRows.find(x => x.time == time) && debt.actualDebt != undefined) {
-                    actualRows.push({
-                        time: time,
-                        value: Number(debt.actualDebt)
-                    })
-                }
-            }
-            let tmp = actualRows.reverse()
-            tmp.push({
-                time: dayjs.unix(Number(new Date().getTime() / 1000)).format("YYYY-MM-DD"),
-                value: Number(debtBalance)
-            })
-            seriesData = tmp
-        }
-        setSeriesData(acitveDebtLineSeries, seriesData)
-        // console.log('debtBalance改变')
-    }, [historicalActualDebt, acitveDebtLineSeries , debtBalance])
-
-    useEffect(() => {
-        setLoading(true)
-        console.log('消失')
-
-        let seriesData: LineData[] = []
-        //zero month data
-        if (historicalActualDebt == undefined || historicalActualDebt.length <= 0) {
-            seriesData = EmptyActiveIsuuedDebtData()
-        } else {
-            const issuedRows: LineData[] = []
-            for (let i = historicalIssuedDebt.length - 1; i >= 0; i--) {
-                var debt = historicalIssuedDebt[i]
-                const time = dayjs.unix(Number(debt.timestamp)).format("YYYY-MM-DD")
-                if (!issuedRows.find(x => x.time == time) && debt.issuanceDebt != undefined) {
-                    issuedRows.push({
-                        time: time,
-                        value: Number(debt.issuanceDebt)
-                    })
-                }
-            }
-            seriesData = issuedRows.reverse()
-        }
-        setSeriesData(isuuedDebtLineSeries, seriesData)
-    }, [historicalIssuedDebt, isuuedDebtLineSeries])
-
-    useEffect(() => {
-        setLoading(true)
-        console.log('消失')
-
-        if (globalDebt?.length) {
-            let globalRows: LineData[] = []
-            for (let i = globalDebt?.length - 1; i >= 0; i--) {
-                var gdebt = globalDebt[i]
-                const time = dayjs.unix(Number(gdebt.id)).format("YYYY-MM-DD")
-                if (!globalRows.find(x => x.time == time) && gdebt.totalDebt != undefined) {
-                    globalRows.push({
-                        time: time,
-                        value: Number(gdebt.totalDebt)
-                    })
-                }
-            }
-            // console.log('globalRows',globalRows)
-            setSeriesData(globalDebtLineSeries, globalRows)
-        }
-        //historicalActualDebt and historicalIssuedDebt will affect the glbal maxlength data, add them in dep
-    }, [globalDebt, globalDebtLineSeries, historicalActualDebt, historicalIssuedDebt])
 
     return (
         <PageCard
@@ -410,7 +455,6 @@ export default function DebtTracker() {
                 </>
             }
         >
-            <Box display={loading ? 'none' : 'block'}>loading....</Box>
             <DebtOverview />
             <Typography sx={{ letterSpacing:'1px', fontWeight:'bold', fontSize: "12px", color: COLOR.text, textAlign: "center", mt: 3 }}>DEBT OVER TIME</Typography>
             <Box position="relative" ref={bindRef} sx={{

@@ -4,8 +4,6 @@ import useWallet from "@hooks/useWallet";
 import NavTabs from "./NavTabs";
 import WalletInfo from "./WalletInfo";
 import WalletsDialog from "./WalletsDialog";
-import { openLinkDropDownAtom } from "@atoms/wallet";
-import { useAtom } from "jotai";
 import LogoMenu from "./LogoMenu";
 import HelpMenu from "./HelpMenu";
 import RefreshButton from "./RefreshButton";

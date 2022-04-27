@@ -24,8 +24,7 @@ export default function useQueryGlobalDebt() {
   const globalDebts = async () => {
     try {
       const globalDebtsReponse = await requset(
-        // GRAPH_ENDPOINT,
-        "https://api.thegraph.com/subgraphs/name/rout-horizon/bsc4-issuance",
+        GRAPH_ENDPOINT,
         gql`
           query {
             dailyIssueds(first: 1000, orderBy: id, orderDirection: desc) {
@@ -36,7 +35,6 @@ export default function useQueryGlobalDebt() {
           }
         `
       );
-      console.log("===globalDebts", globalDebtsReponse);
       return globalDebtsReponse;
     } catch (e) {
       return [];

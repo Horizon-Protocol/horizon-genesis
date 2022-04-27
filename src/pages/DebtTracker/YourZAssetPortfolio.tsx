@@ -13,23 +13,12 @@ import NoRowsOverlay from "@components/NoRowsOverlay";
 import useFilterZAssets from "@hooks/useFilterZAssets";
 import { formatNumber, formatPercent } from "@utils/number";
 
+const rowsPerPage = 5
+
 export default function YourZAssetPortfolio() {
   const rows = useFilterZAssets({ zUSDIncluded: true });
-
-  const [page, setPage] = useState(0);
-  const [rowsPerPage, setRowsPerPage] = useState(5);
-
-  const handleChangePage = (event: unknown, newPage: number) => {
-    setPage(newPage);
-  };
-
-  const handleChangeRowsPerPage = (
-    event: React.ChangeEvent<HTMLInputElement>
-  ) => {
-    setRowsPerPage(+event.target.value);
-    setPage(0);
-  };
-
+  const [page, setPage] = useState(0)
+  
   const columns: GridColDef[] = [
     {
       field: "name",

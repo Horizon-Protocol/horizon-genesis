@@ -36,12 +36,12 @@ export const collateralDataAtom = atom((get) => {
     lockedCollateral.minus(stakedCollateral).toFixed(8)
   );
 
-  console.log('collateralDataAtom',{
-    stakedCollateral: stakedCollateral.toNumber(),
-    unstakedCollateral: unstakedCollateral.toNumber(),
-    lockedCollateral: lockedCollateral.toNumber(),
-    dashboardEscrowed: dashboardEscrowed.toNumber(),
-  });
+  // console.log('collateralDataAtom',{
+  //   stakedCollateral: stakedCollateral.toNumber(),
+  //   unstakedCollateral: unstakedCollateral.toNumber(),
+  //   lockedCollateral: lockedCollateral.toNumber(),
+  //   dashboardEscrowed: dashboardEscrowed.toNumber(),
+  // });
 
   return {
     stakedCollateral,

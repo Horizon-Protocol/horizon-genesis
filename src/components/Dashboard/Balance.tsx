@@ -9,6 +9,7 @@ import { COLOR } from "@utils/theme/constants";
 import { ConnectorNames, Token } from "@utils/constants";
 import { registerToken, RegisterTokenConf } from "@utils/wallet";
 import Tooltip from "@components/Tooltip";
+import ToolTipContent from "@components/Tooltip/ToolTipContent";
 
 interface Data {
   sectionHeader?: boolean;
@@ -43,30 +44,32 @@ export default function Balance({ data }: Props) {
       // mt: '-5px'
     }}>
       <ListItemText>
-        <Box sx={{display:'flex', alignItems:'center'}}>
-        <Tooltip title={tooltipText ? tooltipText : ''} placement='top' >
-          <Box sx={{
-            width: 'auto',
-            cursor:'help',
-            color: COLOR.text,
-            fontSize: sectionHeader ? 14 : 12,
-            opacity: sectionHeader ? 1 : 0.5,
-          }}>{label}</Box>
-        </Tooltip>
-        {/* {label} */}
-        {showWalletIcon && (
-          <Box component='img' src={wallet?.logo} sx={{
-            // pt:'2px',
-            cursor: 'pointer',
-            ml: '3px',
-            width: '14px',
-            height: '14px'
-          }} onClick={() => {
-            if (canRegisterToken && importToken) {
-              registerToken(RegisterTokenConf[importToken]!);
-            }
-          }} />
-        )}
+        <Box sx={{ display: 'flex', alignItems: 'center' }}>
+          <Tooltip
+            title={<ToolTipContent title={label} conetnt={tooltipText ? tooltipText : ''} />}
+            placement='top'
+          >
+            <Box sx={{
+              width: 'auto',
+              cursor: 'help',
+              color: COLOR.text,
+              fontSize: sectionHeader ? 14 : 12,
+              opacity: sectionHeader ? 1 : 0.5,
+            }}>{label}</Box>
+          </Tooltip>
+          {showWalletIcon && (
+            <Box component='img' src={wallet?.logo} sx={{
+              // pt:'2px',
+              cursor: 'pointer',
+              ml: '3px',
+              width: '14px',
+              height: '14px'
+            }} onClick={() => {
+              if (canRegisterToken && importToken) {
+                registerToken(RegisterTokenConf[importToken]!);
+              }
+            }} />
+          )}
         </Box>
       </ListItemText>
       <ListItemText
@@ -114,7 +117,7 @@ export default function Balance({ data }: Props) {
         fontSize: '10px',
         // position: 'absolute',
         backgroundColor: 'rgba(16, 38, 55, 1)',
-        ":hover": {opacity: 0.75}
+        ":hover": { opacity: 0.75 }
       }}>
         {showMore ? 'Show Less' : 'Show More'}
         <SvgIcon

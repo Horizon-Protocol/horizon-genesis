@@ -8,8 +8,8 @@ const BaseTooltip = styled(({ className, ...props }: TooltipProps) => (
     // width:'100px',
     cursor:'help'
   }} 
-  enterDelay={2000}
-  enterNextDelay={2000}
+  enterDelay={500}
+  enterNextDelay={500}
   enterTouchDelay={0}
   arrow 
   classes={{ popper: className }} 

@@ -51,7 +51,7 @@ export default function DebtOverview() {
         }}>
             {dets.map((debt, index) =>
                 <Box key={index} position='relative' width='32%'>
-                    {/* <div style={{
+                    <div style={{
                         display: index < 2 ? activeIssuedDebtFetching ? 'inline-block' : 'none' : globalDebtFetching ? 'inline-block' : 'none',
                         position: 'absolute',
                         right: '8px',
@@ -62,7 +62,7 @@ export default function DebtOverview() {
                         <div></div><div></div>
                         <div></div><div></div>
                         <div></div>
-                    </div> */}
+                    </div>
                     <Typography sx={{
                         py: '22px',
                         backgroundColor: COLOR.bgColor,

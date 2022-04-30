@@ -1,8 +1,6 @@
-
 import { Typography, Box } from "@mui/material";
 import { formatNumber } from "@utils/number";
 import { COLOR } from "@utils/theme/constants";
-import { alpha } from "@mui/material/styles";
 import { useMemo } from "react";
 import { debtAtom } from "@atoms/debt";
 import { useAtomValue } from "jotai/utils";
@@ -13,6 +11,9 @@ import SvgIcon from "@mui/material/SvgIcon";
 import { ReactComponent as IconRefresh } from "@assets/images/icon-refresh.svg";
 import { GRAPH_DEBT } from "@utils/queryKeys";
 import { useIsFetching } from "react-query";
+import ToolTipContent from "@components/Tooltip/ToolTipContent";
+import Tooltip from "@components/Tooltip";
+import "./loading.css";
 
 export default function DebtOverview() {
 
@@ -36,8 +37,11 @@ export default function DebtOverview() {
         ]
     }, [historicalDebt, debtBalance])
 
-    const activeIssuedDebtFetching = useIsFetching([GRAPH_DEBT,'activeaissuesd'])
-    const globalDebtFetching = useIsFetching([GRAPH_DEBT,'globalDebts'])
+    const titles = ["ACTIVE DEBT", "ISSUED DEBT", "GLOBAL DEBT"]
+    const contents = ["ACTIVE DEBT", "ISSUED DEBT", "GLOBAL DEBT"]
+
+    const activeIssuedDebtFetching = useIsFetching([GRAPH_DEBT, 'activeaissuesd'])
+    const globalDebtFetching = useIsFetching([GRAPH_DEBT, 'globalDebts'])
 
     return (
         <Box sx={{
@@ -47,29 +51,18 @@ export default function DebtOverview() {
         }}>
             {dets.map((debt, index) =>
                 <Box key={index} position='relative' width='32%'>
-                    <SvgIcon
-                        sx={{
-                            display: connected ? 'block' : index < 2 ? 'none' : 'block',
-                            position: 'absolute',
-                            right:'8px',
-                            top:'5px',
-                            color: COLOR.text,
-                            width: 14,
-                            animation: "circular-rotate 4s linear infinite",
-                            animationPlayState: index < 2 ? activeIssuedDebtFetching ? "running" : "paused" : globalDebtFetching ? "running" : "paused",
-                            "@keyframes circular-rotate": {
-                                from: {
-                                    transform: "rotate(0deg)",
-                                    transformOrigin: "50% 50%",
-                                },
-                                to: {
-                                    transform: "rotate(360deg)",
-                                },
-                            },
-                        }}
-                    >
-                        <IconRefresh />
-                    </SvgIcon>
+                    {/* <div style={{
+                        display: index < 2 ? activeIssuedDebtFetching ? 'inline-block' : 'none' : globalDebtFetching ? 'inline-block' : 'none',
+                        position: 'absolute',
+                        right: '8px',
+                        top: '5px',
+                    }} className="lds-spinner">
+                        <div></div><div></div>
+                        <div></div><div></div>
+                        <div></div><div></div>
+                        <div></div><div></div>
+                        <div></div>
+                    </div> */}
                     <Typography sx={{
                         py: '22px',
                         backgroundColor: COLOR.bgColor,
@@ -81,13 +74,18 @@ export default function DebtOverview() {
                         letterSpacing: "0.5px",
                         lineHeight: "20px"
                     }}>
-                        <span style={{
-                            color: COLOR.text,
-                            fontSize: "12px",
-                            fontWeight: "normal"
-                        }}>
-                            {["ACTIVE DEBT", "ISSUED DEBT", "GLOBAL DEBT"][index]}
-                        </span>
+                        <Tooltip
+                            title={<ToolTipContent title={titles[index]} conetnt={contents[index]} />}
+                            placement='top'
+                        >
+                            <Box component='span' style={{
+                                color: COLOR.text,
+                                fontSize: "12px",
+                                fontWeight: "normal"
+                            }}>
+                                {titles[index]}
+                            </Box>
+                        </Tooltip>
                         <br />
                         {debt.label}
                     </Typography>

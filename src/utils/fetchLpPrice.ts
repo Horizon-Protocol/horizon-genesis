@@ -15,10 +15,12 @@ const LpContracts = [
   {
     token: Token.HZN_BNB_LP,
     token1: Token.HZN,
+    token2: Token.HZN   //useless token2 is for placeholder
   },
   {
     token: Token.ZUSD_BUSD_LP,
-    token1: "BUSD",
+    token1: Token.ZUSD,
+    token2: 'BUSD'
   },
 ];
 
@@ -31,28 +33,32 @@ export default async function useFetchLpPrice() {
     const multiCallProvider = await getMultiCallProvider();
 
     const calls: any[] = [];
-    for (const { token, token1 } of LpContracts) {
+    for (const { token, token1, token2 } of LpContracts) {
       const lpContract = tokenContractMap[token];
       const token1Contract = tokenContractMap[token1];
+      const token2Contract = tokenContractMap[token2];
       calls.push(
         lpContract ? lpContract.totalSupply() : constants.Zero,
         lpContract && token1Contract
           ? token1Contract.balanceOf(lpContract.address)
-          : constants.Zero
+          : constants.Zero,
+        lpContract && token2Contract
+        ? token2Contract.balanceOf(lpContract.address)
+        : constants.Zero
       );
     }
+
     const res = (await multiCallProvider.all(calls)) as BigNumber[];
     const resBN = res.map(etherToBN);
 
     const lpState: State = {};
     zipWith(
       LpContracts,
-      chunk(resBN, 2),
-      ({ token }, [totalSupply, token1Balance]) => {
-        lpState[token] = { totalSupply, token1Balance };
+      chunk(resBN, 3),
+      ({ token }, [totalSupply, token1Balance, token2Balance]) => {
+        lpState[token] = { totalSupply, token1Balance, token2Balance };
       }
     );
-
     setLpState(lpState);
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [getMultiCallProvider]);

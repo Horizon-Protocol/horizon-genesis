@@ -24,6 +24,8 @@ export default function useFetchPrice() {
     setTimestamp(now);
     const coingeckoPrice = await fetchPrice();
 
+    console.log('coingeckoPrice',coingeckoPrice)
+
     setCoingeckoPrice(coingeckoPrice);
     setPHBPrice(coingeckoPrice.phb);
   }, [timestamp, setCoingeckoPrice, setPHBPrice]);

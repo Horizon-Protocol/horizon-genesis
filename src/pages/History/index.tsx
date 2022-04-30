@@ -4,11 +4,6 @@ import { useUpdateAtom } from "jotai/utils";
 // import { HistoryTypeAtom } from "@atoms/record";
 
 export default function History() {
-
-    // const [historyType, setHistoryType] = useAtom(HistoryTypeAtom)
-    // const updateHistoryType = useUpdateAtom(HistoryTypeAtom)
-    // const update
-
     return (
         <PageCard
             mx='auto'

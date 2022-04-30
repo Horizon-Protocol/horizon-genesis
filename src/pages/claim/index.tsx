@@ -26,6 +26,8 @@ import { ratiosPercentAtom, targetRatioAtom } from "@atoms/app";
 import { secondsOfDays } from "@utils/date";
 import { ReactComponent as IconHZN } from "@assets/images/hzn.svg";
 import { ReactComponent as IconzUSD } from "@assets/images/zUSD.svg";
+import Tooltip from "@components/Tooltip";
+import ToolTipContent from "@components/Tooltip/ToolTipContent";
 
 const THEME_COLOR = PAGE_COLOR.claim;
 
@@ -79,11 +81,11 @@ export default function Claim() {
 
   const nextClaimCountDownDuration = useAtomValue(nextClaimCountDownDurationAtom);
   const warning = useMemo(() => {
-    if (0 < nextClaimCountDownDuration && nextClaimCountDownDuration < secondsOfDays(2)) {
+    if (0 < nextClaimCountDownDuration && nextClaimCountDownDuration < secondsOfDays(2) && stakingReward.isGreaterThan(zeroBN) && connected) {
       return true
     }
     return false
-  }, [nextClaimCountDownDuration])
+  }, [nextClaimCountDownDuration,stakingReward,connected])
 
   const infoList: Info[] = [
     {
@@ -91,9 +93,13 @@ export default function Claim() {
       value: nextClaimCountDown,
     },
     {
-      label: "Current Claim Period Ends",
+      label: <Tooltip
+        title={<ToolTipContent title='Current Claim Period Ends' conetnt='Current Claim Period Ends' />}
+        placement='top'>
+        <Box>Current Claim Period Ends</Box>
+      </Tooltip>,
       value: nextClaimCountDown,
-      warning: warning,
+      warning: connected ? warning : false,
     },
     {
       label: "Lifetime Claimed Rewards",
@@ -140,20 +146,34 @@ export default function Claim() {
         fontWeight: "bold",
         fontSize: "12px",
         mb: "10px",
-        color:COLOR.text,
+        color: COLOR.text,
         letterSpacing: '1px'
       }}>
         CLAIMABLE REWARDS
       </Typography>
       <Box display='flex' justifyContent='space-between'>
         <RewardCard
-          label='STAKING REWARDS'
-          amount={stakingReward} 
+          label={
+            <Tooltip
+              title={<ToolTipContent title='STAKING REWARDS' conetnt='STAKING REWARDS content' />}
+              placement='top'
+            >
+              <Box>STAKING REWARDS</Box>
+            </Tooltip>
+          }
+          amount={stakingReward}
           token='HZN'
           svg={<IconHZN />}
-          />
+        />
         <RewardCard
-          label='EXCHANGE REWARDS'
+          label={
+            <Tooltip
+              title={<ToolTipContent title='EXCHANGE REWARDS' conetnt='EXCHANGE REWARDS content' />}
+              placement='top'
+            >
+              <Box>EXCHANGE REWARDS</Box>
+            </Tooltip>
+          }
           amount={exchangeReward}
           token='zUSD'
           svg={<IconzUSD />}
@@ -166,7 +186,7 @@ export default function Claim() {
         fontSize: "12px",
         mt: "20px",
         mb: "10px",
-        color:COLOR.text,
+        color: COLOR.text,
         letterSpacing: '1px'
       }}>
         UPCOMING REWARDS
@@ -175,24 +195,38 @@ export default function Claim() {
         <RewardCard
           height={87}
           upcoming={true}
-          label={<><Box
-            component="span"
-            sx={{
-              fontSize: 7,
-              color: COLOR.text,
-              opacity: .5
-            }}>ESTIMATED</Box><br />STAKING REWARDS</>}
+          label={
+            <Tooltip
+              title={<ToolTipContent title='ESTIMATED STAKING REWARDS' conetnt='ESTIMATED STAKING REWARDS content' />}
+              placement='top'
+            >
+              <Box><Box
+                component="span"
+                sx={{
+                  fontSize: 7,
+                  color: COLOR.text,
+                  opacity: .5
+                }}>ESTIMATED</Box><br />STAKING REWARDS</Box>
+            </Tooltip>
+          }
           amount={upcomingStakingReward} />
         <RewardCard
           height={87}
           upcoming={true}
-          label={<><Box
-            component="span"
-            sx={{
-              fontSize: 7,
-              color: COLOR.text,
-              opacity: .5
-            }}>ACCRUED</Box><br />EXCHANGE REWARDS</>}
+          label={
+            <Tooltip
+              title={<ToolTipContent title='ACCRUED EXCHANGE REWARDS' conetnt='ACCRUED EXCHANGE REWARDS content' />}
+              placement='top'
+            >
+              <Box><Box
+                component="span"
+                sx={{
+                  fontSize: 7,
+                  color: COLOR.text,
+                  opacity: .5
+                }}>ACCRUED</Box><br />EXCHANGE REWARDS</Box>
+            </Tooltip>
+          }
           amount={upcomingExchangeReward}
           svg={<IconzUSD />}
         />

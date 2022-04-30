@@ -21,7 +21,25 @@ export async function fetchPrice(): Promise<{
     if (phbPrice && phbPrice < 0.1) {
       phbPrice = phbPrice * 100;
     }
+    console.log('fetchPrice',{
+      data: data,
+      phb: phbPrice,
+      busd: data["binance-usd"].usd,
+      zusd: data["zasset-zusd"].usd,
+    })
+    
+// data:{
+//    binance-usd: {usd: 1.011}
+//    red-pulse: {usd: 0.915194}
+//    zasset-zusd: {usd: 0.941583}
+// }
 
+// busd: 1.011
+// phb: 0.915194
+// zusd: 0.941583
+
+// TODO formula
+// ((token1Balance * token1Price) + (token2Balance * token2Price)) / lpTokenTotalSupply
     return {
       phb: phbPrice,
       busd: data["binance-usd"].usd,

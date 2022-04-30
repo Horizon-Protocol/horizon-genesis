@@ -1,7 +1,5 @@
 import { Box, BoxProps, Hidden, Typography } from "@mui/material";
 import { COLOR } from "@utils/theme/constants";
-import PieChart from "./PieChart";
-import useWallet from "@hooks/useWallet";
 import YourZAssetPortfolio from "./YourZAssetPortfolio";
 import useFilterZAssets from "@hooks/useFilterZAssets";
 import { sumBy } from "lodash";
@@ -9,7 +7,6 @@ import { formatNumber } from "@utils/number";
 
 export default function YourPortfolio() {
 
-    const { connectWallet, connected, deactivate } = useWallet();
     const zAssets = sumBy(useFilterZAssets({zUSDIncluded:true}),"amountUSD")
 
     return (

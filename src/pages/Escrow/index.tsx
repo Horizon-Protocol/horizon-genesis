@@ -1,13 +1,13 @@
 import PageCard from "@components/PageCard";
 import { Box, Grid, SvgIcon, Typography } from "@mui/material";
 import { COLOR } from "@utils/theme/constants";
-import { alpha } from "@mui/material/styles";
 import EscrowRecord from "./EscrowRecord";
 import PrimaryButton from "@components/PrimaryButton";
 import useEscrowCalculations from "@hooks/Escrowed/useEscrowCalculations";
 import { formatNumber, BNWithDecimals, zeroBN } from "@utils/number";
 import { ReactComponent as IconHZN } from "@assets/images/hzn.svg";
-import { lineHeight } from "@mui/system";
+import ToolTipContent from "@components/Tooltip/ToolTipContent";
+import Tooltip from "@components/Tooltip";
 
 export default function Escrow() {
 
@@ -38,7 +38,20 @@ export default function Escrow() {
                             height: '182px',
                         }}>
                             <EscrowedCard unlockCard
-                                title="AVAILABLE HZN"
+                                title={
+                                    <Tooltip
+                                        title={<ToolTipContent title='AVAILABLE HZN' conetnt='AVAILABLE HZN' />}
+                                        placement='top'
+                                    >
+                                        <Box component='span' style={{
+                                            color: COLOR.text,
+                                            fontSize: "12px",
+                                            fontWeight: "normal"
+                                        }}>
+                                            AVAILABLE HZN
+                                        </Box>
+                                    </Tooltip>
+                                }
                                 color={totalClaimableBalance.gt(zeroBN) ? COLOR.safe : COLOR.text}
                                 amount={formatNumber(totalClaimableBalance)} />
                         </Box>
@@ -50,7 +63,20 @@ export default function Escrow() {
                                     height: '86px',
                                 }}>
                                     <EscrowedCard
-                                        title="TOTAL ESCROWED"
+                                        title={
+                                            <Tooltip
+                                                title={<ToolTipContent title='TOTAL ESCROWED' conetnt='TOTAL ESCROWED' />}
+                                                placement='top'
+                                            >
+                                                <Box component='span' style={{
+                                                    color: COLOR.text,
+                                                    fontSize: "12px",
+                                                    fontWeight: "normal"
+                                                }}>
+                                                    TOTAL ESCROWED
+                                                </Box>
+                                            </Tooltip>
+                                        }
                                         color={COLOR.safe}
                                         amount={formatNumber(totalEscrowBalance)} />
                                 </Box>
@@ -60,7 +86,20 @@ export default function Escrow() {
                                     height: '86px',
                                 }}>
                                     <EscrowedCard
-                                        title="TOTAL UNLOCKED"
+                                        title={
+                                            <Tooltip
+                                                title={<ToolTipContent title='TOTAL UNLOCKED' conetnt='TOTAL UNLOCKED' />}
+                                                placement='top'
+                                            >
+                                                <Box component='span' style={{
+                                                    color: COLOR.text,
+                                                    fontSize: "12px",
+                                                    fontWeight: "normal"
+                                                }}>
+                                                    TOTAL UNLOCKED
+                                                </Box>
+                                            </Tooltip>
+                                        }
                                         color={totalClaimableBalance.gt(zeroBN) ? COLOR.safe : COLOR.text}
                                         amount={formatNumber(BNWithDecimals(totalVestedBalance))} />
                                 </Box>
@@ -76,7 +115,7 @@ export default function Escrow() {
 
 interface EscrowedCardProps {
     unlockCard?: boolean,
-    title: string,
+    title: string | JSX.Element,
     color: string,
     amount: string
 }

@@ -20,11 +20,13 @@ export const tokenPriceAtomFamily = atomFamily((token: Token) =>
     (get) => {
       if (token.indexOf("LP") > -1) {
         let token1Price = zeroBN;
+        let token2Price = zeroBN;
         if (token === Token.HZN_BNB_LP) {
           token1Price = get(hznRateAtom);
         } else if (token === Token.ZUSD_BUSD_LP) {
           const coingeckoPrice = get(coingeckoPriceAtom);
-          token1Price = toBN(coingeckoPrice.busd);
+          token1Price = toBN(coingeckoPrice.zusd);
+          token2Price = toBN(coingeckoPrice.busd);
         }
         if (token1Price.eq(0)) {
           return 0;
@@ -33,16 +35,28 @@ export const tokenPriceAtomFamily = atomFamily((token: Token) =>
         if (!lpState[token]) {
           return 0;
         }
-        const { totalSupply, token1Balance } = lpState[token]!;
-        const overallValueOfLPToken = token1Balance
+
+        const { totalSupply, token1Balance, token2Balance } = lpState[token]!;
+
+        if (token === Token.HZN_BNB_LP) {
+          const overallValueOfLPToken = token1Balance
           .multipliedBy(2)
           .multipliedBy(token1Price);
-        const lpTokenPrice = totalSupply.gt(0)
+          const lpTokenPrice = totalSupply.gt(0)
           ? overallValueOfLPToken.div(totalSupply).toNumber()
           : 0;
+          return lpTokenPrice;
+        }
 
-        // console.log("====lp", token, lpTokenPrice);
-        return lpTokenPrice;
+        if (token === Token.ZUSD_BUSD_LP) {
+          const overallValueOfLPToken = token1Balance
+            .multipliedBy(token1Price).plus(token2Balance.multipliedBy(token2Price));
+          const lpTokenPrice = totalSupply.gt(0)
+          ? overallValueOfLPToken.div(totalSupply).toNumber()
+          : 0;
+          return lpTokenPrice;
+        }
+        return 0
       }
       return get(priceAtomFamily({ token }));
     },

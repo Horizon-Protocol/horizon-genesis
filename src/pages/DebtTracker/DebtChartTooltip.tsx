@@ -25,7 +25,6 @@ export default function DebtChartTooltip({
     return (
         <Box sx={{
             width: '224px',
-            // height: '112px',
             position: 'absolute',
             display: toolTipDisplay,
             fontSize: '12px',
@@ -36,7 +35,13 @@ export default function DebtChartTooltip({
             backgroundColor: '#11192A',
             borderRadius: '2px'
         }}>
-            <Typography sx={{
+            aaaaaaa
+            aaaaaaa
+            aaaaaaa
+            aaaaaaa
+            aaaaaaa
+            aaaaaaa
+            {/* <Typography sx={{
                 textAlign: 'center',
                 color: 'white',
                 py: 'auto',
@@ -88,7 +93,7 @@ export default function DebtChartTooltip({
                         </Typography>
                     </Box>
                 ))}
-            </Box>
+            </Box> */}
         </Box>
     )
 }

@@ -1,12 +1,9 @@
 import { Box, BoxProps, TextField, TextFieldProps } from "@mui/material";
-import { useEffect, useRef, useState } from "react";
-import AdapterDateFns from '@mui/lab/AdapterDateFns';
-import LocalizationProvider from '@mui/lab/LocalizationProvider';
+import { forwardRef, useEffect, useState } from "react";
 import { COLOR, COLOR_BG } from "@utils/theme/constants";
 import dropdown_arrow from "@assets/images/hitory-dropdown-arrow.png";
 import { styled } from "@mui/material/styles";
 import SvgIcon from "@mui/material/SvgIcon";
-import ArrowBackIosNewIcon from '@mui/icons-material/ArrowBackIosNew';
 import ArrowForwardIosIcon from '@mui/icons-material/ArrowForwardIos';
 import "./dateStyle.css";
 import DatePicker from "react-datepicker";
@@ -31,9 +28,12 @@ export default function DateRangeSelection({ dateRangeValue, selectDateRange, ..
         setDateRange(dateRangeValue)
     }, [dateRangeValue])
 
-    const CustomInput = () => {
-        const start = dateRange[0] ? dayjs(dateRange[0]).format('MM/DD/YY') : ''
-        const end = dateRange[1] ? dayjs(dateRange[1]).format('MM/DD/YY') : ''
+    const start = dateRange[0] ? dayjs(dateRange[0]).format('MM/DD/YY') : ''
+    const end = dateRange[1] ? dayjs(dateRange[1]).format('MM/DD/YY') : ''
+
+    const CustomInput = forwardRef((props, ref) => {
+        // props.onClick: ƒ ()
+        // props.value: "04/21/2022 - 04/22/2022"
         return (
             <Box onClick={() => {
                 setOpen(!open)
@@ -64,7 +64,8 @@ export default function DateRangeSelection({ dateRangeValue, selectDateRange, ..
                     }} height='4px' width='6px' src={dropdown_arrow} />
             </Box>
         )
-    }
+    });
+
 
     const dateContent = (start: string, end: string) => {
         if (start == '' && end == '') {
@@ -78,9 +79,9 @@ export default function DateRangeSelection({ dateRangeValue, selectDateRange, ..
         return (
             <Box
                 sx={{
-                    height:'20px',
-                    width:'30px',
-                    backgroundColor:'red',
+                    height: '20px',
+                    width: '30px',
+                    backgroundColor: 'red',
                     fontSize: '15px',
                     color: 'white'
                 }}
@@ -134,7 +135,6 @@ export default function DateRangeSelection({ dateRangeValue, selectDateRange, ..
                         setOpen(false)
                         setDateDropDown(false)
                     }
-                    // console.log('update',update)
                     selectDateRange(update)
                     setDateRange(update);
                 }}

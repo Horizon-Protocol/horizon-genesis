@@ -12,7 +12,7 @@ import {
 } from "@mui/material";
 
 export interface Info {
-  label: string;
+  label: string | JSX.Element;
   value: string | JSX.Element;
   warning?: boolean;  // if left under 2 days, show the red warning
 }
@@ -34,9 +34,9 @@ export default function InfoList({ data, ...props }: Props & BoxProps) {
       {...props}
     >
       <List dense disablePadding>
-        {data.map(({ label, value, warning = false }) => (
+        {data.map(({ label, value, warning = false },index) => (
           <ListItem
-            key={label}
+            key={index}
             disableGutters
             sx={{
               fontSize: '14px',

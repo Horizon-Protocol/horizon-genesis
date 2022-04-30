@@ -8,7 +8,6 @@ import useWallet from "@hooks/useWallet";
 import Tooltip from "@components/Tooltip";
 import PresetCRatioOption from "./CRatioOption";
 import ToolTipContent from "./Tooltip/ToolTipContent";
-
 interface Props extends Omit<BoxProps, "onChange"> {
   color: string;
   isBurn?: boolean;

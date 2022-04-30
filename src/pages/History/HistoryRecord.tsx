@@ -21,8 +21,7 @@ import { formatNumber } from "@utils/number";
 import { BlockExplorer } from "@utils/helper";
 import { hznRateAtom } from "@atoms/exchangeRates";
 import useWallet from "@hooks/useWallet";
-import { DateRange } from "@mui/lab";
-
+import { DateRange } from "@mui/x-date-pickers-pro";
 interface HistoryDataProps {
   id: string;
   type: HistoryType;
@@ -190,13 +189,7 @@ export default function HistoryRecord() {
       headerAlign: "center",
       renderCell({ value, row }) {
         return (
-          <Link
-            href={BlockExplorer.txLink((value as string).split("-")[0])}
-            target="_blank"
-            underline="none"
-          >
-            <ActionLink>VIEW</ActionLink>
-          </Link>
+            <ActionLink target="_blank" href={BlockExplorer.txLink((value as string).split("-")[0])}>VIEW</ActionLink>
         );
       },
     },

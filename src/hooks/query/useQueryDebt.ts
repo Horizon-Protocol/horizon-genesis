@@ -56,7 +56,7 @@ export default function useQueryDebt() {
 
     const issueds = async () => {
         try {
-            console.log('fetch account',account)
+            // console.log('fetch account',account)
             const issuesReponse = await request(
                 GRAPH_ENDPOINT,
                 gql
@@ -171,7 +171,7 @@ export default function useQueryDebt() {
             // console.log("debtSnapshotsReponse", debtSnapshotsReponse)
             return debtSnapshotsReponse
         } catch (e) {
-            // console.log("query报错debtSnapshotsReponse", e)
+            console.log("query报错debtSnapshotsReponse", e)
             return [];
         }
     }
@@ -224,7 +224,6 @@ export default function useQueryDebt() {
                 // console.log("====allTypeHistory", allTypeHistory)
 
                 //if user has data and more than 0, loading end
-                // allTypeHistory = []
                 if (allTypeHistory.length > 0){
                     setHistoricalIsLoading(false)
                 }
@@ -255,19 +254,8 @@ export default function useQueryDebt() {
                         debt: aggregation
                     });
                 });
-                //push last record to the end if its not empty array
-                // if (historicalIssuanceAggregation.length > 0) {
-                //     historicalIssuanceAggregation.push({
-                //         timestamp: new Date().getTime() / 1000,
-                //         issuanceDebt: last(historicalIssuanceAggregation)?.issuanceDebt ?? zeroBN
-                //     });
-                // }
-                // console.log("historicalIssuanceAggregation",historicalIssuanceAggregation)
+
                 if (historicalIssuanceAggregation.length != historicalIssuedDebt.length){
-                    // console.log('更新了issueddebt',{
-                    //     response: historicalIssuanceAggregation,
-                    //     atom: historicalIssuedDebt
-                    // })
                     setHistoricalIssuedDebt(historicalIssuanceAggregation)
                 }
 
@@ -283,20 +271,8 @@ export default function useQueryDebt() {
                             debt: toBN(debtSnapshot.debtBalanceOf || 0),
                         });
                     });
-                //push last record to the end if its not empty array
-                // if (historicalActualDebtRecord.length > 0) {
-                //     historicalActualDebtRecord.push({
-                //         timestamp: new Date().getTime() / 1000,
-                //         actualDebt: last(historicalActualDebtRecord)?.actualDebt ?? zeroBN
-                //     });
-                // }
-                // console.log("===historicalDebtAndIssuance", historicalActualDebtRecord)
-                // no need update the line chart if the value returns the same
+              
                 if (debtSnapshot.debtSnapshots.length != historicalActualDebt.length){
-                    // console.log('更新了activedebt',{
-                    //     response: debtSnapshot.debtSnapshots,
-                    //     atom: historicalActualDebt
-                    // })
                     setHistoricalActualDebt(historicalActualDebtRecord)
                 }
             }

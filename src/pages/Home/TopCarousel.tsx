@@ -15,10 +15,6 @@ const Img = styled("img")``;
 
 const TopCarousel = () => {
 
-  useEffect(() => {
-    console.log('refresh carousel')
-  }, [])
-
   return (
     <Box
       px={{

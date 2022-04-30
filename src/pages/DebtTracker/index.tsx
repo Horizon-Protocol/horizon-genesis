@@ -74,9 +74,11 @@ export default function DebtTracker() {
     })
 
     const [chart, setChart] = useState<IChartApi>();
-    const [acitveDebtLineSeries, setAcitveDebtLineSeries] = useState<ISeriesApi<"Line"> | null>(null);
-    const [isuuedDebtLineSeries, setIsuuedDebtLineSeries] = useState<ISeriesApi<"Line"> | null>(null);
-    const [globalDebtLineSeries, setGlobalDebtLineSeries] = useState<ISeriesApi<"Line"> | null>(null);
+    const [container, setContainer] = useState<HTMLElement | undefined>();
+
+    const [acitveDebtLineSeries, setAcitveDebtLineSeries] = useState<ISeriesApi<"Line">>();
+    const [isuuedDebtLineSeries, setIsuuedDebtLineSeries] = useState<ISeriesApi<"Line">>();
+    const [globalDebtLineSeries, setGlobalDebtLineSeries] = useState<ISeriesApi<"Line">>();
 
     const historicalIssuedDebt = useAtomValue(historicalIssuedDebtAtom);
     const historicalActualDebt = useAtomValue(historicalActualDebtAtom);
@@ -96,7 +98,7 @@ export default function DebtTracker() {
             })
         }
         return connected ? emptyData.reverse() : []
-    },[connected])
+    }, [connected])
 
     const { bindRef } = useReponsiveChart({
         rightPriceScale: {
@@ -151,92 +153,132 @@ export default function DebtTracker() {
             })
 
             setChart(chart)
+            setContainer(container)
             setAcitveDebtLineSeries(acitveDebt)
             setIsuuedDebtLineSeries(isuuedDebt)
             setGlobalDebtLineSeries(globalDebt)
-
-            chart.subscribeCrosshairMove((param) => {
-                const width = container?.clientWidth as number
-                const height = container?.clientHeight as number
-                const toolTipWidth = 224
-                const toolTipHeight = 112
-                const toolTipMargin = 10
-                const leftPriceWidth = 48
-
-                let point = param.point as Point
-                if (!param.time || point.x < 0 || point.x > width || point.y < 0 || point.y > height) {
-                    setToolTipProps({ toolTipDisplay: 'none' })
-                    return;
-                }
-
-                let x = point?.x
-                let y = point?.y
-
-                let left = x - toolTipWidth - toolTipMargin + leftPriceWidth
-                if (x < (toolTipMargin + toolTipWidth)) {
-                    left = left + toolTipWidth + 2 * toolTipMargin
-                }
-
-                let top = y - toolTipHeight - toolTipMargin;
-                if (top < 0) {
-                    top = top + 2 * toolTipMargin + toolTipHeight;
-                }
-
-                const businessTime = param.time as BusinessDay
-                const acitveDebtValue = formatFiatCurrency(param.seriesPrices.get(acitveDebt) as BarPrice, { prefix: "$", mantissa: 2 })
-                const issuedDebtValue = formatFiatCurrency(param.seriesPrices.get(isuuedDebt) as BarPrice, { prefix: "$", mantissa: 2 })
-                const globalDebtValue = formatFiatCurrency(param.seriesPrices.get(globalDebt) as BarPrice, { prefix: "$", mantissa: 2 })
-
-                const toolTipDispplay = []
-
-                if (acitveDebtValue != "$NaN") {
-                    toolTipDispplay.push({
-                        color: '#3377FF',
-                        title: 'Active Debt',
-                        value: acitveDebtValue
-                    })
-                }
-                if (issuedDebtValue != "$NaN") {
-                    toolTipDispplay.push({
-                        color: '#2AD4B7',
-                        title: 'Issued Debt',
-                        value: issuedDebtValue
-                    })
-                }
-                if (globalDebtValue != "$NaN") {
-                    toolTipDispplay.push({
-                        color: '#FFA539',
-                        title: 'Global Debt',
-                        value: globalDebtValue
-                    })
-                }
-
-                setToolTipProps({
-                    toolTipDisplay: 'block',
-                    left: left + 'px',
-                    top: top + 'px',
-                    time: dayjs(
-                        new Date(
-                            businessTime.year,
-                            businessTime.month - 1,
-                            businessTime.day
-                        )
-                    ).format("MMM D, YYYY"),
-                    debts: toolTipDispplay,
-                })
-            });
         },
     })
+
+    const handleCrosshairMove = (param: MouseEventParams) => {
+        let point = param.point as Point
+
+        const width = container?.clientWidth as number
+        const height = container?.clientHeight as number
+        const toolTipWidth = 224
+        const toolTipHeight = 112
+        const toolTipMargin = 10
+        const leftPriceWidth = 48
+
+        let x = point?.x
+        let y = point?.y
+
+        let left = x - toolTipWidth - toolTipMargin + leftPriceWidth
+        if (x < (toolTipMargin + toolTipWidth)) {
+            left = left + toolTipWidth + 2 * toolTipMargin
+        }
+
+        let top = y - toolTipHeight - toolTipMargin;
+        if (top < 0) {
+            top = top + 2 * toolTipMargin + toolTipHeight;
+        }
+        const businessTime = param.time as BusinessDay
+
+        if (!param.time || point.x < 0 || point.x > width || point.y < 0 || point.y > height) {
+            setToolTipProps({ toolTipDisplay: 'none' })
+        }else{
+            setToolTipProps({ toolTipDisplay: 'block' })
+        }
+
+        const toolTipDispplay = []
+        if (acitveDebtLineSeries) {
+            const acitveDebtValue = formatFiatCurrency(param.seriesPrices.get(acitveDebtLineSeries) as BarPrice, { prefix: "$", mantissa: 2 })
+            if (acitveDebtValue != "$NaN") {
+                toolTipDispplay.push({
+                    color: '#3377FF',
+                    title: 'Active Debt',
+                    value: acitveDebtValue
+                })
+            }
+        }
+
+        if (isuuedDebtLineSeries) {
+            const issuedDebtValue = formatFiatCurrency(param.seriesPrices.get(isuuedDebtLineSeries) as BarPrice, { prefix: "$", mantissa: 2 })
+            if (issuedDebtValue != "$NaN") {
+                toolTipDispplay.push({
+                    color: '#2AD4B7',
+                    title: 'Issued Debt',
+                    value: issuedDebtValue
+                })
+            }
+        }
+
+        if (globalDebtLineSeries) {
+            const globalDebtValue = formatFiatCurrency(param.seriesPrices.get(globalDebtLineSeries) as BarPrice, { prefix: "$", mantissa: 2 })
+            if (globalDebtValue != "$NaN") {
+                toolTipDispplay.push({
+                    color: '#FFA539',
+                    title: 'Global Debt',
+                    value: globalDebtValue
+                })
+            }
+        }
+
+        setToolTipProps({
+            toolTipDisplay: 'block',
+            left: left + 'px',
+            top: top + 'px',
+            time: dayjs(
+                new Date(
+                    businessTime.year,
+                    businessTime.month - 1,
+                    businessTime.day
+                )
+            ).format("MMM D, YYYY"),
+            debts: toolTipDispplay,
+        })
+    }
+
+    useEffect(()=>{
+        return () => {
+            console.log('useEffect 取消监听')
+            // chart?.unsubscribeCrosshairMove(handleCrosshairMove);
+            // chart?.remove()
+            // preHistoricalIssuedDebtLength.current.re
+            // const preHistoricalIssuedDebtLength = useRef<Number>(0)
+            // const preHistoricalActualDebtLength = useRef<Number>(0)
+            // const preGlobalActualDebtLength = useRef<Number>(0)
+            // const preDebtBalance = useRef<BN>(zeroBN)
+        }
+    },[])
+
+    useEffect(() => {
+        if (chart && acitveDebtLineSeries && isuuedDebtLineSeries && globalDebtLineSeries){
+            console.log('useEffect 订阅监听')
+            // chart.subscribeCrosshairMove(handleCrosshairMove);
+        }
+        if (!connected) {
+            if (isuuedDebtLineSeries) {
+                isuuedDebtLineSeries.setData([])
+                preHistoricalIssuedDebtLength.current = -1
+            }
+            if (acitveDebtLineSeries) {
+                acitveDebtLineSeries.setData([])
+                preHistoricalActualDebtLength.current = -1
+            }
+        }
+    }, [connected, chart, container, acitveDebtLineSeries, isuuedDebtLineSeries, globalDebtLineSeries])
 
     //max data length
     const seriesDataMaxLength = useMemo(() => {
         let maxLength = 30
         if (historicalIssuedDebt.length > 0 || historicalActualDebt.length > 0) {
+            console.log('seriesDataMaxLength更新')
             const todayDate = dayjs(new Date())
             const maxIssuedLength = historicalIssuedDebt.length > 0 ? todayDate.diff(historicalIssuedDebt[0].timestamp * 1000, 'day') + 2 : 0
             const maxActualLength = historicalActualDebt.length > 0 ? todayDate.diff(historicalActualDebt[0].timestamp * 1000, 'day') + 2 : 0
-            const maxValue = max([maxLength,maxIssuedLength,maxActualLength])
-            if (maxValue != undefined){
+            const maxValue = max([maxLength, maxIssuedLength, maxActualLength])
+            if (maxValue != undefined) {
                 maxLength = maxValue
             }
         }
@@ -248,69 +290,71 @@ export default function DebtTracker() {
     const preGlobalActualDebtLength = useRef<Number>(0)
     const preDebtBalance = useRef<BN>(zeroBN)
 
-    useEffect(()=>{
-        // setActiveLoading(preHistoricalIssuedDebtLength.current != historicalIssuedDebt.length)
+    useEffect(() => {
         if (preHistoricalIssuedDebtLength.current == historicalIssuedDebt.length &&
             preHistoricalActualDebtLength.current == historicalActualDebt.length &&
             preGlobalActualDebtLength.current == globalDebt?.length &&
-            debtBalance.isEqualTo(preDebtBalance.current)){
-                return
-        }
-        // console.log({ })
-        const issuedDebtData = takeRight(leftSeriesData(historicalIssuedDebt),seriesDataMaxLength)
-        const activeDebtData = takeRight(leftSeriesData(historicalActualDebt, true),seriesDataMaxLength)
-        const globalDebtData = takeRight(rightSeriesData(globalDebt),seriesDataMaxLength)
-       
-        if (isuuedDebtLineSeries) {
-            isuuedDebtLineSeries.setData(issuedDebtData)
-            preHistoricalIssuedDebtLength.current = historicalIssuedDebt.length
-        }
-        if (acitveDebtLineSeries) {
-            acitveDebtLineSeries.setData(activeDebtData)
-            preHistoricalActualDebtLength.current = historicalActualDebt.length
-        }
-        if (globalDebtLineSeries) {
-            globalDebtLineSeries.setData(globalDebtData)
-            preGlobalActualDebtLength.current = globalDebt.length
-        }
-        //set Y-range
-        setYRange(isuuedDebtLineSeries,issuedDebtData)
-        setYRange(acitveDebtLineSeries,activeDebtData)
-        setYRange(globalDebtLineSeries,globalDebtData)
-        
-        //set X-range load all three series firstdata and lastdata, get the min and max date
-        if (chart != null 
-            && chart != undefined 
+            debtBalance.isEqualTo(preDebtBalance.current)) {
+        } else {
+            console.log('useEffect更新')
+            const issuedDebtData = takeRight(leftSeriesData(historicalIssuedDebt), seriesDataMaxLength)
+            const activeDebtData = takeRight(leftSeriesData(historicalActualDebt, true), seriesDataMaxLength)
+            const globalDebtData = takeRight(rightSeriesData(globalDebt), seriesDataMaxLength)
+
+            if (isuuedDebtLineSeries) {
+                console.log('isuuedDebtLineSeries setdata')
+                isuuedDebtLineSeries.setData(issuedDebtData)
+                preHistoricalIssuedDebtLength.current = historicalIssuedDebt.length
+            }
+            if (acitveDebtLineSeries) {
+                console.log('acitveDebtLineSeries setdata')
+                acitveDebtLineSeries.setData(activeDebtData)
+                preHistoricalActualDebtLength.current = historicalActualDebt.length
+            }
+            if (globalDebtLineSeries) {
+                console.log('globalDebtLineSeries setdata')
+                globalDebtLineSeries.setData(globalDebtData)
+                preGlobalActualDebtLength.current = globalDebt.length
+            }
+            //set Y-range
+            if (isuuedDebtLineSeries){
+                setYRange(isuuedDebtLineSeries, issuedDebtData)
+            }
+            if (acitveDebtLineSeries){
+                setYRange(acitveDebtLineSeries, activeDebtData)
+            }
+            if (globalDebtLineSeries){
+                setYRange(globalDebtLineSeries, globalDebtData)
+            }
+
+            //set X-range load all three series firstdata and lastdata, get the min and max date
+            if (chart != null
+                && chart != undefined
             ) {
                 let maxTimeArr = []
-                if (issuedDebtData.length > 0 ){
+                if (issuedDebtData.length > 0) {
                     maxTimeArr.push(issuedDebtData[0].time)
                 }
-                if (activeDebtData.length > 0 ){
+                if (activeDebtData.length > 0) {
                     maxTimeArr.push(activeDebtData[0].time)
                 }
-                if (globalDebtData.length > 0 ){
+                if (globalDebtData.length > 0) {
                     maxTimeArr.push(globalDebtData[0].time)
                 }
                 let maxStart = (max(maxTimeArr) as BusinessDay)
-                const newdate = new Date(maxStart.year, maxStart.month - 1, maxStart.day)
-                const substractDay = dayjs(newdate).subtract(5,'day').format("YYYY-MM-DD")
-                console.log('maxdate',{
-                    maxStart: maxStart,
-                    newdate: newdate,
-                    year: (maxStart as BusinessDay).year,
-                    month: (maxStart as BusinessDay).month,
-                    day: (maxStart as BusinessDay).day,
-                    substractDay: substractDay,
-                })
-                chart.timeScale().setVisibleRange({
-                    from: maxStart ? substractDay : dayjs(new Date()).format("YYYY-MM-DD"),
-                    to: dayjs(new Date()).format("YYYY-MM-DD"),
-                });
+                if (maxStart){
+                    const newdate = new Date(maxStart.year, maxStart.month - 1, maxStart.day)
+                    const substractDay = dayjs(newdate).subtract(5, 'day').format("YYYY-MM-DD")
+                    chart.timeScale().setVisibleRange({
+                        from: maxStart ? substractDay : dayjs(new Date()).format("YYYY-MM-DD"),
+                        to: dayjs(new Date()).format("YYYY-MM-DD"),
+                    });
+                }
+            }
         }
-    },[
-        historicalIssuedDebt, 
-        historicalActualDebt, 
+    }, [
+        historicalIssuedDebt,
+        historicalActualDebt,
         globalDebt,
         isuuedDebtLineSeries,
         acitveDebtLineSeries,
@@ -319,23 +363,6 @@ export default function DebtTracker() {
         seriesDataMaxLength,
         connected
     ])
-
-    useEffect(()=>{
-        if (!connected){
-            if (isuuedDebtLineSeries) {
-                isuuedDebtLineSeries.setData([])
-                preHistoricalIssuedDebtLength.current = -1
-            }
-            if (acitveDebtLineSeries) {
-                acitveDebtLineSeries.setData([])
-                preHistoricalActualDebtLength.current = -1
-            }
-        }else{
-            // tt()
-            // queryClient.cancelQueries([GRAPH_DEBT,'activeaissued'])
-            // queryClient.fetchQuery([GRAPH_DEBT,'activeaissued'])
-        }
-    },[connected])
 
     const leftSeriesData = (debtData: DebtData[], addLastActiveDebt?: boolean) => {
         // generate data
@@ -356,7 +383,7 @@ export default function DebtTracker() {
                 }
             }
             seriesData = seriesRows.reverse()
-            if (addLastActiveDebt){
+            if (addLastActiveDebt) {
                 seriesData.push({
                     time: dayjs.unix(Number(new Date().getTime() / 1000)).format("YYYY-MM-DD"),
                     value: Number(debtBalance)
@@ -387,7 +414,7 @@ export default function DebtTracker() {
     }
 
     const fillEmptyDayData = (data: LineData[]) => {
-        if (data.length <= 0){
+        if (data.length <= 0) {
             return
         }
         //fill the empty date data from the first date to today
@@ -419,7 +446,7 @@ export default function DebtTracker() {
 
     const setYRange = (series: ISeriesApi<"Line"> | null, data: LineData[]) => {
         //get maximum and minimum - Y-axis
-        if (data.length <= 0){
+        if (data.length <= 0) {
             return
         }
         let maximumValue = Number((maxBy(data, 'value') as LineData).value)
@@ -456,7 +483,7 @@ export default function DebtTracker() {
             }
         >
             <DebtOverview />
-            <Typography sx={{ letterSpacing:'1px', fontWeight:'bold', fontSize: "12px", color: COLOR.text, textAlign: "center", mt: 3 }}>DEBT OVER TIME</Typography>
+            <Typography sx={{ letterSpacing: '1px', fontWeight: 'bold', fontSize: "12px", color: COLOR.text, textAlign: "center", mt: 3 }}>DEBT OVER TIME</Typography>
             <Box position="relative" ref={bindRef} sx={{
                 mt: "5px",
                 width: document.body.clientWidth < 500 ? document.body.clientWidth : 570,//  window.innerWidth < 400 ? window.innerWidth - 50 : 570,

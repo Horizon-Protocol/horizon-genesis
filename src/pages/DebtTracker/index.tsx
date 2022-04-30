@@ -241,21 +241,14 @@ export default function DebtTracker() {
 
     useEffect(()=>{
         return () => {
-            console.log('useEffect 取消监听')
-            // chart?.unsubscribeCrosshairMove(handleCrosshairMove);
-            // chart?.remove()
-            // preHistoricalIssuedDebtLength.current.re
-            // const preHistoricalIssuedDebtLength = useRef<Number>(0)
-            // const preHistoricalActualDebtLength = useRef<Number>(0)
-            // const preGlobalActualDebtLength = useRef<Number>(0)
-            // const preDebtBalance = useRef<BN>(zeroBN)
+            chart?.unsubscribeCrosshairMove(handleCrosshairMove);
+            chart?.remove()
         }
     },[])
 
     useEffect(() => {
         if (chart && acitveDebtLineSeries && isuuedDebtLineSeries && globalDebtLineSeries){
-            console.log('useEffect 订阅监听')
-            // chart.subscribeCrosshairMove(handleCrosshairMove);
+            chart.subscribeCrosshairMove(handleCrosshairMove);
         }
         if (!connected) {
             if (isuuedDebtLineSeries) {
@@ -273,7 +266,6 @@ export default function DebtTracker() {
     const seriesDataMaxLength = useMemo(() => {
         let maxLength = 30
         if (historicalIssuedDebt.length > 0 || historicalActualDebt.length > 0) {
-            console.log('seriesDataMaxLength更新')
             const todayDate = dayjs(new Date())
             const maxIssuedLength = historicalIssuedDebt.length > 0 ? todayDate.diff(historicalIssuedDebt[0].timestamp * 1000, 'day') + 2 : 0
             const maxActualLength = historicalActualDebt.length > 0 ? todayDate.diff(historicalActualDebt[0].timestamp * 1000, 'day') + 2 : 0
@@ -296,7 +288,6 @@ export default function DebtTracker() {
             preGlobalActualDebtLength.current == globalDebt?.length &&
             debtBalance.isEqualTo(preDebtBalance.current)) {
         } else {
-            console.log('useEffect更新')
             const issuedDebtData = takeRight(leftSeriesData(historicalIssuedDebt), seriesDataMaxLength)
             const activeDebtData = takeRight(leftSeriesData(historicalActualDebt, true), seriesDataMaxLength)
             const globalDebtData = takeRight(rightSeriesData(globalDebt), seriesDataMaxLength)

@@ -14,7 +14,7 @@ import Balance from "./Balance";
 import ClaimCountDown from "./ClaimCountDown";
 import useFilterZAssets from "@hooks/useFilterZAssets";
 import { last, sumBy } from "lodash";
-import { footerMenuOpenAtom, footerMenuWalletInfoOpenAtom, totalIssuedZUSDExclEthAtom } from "@atoms/app";
+import { totalIssuedZUSDExclEthAtom } from "@atoms/app";
 import { globalDebtAtom } from "@atoms/record";
 import useWallet from "@hooks/useWallet";
 import { Token } from "@utils/constants";
@@ -23,7 +23,11 @@ import useIsMobile from "@hooks/useIsMobile";
 import MenuSVG from "@components/MobileFooter/MobileMenu/MenuSVG";
 import { ReactComponent as Union } from "@assets/images/Union.svg";
 
-export default function Dashboard(props: BoxProps) {
+interface DashboardProps extends BoxProps{
+  dashBoardOnClose?: () => void
+}
+
+export default function Dashboard({dashBoardOnClose, ...props}: DashboardProps) {
   const { collateral, transferable, debtBalance } = useAtomValue(debtAtom);
   const { stakedCollateral, dashboardEscrowed } = useAtomValue(collateralDataAtom);
   const zUSDBalance = useAtomValue(zUSDBalanceAtom);
@@ -35,7 +39,6 @@ export default function Dashboard(props: BoxProps) {
   const { stakingAPR, isEstimateAPR } = useUserStakingData();
   const othersZAssets = sumBy(useFilterZAssets({ zUSDIncluded: false }), "amountUSD")
   const zAssets = sumBy(useFilterZAssets({ zUSDIncluded: true }), "amountUSD")
-  const setWalletInfoOpen = useUpdateAtom(footerMenuWalletInfoOpenAtom)
 
   const balances = useMemo(
     () => [
@@ -153,9 +156,7 @@ export default function Dashboard(props: BoxProps) {
               desc={`$${formatPrice(hznRate.toNumber(), { mantissa: 4 })}`}
               bgcolor={COLOR.bgColor}
             />
-            {isMobile && <MenuSVG mr='0px' onClick={()=>{
-                setWalletInfoOpen(false)
-            }} width='50px' height='50px'>
+            {isMobile && <MenuSVG mr='0px' onClick={dashBoardOnClose} width='50px' height='50px'>
                 <Union/>
             </MenuSVG>}
           </Box>

@@ -11,6 +11,7 @@ import {
   Typography,
   BoxProps,
   Container,
+  Popover,
 } from "@mui/material";
 import { ExpandLess, ExpandMore } from "@mui/icons-material";
 import { useTheme } from "@mui/material/styles";
@@ -109,7 +110,6 @@ function App() {
 
   const recordProps: BoxProps = {
     mb: 0,
-    // bgcolor:'red',
     right: 0,
     top: 0,
     position: downLG ? "static" : "absolute",
@@ -184,8 +184,7 @@ function App() {
           <Box
             my={3}
             m={{
-              xs: "0 30px 0 30px",
-              // md: "0 0 200px 0"
+              md: "0 30px 0 30px",
             }}
             flexGrow={
               isEarnPage
@@ -256,41 +255,46 @@ function App() {
                 }
               }
               position={{
-                xs: "fixed",
-                sm: "fixed",
+                // xs: "fixed",
+                // sm: "fixed",
                 md: "static",
               }}
               left={0}
               right={0}
-              bottom={{
-                xs: "2.75rem",
-                sm: "2.75rem",
-              }}
+              // bottom={{
+              //   xs: "2.75rem",
+              //   sm: "2.75rem",
+              // }}
               zIndex={3}
               width={{
-                xs: "100%",
-                sm: "100%",
+                // xs: "100%",
+                // sm: "100%",
                 md: 300,
               }}
               minWidth={{
-                xs: "100%",
-                sm: "100%",
+                // xs: "100%",
+                // sm: "100%",
                 md: 300,
               }}
               maxHeight={{
-                xs: walletInfoOpen ? '100%' : '0px',
-                sm: walletInfoOpen ? '100%' : '0px',
+                // xs: walletInfoOpen ? '100%' : '0px',
+                // sm: walletInfoOpen ? '100%' : '0px',
                 md: '100%',
               }}
               bgcolor={{
-                xs: "#102637",
+                // xs: "#102637",
                 md: "initial",
               }}
               borderTop={({ palette }) => ({
-                xs: `2px solid ${palette.divider}`,
+                // xs: `2px solid ${palette.divider}`,
                 md: 0,
               })}
               overflow="hidden"
+              display={{
+                xs: 'none',
+                sm: 'none',
+                md: 'block'
+              }}
               sx={{
                 transition: "max-height 0.25s ease-in",
               }}

@@ -172,7 +172,6 @@ export default function Mint() {
     //   changedTransferable: changedTransferable.toNumber(),
     // });
 
-
     return {
       cRatio: {
         from: currentCRatio,

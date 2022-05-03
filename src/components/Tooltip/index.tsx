@@ -10,24 +10,24 @@ interface BaseTooltipProps{
 }
 
 const BaseTooltip = ({ tootipWidth = 217, children, ...props }: BaseTooltipProps & TooltipProps) => {
-  // const useToolTipStyles = makeStyles<BaseTooltipProps>(theme => ({
-  //   arrow: {
-  //     color: '#0A283D'
-  //   },
-  //   tooltip: (props: BaseTooltipProps) => ({
-  //     padding: '12px',
-  //     background: 'radial-gradient(79.72% 484.78% at 16.59% 25%, #092B43 0%, #0B2435 100%)',
-  //     width: props.tootipWidth,
-  //     boxShadow: '0px 0px 24px 5px #0B1D38',
-  //     borderRadius: '4px',
-  //     fontSize: 12,
-  //     lineHeight: "14px",
-  //     letterSpacing: '.5px',
-  //     color: COLOR.text,
-  //   })
-  // }))
+  const useToolTipStyles = makeStyles<BaseTooltipProps>(theme => ({
+    arrow: {
+      color: '#0A283D'
+    },
+    tooltip: (props: BaseTooltipProps) => ({
+      padding: '12px',
+      background: 'radial-gradient(79.72% 484.78% at 16.59% 25%, #092B43 0%, #0B2435 100%)',
+      width: props.tootipWidth,
+      boxShadow: '0px 0px 24px 5px #0B1D38',
+      borderRadius: '4px',
+      fontSize: 12,
+      lineHeight: "14px",
+      letterSpacing: '.5px',
+      color: COLOR.text,
+    })
+  }))
 
-  // let classes = useToolTipStyles({tootipWidth: tootipWidth});
+  let classes = useToolTipStyles({tootipWidth: tootipWidth});
 
   return (
     <Tooltip sx={{
@@ -35,8 +35,8 @@ const BaseTooltip = ({ tootipWidth = 217, children, ...props }: BaseTooltipProps
       innerWidth: 12,
     }}
       classes={{
-        // arrow: classes.arrow,
-        // tooltip: classes.tooltip
+        arrow: classes.arrow,
+        tooltip: classes.tooltip
       }}
       enterDelay={500}
       enterNextDelay={500}

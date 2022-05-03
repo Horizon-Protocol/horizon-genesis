@@ -42,10 +42,13 @@ export default function BannerStakeRisk() {
       </Typography>
       <Typography
         textAlign='center'
-        fontSize={14}
+        fontSize={{
+          xs:12,
+          sm:14
+        }}
+        lineHeight='19px'
         fontWeight='normal'
         fontFamily='Rawline'
-        lineHeight='19px'
         letterSpacing={1}
         color='rgba(180, 224, 255, 0.75)'
         sx={{

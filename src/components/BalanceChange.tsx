@@ -1,6 +1,7 @@
 import { useMemo, useState } from "react";
-import { Box, BoxProps, List, ListItem, ListItemIcon } from "@mui/material";
+import { Box, BoxProps, List, ListItem, ListItemIcon,useMediaQuery } from "@mui/material";
 import { ellipsisWithLength, formatCRatioToPercent, formatNumber, toBN } from "@utils/number";
+import { useTheme } from "@mui/material/styles";
 
 export interface Props {
   changed: boolean;
@@ -37,36 +38,15 @@ export default function BalanceChange({
   gapImg,
   ...props
 }: Props & BoxProps) {
-  // const maxDebtLength = useMemo(()=>{
-  //   const minimum = 15
-  //   const maximum = minimum * 2 //+ 2
-  //   const totalLength = formatNumber(debt.from).length + (changed ? formatNumber(debt.to).length : 0)
-  //   const maxLength = totalLength > maximum ? minimum : maximum
-  //   return maxLength
-  // },[debt])
 
-  // const maxStakedLength = useMemo(()=>{
-  //   const minimum = 14 
-  //   const maximum = minimum * 2 //+ 2
-  //   const totalLength = formatNumber(staked.from).length + (changed ? formatNumber(staked.to).length : 0)
-  //   const maxLength = totalLength > maximum ? minimum : maximum
-  //   return maxLength
-  // },[staked])
-
-  // const maxTransferrableLength = useMemo(()=>{
-  //   const minimum = 14
-  //   const maximum = minimum * 2 //+ 2
-  //   const totalLength = formatNumber(transferrable.from).length + (changed ? formatNumber(transferrable.to).length : 0)
-  //   const maxLength = totalLength > maximum ? minimum : maximum
-  //   return maxLength
-  // },[transferrable])
-
+  const { breakpoints } = useTheme();
+  const downSM = useMediaQuery(breakpoints.down("sm"));
 
   const maxValueLength = useMemo(()=>{
-    const debtMinimum = 15
+    const debtMinimum =  downSM ? 10 : 15
     const stakedMinimum = 13
-    const transferrableMinimum = 13
-    const escrowedMinimum = 14
+    const transferrableMinimum = downSM ? 10 : 143
+    const escrowedMinimum = downSM ? 10 : 14
 
     const totalDebtLength = formatNumber(debt.from).length + (changed ? formatNumber(debt.to).length : 0)
     const maxDebtLength = totalDebtLength > 2*debtMinimum ? debtMinimum : 2*debtMinimum
@@ -86,7 +66,7 @@ export default function BalanceChange({
       maxTransferrableLength,
       maxEscrowedLength
     }
-  },[debt,staked,transferrable,escrowed])
+  },[debt,staked,transferrable,escrowed,downSM])
 
   const data = useMemo(
     () => [
@@ -137,6 +117,8 @@ export default function BalanceChange({
             key={label}
             disableGutters
             sx={{
+              display:'flex',
+              justifyContent:'space-between',
               p: "0 0 10px 0",
               flexWrap: {
                 xs: "wrap",
@@ -163,7 +145,6 @@ export default function BalanceChange({
                 sm: 0,
               }}
               display='flex'
-              width='100%'
               justifyContent='flex-end'
             >
               <Box component='span' fontSize={14} color='rgba(180, 224, 255, 0.5)' lineHeight='16px'>

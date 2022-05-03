@@ -1,4 +1,4 @@
-import { Box, BoxProps, Dialog, LinearProgress, Link, Popover, Typography } from "@mui/material";
+import { Box, BoxProps, Dialog, LinearProgress, Link, Popover, PopoverProps, Typography } from "@mui/material";
 import { useCallback, useEffect, useMemo, useState } from "react";
 import { useAtom } from "jotai";
 import { useAtomValue } from "jotai/utils";
@@ -10,7 +10,6 @@ import useRefresh, { useIsRefrshing } from "@hooks/useRefresh";
 import { useLocation, useHistory } from "react-router-dom";
 import ConnectButton from "@components/ConnectButton";
 import { footerMenuOpenAtom, footerMenuWalletInfoOpenAtom, footerMenuGetHZNOpenAtom } from "@atoms/app";
-import { openAtom as walletOpenAtom } from "@atoms/wallet";
 import { ReactComponent as Union } from "@assets/images/Union.svg";
 import { ReactComponent as More } from "@assets/images/mMore.svg";
 import { ReactComponent as Reset } from "@assets/images/mReset.svg";
@@ -30,7 +29,8 @@ import MenuSVG from "./MobileMenu/MenuSVG";
 import GetHZNDialog from "./MobileMenu/GetHZNDialog";
 import MenuItem from "@components/Header/HelpMenu/MenuItem";
 import { alpha } from "@mui/material/styles";
-
+import Dashboard from "@components/Dashboard";
+import MenuPopover from "./MobileMenu/MenuPopover";
 interface GetHZNProps {
     svg: JSX.Element;
     title: string;
@@ -53,33 +53,32 @@ const GetHZNs = [
 ]
 
 export default function MobileFooter() {
-
-    const walletDialogOpen = useAtomValue(walletOpenAtom);
+    
+    const history = useHistory()
     const { refreshing } = useIsRefrshing();
     const { connected, account } = useWallet();
     const refresh = useRefresh()
-    const history = useHistory()
     const { pathname } = useLocation();
 
     //menu and wallet info popover
+    //menu popover
     const [menuAnchorEl, setMenuAnchorEl] = useState<HTMLDivElement | null>(null)
     const [menuOpen, setMenuOpen] = useAtom(footerMenuOpenAtom)
+    //walletinfo popover
+    const [walletInfoAnchorEl, setWalletInfoAnchorEl] = useState<HTMLDivElement | null>(null)
     const [walletInfoOpen, setWalletInfoOpen] = useAtom(footerMenuWalletInfoOpenAtom)
+    //get hzn dialog
     const [getHZNOpen, setGetHZNOpen] = useAtom(footerMenuGetHZNOpenAtom)
     //progress
     const { transferable, debtBalance } = useAtomValue(debtAtom);
     const { progress, color } = useCRactioProgress()
     const currentCRatioPercent = useAtomValue(currentCRatioPercentAtom);
 
-    useEffect(() => {
-        // setWalletInfoOpen(false)
-        setMenuOpen(!!menuAnchorEl)
-    }, [menuAnchorEl, setMenuOpen])
-
+    //menu
     const Menu = useCallback(() => {
         return (
             <MenuSVG width='64px' onClick={(e: React.MouseEvent<HTMLDivElement>) => {
-                setMenuAnchorEl((el) => (el ? null : e.currentTarget))
+                setMenuAnchorEl((el) => el ? null : e.currentTarget)
             }}>
                 {menuOpen ? (
                     <SvgIcon sx={{
@@ -102,9 +101,8 @@ export default function MobileFooter() {
             <MenuSVG
                 width='64px'
                 mr='0px'
-                onClick={() => {
-                    setMenuOpen(false)
-                    setWalletInfoOpen(!walletInfoOpen)
+                onClick={(e: React.MouseEvent<HTMLDivElement>) => {
+                    setWalletInfoAnchorEl((el) => el ? null : e.currentTarget)
                 }}>
                 <SvgIcon sx={{
                     transition: "transform ease 0.25s",
@@ -118,9 +116,9 @@ export default function MobileFooter() {
     }, [walletInfoOpen])
 
     //refresh
-    const Refresh = () => {
+    const Refresh = useCallback(() => {
         return (
-            <MenuSVG width='64px'>
+            <MenuSVG onClick={refresh} width='64px'>
                 <SvgIcon
                     sx={{
                         color: "text.primary",
@@ -142,9 +140,9 @@ export default function MobileFooter() {
                 </SvgIcon>
             </MenuSVG>
         )
-    }
+    },[refreshing])
 
-    // connectwallet
+    //connectwallet
     const ConnectWallet = () => {
         return connected ? <WalletInfo /> : <ConnectButton fullWidth size="small" sx={{ height: "100%" }} />
     }
@@ -187,10 +185,45 @@ export default function MobileFooter() {
         )
     }
 
+    //close menu
+    const CloseMenu = () => {
+        return (
+            <Box onClick={()=>{
+                setMenuAnchorEl(null)
+            }} sx={{
+                cursor:'pointer',
+                color: COLOR.text,
+                fontSize: '14px',
+                height:'44px',
+                lineHeight:'44px',
+                letterSpacing: '0.5px',
+                ml: '10px'
+            }}>
+                Close Menu
+            </Box>
+        )
+    }
+
+    //wallet info
+    const MenuWalletInfo = () => {
+        return (
+            <Box sx={{
+                display:'flex',
+                justifyContent:'center',
+                mr:'3px',
+                flexGrow:1,
+            }}>
+                <WalletInfo/>
+            </Box>
+        )
+    }
+
     //c-ratio
     const CRatio = () => {
         return (
-            <Box position='relative' sx={{
+            <Box onClick={(e: React.MouseEvent<HTMLDivElement>) => {
+                setWalletInfoAnchorEl((el) => el ? null : e.currentTarget)
+            }} position='relative' sx={{
                 width: '100%',
                 display: 'flex',
                 flexDirection: 'column',
@@ -256,12 +289,10 @@ export default function MobileFooter() {
                 return (
                     <>
                         <Menu />
-                        <Refresh />
-                        {menuOpen ? <WalletInfo
-                            width='100%'
-                            mr='3px'
-                        /> : <GetHZN />}
-                        <WalletInfoButton />
+                        {menuOpen && <CloseMenu/>}
+                        {!menuOpen && <Refresh />}
+                        {menuOpen ? <MenuWalletInfo/> : <GetHZN />}
+                        {!menuOpen && <WalletInfoButton />}
                     </>
                 )
             }
@@ -270,12 +301,10 @@ export default function MobileFooter() {
                 return (
                     <>
                         <Menu />
-                        <Refresh />
-                        {menuOpen ? <WalletInfo
-                            width='100%'
-                            mr='3px'
-                        /> : pathname == '/mint' ? <CRatio /> : <StakeNow />}
-                        <WalletInfoButton />
+                        {menuOpen && <CloseMenu/>}
+                        {!menuOpen && <Refresh />}
+                        {menuOpen ? <MenuWalletInfo/> : pathname == '/mint' ? <CRatio /> : <StakeNow />}
+                        {!menuOpen && <WalletInfoButton />}
                     </>
                 )
             }
@@ -284,12 +313,10 @@ export default function MobileFooter() {
                 return (
                     <>
                         <Menu />
-                        <Refresh />
-                        {menuOpen ? <WalletInfo
-                            width='100%'
-                            mr='3px'
-                        /> : <CRatio />}
-                        <WalletInfoButton />
+                        {menuOpen && <CloseMenu/>}
+                        {!menuOpen && <Refresh />}
+                        {menuOpen ? <MenuWalletInfo/> : <CRatio />}
+                        {!menuOpen && <WalletInfoButton />}
                     </>
                 )
             }
@@ -305,6 +332,12 @@ export default function MobileFooter() {
         }
     }, [connected, transferable, debtBalance, menuOpen, walletInfoOpen, walletInfoOpen, account, pathname])
 
+    useEffect(() => {
+        // setWalletInfoOpen(false)
+        setMenuOpen(!!menuAnchorEl)
+        setWalletInfoOpen(!!walletInfoAnchorEl)
+    }, [menuAnchorEl, walletInfoAnchorEl])
+
     return (
         <>
             <Box sx={{
@@ -319,14 +352,22 @@ export default function MobileFooter() {
             }}>
                 {buttonContent}
             </Box>
-            <MobileMenu
-                open={menuOpen}
-                anchorEl={menuAnchorEl}
-                menuOnClose={() => {
-                    setMenuAnchorEl(null)
-                }}
-            />
             <Dialog
+                sx={{
+                    '.MuiDialog-container': {
+                        maxWidth: "100%",
+                        width: "100%",
+                        height: "100%",
+                        left: "0 !important",
+                        top: "auto !important",
+                        maxHeight: "100%",
+                        backdropFilter: "blur(12px)",
+                        borderRadius: "0",
+                        bgcolor: "unset",
+                        position: "relative",
+                        boxShadow: "none",
+                    }
+                }}
                 open={getHZNOpen}
             >
                 <Box sx={{
@@ -398,6 +439,34 @@ export default function MobileFooter() {
                     })}
                 </Box>
             </Dialog>
+            <MenuPopover
+                open={menuOpen}
+                anchorEl={menuAnchorEl}
+                menuOnClose={() => {
+                    setMenuAnchorEl(null)
+                }}
+            >
+                <MobileMenu menuOnClose={() => {
+                    setMenuAnchorEl(null)
+                }} />
+            </MenuPopover>
+            <MenuPopover
+                open={walletInfoOpen}
+                anchorEl={walletInfoAnchorEl}
+                menuOnClose={() => {
+                    setWalletInfoAnchorEl(null)
+                }}
+            >
+                <Box sx={{
+                    width: '100%',
+                    height: '100%',
+                    position: 'relative'
+                }}>
+                    <Dashboard dashBoardOnClose={() => {
+                        setWalletInfoAnchorEl(null)
+                    }} position='absolute' bottom={0} />
+                </Box>
+            </MenuPopover>
         </>
     )
 }

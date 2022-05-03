@@ -62,7 +62,10 @@ export default function PageCard({
           title={title}
           description={description}
           height={184}
-          width={450}
+          width={{
+            sm: '100%',
+            md:450
+          }}
           py={3}
         />
       </Box>

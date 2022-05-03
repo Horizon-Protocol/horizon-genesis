@@ -5,11 +5,11 @@ import mintBg from "@assets/images/slidemint.png";
 import { useHistory } from "react-router-dom";
 import { HZNBuyLink } from "@utils/constants";
 import ActionLink from "@components/Alerts/ActionLink";
+import useIsMobile from "@hooks/useIsMobile";
 
 export default function BannerMint() {
 
   const history = useHistory()
-
   return (
     <Box
       height='207px'
@@ -42,7 +42,10 @@ export default function BannerMint() {
         fontWeight='400'
         variant="h5"
         fontFamily='Raleway'
-        lineHeight='42px'
+        lineHeight={{
+          xs:'25px',
+          sm:'42px'
+        }} 
         letterSpacing={2}
       >
         <span style={{
@@ -56,9 +59,12 @@ export default function BannerMint() {
       </Typography>
       <Typography
         textAlign='center'
-        fontSize={14}
-        fontWeight='normal'
+        fontSize={{
+          xs:12,
+          sm:14
+        }}
         lineHeight='16px'
+        fontWeight='normal'
         fontFamily='Raleway'
         letterSpacing={1}
         mt='10px'

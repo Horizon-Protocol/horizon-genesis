@@ -6,11 +6,13 @@ import ListItemText from '@mui/material/ListItemText';
 import Collapse from '@mui/material/Collapse';
 import { useCallback, useEffect, useState } from 'react';
 import { useHistory, useLocation } from 'react-router-dom';
-import { ListItemButtonProps, SvgIcon } from "@mui/material";
+import { Box, ListItemButtonProps, SvgIcon } from "@mui/material";
 import { alpha } from "@mui/material/styles";
 import { ReactComponent as IconLink } from "@assets/images/icon-link.svg";
 import { ReactComponent as IconArrow } from "@assets/images/menu-sectionarrow.svg";
 import { ReactComponent as IconArrowUp } from "@assets/images/menu-sectionarrowup.svg";
+import { useAtomValue } from 'jotai';
+import { hasRewardsAtom } from '@atoms/feePool';
 
 interface Props {
   onMenuClick: () => void
@@ -21,11 +23,13 @@ interface Menu {
   path: string;
   symbol: string;
   subItem?: boolean;
+  showAlert?: boolean;
 }
 
 export default function MenuPageList({ onMenuClick }: Props) {
   const { pathname } = useLocation()
   const history = useHistory();
+  const hasRewards = useAtomValue(hasRewardsAtom);
 
   const [helpOpen, setHelpOpen] = useState(false);
   const [walletOpen, setWalletOpen] = useState(false);
@@ -63,6 +67,7 @@ export default function MenuPageList({ onMenuClick }: Props) {
     path,
     symbol,
     subItem,
+    showAlert,
     children,
     ...props
   }: Menu & ListItemButtonProps) => {
@@ -114,6 +119,13 @@ export default function MenuPageList({ onMenuClick }: Props) {
         {...props}
       >
         {menu}
+        {showAlert && (<Box sx={{
+              marginLeft:'10px',
+              backgroundColor: '#F5841F',
+              width: "10px",
+              height: "10px",
+              borderRadius : '50%'
+          }}/>)}
         <ListItemText />
         {children}
       </ListItemButton>
@@ -150,8 +162,8 @@ export default function MenuPageList({ onMenuClick }: Props) {
           <ListItem {...{ menu: 'History', path: '/history', symbol: 'history', subItem: true }} />
         </List>
       </Collapse>
-      <ListItem {...{ menu: 'Earn', path: '/earn', symbol: 'earn' }} />
-      <ListItem {...{ menu: 'Claim', path: '/claim', symbol: 'claim' }} />
+      <ListItem {...{ menu: 'Earn', path: '/earn', symbol: 'earn'}} />
+      <ListItem {...{ menu: 'Claim', path: '/claim', symbol: 'claim', showAlert: hasRewards }} />
       <ListItem {...{ menu: 'Burn', path: '/burn', symbol: 'burn' }} />
       <ListItem {...{ menu: 'Mint', path: '/mint', symbol: 'mint' }} />
       <ListItem {...{ menu: 'Home', path: '/home', symbol: 'home' }} />

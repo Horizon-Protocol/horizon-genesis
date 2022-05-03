@@ -43,9 +43,9 @@ const getTimeNow = () => dayjs().format("MMM DD, YYYY HH:mm:ss");
 export function useIsRefrshing() {
   const isEarnFetching = useIsFetching(EARN);
   const isContractFetching = useIsFetching(CONTRACT);
-  // const isUserFetching = useIsFetching(WALLET);
+  const isUserFetching = useIsFetching(WALLET);
 
-  const refreshing = isEarnFetching || isContractFetching;
+  const refreshing = isEarnFetching || isContractFetching || isUserFetching;
 
   const [time, setTime] = useState(getTimeNow());
 

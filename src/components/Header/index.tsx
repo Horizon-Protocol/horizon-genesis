@@ -3,7 +3,6 @@ import ConnectButton from "@components/ConnectButton";
 import useWallet from "@hooks/useWallet";
 import NavTabs from "./NavTabs";
 import WalletInfo from "./WalletInfo";
-import WalletsDialog from "./WalletsDialog";
 import LogoMenu from "./LogoMenu";
 import HelpMenu from "./HelpMenu";
 import RefreshButton from "./RefreshButton";
@@ -98,7 +97,6 @@ export default function Header() {
           )}
         </Grid>
       </Grid>
-      <WalletsDialog />
     </>
   );
 }

@@ -111,7 +111,6 @@ export default function Home() {
       mx='auto'
       maxWidth={640}
       position={"relative"}
-      // bgcolor='green'
       bgcolor='rgba(16,38,55,0.3)'
       display='flex'
       flexDirection='column'
@@ -130,9 +129,9 @@ export default function Home() {
         }}
         sx={{
           mt: "29px",
-          mb: "50px",
+          mb: "0px",
           width: "100%",
-          height: "300px",
+          // height: "200px",
           flexGrow: 1,
         }}
       >

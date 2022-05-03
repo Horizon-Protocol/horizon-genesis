@@ -1,5 +1,5 @@
 import { useMemo } from "react";
-import { useAtomValue } from "jotai/utils";
+import { useAtomValue, useUpdateAtom } from "jotai/utils";
 import { Box, BoxProps, Typography } from "@mui/material";
 import { debtAtom, collateralDataAtom } from "@atoms/debt";
 import { zUSDBalanceAtom } from "@atoms/balances";
@@ -14,34 +14,28 @@ import Balance from "./Balance";
 import ClaimCountDown from "./ClaimCountDown";
 import useFilterZAssets from "@hooks/useFilterZAssets";
 import { last, sumBy } from "lodash";
-import { totalIssuedZUSDExclEthAtom } from "@atoms/app";
+import { footerMenuOpenAtom, footerMenuWalletInfoOpenAtom, totalIssuedZUSDExclEthAtom } from "@atoms/app";
 import { globalDebtAtom } from "@atoms/record";
 import useWallet from "@hooks/useWallet";
 import { Token } from "@utils/constants";
 import Tooltip from "@components/Tooltip";
+import useIsMobile from "@hooks/useIsMobile";
+import MenuSVG from "@components/MobileFooter/MobileMenu/MenuSVG";
+import { ReactComponent as Union } from "@assets/images/Union.svg";
 
 export default function Dashboard(props: BoxProps) {
   const { collateral, transferable, debtBalance } = useAtomValue(debtAtom);
-  const { stakedCollateral, dashboardEscrowed } =
-    useAtomValue(collateralDataAtom);
+  const { stakedCollateral, dashboardEscrowed } = useAtomValue(collateralDataAtom);
   const zUSDBalance = useAtomValue(zUSDBalanceAtom);
-
   const hznRate = useAtomValue(hznRateAtom);
-
   const totalIssuedSynths = useAtomValue(totalIssuedZUSDExclEthAtom)
   const globalDebt = useAtomValue(globalDebtAtom);
-
   const { connected } = useWallet()
-
-  // console.log('debtpoll',{
-  //   debtBalance:debtBalance,
-  //   globalDebt:globalDebt
-  // })
-
+  const isMobile = useIsMobile()
   const { stakingAPR, isEstimateAPR } = useUserStakingData();
-
   const othersZAssets = sumBy(useFilterZAssets({ zUSDIncluded: false }), "amountUSD")
   const zAssets = sumBy(useFilterZAssets({ zUSDIncluded: true }), "amountUSD")
+  const setWalletInfoOpen = useUpdateAtom(footerMenuWalletInfoOpenAtom)
 
   const balances = useMemo(
     () => [
@@ -112,24 +106,26 @@ export default function Dashboard(props: BoxProps) {
   return (
     <>
       <Box
-        // border={1}
         borderColor={BORDER_COLOR}
         width='100%'
-        bgcolor={COLOR.bgColor}
+        bgcolor={{
+          xs:'#0C1D2E',
+          sm:'#0C1D2E',
+          md:COLOR.bgColor
+        }}
         borderRadius={{
           xs: 0,
           md: 2.5, // 10px
         }}
         {...props}
       >
-        <CRatioRange px={2} />
+        {!isMobile && <CRatioRange px={2} />} 
         <Box
           mt={0}
-          p="15px"
+          p={isMobile ? '8px':'15px'}
           pt={0}
           pb={0}
           textAlign='center'
-        // bgcolor='rgba(16, 38, 55, 0.3)'
         >
           <Box
             width='100%'
@@ -139,6 +135,7 @@ export default function Dashboard(props: BoxProps) {
           >
             <HZNInfoPrice
               width={150}
+              flexGrow={isMobile ? 1 : 0}
               height='50px'
               toolTipText='apy tootip'
               title='HZN STAKING APY'
@@ -150,13 +147,19 @@ export default function Dashboard(props: BoxProps) {
             />
             <HZNInfoPrice
               width={110}
+              flexGrow={isMobile ? 1 : 0}
               toolTipText='HZN PRICE tooltip'
               title='HZN PRICE'
               desc={`$${formatPrice(hznRate.toNumber(), { mantissa: 4 })}`}
               bgcolor={COLOR.bgColor}
             />
+            {isMobile && <MenuSVG mr='0px' onClick={()=>{
+                setWalletInfoOpen(false)
+            }} width='50px' height='50px'>
+                <Union/>
+            </MenuSVG>}
           </Box>
-          <Box mt="10px" bgcolor={COLOR.bgColor}>
+          <Box mt={isMobile?'3px':'10px'} bgcolor={COLOR.bgColor}>
             <Balance data={balances} />
           </Box>
         </Box>

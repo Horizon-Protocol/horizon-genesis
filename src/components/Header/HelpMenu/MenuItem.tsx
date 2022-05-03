@@ -5,12 +5,14 @@ import { ReactComponent as IconLink } from "@assets/images/icon-link.svg";
 
 interface Props extends BoxProps {
   isLink?: boolean;
+  svgSx?: BoxProps;
 }
 
 export default function MenuItem({
   isLink = false,
   children,
   sx,
+  svgSx,
   ...props
 }: Props) {
   return (
@@ -53,6 +55,7 @@ export default function MenuItem({
           sx={{
             height: 12,
             width: 12,
+            ...svgSx
           }}
         >
           <IconLink />

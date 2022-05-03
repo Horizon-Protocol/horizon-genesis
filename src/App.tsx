@@ -14,7 +14,7 @@ import {
 } from "@mui/material";
 import { ExpandLess, ExpandMore } from "@mui/icons-material";
 import { useTheme } from "@mui/material/styles";
-import { readyAtom } from "@atoms/app";
+import { footerMenuWalletInfoOpenAtom, readyAtom } from "@atoms/app";
 import useSetupHorizonLib from "@hooks/useSetupHorizonLib";
 import useFetchAppData from "@hooks/useFetchAppData";
 import useFetchDebtData from "@hooks/useFetchDebtData";
@@ -40,6 +40,9 @@ import History from "@pages/History";
 import useQueryDebt from "@hooks/query/useQueryDebt";
 import useQueryGlobalDebt from "@hooks/query/useQueryGlobalDebt";
 import useEscrowDataQuery from "@hooks/Escrowed/useEscrowDataQuery";
+import useIsMobile from "@hooks/useIsMobile";
+import MobileMenu from "@components/MobileFooter";
+import WalletsDialog from "@components/Header/WalletsDialog";
 
 const AppDisabled = !!import.meta.env.VITE_APP_DISABLED;
 
@@ -52,10 +55,10 @@ if (import.meta.env.PROD) {
 
 function App() {
   const { breakpoints } = useTheme();
-  const downMD = useMediaQuery(breakpoints.down("md"));
   const downLG = useMediaQuery(breakpoints.down("lg"));
-
+  const isMobile = useIsMobile()
   const isEarnPage = useIsEarnPage();
+  const walletInfoOpen = useAtomValue(footerMenuWalletInfoOpenAtom)
 
   const appReady = useAtomValue(readyAtom);
 
@@ -145,14 +148,14 @@ function App() {
           filter: AppDisabled ? "blur(2px)" : undefined,
         }}
       >
-        <Header />
-        {!isEarnPage && downMD && (
+        {!isMobile && <Header />}
+        {!isEarnPage && isMobile && (
           <>
             <Alerts {...alertProps} />
             <AlertDashboard {...alertProps} />
           </>
         )}
-        {!isEarnPage && downLG && <Record {...recordProps} />}
+        {!isEarnPage && downLG && !isMobile && <Record {...recordProps} />}
         <Box
           my={3}
           display="flex"
@@ -181,34 +184,32 @@ function App() {
           <Box
             my={3}
             m={{
-              xs: "0 8px 150px",
-              md: "0 24px",
+              xs: "0 30px 0 30px",
+              // md: "0 0 200px 0"
             }}
             flexGrow={
               isEarnPage
                 ? undefined
                 : {
-                    xs: 1,
-                    md: 0,
-                  }
+                  xs: 1,
+                  md: 0,
+                }
             }
             flexShrink={
               isEarnPage
                 ? undefined
                 : {
-                    xs: 1,
-                    md: 0,
-                  }
+                  xs: 1,
+                  md: 0,
+                }
             }
             flexBasis={
               isEarnPage
                 ? undefined
                 : {
-                    xs: 480,
-                    sm: 640,
-                    // lg: 640,
-                    // xl: 640,
-                  }
+                  xs: 480,
+                  sm: 640,
+                }
             }
           >
             <Switch>
@@ -217,7 +218,6 @@ function App() {
                 path="/"
                 render={() => <Redirect to="/home" push />}
               />
-              {/* <CacheRoute path="/home"><Home /></CacheRoute> */}
               <Route path="/home">
                 <Home />
               </Route>
@@ -244,7 +244,8 @@ function App() {
               </Route>
             </Switch>
           </Box>
-          {!isEarnPage && (
+          {isMobile && <MobileMenu />}
+          {!(isEarnPage && !isMobile) && (
             <Box
               pr={
                 {
@@ -261,7 +262,10 @@ function App() {
               }}
               left={0}
               right={0}
-              bottom={0}
+              bottom={{
+                xs: "2.75rem",
+                sm: "2.75rem",
+              }}
               zIndex={3}
               width={{
                 xs: "100%",
@@ -274,8 +278,9 @@ function App() {
                 md: 300,
               }}
               maxHeight={{
-                xs: expanded ? "100%" : 170,
-                md: "100%",
+                xs: walletInfoOpen ? '100%' : '0px',
+                sm: walletInfoOpen ? '100%' : '0px',
+                md: '100%',
               }}
               bgcolor={{
                 xs: "#102637",
@@ -290,30 +295,18 @@ function App() {
                 transition: "max-height 0.25s ease-in",
               }}
             >
-              {!downMD && (
+              {!isMobile && (
                 <>
                   <Alerts {...alertProps} />
                   <AlertDashboard {...alertProps} />
                 </>
               )}
               <Dashboard />
-              {downMD && (
-                <Button
-                  startIcon={expanded ? <ExpandMore /> : <ExpandLess />}
-                  sx={{
-                    position: "absolute",
-                    top: 0,
-                    right: 0,
-                  }}
-                  onClick={() => setExpanded((v) => !v)}
-                >
-                  Show {expanded ? "Less" : "More"}
-                </Button>
-              )}
             </Box>
           )}
         </Box>
       </Box>
+      <WalletsDialog />
     </>
   );
 }

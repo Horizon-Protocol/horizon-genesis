@@ -21,6 +21,7 @@ declare global {
     desc: string,
     h?: string | number,
     w?: string | number,
+    showArrow?: boolean
   }
 }
 
@@ -31,51 +32,40 @@ export default function ContentWebLink({
   desc,
   h = '40px',
   w = '289px',
+  showArrow,
   ...props
 }: ContentWebLinkProps & BoxProps) {
   const [openLinkDropDown, setOpenLinkDropDown] = useAtom(openLinkDropDownAtom);
-  
-  let borderRadius='6px'
-  if (index == 1){
-    borderRadius='6px 6px 0px 0px'
-  }
-  if (index == 2){
-    borderRadius='0px 0px 6px 6px'
-  }
 
-  const [hightLight, setHightLight] = useState(false)
+  let borderRadius = '6px'
+  if (index == 1) {
+    borderRadius = '6px 6px 0px 0px'
+  }
+  if (index == 2) {
+    borderRadius = '0px 0px 6px 6px'
+  }
 
   return (
     <Box
       display='flex'
-      bgcolor = {index < 1 ? 'transparent' : '#102637'}
+      bgcolor={index < 1 ? 'transparent' : '#102637'}
       borderRadius={borderRadius}
-      // onMouseEnter={()=>{
-      //   setHightLight(true)
-      // }}
-      // onMouseLeave={()=>{
-      //   setHightLight(false)
-      // }}
       sx={{
         opacity: index < 1 ? 1 : .4,
         cursor: "pointer",
-        ":hover": index < 1 ? 
-        {
-          opacity: 1
-        } :
-        {
-          opacity: 1
+        ":hover":{
+            opacity: 1
         },
-        ":hover #path":{
+        ":hover #path": {
           color: index < 1 ? COLOR.text : COLOR.safe
         }
       }}
-      // {...props}
+      {...props}
     >
       <Box sx={{
         width: '40.5px',
         height: '40px',
-        display: typeof(icon) == "undefined" ? 'none' : 'flex',
+        display: typeof (icon) == "undefined" ? 'none' : 'flex',
         flexDirection: 'row-reverse',
         alignItems: 'center',
       }}>
@@ -95,9 +85,10 @@ export default function ContentWebLink({
           display: 'flex',
           // justifyContent: 'center',
           alignItems: 'center',
-          pl:'13px'
+          pl: '13px'
         }}>
           <Typography
+            component='span'
             id='path'
             fontSize={19}
             fontWeight={300}
@@ -111,40 +102,28 @@ export default function ContentWebLink({
             }}>HORIZON</span>
             {title}
           </Typography>
-
           <Img
-          hidden = {typeof(icon) == "undefined"}
-          sx={{
-            transform: openLinkDropDown ?  "rotate(0deg)" : "rotate(180deg)",
-            transition: "all .2s"
-          }} height='14px' width='16px' src={dropdown_arrow}/>
-{/* <SvgIcon
-        sx={{
-          ml: 1,
-          width: 6,
-          height: 6,
-          transition: "transform ease 0.25s",
-          transform: !openLinkDropDown ? "rotate(180deg)" : undefined,
-        }}
-      >
-        <IconArrowUp />
-      </SvgIcon> */}
+            hidden={!showArrow}
+            sx={{
+              transform: openLinkDropDown ? "rotate(0deg)" : "rotate(180deg)",
+              transition: "all .2s"
+            }} height='14px' width='16px' src={dropdown_arrow} />
         </Box>
         <Typography
-            fontSize={14}
-            fontWeight={300}
-            lineHeight='16px'
-            fontFamily='Raleway'
-            color={COLOR.text}
-            paddingLeft='13px'
-            sx={{
-              opacity: index == 0 ? 0.5 : 1
-            }}
-          >
-            {desc}
-          </Typography>
+          component='span'
+          fontSize={14}
+          fontWeight={300}
+          lineHeight='16px'
+          fontFamily='Raleway'
+          color={COLOR.text}
+          paddingLeft='13px'
+          sx={{
+            opacity: index == 0 ? 0.5 : 1
+          }}
+        >
+          {desc}
+        </Typography>
       </Box>
     </Box>
-
   );
 }

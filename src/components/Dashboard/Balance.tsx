@@ -1,7 +1,7 @@
 import { Box, List, ListItem, ListItemIcon, ListItemText, ListItemProps, Collapse } from "@mui/material";
 import SvgIcon from "@mui/material/SvgIcon";
 import { ReactComponent as IconArrowUp } from "@assets/images/icon-arrow-up.svg";
-import { useMemo, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import { detailAtom } from "@atoms/wallet";
 import { useAtomValue } from "jotai/utils";
 import useWallet from "@hooks/useWallet";
@@ -10,6 +10,7 @@ import { ConnectorNames, Token } from "@utils/constants";
 import { registerToken, RegisterTokenConf } from "@utils/wallet";
 import Tooltip from "@components/Tooltip";
 import ToolTipContent from "@components/Tooltip/ToolTipContent";
+import useIsMobile from "@hooks/useIsMobile";
 
 interface Data {
   sectionHeader?: boolean;
@@ -25,6 +26,7 @@ interface Props {
 }
 
 export default function Balance({ data }: Props) {
+  const isMobile = useIsMobile()
 
   const { connected } = useWallet();
   const wallet = useAtomValue(detailAtom);
@@ -35,6 +37,10 @@ export default function Balance({ data }: Props) {
   );
 
   const [showMore, setShowMore] = useState(false)
+
+  useEffect(()=>{
+    setShowMore(isMobile)
+  },[isMobile])
 
   const CustomListItem = ({ sectionHeader, showWalletIcon, importToken, tooltipText, label, value }: Data) => (
     <ListItem sx={{
@@ -103,7 +109,7 @@ export default function Balance({ data }: Props) {
             </Collapse>
         ))}
       </List >
-      <Box onClick={() => {
+      {!isMobile && <Box onClick={() => {
         setShowMore(!showMore)
       }} sx={{
         cursor: 'pointer',
@@ -115,7 +121,6 @@ export default function Balance({ data }: Props) {
         right: 0,
         height: '24px',
         fontSize: '10px',
-        // position: 'absolute',
         backgroundColor: 'rgba(16, 38, 55, 1)',
         ":hover": { opacity: 0.75 }
       }}>
@@ -131,7 +136,7 @@ export default function Balance({ data }: Props) {
         >
           <IconArrowUp />
         </SvgIcon>
-      </Box>
+      </Box>}
     </Box>
   );
 }

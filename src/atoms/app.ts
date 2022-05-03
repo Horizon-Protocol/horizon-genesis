@@ -49,3 +49,8 @@ export const presetCRatioPercentsAtom = selectAtom(
     ];
   }
 );
+
+export const footerMenuOpenAtom = atom(false);
+export const footerMenuWalletInfoOpenAtom = atom(false);
+export const footerMenuGetHZNOpenAtom = atom(false);
+

@@ -46,7 +46,7 @@ export default function LogoMenu({ height = 80 }: Props) {
                 md: "initial",
             }}
         >
-            <ContentWebLink icon={hznLogo} index={0} title='GENESIS' desc='Mint Synthetic Assets and Earn Rewards' />
+            <ContentWebLink icon={hznLogo} showArrow={true} index={0} title='GENESIS' desc='Mint Synthetic Assets and Earn Rewards' />
             <Popover
                 open={!!anchorEl}
                 anchorEl={anchorEl}

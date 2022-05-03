@@ -16,6 +16,7 @@ export default function WalletInfo(props: BoxProps) {
     <Box
       display='flex'
       alignItems='center'
+      justifyContent='center'
       whiteSpace='nowrap'
       textAlign='center'
       sx={{

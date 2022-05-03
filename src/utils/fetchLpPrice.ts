@@ -59,6 +59,7 @@ export default async function useFetchLpPrice() {
         lpState[token] = { totalSupply, token1Balance, token2Balance };
       }
     );
+
     setLpState(lpState);
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [getMultiCallProvider]);

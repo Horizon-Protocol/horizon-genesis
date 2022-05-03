@@ -78,11 +78,14 @@ jobs:
           AWS_REGION: ap-southeast-1
           SOURCE_DIR: dist
 
-      - name: Send Notification
-        uses: lxzxl/bark-action@2.0.2
+      - name: Notify Telegram
+        uses: appleboy/telegram-action@master
         with:
-          host: https://bark.etcd.run
-          key: ${{ secrets.BARK_KEY }} # Your secret key
-          title: "Horizon | Genesis"
-          body: "Mainnet"
-          category: Horizon
+          to: ${{ secrets.TG_DEV_CHAN_ID }}
+          token: ${{ secrets.TG_DEV_BOT_TOKEN }}
+          format: markdown
+          message: |
+            *Genesis | Mainnet*
+
+            ${{ github.repository }}
+            `${{ github.actor }}` ${{ github.event.commits[0].message }}

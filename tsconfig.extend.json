@@ -9,7 +9,7 @@
       "@assets/*": ["./assets/*"],
       "@utils": ["./utils"],
       "@utils/*": ["./utils/*"],
-      "@abis/*": ["./abis/*"],
+      "@contracts/*": ["./contracts/*"],
       "@apis/*": ["./apis/*"],
       "@hooks/*": ["./hooks/*"]
     }

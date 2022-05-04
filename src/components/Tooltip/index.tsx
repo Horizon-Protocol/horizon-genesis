@@ -4,6 +4,7 @@ import { styled } from "@mui/material/styles";
 import { COLOR } from "@utils/theme/constants";
 import { makeStyles } from "@mui/styles";
 import theme from "@utils/theme";
+import { useCallback } from "react";
 
 interface BaseTooltipProps{
   tootipWidth?: number
@@ -29,6 +30,28 @@ const BaseTooltip = ({ tootipWidth = 217, children, ...props }: BaseTooltipProps
 
   let classes = useToolTipStyles({tootipWidth: tootipWidth});
 
+  // const tmp = useCallback(()=>(
+  //     <Tooltip sx={{
+  //       cursor: 'help',
+  //       innerWidth: 12,
+  //     }}
+  //       classes={{
+  //         arrow: classes.arrow,
+  //         tooltip: classes.tooltip
+  //       }}
+  //       enterDelay={500}
+  //       enterNextDelay={500}
+  //       enterTouchDelay={0}
+  //       arrow
+  //       {...props}
+  //     >
+  //       {children}
+  //     </Tooltip>
+  //   )
+  // ,[tootipWidth])
+
+  // return tmp()
+
   return (
     <Tooltip sx={{
       cursor: 'help',
@@ -47,6 +70,7 @@ const BaseTooltip = ({ tootipWidth = 217, children, ...props }: BaseTooltipProps
       {children}
     </Tooltip>
   )
+  
 }
 
 export default BaseTooltip;

@@ -72,7 +72,9 @@ export default function MenuPageList({ onMenuClick }: Props) {
     ...props
   }: Menu & ListItemButtonProps) => {
     const menuSelected = (pathname.indexOf(symbol) > -1 || (symbol === "home" && pathname === "/")) && symbol != ''
-    const walletSelected = symbol == 'wallet' && ['/debtTracker', '/escrow', '/history'].indexOf(pathname) > -1
+    const helpOpened = symbol == 'help' && helpOpen
+    const walletOpened = symbol == 'wallet' && walletOpen
+    const op = helpOpened || walletOpened
     return (
       <ListItemButton onClick={() => {
         handleMenuClick(path)
@@ -88,7 +90,7 @@ export default function MenuPageList({ onMenuClick }: Props) {
         pr: '26px',
         lineHeight: "50px",
         letterSpacing: "1px",
-        color: walletSelected ? "#2AD4B7" : menuSelected
+        color: op ? "#2AD4B7" : menuSelected
           ? "white"
           : alpha('#B4E0FF',.5),
         background: menuSelected
@@ -130,13 +132,13 @@ export default function MenuPageList({ onMenuClick }: Props) {
         {children}
       </ListItemButton>
     )
-  }, [])
+  }, [helpOpen,walletOpen])
 
   return (
     <List
       sx={{ width: '100%', pb:'0px' }}
     >
-      <ListItem onClick={handleHelpClick} {...{ menu: 'Help', path: '', symbol: '' }}>
+      <ListItem onClick={handleHelpClick} {...{ menu: 'Help', path: '', symbol: 'help' }}>
         <SvgIcon sx={{ width: 10 }} >{helpOpen ? <IconArrowUp />:<IconArrow />}</SvgIcon> 
       </ListItem>
       <Collapse in={helpOpen} timeout="auto" unmountOnExit>

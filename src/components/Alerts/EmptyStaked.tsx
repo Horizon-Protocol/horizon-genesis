@@ -19,7 +19,7 @@ export default function EmptyStaked({ unstaked, ...props }: Props) {
           Buy HZN
         </ActionLink>
       )}
-      <ActionLink to='/mint'>Stake Now</ActionLink>
+      <ActionLink ml="20px" to='/mint'>Stake Now</ActionLink>
     </BaseAlert>
   );
 }

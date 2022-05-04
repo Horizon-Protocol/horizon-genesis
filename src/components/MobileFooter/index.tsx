@@ -1,5 +1,5 @@
-import { Box, BoxProps, Dialog, LinearProgress, Link, Popover, PopoverProps, Typography } from "@mui/material";
-import { useCallback, useEffect, useMemo, useState } from "react";
+import { Box, BoxProps, Dialog, Fade, LinearProgress, Link, Popover, PopoverProps, Slide, Typography } from "@mui/material";
+import { forwardRef, useCallback, useEffect, useMemo, useState } from "react";
 import { useAtom } from "jotai";
 import { useAtomValue } from "jotai/utils";
 import PrimaryButton from "@components/PrimaryButton";
@@ -30,7 +30,7 @@ import GetHZNDialog from "./MobileMenu/GetHZNDialog";
 import MenuItem from "@components/Header/HelpMenu/MenuItem";
 import { alpha } from "@mui/material/styles";
 import Dashboard from "@components/Dashboard";
-import MenuPopover from "./MobileMenu/MenuPopover";
+import MenuDialog from "./MobileMenu/MenuDialog";
 interface GetHZNProps {
     svg: JSX.Element;
     title: string;
@@ -53,7 +53,7 @@ const GetHZNs = [
 ]
 
 export default function MobileFooter() {
-    
+
     const history = useHistory()
     const { refreshing } = useIsRefrshing();
     const { connected, account } = useWallet();
@@ -62,10 +62,8 @@ export default function MobileFooter() {
 
     //menu and wallet info popover
     //menu popover
-    const [menuAnchorEl, setMenuAnchorEl] = useState<HTMLDivElement | null>(null)
     const [menuOpen, setMenuOpen] = useAtom(footerMenuOpenAtom)
     //walletinfo popover
-    const [walletInfoAnchorEl, setWalletInfoAnchorEl] = useState<HTMLDivElement | null>(null)
     const [walletInfoOpen, setWalletInfoOpen] = useAtom(footerMenuWalletInfoOpenAtom)
     //get hzn dialog
     const [getHZNOpen, setGetHZNOpen] = useAtom(footerMenuGetHZNOpenAtom)
@@ -78,7 +76,7 @@ export default function MobileFooter() {
     const Menu = useCallback(() => {
         return (
             <MenuSVG width='64px' onClick={(e: React.MouseEvent<HTMLDivElement>) => {
-                setMenuAnchorEl((el) => el ? null : e.currentTarget)
+                setMenuOpen(!menuOpen)
             }}>
                 {menuOpen ? (
                     <SvgIcon sx={{
@@ -102,7 +100,7 @@ export default function MobileFooter() {
                 width='64px'
                 mr='0px'
                 onClick={(e: React.MouseEvent<HTMLDivElement>) => {
-                    setWalletInfoAnchorEl((el) => el ? null : e.currentTarget)
+                    setWalletInfoOpen(!walletInfoOpen)
                 }}>
                 <SvgIcon sx={{
                     transition: "transform ease 0.25s",
@@ -140,7 +138,7 @@ export default function MobileFooter() {
                 </SvgIcon>
             </MenuSVG>
         )
-    },[refreshing])
+    }, [refreshing])
 
     //connectwallet
     const ConnectWallet = () => {
@@ -188,14 +186,14 @@ export default function MobileFooter() {
     //close menu
     const CloseMenu = () => {
         return (
-            <Box onClick={()=>{
-                setMenuAnchorEl(null)
+            <Box onClick={() => {
+                setMenuOpen(false)
             }} sx={{
-                cursor:'pointer',
+                cursor: 'pointer',
                 color: COLOR.text,
                 fontSize: '14px',
-                height:'44px',
-                lineHeight:'44px',
+                height: '44px',
+                lineHeight: '44px',
                 letterSpacing: '0.5px',
                 ml: '10px'
             }}>
@@ -208,12 +206,12 @@ export default function MobileFooter() {
     const MenuWalletInfo = () => {
         return (
             <Box sx={{
-                display:'flex',
-                justifyContent:'center',
-                mr:'3px',
-                flexGrow:1,
+                display: 'flex',
+                justifyContent: 'center',
+                mr: '3px',
+                flexGrow: 1,
             }}>
-                <WalletInfo/>
+                <WalletInfo />
             </Box>
         )
     }
@@ -222,8 +220,9 @@ export default function MobileFooter() {
     const CRatio = () => {
         return (
             <Box onClick={(e: React.MouseEvent<HTMLDivElement>) => {
-                setWalletInfoAnchorEl((el) => el ? null : e.currentTarget)
+                setWalletInfoOpen(true)
             }} position='relative' sx={{
+                cursor: 'pointer',
                 width: '100%',
                 display: 'flex',
                 flexDirection: 'column',
@@ -289,9 +288,9 @@ export default function MobileFooter() {
                 return (
                     <>
                         <Menu />
-                        {menuOpen && <CloseMenu/>}
+                        {menuOpen && <CloseMenu />}
                         {!menuOpen && <Refresh />}
-                        {menuOpen ? <MenuWalletInfo/> : <GetHZN />}
+                        {menuOpen ? <MenuWalletInfo /> : <GetHZN />}
                         {!menuOpen && <WalletInfoButton />}
                     </>
                 )
@@ -301,9 +300,9 @@ export default function MobileFooter() {
                 return (
                     <>
                         <Menu />
-                        {menuOpen && <CloseMenu/>}
+                        {menuOpen && <CloseMenu />}
                         {!menuOpen && <Refresh />}
-                        {menuOpen ? <MenuWalletInfo/> : pathname == '/mint' ? <CRatio /> : <StakeNow />}
+                        {menuOpen ? <MenuWalletInfo /> : pathname == '/mint' ? <CRatio /> : <StakeNow />}
                         {!menuOpen && <WalletInfoButton />}
                     </>
                 )
@@ -313,9 +312,9 @@ export default function MobileFooter() {
                 return (
                     <>
                         <Menu />
-                        {menuOpen && <CloseMenu/>}
+                        {menuOpen && <CloseMenu />}
                         {!menuOpen && <Refresh />}
-                        {menuOpen ? <MenuWalletInfo/> : <CRatio />}
+                        {menuOpen ? <MenuWalletInfo /> : <CRatio />}
                         {!menuOpen && <WalletInfoButton />}
                     </>
                 )
@@ -332,12 +331,6 @@ export default function MobileFooter() {
         }
     }, [connected, transferable, debtBalance, menuOpen, walletInfoOpen, walletInfoOpen, account, pathname])
 
-    useEffect(() => {
-        // setWalletInfoOpen(false)
-        setMenuOpen(!!menuAnchorEl)
-        setWalletInfoOpen(!!walletInfoAnchorEl)
-    }, [menuAnchorEl, walletInfoAnchorEl])
-
     return (
         <>
             <Box sx={{
@@ -352,121 +345,109 @@ export default function MobileFooter() {
             }}>
                 {buttonContent}
             </Box>
-            <Dialog
-                sx={{
-                    '.MuiDialog-container': {
-                        maxWidth: "100%",
-                        width: "100%",
-                        height: "100%",
-                        left: "0 !important",
-                        top: "auto !important",
-                        maxHeight: "100%",
-                        backdropFilter: "blur(12px)",
-                        borderRadius: "0",
-                        bgcolor: "unset",
-                        position: "relative",
-                        boxShadow: "none",
-                    }
-                }}
+            <MenuDialog
                 open={getHZNOpen}
+                menuOnClose={() => {
+                    setGetHZNOpen(false)
+                }}
             >
+
                 <Box sx={{
-                    backgroundColor: '#0C1D2E',
-                    p: '3px',
-                    maxWidth: '440px',
+                    display: 'flex',
+                    justifyContent: 'center',
+                    flexDirection: 'column',
+                    height: "100%",
+                    mx: '18px',
                 }}>
                     <Box sx={{
-                        width: '340px',
-                        display: 'flex',
-                        justifyContent: 'center',
-                        alignItems: 'center',
+                        backgroundColor: '#0C1D2E',
                     }}>
-                        <Typography sx={{
-                            width: '100%',
-                            height: "44px",
-                            textAlign: 'center',
-                            lineHeight: '44px',
-                            backgroundColor: COLOR_BG_30,
-                            fontSize: '16px',
-                            fontWeight: 'bold',
-                            mr: '3px',
-                            color: COLOR.safe
+                        <Box sx={{
+                            // width: '340px',
+                            display: 'flex',
+                            justifyContent: 'center',
+                            alignItems: 'center',
                         }}>
-                            GET HZN
-                        </Typography>
-                        <MenuSVG onClick={() => {
-                            setGetHZNOpen(false)
-                        }}
-                            sx={{
-                                width: '44px',
-                                height: '44px',
-                                mr: '0px',
-                                cursor: 'pointer'
+                            <Typography sx={{
+                                // width: '100%',
+                                flexGrow: 1,
+                                height: "44px",
+                                textAlign: 'center',
+                                lineHeight: '44px',
+                                backgroundColor: COLOR_BG_30,
+                                fontSize: '16px',
+                                fontWeight: 'bold',
+                                mr: '3px',
+                                color: COLOR.safe
+                            }}>
+                                GET HZN
+                            </Typography>
+                            <MenuSVG onClick={() => {
+                                setGetHZNOpen(false)
                             }}
-                        >
-                            <SvgIcon sx={{ width: '11px' }}>
-                                <Union />
-                            </SvgIcon>
-                        </MenuSVG>
-                    </Box>
-                    {GetHZNs.map((item, index) => {
-                        return (
-                            <Link key={index}
-                                href={item.href}
-                                target="_blank"
-                                underline="none"
+                                sx={{
+                                    width: '44px',
+                                    height: '44px',
+                                    mr: '0px',
+                                    cursor: 'pointer'
+                                }}
                             >
-                                <MenuItem sx={{
-                                    opacity: 1,
-                                    mt: '3px',
-                                    backgroundColor: 'rgba(16, 38, 55, 0.3)',
-                                    color: COLOR.text,
-                                    px: 2.5,
-                                    py: 1.5,
-                                    height: 64,
-                                    width: 340,
-                                    paddingX: '14px'
-                                }} svgSx={{
-                                    color: alpha(COLOR.text, .5),
-                                }} isLink>
-                                    <SvgIcon sx={{ height: 30, width: 30, mr: '12px' }}>
-                                        {item.svg}
-                                    </SvgIcon>
-                                    <Box fontWeight={700}>{item.title}</Box>
-                                </MenuItem>
-                            </Link>
-                        )
-                    })}
+                                <SvgIcon sx={{ width: '11px' }}>
+                                    <Union />
+                                </SvgIcon>
+                            </MenuSVG>
+                        </Box>
+                        {GetHZNs.map((item, index) => {
+                            return (
+                                <Link key={index}
+                                    href={item.href}
+                                    target="_blank"
+                                    underline="none"
+                                >
+                                    <MenuItem sx={{
+                                        opacity: 1,
+                                        mt: '3px',
+                                        backgroundColor: 'rgba(16, 38, 55, 0.3)',
+                                        color: COLOR.text,
+                                        px: 2.5,
+                                        py: 1.5,
+                                        height: 64,
+                                        // width: 340,
+                                        paddingX: '14px'
+                                    }} svgSx={{
+                                        color: alpha(COLOR.text, .5),
+                                    }} isLink>
+                                        <SvgIcon sx={{ height: 30, width: 30, mr: '12px' }}>
+                                            {item.svg}
+                                        </SvgIcon>
+                                        <Box fontWeight={700}>{item.title}</Box>
+                                    </MenuItem>
+                                </Link>
+                            )
+                        })}
+                    </Box>
                 </Box>
-            </Dialog>
-            <MenuPopover
+            </MenuDialog>
+            <MenuDialog
                 open={menuOpen}
-                anchorEl={menuAnchorEl}
-                menuOnClose={() => {
-                    setMenuAnchorEl(null)
-                }}
+            // menuOnClose={() => {
+            //     setMenuOpen(false)
+            // }}
             >
                 <MobileMenu menuOnClose={() => {
-                    setMenuAnchorEl(null)
+                    setMenuOpen(false)
                 }} />
-            </MenuPopover>
-            <MenuPopover
+            </MenuDialog>
+            <MenuDialog
                 open={walletInfoOpen}
-                anchorEl={walletInfoAnchorEl}
                 menuOnClose={() => {
-                    setWalletInfoAnchorEl(null)
+                    setWalletInfoOpen(false)
                 }}
             >
-                <Box sx={{
-                    width: '100%',
-                    height: '100%',
-                    position: 'relative'
-                }}>
-                    <Dashboard dashBoardOnClose={() => {
-                        setWalletInfoAnchorEl(null)
-                    }} position='absolute' bottom={0} />
-                </Box>
-            </MenuPopover>
+                <Dashboard zIndex={9999} dashBoardOnClose={() => {
+                    setWalletInfoOpen(false)
+                }} position='absolute' bottom={0} />
+            </MenuDialog>
         </>
     )
 }

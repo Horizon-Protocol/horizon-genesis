@@ -1,6 +1,7 @@
 import { HelpOutline } from "@mui/icons-material";
 import { ReactComponent as ClaimbleTip } from "@assets/images/claimbleTip.svg";
-
+import Tooltip from "@components/Tooltip";
+import ToolTipContent from "@components/Tooltip/ToolTipContent";
 import {
   Box,
   BoxProps,
@@ -34,7 +35,7 @@ export default function InfoList({ data, ...props }: Props & BoxProps) {
       {...props}
     >
       <List dense disablePadding>
-        {data.map(({ label, value, warning = false },index) => (
+        {data.map(({ label, value, warning = false }, index) => (
           <ListItem
             key={index}
             disableGutters
@@ -57,15 +58,24 @@ export default function InfoList({ data, ...props }: Props & BoxProps) {
             />
             {value}
             {warning &&
-              <SvgIcon
-                sx={{
-                  ml: '4px',
-                  height: "10px",
-                  width:'10px',
-                }}
-              >
-                <ClaimbleTip />
-              </SvgIcon>
+              <Tooltip
+                title={<ToolTipContent title='Current Claim Period Ends' conetnt='Current Claim Period Ends' />}
+                placement='top'>
+                <Box sx={{
+                  cursor: 'help',
+
+                }}>
+                  <SvgIcon
+                    sx={{
+                      ml: '4px',
+                      height: "10px",
+                      width: '10px',
+                    }}
+                  >
+                    <ClaimbleTip />
+                  </SvgIcon>
+                </Box>
+              </Tooltip>
             }
           </ListItem>
         ))}

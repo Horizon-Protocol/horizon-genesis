@@ -93,11 +93,7 @@ export default function Claim() {
       value: nextClaimCountDown,
     },
     {
-      label: <Tooltip
-        title={<ToolTipContent title='Current Claim Period Ends' conetnt='Current Claim Period Ends' />}
-        placement='top'>
-        <Box>Current Claim Period Ends</Box>
-      </Tooltip>,
+      label: "Current Claim Period Ends",
       value: nextClaimCountDown,
       warning: connected ? warning : false,
     },

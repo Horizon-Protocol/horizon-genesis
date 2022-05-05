@@ -220,7 +220,7 @@ export default function MobileFooter() {
     const CRatio = () => {
         return (
             <Box onClick={(e: React.MouseEvent<HTMLDivElement>) => {
-                setWalletInfoOpen(true)
+                setWalletInfoOpen(!walletInfoOpen)
             }} position='relative' sx={{
                 cursor: 'pointer',
                 width: '100%',

@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import { Switch, Route, Redirect } from "react-router-dom";
+import { Switch, Route, Redirect, useLocation } from "react-router-dom";
 import * as ReactGA from "react-ga";
 import { hotjar } from "react-hotjar";
 import { useAtomValue } from "jotai/utils";
@@ -60,6 +60,7 @@ function App() {
   const isMobile = useIsMobile()
   const isEarnPage = useIsEarnPage();
   const walletInfoOpen = useAtomValue(footerMenuWalletInfoOpenAtom)
+  const { pathname } = useLocation();
 
   const appReady = useAtomValue(readyAtom);
 
@@ -77,6 +78,13 @@ function App() {
   useQueryGlobalDebt();
 
   const refresh = useRefresh();
+
+  useEffect(() => {
+    // scroll to top when route changes
+    if (isMobile) {
+      window.scrollTo(0, 0);
+    }
+  }, [pathname, isMobile]);
 
   useEffect(() => {
     if (appReady) {

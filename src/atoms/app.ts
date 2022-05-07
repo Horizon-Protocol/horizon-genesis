@@ -50,7 +50,15 @@ export const presetCRatioPercentsAtom = selectAtom(
   }
 );
 
+declare global {
+  interface SuspensionStatus {
+    status: boolean;
+    reason: number;
+  }
+}
+
 export const footerMenuOpenAtom = atom(false);
 export const footerMenuWalletInfoOpenAtom = atom(false);
 export const footerMenuGetHZNOpenAtom = atom(false);
+export const suspensionStatusAtom = atom<SuspensionStatus>({status:false, reason: 0});
 

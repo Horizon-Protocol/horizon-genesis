@@ -44,6 +44,7 @@ import useEscrowDataQuery from "@hooks/Escrowed/useEscrowDataQuery";
 import useIsMobile from "@hooks/useIsMobile";
 import MobileMenu from "@components/MobileFooter";
 import WalletsDialog from "@components/Header/WalletsDialog";
+import useSuspensionStatus from "@hooks/useSuspensionStatus";
 
 const AppDisabled = !!import.meta.env.VITE_APP_DISABLED;
 
@@ -76,6 +77,7 @@ function App() {
   useFetchHorizonData();
   useEscrowDataQuery();
   useQueryGlobalDebt();
+  useSuspensionStatus();
 
   const refresh = useRefresh();
 

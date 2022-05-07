@@ -1,12 +1,12 @@
-import { Tooltip, TooltipProps } from "@mui/material";
+import { Box, ClickAwayListener, Tooltip, TooltipProps } from "@mui/material";
 import { tooltipClasses } from "@mui/material/Tooltip";
 import { styled } from "@mui/material/styles";
 import { COLOR } from "@utils/theme/constants";
 import { makeStyles } from "@mui/styles";
 import theme from "@utils/theme";
-import { useCallback } from "react";
-
-interface BaseTooltipProps{
+import { useCallback, useState } from "react";
+import useIsMobile from "@hooks/useIsMobile";
+interface BaseTooltipProps {
   tootipWidth?: number
 }
 
@@ -28,7 +28,68 @@ const BaseTooltip = ({ tootipWidth = 217, children, ...props }: BaseTooltipProps
     })
   }))
 
-  let classes = useToolTipStyles({tootipWidth: tootipWidth});
+  let classes = useToolTipStyles({ tootipWidth: tootipWidth });
+
+  const isMobile = useIsMobile()
+
+  const [open, setOpen] = useState(false)
+  return (
+    isMobile ?
+      <ClickAwayListener onClickAway={() => {
+        setOpen(false)
+      }}>
+        <Tooltip sx={{
+          cursor: 'help',
+          innerWidth: 12,
+        }}
+          classes={{
+            arrow: classes.arrow,
+            tooltip: classes.tooltip
+          }}
+          PopperProps={{
+            disablePortal: true,
+          }}
+          onClose={() => {
+            setOpen(false)
+          }}
+          open={open}
+          disableFocusListener
+          disableHoverListener
+          disableTouchListener
+          arrow
+          {...props}
+        >
+          <Box onClick={() => {
+            setOpen(true)
+          }}>
+            {children}
+          </Box>
+        </Tooltip>
+      </ClickAwayListener>
+
+      :
+      <Tooltip sx={{
+        cursor: 'help',
+        innerWidth: 12,
+      }}
+        classes={{
+          arrow: classes.arrow,
+          tooltip: classes.tooltip
+        }}
+        enterDelay={500}
+        enterNextDelay={500}
+        enterTouchDelay={0}
+        arrow
+        {...props}
+      >
+        {children}
+      </Tooltip>
+  )
+
+}
+
+export default BaseTooltip;
+
 
   // const tmp = useCallback(()=>(
   //     <Tooltip sx={{
@@ -51,27 +112,3 @@ const BaseTooltip = ({ tootipWidth = 217, children, ...props }: BaseTooltipProps
   // ,[tootipWidth])
 
   // return tmp()
-
-  return (
-    <Tooltip sx={{
-      cursor: 'help',
-      innerWidth: 12,
-    }}
-      classes={{
-        arrow: classes.arrow,
-        tooltip: classes.tooltip
-      }}
-      enterDelay={500}
-      enterNextDelay={500}
-      enterTouchDelay={0}
-      arrow
-      {...props}
-    >
-      {children}
-    </Tooltip>
-  )
-  
-}
-
-export default BaseTooltip;
-

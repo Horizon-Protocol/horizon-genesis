@@ -77,7 +77,7 @@ export default function BelowTarget({
       <ActionLink href={HZNBuyLink} target='_blank'>
         Buy HZN
       </ActionLink>
-      <ActionLink color={COLOR.warning} to='/burn'>Burn zUSD</ActionLink>
+      <ActionLink ml='20px' color={COLOR.warning} to='/burn'>Burn zUSD</ActionLink>
     </BaseAlert>
   );
 }

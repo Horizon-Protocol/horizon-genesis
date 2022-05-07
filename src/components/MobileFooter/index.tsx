@@ -441,7 +441,7 @@ export default function MobileFooter() {
             <MenuDialog
                 open={walletInfoOpen}
                 menuOnClose={() => {
-                    setWalletInfoOpen(false)
+                    // setWalletInfoOpen(false)
                 }}
             >
                 <Dashboard zIndex={9999} dashBoardOnClose={() => {

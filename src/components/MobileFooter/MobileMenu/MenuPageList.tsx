@@ -96,6 +96,9 @@ export default function MenuPageList({ onMenuClick }: Props) {
         background: menuSelected
           ? "#102637"
           : alpha('#102637',.3),
+        ":hover":{
+          backgroundColor: alpha('#102637',.3)
+        },  
         ":before": {
           content: '""',
           display: "block",

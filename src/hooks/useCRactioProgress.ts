@@ -28,6 +28,11 @@ export default function useCRactioProgress() {
         liquidationPercent: number,
         targetPercent: number
     ) => {
+        console.log('getProgressByRatioPercent',{
+            ratioPercent,
+            liquidationPercent,
+            targetPercent
+        })
         let percent = 0;
         if (ratioPercent <= 0) {
             percent = 0;

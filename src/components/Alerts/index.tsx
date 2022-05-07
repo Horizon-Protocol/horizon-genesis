@@ -12,6 +12,8 @@ import Claimable from "./Claimable";
 import Suspension from "./Suspension";
 import { formatNumber } from "@utils/number";
 // const nextFeePeriodStarts = new Date("2021-06-02T23:56:00");
+import { getTodayTimestampSeconds, secondsOfDays } from "@utils/date";
+import { currentFeePeriodAtom } from "@atoms/feePool";
 
 export default function Alerts(boxProps: BoxProps) {
   const { account } = useWallet();
@@ -22,6 +24,7 @@ export default function Alerts(boxProps: BoxProps) {
     useAtomValue(collateralDataAtom);
   const { claimable } = useAtomValue(rewardsAtom);
   const suspentionStatus = useAtomValue(suspensionStatusAtom)
+  const { startTime, feePeriodDuration } = useAtomValue(currentFeePeriodAtom);
 
   // console.log('=====currentCRatio=====',{
   //   liquidationRatio:formatNumber(liquidationRatio),
@@ -34,11 +37,11 @@ export default function Alerts(boxProps: BoxProps) {
   // })
   
   //if system suspention - high priority
-  // if (suspentionStatus.status){
+  if (suspentionStatus.status){
     return (
       <Suspension reason={2} {...boxProps}/>
     )
-  // }
+  }
 
   // wallet not connected
   if (!account) {
@@ -48,8 +51,10 @@ export default function Alerts(boxProps: BoxProps) {
   if (stakedCollateral.eq(0)) {
     return <EmptyStaked unstaked={unstakedCollateral} {...boxProps} />;
   }
+
+  const leftTimeSecondToClaim = (startTime + feePeriodDuration) - getTodayTimestampSeconds()
   // claimable
-  if (claimable) {
+  if (claimable && leftTimeSecondToClaim < secondsOfDays(3)) {
     return <Claimable {...boxProps} />;
   }
 

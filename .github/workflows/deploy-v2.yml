@@ -62,7 +62,7 @@ jobs:
         if: steps.build-cache.outputs.cache-hit != 'true'
         run: yarn build
         env:
-          VITE_APP_CHAIN_ID: 56
+          VITE_APP_CHAIN_ID: 97
           VITE_APP_COMMIT_VERSION: ${{ steps.get-commit-time.outputs.commitTime }}
       - name: Upload to S3
         uses: jakejarvis/s3-sync-action@master

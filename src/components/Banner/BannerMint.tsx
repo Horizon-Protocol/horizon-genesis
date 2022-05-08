@@ -35,7 +35,7 @@ export default function BannerMint() {
         component='div'
         textAlign='center'
         fontSize={{
-          xs: '20px',
+          xs: '28px',
           sm: '38px',
         }}
         color='#fff'
@@ -43,7 +43,7 @@ export default function BannerMint() {
         variant="h5"
         fontFamily='Raleway'
         lineHeight={{
-          xs:'25px',
+          xs:'33px',
           sm:'42px'
         }} 
         letterSpacing={2}
@@ -52,7 +52,7 @@ export default function BannerMint() {
           color: PAGE_COLOR.mint,
           fontWeight: 'bold'
         }}>MINT </span>
-        SYNTHETIC ASSETS<br />AND <span style={{
+        SYNTHETIC ASSETS AND <span style={{
           color: PAGE_COLOR.mint,
           fontWeight: 'bold'
         }}>EARN</span> REWARDS
@@ -60,17 +60,20 @@ export default function BannerMint() {
       <Typography
         textAlign='center'
         fontSize={{
-          xs:12,
+          xs:14,
           sm:14
         }}
-        lineHeight='16px'
+        lineHeight={{
+          xs:'21px',
+          sm:'16px',
+        }}
         fontWeight='normal'
         fontFamily='Raleway'
         letterSpacing={1}
         mt='10px'
         color='rgba(180, 224, 255, 0.75)'
       >
-        Stake HZN to mint zUSD (a USD stablecoin) and <br />earn rewards.
+        Stake HZN to mint zUSD (a USD stablecoin) and earn rewards.
       </Typography>
       <Box sx={{ display: 'flex' }}>
         <PrimaryButton

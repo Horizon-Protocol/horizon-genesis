@@ -1,7 +1,9 @@
 import { SyntheticEvent, useCallback, useMemo } from "react";
 import { Box, Link, LinkProps } from "@mui/material";
 import iconRight from "@assets/wallets/right_icon.svg";
-// import { ArrowRightAlt } from "@mui/icons-material";
+import { ReactComponent as IconArrow } from "@assets/images/link-arrow.svg";
+import SvgIcon from "@mui/material/SvgIcon";
+
 import {
   Link as RouterLink,
   LinkProps as RouterLinkProps,
@@ -64,14 +66,18 @@ export default function ActionLink({
       {...linkProps}
       {...props}
     >
-      {children}{showArrow ? <Box
-            component="img"
-            src={iconRight}
-            sx={{
-              ml: '5px',
-              cursor: "pointer",
-            }}
-          /> : <></>}
+      {children}{showArrow ? <SvgIcon
+        sx={{
+          width: '11px',
+          ml: '5px',
+          color: color == null ? COLOR.safe : color
+        }}
+      >
+        <IconArrow />
+      </SvgIcon> : <></>}
     </Link>
   );
 }
+
+
+

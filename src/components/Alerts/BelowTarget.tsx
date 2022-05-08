@@ -1,13 +1,17 @@
 import { useMemo } from "react";
 import fromUnixTime from "date-fns/fromUnixTime";
-import { BoxProps } from "@mui/material";
+import { BoxProps, Box } from "@mui/material";
 import { HZNBuyLink } from "@utils/constants";
 import { COLOR } from "@utils/theme/constants";
-import { formatCRatioToPercent } from "@utils/number";
+import { formatCRatioToPercent, formatNumber } from "@utils/number";
 import useDateCountDown from "@hooks/useDateCountDown";
 import ActionLink from "./ActionLink";
 import BaseAlert from "./Base";
-
+import {
+  burnAmountToFixCRatioAtom,
+} from "@atoms/debt";
+import { useAtomValue } from "jotai/utils";
+import { hznRateAtom } from "@atoms/exchangeRates";
 interface Props extends BoxProps {
   currentCRatio: BN;
   targetRatio: BN;
@@ -26,6 +30,17 @@ export default function BelowTarget({
     () => fromUnixTime(liquidationDeadline),
     [liquidationDeadline]
   );
+
+  const burnAmountToFixCRatio = useAtomValue(burnAmountToFixCRatioAtom)
+  const hznRate = useAtomValue(hznRateAtom);
+
+  const { addHZN, burnZUSD } = useMemo(()=>{
+      return {
+        addHZN: <Box component='span' sx={{ color: COLOR.safe }}>{formatNumber(burnAmountToFixCRatio.toNumber() / hznRate.toNumber())} HZN</Box>,
+        burnZUSD: <Box component='span' sx={{ color: COLOR.warning }}>{formatNumber(burnAmountToFixCRatio.toNumber())} zUSD</Box>
+      }
+  },[burnAmountToFixCRatio])
+
   const { formatted, stopped } = useDateCountDown(deadlineDate);
 
   const { color, content } = useMemo(() => {
@@ -55,8 +70,7 @@ export default function BelowTarget({
 
     return {
       color: COLOR.warning,
-      content:
-        "Your C-Ratio is below the target ratio. You will need to add HZN to wallet or burn zUSD to raise your C-ratio and be able to claim rewards.",
+      content:<>Your C-Ratio is below the target ratio. You will need to add {addHZN} to wallet or burn {burnZUSD} to raise your C-ratio and be able to claim rewards.</>,
     };
   }, [
     currentCRatio,

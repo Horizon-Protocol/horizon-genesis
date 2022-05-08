@@ -1,12 +1,16 @@
 import { useUpdateAtom, useAtomValue } from "jotai/utils";
-import { Button, Box, BoxProps, Avatar } from "@mui/material";
+import { Button, Box, BoxProps, Avatar, ButtonProps } from "@mui/material";
 import { openAtom, openLinkDropDownAtom } from "@atoms/wallet";
 import useWallet from "@hooks/useWallet";
 import Network from "./Network";
 import { detailAtom } from "@atoms/wallet";
 import { COLOR } from "@utils/theme/constants";
 
-export default function WalletInfo(props: BoxProps) {
+interface WalletButtonProps {
+  buttonHeight?: number,
+}
+
+export default function WalletInfo({buttonHeight = 36, ...props}: WalletButtonProps & BoxProps) {
   const { shortAccount, connected } = useWallet();
   const setOpen = useUpdateAtom(openAtom);
   const setOpenLinkDropDown = useUpdateAtom(openLinkDropDownAtom);
@@ -23,8 +27,9 @@ export default function WalletInfo(props: BoxProps) {
         backgroundColor: 'rgba(16, 38, 55, 0.4)',
         ":hover":{
           backgroundColor: 'rgba(16, 38, 55, 1)',
-        }
+        },
       }}
+      borderRadius='4px'
       {...props}
     >
       {/* <Network /> */}
@@ -37,7 +42,7 @@ export default function WalletInfo(props: BoxProps) {
         sx={{
           color: COLOR.text,
           p: "4px 0px 4px 12px",
-          height:'36px',
+          height: buttonHeight,
           textTransform: "lowercase",
         }}
         startIcon={
@@ -60,8 +65,8 @@ export default function WalletInfo(props: BoxProps) {
         {shortAccount}
         <Box sx={{
           ml:'10px',
-          height:"34px",
-          width:"34px",
+          height:buttonHeight - 2,
+          width:buttonHeight - 2,
           borderRadius:'3px',
           backgroundColor:'rgba(26, 46, 71, 0.3)',
           display:'flex',

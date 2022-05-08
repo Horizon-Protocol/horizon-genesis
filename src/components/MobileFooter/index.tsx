@@ -75,7 +75,7 @@ export default function MobileFooter() {
     //menu
     const Menu = useCallback(() => {
         return (
-            <MenuSVG width='64px' onClick={(e: React.MouseEvent<HTMLDivElement>) => {
+            <MenuSVG minWidth='64px' width='64px' onClick={(e: React.MouseEvent<HTMLDivElement>) => {
                 setMenuOpen(!menuOpen)
             }}>
                 {menuOpen ? (
@@ -85,7 +85,9 @@ export default function MobileFooter() {
                         <Union />
                     </SvgIcon>
                 ) : (
-                    <SvgIcon>
+                    <SvgIcon sx={{
+                        width: '18px'
+                    }}>
                         <More />
                     </SvgIcon>
                 )}
@@ -97,7 +99,8 @@ export default function MobileFooter() {
     const WalletInfoButton = useCallback(() => {
         return (
             <MenuSVG
-                width='64px'
+                width='44px'
+                minWidth='44px'
                 mr='0px'
                 onClick={(e: React.MouseEvent<HTMLDivElement>) => {
                     setWalletInfoOpen(!walletInfoOpen)
@@ -116,9 +119,10 @@ export default function MobileFooter() {
     //refresh
     const Refresh = useCallback(() => {
         return (
-            <MenuSVG onClick={refresh} width='64px'>
+            <MenuSVG onClick={refresh} width='64px' minWidth='64px'>
                 <SvgIcon
                     sx={{
+                        width: '24px',
                         color: "text.primary",
                         animation: "circular-rotate 4s linear infinite",
                         animationPlayState: refreshing ? "running" : "paused",
@@ -142,7 +146,10 @@ export default function MobileFooter() {
 
     //connectwallet
     const ConnectWallet = () => {
-        return connected ? <WalletInfo /> : <ConnectButton fullWidth size="small" sx={{ height: "100%" }} />
+        return connected ? <MenuWalletInfo /> : <ConnectButton fullWidth size="small" sx={{
+            height: "100%",
+            borderRadius: '2px'
+        }} />
     }
 
     //stake hzn
@@ -205,14 +212,13 @@ export default function MobileFooter() {
     //wallet info
     const MenuWalletInfo = () => {
         return (
-            <Box sx={{
-                display: 'flex',
-                justifyContent: 'center',
-                mr: '3px',
-                flexGrow: 1,
-            }}>
-                <WalletInfo />
-            </Box>
+            <WalletInfo
+                buttonHeight={44}
+                position='absolute'
+                top='3px'
+                right='3px'
+                borderRadius='2px'
+            />
         )
     }
 
@@ -258,8 +264,8 @@ export default function MobileFooter() {
                     valueBuffer={currentCRatioPercent}
                     sx={{
                         height: 5,
-                        borderRadius: 1,
-                        border: `1px solid ${COLOR.border}`,
+                        borderRadius: 2,
+                        border: `1px solid #11233C`,
                         "&.MuiLinearProgress-colorPrimary": {
                             bgcolor: "transparent",
                         },
@@ -272,10 +278,10 @@ export default function MobileFooter() {
                 {['25%', '75%'].map((percent, index) => <Box key={index} sx={{
                     position: 'absolute',
                     width: '1px',
-                    height: "5px",
+                    height: "6px",
                     bottom: '2px',
                     left: percent,
-                    backgroundColor: COLOR_BG
+                    backgroundColor: '#11233C'
                 }}></Box>)}
             </Box>
         )
@@ -337,10 +343,10 @@ export default function MobileFooter() {
                 position: 'fixed',
                 bottom: 0,
                 width: '100%',
-                height: '3.124rem',
+                height: '50px',
                 zIndex: 99,
                 display: 'flex',
-                p: ".1875rem",
+                p: "3px",
                 backgroundColor: '#0C1D2E'
             }}>
                 {buttonContent}

@@ -8,7 +8,7 @@ export default function MenuSVG({children, ...props}: BoxProps){
             display="flex"
             justifyContent="center"
             alignItems="center"
-            borderRadius=".125rem"
+            borderRadius="2px"
             bgcolor={COLOR_BG_50}
             mr='3px'
             sx={{

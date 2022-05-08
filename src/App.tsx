@@ -167,7 +167,7 @@ function App() {
         )}
         {!isEarnPage && downLG && !isMobile && <Record {...recordProps} />}
         <Box
-          my={3}
+          my={isMobile ? 0 : 3}
           display="flex"
           justifyContent="center"
           flexWrap={{

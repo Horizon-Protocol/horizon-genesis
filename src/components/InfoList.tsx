@@ -25,10 +25,13 @@ interface Props {
 export default function InfoList({ data, ...props }: Props & BoxProps) {
   return (
     <Box
-      py={2}
+      py={{
+        xs:'20px',
+        md:'20px'
+      }}
       px={{
-        xs: 0,
-        sm: 3,
+        xs:'10px',
+        md:'30px'
       }}
       borderRadius='4px'
       bgcolor="rgba(8, 12, 22, 0.3)"
@@ -40,8 +43,7 @@ export default function InfoList({ data, ...props }: Props & BoxProps) {
             key={index}
             disableGutters
             sx={{
-              fontSize: '14px',
-              p: "2px 0px",
+              fontSize: '14px',              
               color: warning ? "#FA2256" : "#B4E0FF"
             }}
           >

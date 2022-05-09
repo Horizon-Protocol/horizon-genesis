@@ -4,10 +4,12 @@ import PrimaryButton from "@components/PrimaryButton";
 import mintBg from "@assets/images/slidemint.png";
 import { useHistory } from "react-router-dom";
 import { HZNBuyLink } from "@utils/constants";
-import ActionLink from "@components/Alerts/ActionLink";
 import useIsMobile from "@hooks/useIsMobile";
+import { useUpdateAtom } from "jotai/utils";
+import { footerMenuGetHZNOpenAtom } from "@atoms/app";
 
 export default function BannerMint() {
+  const updateGetHZNOpen = useUpdateAtom(footerMenuGetHZNOpenAtom)
 
   const history = useHistory()
   return (
@@ -22,7 +24,7 @@ export default function BannerMint() {
       sx={{
         backgroundImage: mintBg && `url(${mintBg})`,
         backgroundSize: "auto 100%",
-        backgroundPositionX:'center',
+        backgroundPositionX: 'center',
         backgroundRepeat: "no-repeat",
       }}
       px={{
@@ -43,9 +45,9 @@ export default function BannerMint() {
         variant="h5"
         fontFamily='Raleway'
         lineHeight={{
-          xs:'33px',
-          sm:'42px'
-        }} 
+          xs: '33px',
+          sm: '42px'
+        }}
         letterSpacing={2}
       >
         <span style={{
@@ -60,17 +62,20 @@ export default function BannerMint() {
       <Typography
         textAlign='center'
         fontSize={{
-          xs:14,
-          sm:14
+          xs: 14,
+          sm: 14
         }}
         lineHeight={{
-          xs:'21px',
-          sm:'16px',
+          xs: '21px',
+          sm: '16px',
         }}
         fontWeight='normal'
         fontFamily='Raleway'
         letterSpacing={1}
-        mt='10px'
+        mt={{
+          xs: '6px',
+          md: '10px'
+        }}
         color='rgba(180, 224, 255, 0.75)'
       >
         Stake HZN to mint zUSD (a USD stablecoin) and earn rewards.
@@ -80,9 +85,18 @@ export default function BannerMint() {
           sx={{
             letterSpacing: '2px',
             borderRadius: '2px',
-            fontSize: '12px',
-            height: 36,
-            width: 138,
+            fontSize: {
+              xs: 10,
+              md: 12,
+            },
+            height: {
+              xs: 28,
+              md: 36,
+            },
+            width: {
+              xs: 122,
+              md: 138,
+            },
             mt: '20px'
           }}
           onClick={() => {
@@ -91,30 +105,38 @@ export default function BannerMint() {
         >
           STAKE NOW
         </PrimaryButton>
-        <ActionLink underline="none" showArrow={false} href={HZNBuyLink} target='_blank'>
-          <PrimaryButton
-            sx={{
-              letterSpacing: '2px',
-              borderRadius: '2px',
-              fontSize: '12px',
-              ml: '10px',
-              backgroundColor: "transparent",
-              border: `1px solid ${COLOR.safe}`,
-              color: COLOR.safe,
-              height: 36,
-              width: 122,
-              mt: '20px',
-              ":hover":{
-                color:'#1E1F25',
-                backgroundColor: 'rgba(42, 212, 183, 1)'
-              }
-            }}
-          >
-            GET HZN
-          </PrimaryButton>
-        </ActionLink>
+        {/* <ActionLink underline="none" showArrow={false} href={HZNBuyLink} target='_blank'> */}
+        <PrimaryButton
+          onClick={() => {
+            updateGetHZNOpen(true)
+          }}
+          sx={{
+            letterSpacing: '2px',
+            borderRadius: '2px',
+            fontSize: '12px',
+            ml: '10px',
+            backgroundColor: "transparent",
+            border: `1px solid ${COLOR.safe}`,
+            color: COLOR.safe,
+            height: {
+              xs: 28,
+              md: 36,
+            },
+            width: {
+              xs: 122,
+              md: 138,
+            },
+            mt: '20px',
+            ":hover": {
+              color: '#1E1F25',
+              backgroundColor: 'rgba(42, 212, 183, 1)'
+            }
+          }}
+        >
+          GET HZN
+        </PrimaryButton>
+        {/* </ActionLink> */}
       </Box>
-
     </Box>
   );
 }

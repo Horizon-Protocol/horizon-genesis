@@ -7,8 +7,6 @@ export default function History() {
     return (
         <PageCard
             mx='auto'
-            // color={THEME_COLOR}
-            // headerBg={headerBg}
             title='History'
             description={
                 <>

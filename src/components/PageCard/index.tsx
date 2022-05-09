@@ -50,9 +50,16 @@ export default function PageCard({
           src={headerBg}
           alt=""
           position="absolute"
-          height="100%"
-          left={-8}
-          top={-8}
+          height={{
+            xs: 96,
+            md:181
+          }}
+          width={{
+            xs: 107,
+            md: 202
+          }}
+          left={-16}
+          top={-11}
           sx={{
             opacity: 0.1,
           }}
@@ -64,7 +71,7 @@ export default function PageCard({
           height={184}
           width={{
             sm: '100%',
-            md:450
+            md: 450
           }}
           py={3}
         />

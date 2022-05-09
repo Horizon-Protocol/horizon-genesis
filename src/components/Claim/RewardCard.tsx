@@ -27,7 +27,6 @@ export default function RewardCard({
     <Box
       width="49%"
       bgcolor={COLOR.bgColor}
-      height={123}
       position="relative"
       borderRadius='4px'
       {...props}
@@ -45,8 +44,14 @@ export default function RewardCard({
       >
         {!upcoming && <SvgIcon
           sx={{
-            width: '32px',
-            height: '32px'
+            width: {
+              xs:'30px',
+              md:'32px'
+            },
+            height: {
+              xs:'30px',
+              md:'32px'
+            }
           }}
         >
           {svg}
@@ -56,7 +61,10 @@ export default function RewardCard({
           mt="5px"
           color="#88ABC3"
           textAlign="center"
-          fontSize={12}
+          fontSize={{
+            xs:10,
+            md:12
+          }}
           letterSpacing="0.43px"
           lineHeight="14px"
         >
@@ -80,17 +88,21 @@ export default function RewardCard({
           textAlign="center"
         >
           {formatNumber(amount)}
-          <span
-            style={{
+          <Box
+          component='span'
+            sx={{
               marginLeft: "4px",
-              fontSize: "16px",
+              fontSize: {
+                xs:'12px',
+                md:"16px"
+              },
               color: COLOR.text,
               opacity: 0.5,
               fontWeight: "normal",
             }}
           >
             {token}
-          </span>
+          </Box>
         </Box>
       </Box>
       {help ? (

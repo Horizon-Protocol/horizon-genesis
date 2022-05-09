@@ -12,10 +12,14 @@ export default function Header({
     <Box textAlign='center' {...props}>
       <Typography
         variant='h4'
-        mb={1}
+        mb={{
+          xs: 0,
+          md: '8px'
+        }}
         fontWeight={700}
         letterSpacing='3px'
         color={color}
+        fontSize={32}
       >
         {title}
       </Typography>
@@ -25,6 +29,7 @@ export default function Header({
         mb={0}
         lineHeight='22px'
         color={COLOR.text}
+        fontSize={14}
       >
         {description}
       </Typography>

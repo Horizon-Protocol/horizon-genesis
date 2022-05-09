@@ -463,8 +463,6 @@ export default function DebtTracker() {
     return (
         <PageCard
             mx='auto'
-            // color={THEME_COLOR}
-            // headerBg={headerBg}
             title='Debt Tracker'
             description={
                 <>

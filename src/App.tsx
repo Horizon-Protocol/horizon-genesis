@@ -33,7 +33,6 @@ import Earn from "@pages/earn";
 import Header from "@components/Header";
 import Dashboard from "@components/Dashboard";
 import Alerts from "@components/Alerts";
-import AlertDashboard from "@components/Alerts/Dashboard";
 import Record from "@components/Record";
 import DebtTracker from "@pages/DebtTracker";
 import Escrow from "@pages/Escrow";
@@ -45,6 +44,7 @@ import useIsMobile from "@hooks/useIsMobile";
 import MobileMenu from "@components/MobileFooter";
 import WalletsDialog from "@components/Header/WalletsDialog";
 import useSuspensionStatus from "@hooks/useSuspensionStatus";
+import GetHZNDialog from "@components/MobileFooter/MobileMenu/GetHZNDialog";
 
 const AppDisabled = !!import.meta.env.VITE_APP_DISABLED;
 
@@ -104,7 +104,7 @@ function App() {
     px: 2,
     py: 1,
     mt: {
-      xs: 2,
+      xs: 0,
       md: 0,
     },
     mb: {
@@ -112,8 +112,8 @@ function App() {
       md: 2,
     },
     mx: {
-      xs: 1,
-      sm: 2,
+      xs: 0,
+      sm: 0,
       md: 0,
     },
   };
@@ -162,12 +162,11 @@ function App() {
         {!isEarnPage && isMobile && (
           <>
             <Alerts {...alertProps} />
-            <AlertDashboard {...alertProps} />
           </>
         )}
         {!isEarnPage && downLG && !isMobile && <Record {...recordProps} />}
         <Box
-          my={isMobile ? 0 : 3}
+          my={isMobile ? '1px' : '44px'}
           display="flex"
           justifyContent="center"
           flexWrap={{
@@ -192,10 +191,10 @@ function App() {
             </Hidden>
           )}
           <Box
-            my={3}
             m={{
               md: "0 30px 0 30px",
             }}
+            mb={isMobile ? '50px' : '2px'}
             flexGrow={
               isEarnPage
                 ? undefined
@@ -312,7 +311,6 @@ function App() {
               {!isMobile && (
                 <>
                   <Alerts {...alertProps} />
-                  <AlertDashboard {...alertProps} />
                 </>
               )}
               <Dashboard />
@@ -321,6 +319,7 @@ function App() {
         </Box>
       </Box>
       <WalletsDialog />
+      <GetHZNDialog />
     </>
   );
 }

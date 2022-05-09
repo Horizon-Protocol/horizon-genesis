@@ -85,16 +85,24 @@ export default function TokenInput({
         {/* <TokenLogo token={token} logo={logo} /> */}
         <SvgIcon
           sx={{
-            width: '50px',
-            height: '50px'
+            width: {
+              xs:'30px',
+              md:'50px'
+            },
+            height: {
+              xs:'30px',
+              md:'50px'
+            }
           }}
         >
           {token == Token.HZN ? <IconHZN/> : <IconzUSD/>}
-          
         </SvgIcon>
         <Box display="flex" flexDirection="column" p="10px 12px" fontSize={24}>
           <Typography
-            fontSize={12}
+            fontSize={{
+              xs:'10px',
+              md:'12px'
+            }}
             letterSpacing="0.5px"
             lineHeight="14px"
             color={labelColor}
@@ -148,7 +156,10 @@ export default function TokenInput({
             ".MuiInputBase-input": {
               color: invalid ? COLOR.danger : COLOR.text,
               fontFamily: "Rawline",
-              fontSize: 24,
+              fontSize: {
+                xs: 20,
+                md: 24
+              },
               fontWeight: 700,
               lineHeight: "28px",
               textAlign: "right",

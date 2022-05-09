@@ -170,6 +170,10 @@ export default function Claim() {
               <Box>EXCHANGE REWARDS</Box>
             </Tooltip>
           }
+          height={{
+            xs:113,
+            md:123
+          }}
           amount={exchangeReward}
           token='zUSD'
           svg={<IconzUSD />}
@@ -189,7 +193,10 @@ export default function Claim() {
       </Typography>
       <Box display='flex' justifyContent='space-between'>
         <RewardCard
-          height={87}
+          height={{
+            xs:83,
+            md:87
+          }}
           upcoming={true}
           label={
             <Tooltip
@@ -207,7 +214,10 @@ export default function Claim() {
           }
           amount={upcomingStakingReward} />
         <RewardCard
-          height={87}
+          height={{
+            xs:83,
+            md:87
+          }}
           upcoming={true}
           label={
             <Tooltip

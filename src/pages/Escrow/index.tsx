@@ -16,8 +16,6 @@ export default function Escrow() {
     return (
         <PageCard
             mx='auto'
-            // color={THEME_COLOR}
-            // headerBg={headerBg}
             title='Escrow'
             description={
                 <>

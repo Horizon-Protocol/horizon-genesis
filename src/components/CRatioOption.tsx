@@ -32,7 +32,7 @@ export default function PresetCRatioOption({
       sx={{
         fontSize: 13,
         width: {
-          xs: "30%",
+          xs: "32%",
           sm: 152,
         },
         borderRadius: 1,
@@ -54,7 +54,10 @@ export default function PresetCRatioOption({
           active ? color : "#102637"
         }
         color={!disabled && active ? "#0A1624" : "rgba(180, 224, 255, 0.5)"}
-        fontSize={12}
+        fontSize={{
+          xs: '10px',
+          md: '12px'
+        }}
         fontWeight={{
           xs: 400,
           sm: 700,
@@ -77,7 +80,7 @@ export default function PresetCRatioOption({
         justifyContent='center'
         alignItems='center'
         flexDirection={{
-          xs: "column",
+          xs: "row",
           sm: "row",
         }}
       >
@@ -85,7 +88,10 @@ export default function PresetCRatioOption({
           component='span'
           color={!disabled && active ? color : "rgba(180, 224, 255, 1)"}
           // fontFamily: "Rawline",
-          fontSize={24}
+          fontSize={{
+            xs:'18px',
+            md:'24px'
+          }}
           letterSpacing='0.5px'
           lineHeight='30px'
           fontFamily='Rawline'
@@ -97,7 +103,10 @@ export default function PresetCRatioOption({
           component='span'
           ml={1}
           color={!disabled && active ? color : "rgba(180, 224, 255, 1)"}
-          fontSize={12}
+          fontSize={{
+            xs:'10px',
+            md:'12px'
+          }}
           letterSpacing='0.5px'
           lineHeight='14px'
           whiteSpace='nowrap'

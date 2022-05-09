@@ -10,10 +10,12 @@ import { PAGE_COLOR } from "@utils/theme/constants";
 import { memo, useEffect } from "react";
 import BannerStakeReason from "@components/Banner/BannerStakeReason";
 import BannerStakeRisk from "@components/Banner/BannerStakeRisk";
+import useIsMobile from "@hooks/useIsMobile";
 
 const Img = styled("img")``;
 
 const TopCarousel = () => {
+  const isMobile = useIsMobile()
 
   return (
     <Box
@@ -59,9 +61,9 @@ const TopCarousel = () => {
         }}
         indicatorContainerProps={{
           style: {
-            marginTop: '2px',
+            marginTop: isMobile ? 20: 2,
             textAlign: 'center',
-            lineHeight: '38px',
+            // lineHeight: '38px',
             // backgroundColor:'green'
           }
         }}

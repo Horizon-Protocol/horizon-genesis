@@ -14,10 +14,16 @@ export default function MenuDialog({ menuOnClose, children, ...props }: MenuDial
                 }
             }}
             sx={{
-                bottom:"3.124rem",
+                bottom: {
+                    xs:"50px",
+                    md:0
+                },
                 ".MuiBackdrop-root": {
                     background: 'transparent',
-                    bottom: '3.124rem',
+                    bottom: {
+                        xs:"50px",
+                        md:0
+                    },
                 },
                 ".MuiDialog-container": {
                     m: 0,

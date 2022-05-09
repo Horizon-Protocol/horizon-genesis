@@ -24,26 +24,28 @@ export default function GridCrad({
     showAlert,
     ...props
 }: BoxProps & GridCardProps) {
-    const [boxColor,setBoxColor] = useState('rgba(16, 38, 55, 0.5)')
-    const [imgOpacity,setImgOpacity] = useState(.2)
-    const [descOpacity,setDescOpacity] = useState(.5)
+    const [boxColor, setBoxColor] = useState('rgba(16, 38, 55, 0.5)')
+    const [imgOpacity, setImgOpacity] = useState(.2)
+    const [descOpacity, setDescOpacity] = useState(.5)
 
     return (
         <Box
-        onMouseEnter={()=>{
-            setBoxColor('rgba(16, 38, 55, 1)')
-            setImgOpacity(1)
-            setDescOpacity(1)
-        }}
-        onMouseLeave={()=>{
-            setBoxColor('rgba(16, 38, 55, .5)')
-            setImgOpacity(.2)
-            setDescOpacity(.5)
-        }}
-            // class="ds"
+            onMouseEnter={() => {
+                setBoxColor('rgba(16, 38, 55, 1)')
+                setImgOpacity(1)
+                setDescOpacity(1)
+            }}
+            onMouseLeave={() => {
+                setBoxColor('rgba(16, 38, 55, .5)')
+                setImgOpacity(.2)
+                setDescOpacity(.5)
+            }}
             onClick={onClick}
             position='relative'
-            height='100px'
+            height={{
+                xs:'83px',
+                md:'100px'
+            }}
             bgcolor={boxColor}
             display='flex'
             flexDirection='column'
@@ -54,19 +56,24 @@ export default function GridCrad({
                 cursor: "pointer",
             }}
         >
-
-<SvgIcon
-          sx={{
-            position: 'absolute',
-            left: 0,
-            top: '-5px',
-            width: "46px",
-            height: "46px",
-            opacity: imgOpacity
-          }}
-        >
-          {icon}
-        </SvgIcon>
+            <SvgIcon
+                sx={{
+                    position: 'absolute',
+                    left: 0,
+                    top: '-5px',
+                    width: {
+                        xs: '42px',
+                        md: '46px',
+                    },
+                    height: {
+                        xs: '42px',
+                        md: '46px',
+                    },
+                    opacity: imgOpacity
+                }}
+            >
+                {icon}
+            </SvgIcon>
             {/* <Img
                 src={icon}
                 sx={{
@@ -85,13 +92,19 @@ export default function GridCrad({
                 backgroundColor: '#F5841F',
                 width: "12px",
                 height: "12px",
-                borderRadius : '50%'
-            }}/>)}
+                borderRadius: '50%'
+            }} />)}
             <Typography
                 textAlign='center'
-                fontSize={18}
+                fontSize={{
+                    xs:16,
+                    md:18
+                }}
                 fontWeight='bold'
-                lineHeight='21px'
+                lineHeight={{
+                    xs:'19px',
+                    md:'21px'
+                }}
                 fontFamily='Raleway'
                 letterSpacing={1}
                 color={titleColor}
@@ -99,7 +112,10 @@ export default function GridCrad({
             <Typography
                 marginTop='3px'
                 textAlign='center'
-                fontSize={12}
+                fontSize={{
+                    xs:10,
+                    md:12
+                }}
                 lineHeight='16px'
                 fontFamily='Raleway'
                 letterSpacing={0.5}

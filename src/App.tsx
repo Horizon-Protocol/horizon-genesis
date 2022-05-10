@@ -45,6 +45,7 @@ import MobileMenu from "@components/MobileFooter";
 import WalletsDialog from "@components/Header/WalletsDialog";
 import useSuspensionStatus from "@hooks/useSuspensionStatus";
 import GetHZNDialog from "@components/MobileFooter/MobileMenu/GetHZNDialog";
+import useEstimatedStakingRewards from "@hooks/useEstimatedStakingRewards";
 
 const AppDisabled = !!import.meta.env.VITE_APP_DISABLED;
 
@@ -68,6 +69,8 @@ function App() {
   const [expanded, setExpanded] = useState(false);
 
   useSetupHorizonLib();
+  useEstimatedStakingRewards();
+  useSuspensionStatus();
   useQueryDebt();
   useFetchAppData();
   useFetchDebtData();
@@ -77,7 +80,6 @@ function App() {
   useFetchHorizonData();
   useEscrowDataQuery();
   useQueryGlobalDebt();
-  useSuspensionStatus();
 
   const refresh = useRefresh();
 

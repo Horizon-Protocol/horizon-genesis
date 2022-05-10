@@ -35,6 +35,7 @@ export default function useQueryGlobalDebt() {
           }
         `
       );
+      console.log('globalDebtsReponse',globalDebtsReponse)
       return globalDebtsReponse;
     } catch (e) {
       return [];

@@ -33,14 +33,13 @@ export default function useSuspensionStatus(){
 
     useQuery([CONTRACT],fetcher, {
         onSuccess(status){
-            console.log('status',status)
             setSuspensionStatus({
                 status: status?.systemSuspension[0] || status?.issuanceSuspension[0],
                 reason: status?.systemSuspension[1] === status?.issuanceSuspension[1] ? status?.systemSuspension[1] : 0
             })
         },
         onError(error){
-            console.log('error',error)
+            console.log('SuspensionStatuserror',error)
         }
     })
 }

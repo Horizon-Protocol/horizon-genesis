@@ -1,16 +1,20 @@
 import { readyAtom } from "@atoms/app";
-import { BNToEther, toBN } from "@utils/number";
+import { weekStakingPoolRewardsAtom } from "@atoms/feePool";
+import { BNToEther, BNWithDecimals, etherToBN, formatNumber, toBN } from "@utils/number";
 import { CONTRACT } from "@utils/queryKeys";
 import { useAtomValue } from "jotai";
-import { useCallback } from "react";
+import { useUpdateAtom } from "jotai/utils";
+import { useCallback, useMemo, useState } from "react";
 import { useQuery } from "react-query";
 import useHorizonJs from "./useHorizonJs";
 
 export default function useEstimatedStakingRewards() {
-
+    
     const appReady = useAtomValue(readyAtom);
-
     const horizonJs = useHorizonJs();
+
+    const updateEstimatedStakingRewards = useUpdateAtom(weekStakingPoolRewardsAtom)
+
     // console.log('horizonJs', horizonJs)
     const fetcherWeekCounter = useCallback(async () => {
         if (appReady) {
@@ -20,31 +24,60 @@ export default function useEstimatedStakingRewards() {
             return await SupplySchedule.weekCounter()
         }
     }, [appReady])
-
-    const weekCounter = useQuery(['weekCounter'], fetcherWeekCounter)
-    // console.log('weekCounter', weekCounter?.data?.toNumber())
+    const weekCounter = useQuery(['fetcherWeekCounter'], fetcherWeekCounter)
+    // console.log('fetcherWeekCounter', weekCounter?.data?.toNumber())
 
     const fetcherTokenDecaySupplyForWeek = useCallback(async () => {
-        if (appReady && weekCounter) {
+        if (appReady && !!weekCounter.data) {
             let week = weekCounter.data.toNumber() - 39
             const {
                 contracts: { SupplySchedule },
             } = horizonJs!;
-            return await SupplySchedule.tokenDecaySupplyForWeek(BNToEther(toBN(week)))
+            return await SupplySchedule.tokenDecaySupplyForWeek(week)
         }
-    }, [weekCounter])
-    const decaySupplyForWeek = useQuery(
-        ['tokenDecaySupplyForWeek'],
-        fetcherTokenDecaySupplyForWeek,
-        {
-            onSuccess(res){
-                console.log('decaySupplyForWeek', res)
-            },
-            onError(err){
-                console.log('decayerr', err)
-            },
-            enabled: !!weekCounter
+    }, [appReady, weekCounter])
+    const decaySupplyForWeek = useQuery(['fetcherTokenDecaySupplyForWeek'], fetcherTokenDecaySupplyForWeek, { enabled: !!weekCounter.data })
+    // console.log('fetcherTokenDecaySupplyForWeek', Number(decaySupplyForWeek.data) / 1e18)
+
+    const fetcherRewardsDistributionLength = useCallback(async () => {
+        if (appReady) {
+            const {
+                contracts: { RewardsDistribution },
+            } = horizonJs!;
+            return await RewardsDistribution.distributionsLength()
         }
-    )
+    }, [appReady])
+    const distributionsQeuryRies = useQuery(['fetcherRewardsDistributionLength'], fetcherRewardsDistributionLength)
+    // console.log('distributionsLength',distributionsQeuryRies.data?.toNumber())
+
+    const rewardsDistribution = useCallback(async () => {
+        if (appReady && !!distributionsQeuryRies.data) {
+            const {
+                contracts: { RewardsDistribution },
+            } = horizonJs!;
+            let arr = []
+            for (let i = 0;i < distributionsQeuryRies.data.toNumber();i++){
+                arr.push(RewardsDistribution.distributions(i.toString()))
+            }
+            return await Promise.all(arr)
+        }
+    }, [appReady, distributionsQeuryRies])
+    const distributions = useQuery(['distributions'], rewardsDistribution, {
+        onSuccess(res) {
+            let distributionAmount = 0
+            res?.forEach((element,index) => {
+                distributionAmount += Number(element[1]) / 1e18
+            });
+            // console.log('distributionAmount', distributionAmount)
+
+            const weekDecaySupply = Number(decaySupplyForWeek.data) / 1e18
+            // console.log('weekDecaySupply', weekDecaySupply)
+
+            const realAmount = weekDecaySupply - distributionAmount
+            updateEstimatedStakingRewards(realAmount)
+            console.log('PoolWeekRewardOfHZN', realAmount)
+        },
+        enabled: !!distributionsQeuryRies.data && !!decaySupplyForWeek.data
+    })
 
 }

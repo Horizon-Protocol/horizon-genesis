@@ -9,6 +9,7 @@ import {
   nextClaimCountDownAtom,
   canClaimAtom,
   nextClaimCountDownDurationAtom,
+  weekStakingPoolRewardsAtom,
 } from "@atoms/feePool";
 import horizon from "@lib/horizon";
 import useWallet from "@hooks/useWallet";
@@ -21,7 +22,7 @@ import PrimaryButton from "@components/PrimaryButton";
 import useRefresh from "@hooks/useRefresh";
 import { formatNumber, toBN, zeroBN } from "@utils/number";
 import { getWalletErrorMsg } from "@utils/helper";
-import { historicalClaimHZNAndZUSDAtom, historicalOperationAtom } from "@atoms/record";
+import { globalDebtAtom, historicalClaimHZNAndZUSDAtom, historicalOperationAtom } from "@atoms/record";
 import { ratiosPercentAtom, targetRatioAtom } from "@atoms/app";
 import { secondsOfDays } from "@utils/date";
 import { ReactComponent as IconHZN } from "@assets/images/hzn.svg";
@@ -29,6 +30,7 @@ import { ReactComponent as IconzUSD } from "@assets/images/zUSD.svg";
 import Tooltip from "@components/Tooltip";
 import ToolTipContent from "@components/Tooltip/ToolTipContent";
 import useEstimatedStakingRewards from "@hooks/useEstimatedStakingRewards";
+import { first } from "lodash";
 
 const THEME_COLOR = PAGE_COLOR.claim;
 
@@ -37,12 +39,15 @@ export default function Claim() {
 
   const { enqueueSnackbar } = useSnackbar();
   const historicalClaim = useAtomValue(historicalClaimHZNAndZUSDAtom)
-  
-  const { escrowedReward } = useAtomValue(debtAtom);
+
   const { stakingReward, exchangeReward, upcomingStakingReward, upcomingExchangeReward } = useAtomValue(rewardsAtom);
+  const weekStakingRewards = useAtomValue(weekStakingPoolRewardsAtom)
   const canClaim = useAtomValue(canClaimAtom);
   const targetRatio = useAtomValue(targetRatioAtom);
-  const { currentCRatio } = useAtomValue(debtAtom);
+
+  const { currentCRatio, debtBalance , escrowedReward} = useAtomValue(debtAtom);
+  const globalDebt = useAtomValue(globalDebtAtom);
+
   const { targetCRatioPercent } = useAtomValue(ratiosPercentAtom);
   const lifeTimeClaimed = useMemo(
     () => {
@@ -122,6 +127,10 @@ export default function Claim() {
     }
     setLoading(false);
   }, [enqueueSnackbar, refresh]);
+
+  const estimatedHZNRewards = useMemo(()=>{
+      return toBN(weekStakingRewards * Number(debtBalance) / Number(first(globalDebt)?.totalDebt))
+  },[debtBalance,globalDebt,weekStakingPoolRewardsAtom])
 
   return (
     <PageCard
@@ -213,7 +222,7 @@ export default function Claim() {
                 }}>ESTIMATED</Box><br />STAKING REWARDS</Box>
             </Tooltip>
           }
-          amount={upcomingStakingReward} />
+          amount={estimatedHZNRewards} />  
         <RewardCard
           height={{
             xs:83,

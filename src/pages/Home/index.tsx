@@ -147,7 +147,7 @@ export default function Home() {
                     if (index === 3) window.open(LINK_EXCHANGE);
                     if (index === 4) history.push("earn");
                     if (index === 5)
-                      window.open("https://docs.horizonprotocol.com/");
+                      window.open("https://academy.horizonprotocol.com/");
                   }}
                   titleColor={item.titleColor}
                   title={item.title}

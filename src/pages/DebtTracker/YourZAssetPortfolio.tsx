@@ -13,7 +13,7 @@ import NoRowsOverlay from "@components/NoRowsOverlay";
 import useFilterZAssets from "@hooks/useFilterZAssets";
 import { formatNumber, formatPercent } from "@utils/number";
 
-const rowsPerPage = 5
+const rowsPerPage = 100
 
 export default function YourZAssetPortfolio() {
   const rows = useFilterZAssets({ zUSDIncluded: true });
@@ -125,6 +125,7 @@ export default function YourZAssetPortfolio() {
       <Box
         sx={{
           width: "100%",
+          height: '300px',
           overflow: "hidden",
           display: rows.length > 0 ? "block" : "none",
         }}
@@ -133,7 +134,7 @@ export default function YourZAssetPortfolio() {
           columns={columns}
           rows={rows}
           page={page}
-          autoHeight
+          // autoHeight
           pageSize={rowsPerPage}
           hideFooterPagination
           rowHeight={44}
@@ -154,15 +155,6 @@ export default function YourZAssetPortfolio() {
           }}
         />
       </Box>
-      <Pagination
-        {...{ mt: "18px" }}
-        rowsCount={rows.length}
-        currentPage={page}
-        rowsPerPage={rowsPerPage}
-        pageClick={(index) => {
-          setPage(index - 1);
-        }}
-      />
     </Box>
   );
 }

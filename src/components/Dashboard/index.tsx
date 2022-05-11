@@ -13,7 +13,7 @@ import HZNInfoPrice from "./HZNInfoPrice";
 import Balance from "./Balance";
 import ClaimCountDown from "./ClaimCountDown";
 import useFilterZAssets from "@hooks/useFilterZAssets";
-import { last, sumBy } from "lodash";
+import { first, last, sumBy } from "lodash";
 import { totalIssuedZUSDExclEthAtom } from "@atoms/app";
 import { globalDebtAtom } from "@atoms/record";
 import useWallet from "@hooks/useWallet";
@@ -29,6 +29,7 @@ interface DashboardProps extends BoxProps{
 
 export default function Dashboard({dashBoardOnClose, ...props}: DashboardProps) {
   const { collateral, transferable, debtBalance } = useAtomValue(debtAtom);
+  // alert(debtBalance)
   const { stakedCollateral, dashboardEscrowed } = useAtomValue(collateralDataAtom);
   const zUSDBalance = useAtomValue(zUSDBalanceAtom);
   const hznRate = useAtomValue(hznRateAtom);
@@ -74,7 +75,7 @@ export default function Dashboard({dashBoardOnClose, ...props}: DashboardProps) 
       {
         label: "Your Debt Pool %",
         tooltipText: 'This is the percentage of the global debt pool that this wallet owes. This is used to calculate the Active Debt.',
-        value: `${formatNumber(Number(debtBalance) / Number(last(globalDebt)?.value ?? 0) * 100, { mantissa: 5 })}%`
+        value: `${formatNumber(Number(debtBalance) / Number(first(globalDebt)?.totalDebt ?? 0) * 100, { mantissa: 5 })}%`
       },
       {
         sectionHeader: true,

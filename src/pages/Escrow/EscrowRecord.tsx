@@ -178,6 +178,7 @@ export default function EscrowRecord() {
         />
       </Box>
       <Pagination
+        hidden={true}
         {...{ mt: "18px" }}
         rowsCount={rows.length}
         currentPage={page}

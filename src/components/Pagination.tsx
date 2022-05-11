@@ -108,7 +108,7 @@ export default function Pagination({
 
     return (
         <Box sx={{
-            display: rowsCount > 0 ? 'flex' : 'none',
+            display: totalPageNumber > 1 ? 'flex' : 'none',
             flexDirection: 'row-reverse',
             width: "100%",
             height: 'auto',

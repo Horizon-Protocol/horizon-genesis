@@ -12,6 +12,7 @@ import {
 } from "@atoms/debt";
 import { useAtomValue } from "jotai/utils";
 import { hznRateAtom } from "@atoms/exchangeRates";
+import { targetRatioAtom } from "@atoms/app";
 interface Props extends BoxProps {
   currentCRatio: BN;
   targetRatio: BN;
@@ -36,7 +37,7 @@ export default function BelowTarget({
 
   const { addHZN, burnZUSD } = useMemo(()=>{
       return {
-        addHZN: <Box component='span' sx={{ color: COLOR.safe }}>{formatNumber(burnAmountToFixCRatio.toNumber() / hznRate.toNumber())} HZN</Box>,
+        addHZN: <Box component='span' sx={{ color: COLOR.safe }}>{formatNumber(burnAmountToFixCRatio.toNumber() / hznRate.toNumber() / targetRatio.toNumber())} HZN</Box>,
         burnZUSD: <Box component='span' sx={{ color: COLOR.warning }}>{formatNumber(burnAmountToFixCRatio.toNumber())} zUSD</Box>
       }
   },[burnAmountToFixCRatio])

@@ -1,4 +1,4 @@
-import { Box, Typography, Link } from "@mui/material";
+import { Box, Typography, Link, Grid } from "@mui/material";
 import { useState, useMemo, useEffect } from "react";
 import { COLOR } from "@utils/theme/constants";
 import { GridColDef } from "@mui/x-data-grid";
@@ -57,6 +57,10 @@ export default function HistoryRecord() {
 
   const chooseStart = dayjs(historyDateRange[0]);
   const chooseEnd = dayjs(historyDateRange[1]);
+
+  const clearDisable = useMemo(()=>{
+     return historyType === HistoryType.All && historyDateRange[0] == null && historyDateRange[1] == null
+  },[historyType,historyDateRange])
 
   const dataRows = useMemo(() => {
     if (historicalOperationData) {
@@ -222,21 +226,21 @@ export default function HistoryRecord() {
               : "none"
         }}
       >
-        <Box
+        <Grid container columnSpacing={{xs:'1px',md:'10px'}} alignItems='center'
           sx={{
-            display: "flex",
-            // flexWrap:'wrap',
-            alignItems: "center",
-            justifyContent: "space-between",
+            width:'100%',
+            // backgroundColor:'red'
           }}
         >
+          <Grid item md={5} xs={5.5}>
           <TypeSelection
             typeValue={historyType}
             selectType={(type) => {
               setHistoryType(type);
             }}
-            {...{ width: "44%" }}
           />
+          </Grid>
+          <Grid item md={6} xs={6.5}>
           <DateRangeSelection
             dateRangeValue={historyDateRange}
             selectDateRange={(rangeDate: DateRange<Date>) => {
@@ -244,24 +248,28 @@ export default function HistoryRecord() {
                 setHistoryDateRange(rangeDate);
               }
             }}
-            {...{ width: "44%" }}
           />
+          </Grid>
+          <Grid item md={1} xs={12}>
           <Typography
             onClick={() => {
               setHistoryType(HistoryType.All);
               setHistoryDateRange([null, null]);
             }}
             sx={{
-              width: "8%",
+              textAlign:'center',
               fontSize: "12px",
               color: COLOR.safe,
+              opacity: clearDisable ? .2 : 1,
               fontWeight: "700",
               cursor: "pointer",
+              mt:{xs:'15px',md:0}
             }}
           >
             Clear
           </Typography>
-        </Box>
+          </Grid>
+        </Grid>
         <Box sx={{ mt: "20px", width: "100%", overflow: "hidden" }}>
           <CustomDataGrid
             loading={historicalIsLoading}

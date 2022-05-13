@@ -46,13 +46,14 @@ export default function PageCard({
         }}
       >
         <Box
+          display={headerBg ? 'block' : 'none'}
           component="img"
           src={headerBg}
           alt=""
           position="absolute"
           height={{
             xs: 96,
-            md:181
+            md: 181
           }}
           width={{
             xs: 107,

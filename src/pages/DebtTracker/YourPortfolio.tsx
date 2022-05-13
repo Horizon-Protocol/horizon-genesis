@@ -16,18 +16,25 @@ export default function YourPortfolio() {
                 sm: 2,
             },
             width: {
-                xs: '90%',
+                xs: '100%',
                 sm: '340px',
             },
             height: "300px",
             display: 'flex',
             flexDirection: 'column',
             alignItems: 'center',
-            // backgroundColor: "green",
+            backgroundColor: {
+                xs:"rgba(16, 38, 55, 0.3)",
+                md: 'transparent'
+            },
             // ml: 'auto',
             mr: {
                 xs: '0px',
                 sm: '-50px',
+            },
+            pt:{
+                xs: '15px',
+                md: 0
             }
         }}
         >
@@ -38,7 +45,6 @@ export default function YourPortfolio() {
                 textAlign: 'center',
                 lineHeight: '19px',
                 letterSpacing: '1px',
-                mb: 1
             }}>YOUR PORTFOLIO
                 <br />
                 <span style={{

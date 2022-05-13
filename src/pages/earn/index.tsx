@@ -60,7 +60,7 @@ export default function Home() {
 
   return (
     <Box
-      p="0 24px"
+      p="10px 24px 0 24px"
       display="flex"
       flexWrap="wrap"
       justifyContent="center"

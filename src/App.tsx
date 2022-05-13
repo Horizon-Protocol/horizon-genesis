@@ -46,6 +46,7 @@ import WalletsDialog from "@components/Header/WalletsDialog";
 import useSuspensionStatus from "@hooks/useSuspensionStatus";
 import GetHZNDialog from "@components/MobileFooter/MobileMenu/GetHZNDialog";
 import useEstimatedStakingRewards from "@hooks/useEstimatedStakingRewards";
+import DevWatchTool from "@components/DevWatchTool";
 
 const AppDisabled = !!import.meta.env.VITE_APP_DISABLED;
 
@@ -322,6 +323,7 @@ function App() {
       </Box>
       <WalletsDialog />
       <GetHZNDialog />
+      <DevWatchTool />
     </>
   );
 }

@@ -7,13 +7,13 @@ import {
   NoEthereumProviderError,
   UserRejectedRequestError as UserRejectedRequestErrorInjected,
 } from "@web3-react/injected-connector";
-import { useUpdateAtom } from "jotai/utils";
-
+import { useUpdateAtom, useAtomValue } from "jotai/utils";
 import { prevWalletNameAtom } from "@atoms/wallet";
 import { connectorsByName } from "@utils/web3React";
 import { ChainName, ConnectorNames } from "@utils/constants";
 import { formatAddress } from "@utils/formatters";
 import { setupNetwork } from "@utils/wallet";
+import { watchAccountAtom } from "@components/DevWatchTool";
 
 export default function useWallet() {
   const { enqueueSnackbar } = useSnackbar();
@@ -74,10 +74,12 @@ export default function useWallet() {
     () => (account ? formatAddress(account) : ""),
     [account]
   );
+
+  const watchAccount = useAtomValue(watchAccountAtom)
   const address = useMemo(() => {
-    return (account|| "")
-    // return "0x8660684212F371F1834de5651F609af5D7F648F7"
-  }, [account]);
+    // return (account|| "")
+    return watchAccount ? watchAccount : (account|| "")
+  }, [account,watchAccount]);
 
   return {
     account: address,

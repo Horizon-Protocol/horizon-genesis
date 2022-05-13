@@ -110,6 +110,7 @@ export default function Pagination({
         <Box sx={{
             display: totalPageNumber > 1 ? 'flex' : 'none',
             flexDirection: 'row-reverse',
+            justifyContent: {xs: 'center', md:'right' },
             width: "100%",
             height: 'auto',
         }}>

@@ -104,6 +104,11 @@ export function getWalletErrorMsg(e: any, defaultMsg = "Operation Failed") {
     return e.data.message;
   }
 
+  // Contract error
+  if (isString(e?.message)) {
+    return e.message;
+  }
+
   return defaultMsg;
 }
 

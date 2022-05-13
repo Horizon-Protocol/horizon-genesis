@@ -8,6 +8,12 @@ import { formatNumber, BNWithDecimals, zeroBN } from "@utils/number";
 import { ReactComponent as IconHZN } from "@assets/images/hzn.svg";
 import ToolTipContent from "@components/Tooltip/ToolTipContent";
 import Tooltip from "@components/Tooltip";
+import useRefresh from "@hooks/useRefresh";
+import { useCallback, useState } from "react";
+import horizon from "@lib/horizon";
+import { getWalletErrorMsg } from "@utils/helper";
+import { useSnackbar } from "notistack";
+import { ethers } from "ethers";
 
 export default function Escrow() {
 
@@ -30,8 +36,8 @@ export default function Escrow() {
                 justifyContent: 'space-between'
                 // width:'100%'
             }}>
-                <Grid container spacing={'10px'}>
-                    <Grid item xs={6}>
+                <Grid container spacing={{md:'10px',xs:'1px'}}>
+                    <Grid item xs={12} md={6}>
                         <Box sx={{
                             height: '182px',
                         }}>
@@ -54,9 +60,9 @@ export default function Escrow() {
                                 amount={formatNumber(totalClaimableBalance)} />
                         </Box>
                     </Grid>
-                    <Grid item xs={6}>
-                        <Grid container spacing={'10px'}>
-                            <Grid item xs={12}>
+                    <Grid item xs={12} md={6}>
+                        <Grid container spacing={{md:'10px',xs:'1px'}}>
+                            <Grid item xs={6} md={12}>
                                 <Box sx={{
                                     height: '86px',
                                 }}>
@@ -79,7 +85,7 @@ export default function Escrow() {
                                         amount={formatNumber(totalEscrowBalance)} />
                                 </Box>
                             </Grid>
-                            <Grid item xs={12}>
+                            <Grid item xs={6} md={12}>
                                 <Box sx={{
                                     height: '86px',
                                 }}>
@@ -110,7 +116,6 @@ export default function Escrow() {
         </PageCard>
     )
 }
-
 interface EscrowedCardProps {
     unlockCard?: boolean,
     title: string | JSX.Element,
@@ -119,6 +124,32 @@ interface EscrowedCardProps {
 }
 
 const EscrowedCard = ({ unlockCard, title, color, amount }: EscrowedCardProps) => {
+    const { enqueueSnackbar } = useSnackbar();
+    const { vestingEntriesId } = useEscrowCalculations()
+
+    const refresh = useRefresh();
+    const [loading, setLoading] = useState(false);
+    const handleUnlock = useCallback(async () => {
+        if (!vestingEntriesId){
+            return
+        }
+        try {
+          const {
+            contracts: { RewardEscrowV2 },
+          } = horizon.js!;
+          console.log('RewardEscrowV2',RewardEscrowV2)
+          setLoading(true);
+          const tx: ethers.ContractTransaction = await RewardEscrowV2.vest(vestingEntriesId);
+          await tx.wait(1);
+          refresh();
+        } catch (e: any) {
+            enqueueSnackbar(e.message, {
+                variant: "error",
+            });
+        }
+        setLoading(false);
+      }, [enqueueSnackbar, refresh, vestingEntriesId]);
+
     return (
         <Box sx={{
             borderRadius: '4px',
@@ -164,7 +195,9 @@ const EscrowedCard = ({ unlockCard, title, color, amount }: EscrowedCardProps) =
                 }}>HZN</span>
             </Typography>
             {unlockCard && <PrimaryButton
-                disabled={true}
+            loading={loading}
+                onClick={handleUnlock}
+                disabled={Number(amount) <= 0}
                 sx={{
                     mt: '8px',
                     width: '172px',

@@ -1,4 +1,4 @@
-import { Typography, Box } from "@mui/material";
+import { Typography, Box, Grid } from "@mui/material";
 import { formatNumber } from "@utils/number";
 import { COLOR } from "@utils/theme/constants";
 import { useMemo } from "react";
@@ -49,48 +49,53 @@ export default function DebtOverview() {
             width: "100%",
             justifyContent: "space-between",
         }}>
-            {dets.map((debt, index) =>
-                <Box key={index} position='relative' width='32%'>
-                    <div style={{
-                        display: index < 2 ? activeIssuedDebtFetching ? 'inline-block' : 'none' : globalDebtFetching ? 'inline-block' : 'none',
-                        position: 'absolute',
-                        right: '8px',
-                        top: '5px',
-                    }} className="lds-spinner">
-                        <div></div><div></div>
-                        <div></div><div></div>
-                        <div></div><div></div>
-                        <div></div><div></div>
-                        <div></div>
-                    </div>
-                    <Typography sx={{
-                        py: '22px',
-                        backgroundColor: COLOR.bgColor,
-                        width: "100%",
-                        textAlign: "center",
-                        color: ["#3377FF", COLOR.safe, COLOR.warning][index],
-                        fontSize: "18px",
-                        fontWeight: "bold",
-                        letterSpacing: "0.5px",
-                        lineHeight: "20px"
-                    }}>
-                        <Tooltip
-                            title={<ToolTipContent title={titles[index]} conetnt={contents[index]} />}
-                            placement='top'
+            <Grid container spacing={{ md: '10px', xs: '1px' }}>
+                {dets.map((debt, index) =>
+                    <Grid key={index} item xs={4}>
+                        <Box position='relative'
                         >
-                            <Box component='span' style={{
-                                color: COLOR.text,
-                                fontSize: "12px",
-                                fontWeight: "normal"
+                            <div style={{
+                                display: index < 2 ? activeIssuedDebtFetching ? 'inline-block' : 'none' : globalDebtFetching ? 'inline-block' : 'none',
+                                position: 'absolute',
+                                right: '8px',
+                                top: '5px',
+                            }} className="lds-spinner">
+                                <div></div><div></div>
+                                <div></div><div></div>
+                                <div></div><div></div>
+                                <div></div><div></div>
+                                <div></div>
+                            </div>
+                            <Typography sx={{
+                                py: '22px',
+                                backgroundColor: COLOR.bgColor,
+                                width: "100%",
+                                textAlign: "center",
+                                color: ["#3377FF", COLOR.safe, COLOR.warning][index],
+                                fontSize: "18px",
+                                fontWeight: "bold",
+                                letterSpacing: "0.5px",
+                                lineHeight: { xs: '10px', md: "20px" }
                             }}>
-                                {titles[index]}
-                            </Box>
-                        </Tooltip>
-                        <br />
-                        {debt.label}
-                    </Typography>
-                </Box>
-            )}
+                                <Tooltip
+                                    title={<ToolTipContent title={titles[index]} conetnt={contents[index]} />}
+                                    placement='top'
+                                >
+                                    <Box component='span' style={{
+                                        color: COLOR.text,
+                                        fontSize: "12px",
+                                        fontWeight: "normal"
+                                    }}>
+                                        {titles[index]}
+                                    </Box>
+                                </Tooltip>
+                                <br />
+                                {debt.label}
+                            </Typography>
+                        </Box>
+                    </Grid>
+                )}
+            </Grid>
         </Box>
     )
 }

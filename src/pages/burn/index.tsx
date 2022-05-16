@@ -73,7 +73,7 @@ export default function Burn() {
     [collateral, hznRate]
   );
   const { totalEscrowBalance } = useEscrowCalculations()
-  
+
   const { state, setState } = useInputState();
 
   const [waitingPeriod, setWaitingPeriod] = useState<number>();
@@ -100,7 +100,8 @@ export default function Burn() {
       bgColor: "#0A1624",
       labelColor: THEME_COLOR,
       amount: toBN(0),
-      max: minBN(zUSDBalance, debtBalance),
+      zUSDBalance: zUSDBalance,
+      max: zUSDBalance.isGreaterThanOrEqualTo(debtBalance) ? debtBalance : zUSDBalance,
       maxButtonLabel: "Max Burn",
       inputPrefix: "$",
       toPairInput: (amount) =>
@@ -121,25 +122,36 @@ export default function Burn() {
   );
 
   const toToken: TokenProps = useMemo(
-    () => ({
+    () => {
+      // console.log('TokenProps',{
+      //   debtBalance:formatNumber(debtBalance,{mantissa:5}),
+      //   hznRate:formatNumber(hznRate,{mantissa:5}) ,
+      //   targetRatio: formatNumber(targetRatio,{mantissa:5})
+      // })
+      var hznMaxAmount = debtBalance.dividedBy(hznRate).dividedBy(targetRatio)
+      hznMaxAmount = hznMaxAmount.gt(stakedCollateral) ? stakedCollateral : hznMaxAmount
+      return (
+      {
       disabled: !connected,
       token: Token.HZN,
       label: "UNSTAKE",
       amount: toBN(0),
       balanceLabel: `Staked: ${formatNumber(stakedCollateral)} ${Token.HZN}`,
-      max: stakedCollateral,
+      max: hznMaxAmount,
       maxButtonLabel: "Unstake Max",
       color: THEME_COLOR,
       toPairInput: (amount) => {
         const tmpAmount = toBN(amount)
           .multipliedBy(hznRate)
           .multipliedBy(targetRatio);
-        const toAmount = burnAmountToFixCRatio.gt(zeroBN)
-          ? burnAmountToFixCRatio.minus(tmpAmount)
+          const toAmount = burnAmountToFixCRatio.gt(zeroBN)
+          ? burnAmountToFixCRatio.plus(tmpAmount)
           : tmpAmount;
         return toAmount.toString();
       },
-    }),
+    }
+      )
+  },
     [burnAmountToFixCRatio, connected, hznRate, stakedCollateral, targetRatio]
   );
 
@@ -195,22 +207,22 @@ export default function Burn() {
     ? zeroBN
     : burnHZN.lt(totalEscrowBalance.minus(dashboardEscrowed)) ? dashboardEscrowed.plus(burnHZN) : totalEscrowBalance
 
-    // console.log({
-    //   totalEscrowBalance: totalEscrowBalance.toNumber(),
-    //   debtEscrowBalance: debtEscrowBalance.toNumber(),
-    //   burnAmountToFixCRatio: burnAmountToFixCRatio.toNumber(),
-    //   escrowedReward: escrowedReward.toNumber(),
-    //   debt: debtBalance.toString(),
-    //   changedDebt: changedDebt.toString(),
-    //   // staked: staked.toNumber(),
-    //   transferable: transferable.toNumber(),
-    //   hznRate: hznRate.toString(),
-    //   targetRatio: targetRatio.toNumber(),
-    //   currentCRatio: currentCRatio.toString(),
-    //   changedCRatio: changedCRatio.toString(),
-    //   changedStaked: changedStaked.toNumber(),
-    //   changedTransferable: changedTransferable.toNumber(),
-    // });
+    console.log('changedBalance',{
+      totalEscrowBalance: totalEscrowBalance.toNumber(),
+      debtEscrowBalance: debtEscrowBalance.toNumber(),
+      burnAmountToFixCRatio: burnAmountToFixCRatio.toNumber(),
+      escrowedReward: escrowedReward.toNumber(),
+      debt: debtBalance.toString(),
+      changedDebt: changedDebt.toString(),
+      // staked: staked.toNumber(),
+      transferable: transferable.toNumber(),
+      hznRate: hznRate.toString(),
+      targetRatio: targetRatio.toNumber(),
+      currentCRatio: currentCRatio.toString(),
+      changedCRatio: changedCRatio.toString(),
+      changedStaked: changedStaked.toNumber(),
+      changedTransferable: changedTransferable.toNumber(),
+    });
 
     return {
       cRatio: {

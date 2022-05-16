@@ -71,8 +71,12 @@ export const formatInputValue = (inputValue: string): string => {
 };
 
 export const isExceedMax = (stringAmount: string, max?: BN) => {
+  console.log('isExceedMax',{
+    stringAmount: stringAmount.toString(),
+    max: max?.toString()
+  })
   if (stringAmount && max) {
-    return toBN(stringAmount).gt(max);
+    return Number(toBN(stringAmount).toFixed(6)) > Number((max.toFixed(6)));
   }
   return false;
 };
@@ -89,10 +93,10 @@ export default function TokenPair({
     (input, isMax = false) => {
       const { toPairInput, max } = fromToken;
       const stringAmount = (isMax ? max?.toString() : input) || "";
-      console.log("setFromInput", {
-        input: formatInputValue(stringAmount),
-        inputto: formatInputValue(toPairInput(stringAmount))
-      });
+      // console.log("setFromInput", {
+      //   input: formatInputValue(stringAmount),
+      //   inputto: formatInputValue(toPairInput(stringAmount))
+      // });
       setState(() => ({
         fromInput: stringAmount && formatInputValue(stringAmount),
         toInput: stringAmount && formatInputValue(toPairInput(stringAmount)),
@@ -115,16 +119,14 @@ export default function TokenPair({
     (input, isMax = false) => {
       const { toPairInput, max } = toToken;
       const { max: maxFrom } = fromToken;
-      const stringAmount = (isMax ? max?.toString() : input) || "";
-      // console.log("setToInput", isMax, input, stringAmount);
-      const fromStringAmount = toPairInput(stringAmount);
+      const stringToAmount = (isMax ? max?.toString() : input) || "";
+      // console.log("setToInput", isMax, input, stringToAmount);
+      const fromStringAmount = toPairInput(stringToAmount);
       setState(() => ({
-        toInput: stringAmount && formatInputValue(stringAmount),
-        fromInput: stringAmount && formatInputValue(fromStringAmount),
+        toInput: stringToAmount && formatInputValue(stringToAmount),
+        fromInput: stringToAmount && formatInputValue(fromStringAmount),
         isMax,
-        error: isExceedMax(fromStringAmount, maxFrom)
-          ? "Insufficient balance"
-          : "",
+        error: isExceedMax(fromStringAmount, maxFrom) ? "Insufficient balance" : "",
       }));
     },
     [setState, fromToken, toToken]

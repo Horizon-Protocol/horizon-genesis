@@ -1,6 +1,6 @@
 import { useMemo, useState } from "react";
 import { Box, BoxProps, List, ListItem, ListItemIcon, useMediaQuery } from "@mui/material";
-import { ellipsisWithLength, formatCRatioToPercent, formatNumber, toBN } from "@utils/number";
+import { ellipsisWithLength, formatCRatioToPercent, formatNumber, toBN, zeroBN } from "@utils/number";
 import { useTheme } from "@mui/material/styles";
 
 export interface Props {
@@ -73,7 +73,7 @@ export default function BalanceChange({
       {
         label: "Current C-Ratio",
         from: `${formatCRatioToPercent(cRatio.from)} %`,
-        to: `${formatCRatioToPercent(cRatio.to)} %`,
+        to: Number(debt.to.toNumber().toFixed(2)) <= 0 ? '--%' : `${formatCRatioToPercent(cRatio.to)} %`,
       },
       {
         label: "Debt",

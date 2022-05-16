@@ -50,7 +50,7 @@ export default function BelowTarget({
         return {
           color: COLOR.danger,
           content:
-            "Your account will be liquidated imminently.  Restore your c-ratio ASAP to avoid liquidation.",
+          <>Your account will be liquidated imminently.  You will need to add {addHZN} to wallet or burn {burnZUSD} to restore your c-ratio ASAP to avoid liquidation.</>,
         };
       }
       return {

@@ -163,6 +163,7 @@ export function cRatioToPercent(cRatio: BN): number {
   const cRatioPercent = cRatio.isZero() ? toBN(0) : toBN(100).div(cRatio);
   return cRatioPercent.isNaN() ? 0 : Number(cRatioPercent.toFixed(2));
 }
+
 export function formatCRatioToPercent(cRatio: BN): string {
   const cRatioPercent = cRatioToPercent(cRatio);
 

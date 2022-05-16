@@ -15,6 +15,7 @@ declare global {
     label: string;
     balanceLabel?: JSX.Element | string;
     maxButtonLabel?: JSX.Element | string;
+    zUSDBalance?: BN;
     max?: BN;
     color?: string;
     labelColor?: string;
@@ -39,6 +40,7 @@ export default function TokenInput({
   amount,
   balanceLabel,
   maxButtonLabel,
+  zUSDBalance,
   max,
   color,
   labelColor,
@@ -188,8 +190,8 @@ export default function TokenInput({
           >
             {balanceLabel
               ? balanceLabel
-              : max
-              ? `Balance: ${formatNumber(max)} ${token}`
+              : zUSDBalance
+              ? `Balance: ${formatNumber(zUSDBalance)} ${token}`
               : ""}
           </Typography>
           {maxButtonLabel && max?.gt(0) ? (

@@ -28,7 +28,7 @@ export default function Claimable({...props }: Props) {
     baseColor = COLOR.warning;
   }
 
-  if (leftTimeSecondToClaim < secondsOfDays(1)){
+  if (leftTimeSecondToClaim < secondsOfDays(1) || leftTimeSecondToClaim > secondsOfDays(3)){
     title = "URGENT ACTION REQUIRED"
     content = `You have unclaimed rewards. If you do not claim your rewards within ${nextClaimCountDown}, your rewards will be forfeited.`
     baseColor = "#FA2256";

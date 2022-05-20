@@ -88,7 +88,7 @@ export default function CRatioRange(props: BoxProps) {
         {currentCRatioPercent ? formatNumber(currentCRatioPercent) : "--"}%
       </Typography>
       <Tooltip
-        tootipWidth={261}
+        tooltipWidth={261}
         title={<ToolTipContent title='Current C-Ratio' conetnt={
           <>
             This is based on{" "}

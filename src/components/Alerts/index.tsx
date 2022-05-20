@@ -10,7 +10,7 @@ import AboveTarget from "./AboveTarget";
 import BelowTarget from "./BelowTarget";
 import Claimable from "./Claimable";
 import Suspension from "./Suspension";
-import { formatNumber } from "@utils/number";
+import { formatNumber, zeroBN } from "@utils/number";
 // const nextFeePeriodStarts = new Date("2021-06-02T23:56:00");
 import { getTodayTimestampSeconds, secondsOfDays } from "@utils/date";
 import { currentFeePeriodAtom } from "@atoms/feePool";
@@ -22,7 +22,7 @@ export default function Alerts(boxProps: BoxProps) {
   const { currentCRatio, liquidationDeadline } = useAtomValue(debtAtom);
   const { stakedCollateral, unstakedCollateral } =
     useAtomValue(collateralDataAtom);
-  const { claimable } = useAtomValue(rewardsAtom);
+  const { claimable, stakingReward } = useAtomValue(rewardsAtom);
   const suspentionStatus = useAtomValue(suspensionStatusAtom)
   const { startTime, feePeriodDuration } = useAtomValue(currentFeePeriodAtom);
 
@@ -35,11 +35,11 @@ export default function Alerts(boxProps: BoxProps) {
   //   currentCRatio:formatNumber(currentCRatio),
   //   targetRatio:formatNumber(targetRatio)
   // })
-  
+
   //if system suspention - high priority
-  if (suspentionStatus.status){
+  if (suspentionStatus.status) {
     return (
-      <Suspension reason={2} {...boxProps}/>
+      <Suspension reason={2} {...boxProps} />
     )
   }
 
@@ -47,21 +47,28 @@ export default function Alerts(boxProps: BoxProps) {
   if (!account) {
     return <Disconnected {...boxProps} />;
   }
+
   // staked 0, start to stake
   if (stakedCollateral.eq(0)) {
     return <EmptyStaked unstaked={unstakedCollateral} {...boxProps} />;
   }
 
+  const groupAlert = []
+
   const leftTimeSecondToClaim = (startTime + feePeriodDuration) - getTodayTimestampSeconds()
+
   // claimable
-  if (claimable && leftTimeSecondToClaim < secondsOfDays(3)) {
-    return <Claimable {...boxProps} />;
+  if (claimable && stakingReward.gt(zeroBN)) {
+    groupAlert.push(
+      <Claimable key='claimable' {...boxProps} />
+    )
   }
 
-   // below targetRatio percent
-   if (currentCRatio.gt(0) && currentCRatio.gt(targetRatio)) {
-    return (
+  // below targetRatio percent
+  if (currentCRatio.gt(0) && currentCRatio.gt(targetRatio)) {
+    groupAlert.push(
       <BelowTarget
+        key='belowTargetRatio'
         currentCRatio={currentCRatio}
         targetRatio={targetRatio}
         liquidationRatio={liquidationRatio}
@@ -72,13 +79,22 @@ export default function Alerts(boxProps: BoxProps) {
   }
   // 1.above targetRatio percent
   if (currentCRatio.gt(0) && currentCRatio.lt(targetRatio)) {
-    return (
+    groupAlert.push(
       <AboveTarget
+        key='aboveTargetRatio'
         targetRatio={targetRatio}
         liquidationDeadline={liquidationDeadline}
         {...boxProps}
       />
     );
+  }
+
+  if (groupAlert.length > 0) {
+    return (
+      <>
+        {groupAlert.map((AlertElement: JSX.Element, index: number) => AlertElement )}
+      </>
+    )
   }
 
   return null;

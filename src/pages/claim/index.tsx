@@ -145,6 +145,7 @@ export default function Claim() {
           again to compound rewards during that time.
         </>
       }
+      href="https://academy.horizonprotocol.com/horizon-genesis/staking-on-horizon-genesis/mint-burn-and-claim#claim"
     >
       <Typography sx={{
         width: "100%",

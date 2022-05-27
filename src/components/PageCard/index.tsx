@@ -7,6 +7,7 @@ declare global {
     color?: string;
     title?: string;
     description?: string | JSX.Element;
+    href?: string;
     headerBg?: string;
   }
 }
@@ -17,6 +18,7 @@ export default function PageCard({
   title,
   description,
   children,
+  href,
   ...props
 }: BoxProps & CardProps) {
   return (
@@ -69,7 +71,8 @@ export default function PageCard({
           color={color}
           title={title}
           description={description}
-          height={184}
+          href={href}
+          //height={184}
           width={{
             sm: '100%',
             md: 450

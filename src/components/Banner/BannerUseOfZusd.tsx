@@ -33,7 +33,10 @@ export default function BannerUseOfZusd() {
   
   return (
     <Box
-      height='auto'
+      height={{
+        xs: '250px',
+        sm: '220px'
+      }}
       width='100%'
       display='flex'
       flexDirection='column'
@@ -74,8 +77,9 @@ export default function BannerUseOfZusd() {
         sx={{
           mt:'10px'
         }}
+        width='80%'
       >
-        You can use zUSD to purchase other synthetic <br/>assets (zAssets) on Horizon Exchange, trade it on <br/>a DEX, or supply liquidity to the zUSD stablecoin <br/>pool to earn yield.
+        You can use zUSD to purchase other synthetic assets (zAssets) on Horizon Exchange, trade it on a DEX, or supply liquidity to the zUSD stablecoin pool to earn yield.
       </Typography>
       <Box
         // width='190px'

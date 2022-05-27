@@ -6,6 +6,7 @@ export default function Header({
   color,
   title,
   description,
+  href,
   ...props
 }: BoxProps & CardProps) {
   return (
@@ -33,7 +34,7 @@ export default function Header({
       >
         {description}
       </Typography>
-      <ActionLink fontSize='12px !important' letterSpacing='1px' href="https://docs.horizonprotocol.com/" target='_blank' showArrow={false}>LEARN MORE</ActionLink>
+      <ActionLink fontSize='12px !important' letterSpacing='1px' href={href} target='_blank' showArrow={false}>LEARN MORE</ActionLink>
     </Box>
   );
 }

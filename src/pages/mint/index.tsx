@@ -259,6 +259,7 @@ export default function Mint() {
           allowing you to earn weekly staking rewards.
         </>
       }
+      href="https://academy.horizonprotocol.com/horizon-genesis/staking-on-horizon-genesis/mint-burn-and-claim#mint"
     >
       <PresetCRatioOptions
         color={THEME_COLOR}

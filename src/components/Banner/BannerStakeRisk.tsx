@@ -13,7 +13,10 @@ export default function BannerStakeRisk() {
 
   return (
     <Box
-      height='auto'
+      height={{
+        xs: '250px',
+        sm: '220px'
+      }}
       width='100%'
       display='flex'
       flexDirection='column'
@@ -54,11 +57,12 @@ export default function BannerStakeRisk() {
         sx={{
           mt: '10px'
         }}
+        width='80%'
       >
-        <>When staking HZN and minting zUSD you are<br />collateralizing the zUSD with HZN at an {targetCRatioPercent}% ratio<br />(C-Ratio). You must maintain this {targetCRatioPercent}% C-Ratio or <br />you cannot claim rewards or you can be potentially<br />liquidated if you reach a 200% C-Ratio.<br /></>
+        <>When staking HZN and minting zUSD you are collateralizing the zUSD with HZN at an {targetCRatioPercent}% ratio (C-Ratio). You must maintain this {targetCRatioPercent}% C-Ratio or you cannot claim rewards or you can be potentially liquidated if you reach a 200% C-Ratio.</>
       </Typography>
       <ActionLink
-        href={"https://docs.horizonprotocol.com/"}
+        href={"https://academy.horizonprotocol.com/horizon-genesis/staking-on-horizon-genesis/risks-of-staking"}
         target='_blank'
         showArrow={false}
         sx={{

@@ -15,11 +15,11 @@ import { alpha } from "@mui/material/styles";
 const GetHZNs = [
     {
         svg: <CakeHzn />,
-        title: 'PancakeSwap', href: 'https://pancakeswap.finance/swap#/swap?outputCurrency=0xc0eff7749b125444953ef89682201fb8c6a917cd'
+        title: 'PancakeSwap', href: 'https://pancakeswap.finance/swap?outputCurrency=0xc0eff7749b125444953ef89682201fb8c6a917cd'
     },
     {
         svg: <MexcHzn />,
-        title: 'MEXC Global', href: 'https://www.mexc.com/zh-CN/exchange/HZN_USDT'
+        title: 'MEXC Global', href: 'https://www.mexc.com/exchange/HZN_USDT'
     },
     {
         svg: <HooHzn />,

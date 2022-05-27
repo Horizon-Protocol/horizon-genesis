@@ -464,6 +464,7 @@ export default function DebtTracker() {
         <PageCard
             mx='auto'
             title='Debt Tracker'
+            color={COLOR.text}
             description={
                 <>
                     Track your debt over time and compare your<br />

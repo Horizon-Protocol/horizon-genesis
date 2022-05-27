@@ -89,7 +89,7 @@ export default function HelpMenu({ ...props }: BoxProps) {
         }}
       >
         <Link
-          href="https://docs.horizonprotocol.com/"
+          href="https://academy.horizonprotocol.com/"
           target="_blank"
           underline="none"
         >
@@ -97,7 +97,7 @@ export default function HelpMenu({ ...props }: BoxProps) {
             <SvgIcon sx={{ height: 14, width: 14, mr: 1.5 }}>
               <IconDocument />
             </SvgIcon>
-            Documentation
+            Academy
           </MenuItem>
         </Link>
         <Link

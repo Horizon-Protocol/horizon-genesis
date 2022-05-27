@@ -29,7 +29,7 @@ const TopCarousel = () => {
         // backgroundColor:'red'
       }}>
       <Carousel
-        height='207px'
+        height='220px'
         animation="fade"
         autoPlay={false}
         duration={500}

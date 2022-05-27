@@ -63,7 +63,7 @@ export default function Balance({ data }: Props) {
               opacity: sectionHeader ? 1 : 0.5,
             }}>{label}</Box>
           </Tooltip>
-          {showWalletIcon && (
+          {(showWalletIcon && canRegisterToken) && (
             <Box component='img' src={wallet?.logo} sx={{
               // pt:'2px',
               cursor: 'pointer',

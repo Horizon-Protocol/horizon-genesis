@@ -14,7 +14,7 @@ export default function BannerMint() {
   const history = useHistory()
   return (
     <Box
-      height='207px'
+      height='220px'
       width='100%'
       // bgcolor='blue'
       display='flex'
@@ -28,7 +28,7 @@ export default function BannerMint() {
         backgroundRepeat: "no-repeat",
       }}
       px={{
-        xs: 7,
+        xs: 3,
         sm: 3,
       }}
     >
@@ -75,6 +75,10 @@ export default function BannerMint() {
         mt={{
           xs: '6px',
           md: '10px'
+        }}
+        width={{
+          sm:'100%',
+          md:'70%'
         }}
         color='rgba(180, 224, 255, 0.75)'
       >

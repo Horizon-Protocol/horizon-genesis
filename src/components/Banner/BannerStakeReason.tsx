@@ -12,7 +12,7 @@ export default function BannerStakeReason() {
 
   return (
     <Box
-    height='207px'
+    height='220px'
     width='100%'
       display='flex'
       flexDirection='column'
@@ -79,8 +79,9 @@ export default function BannerStakeReason() {
         sx={{
           mt:'10px'
         }}
+        width='80%'
       >
-        {<>Staking HZN, and minting zUSD, will allow you to <br />earn staking rewards from the protocol as well as <br />a split of the zUSD transaction fees generated on <br />Horizon Exchange.  HZN staking rewards are <br />currently</>}
+        {<>Staking HZN, and minting zUSD, will allow you to earn staking rewards from the protocol as well as a split of the zUSD transaction fees generated on Horizon Exchange.  HZN staking rewards are currently</>}
         <Box component='span' sx={{
           fontSize: 13,
           fontWeight: 'bold',

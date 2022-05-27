@@ -69,7 +69,7 @@ export default function PresetCRatioOptions({
             of liquidation, but also reduce your rewards from debt. To learn
             more about staking strategies, click{" "}
             <Link
-              href='https://docs.horizonprotocol.com/#strategies'
+              href='https://academy.horizonprotocol.com/horizon-genesis/staking-on-horizon-genesis/c-ratio-strategies'
               target='_blank'
             >
               here

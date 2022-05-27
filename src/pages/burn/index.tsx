@@ -342,6 +342,7 @@ export default function Burn() {
           transfer your non-escrowed HZN.
         </>
       }
+      href="https://academy.horizonprotocol.com/horizon-genesis/staking-on-horizon-genesis/mint-burn-and-claim#burn"
     >
       <PresetCRatioOptions
         color={THEME_COLOR}

@@ -135,6 +135,7 @@ export default function HistoryRecord() {
       field: "date",
       headerName: "Date (UTC)",
       width: 180,
+      sortable: false,
       editable: false,
       headerAlign: "left",
       renderCell({ value, row }) {
@@ -155,6 +156,7 @@ export default function HistoryRecord() {
       field: "amount",
       headerName: "Amount",
       width: 120,
+      sortable: false,
       editable: false,
       headerAlign: "left",
       renderCell({ value, row }) {

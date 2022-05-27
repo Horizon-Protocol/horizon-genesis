@@ -14,19 +14,21 @@ import horizon from "@lib/horizon";
 import { getWalletErrorMsg } from "@utils/helper";
 import { useSnackbar } from "notistack";
 import { ethers } from "ethers";
+import useIsMobile from "@hooks/useIsMobile";
 
 export default function Escrow() {
-
+    
     const { totalClaimableBalance, totalEscrowBalance, totalVestedBalance } = useEscrowCalculations()
 
     return (
         <PageCard
             mx='auto'
             title='Escrow'
+            color={COLOR.text}
             description={
                 <>
-                    Track your escrowed HZN. Escrowed HZN can be used<br />
-                    to manage your C-Ratio and mint zUSD. Escrowed<br />
+                    Track your escrowed HZN. Escrowed HZN can be used
+                    to manage your C-Ratio and mint zUSD. Escrowed
                     HZN is vested for 1 year from the claim date.
                 </>
             }
@@ -129,6 +131,7 @@ const EscrowedCard = ({ unlockCard, title, color, amount }: EscrowedCardProps) =
 
     const refresh = useRefresh();
     const [loading, setLoading] = useState(false);
+    const isMobile = useIsMobile();
     const handleUnlock = useCallback(async () => {
         if (!vestingEntriesId){
             return
@@ -179,20 +182,25 @@ const EscrowedCard = ({ unlockCard, title, color, amount }: EscrowedCardProps) =
                 letterSpacing: "1px",
                 lineHeight: "14px",
                 textTransform: 'uppercase'
-            }}>
-                {title}<br />
-                <span style={{
-                    fontSize: "24px",
+                
+            }}
+            >
+                {title}
+                <div style={{
+                    fontSize: unlockCard ? "24px" : isMobile ? "18px" : "24px",
                     color: color,
                     fontWeight: "bold",
                     lineHeight: '30px'
-                }}>{amount}</span>
-                <span style={{
+                }}>
+                    {amount}
+                    <span style={{
                     marginLeft: '4px',
-                    fontSize: "16px",
+                    fontSize: "14px",
                     opacity: .5,
                     lineHeight: '30px'
-                }}>HZN</span>
+                    }}>HZN</span>
+                </div>
+                
             </Typography>
             {unlockCard && <PrimaryButton
             loading={loading}

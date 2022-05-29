@@ -65,23 +65,23 @@ export default function Claim() {
     [historicalClaim]
   );
 
-  const ableToClaim = useMemo(() => {
-    // console.log("ableToClaim", {
-    //   currentCRatio: formatNumber(currentCRatio),
-    //   targetRatio: formatNumber(targetRatio)
-    // })
-    if (currentCRatio.gt(targetRatio)) {
-      return false
-    } else {
-      return canClaim
-    }
-  }, [canClaim, targetRatio])
+  // const ableToClaim = useMemo(() => {
+  //   // console.log("ableToClaim", {
+  //   //   currentCRatio: formatNumber(currentCRatio),
+  //   //   targetRatio: formatNumber(targetRatio)
+  //   // })
+  //   if (currentCRatio.gt(targetRatio)) {
+  //     return false
+  //   } else {
+  //     return canClaim
+  //   }
+  // }, [canClaim, targetRatio])
 
-  const currentTotalRewards = useMemo(
-    // dayjs.duration()
-    () => stakingReward.plus(exchangeReward),
-    [stakingReward, exchangeReward]
-  );
+  // const currentTotalRewards = useMemo(
+  //   // dayjs.duration()
+  //   () => stakingReward.plus(exchangeReward),
+  //   [stakingReward, exchangeReward]
+  // );
 
   const nextClaimCountDown = useAtomValue(nextClaimCountDownAtom);
 
@@ -255,7 +255,7 @@ export default function Claim() {
         {connected && (
           <PrimaryButton
             loading={loading}
-            disabled={!ableToClaim}
+            disabled={!canClaim}
             size='large'
             fullWidth
             onClick={handleClaim}
@@ -263,7 +263,7 @@ export default function Claim() {
             Claim Now
           </PrimaryButton>
         )}
-        {currentCRatio.gt(targetRatio) && (
+        {!canClaim && (
           <Typography sx={{
             mt: '10px',
             textAlign: 'center',

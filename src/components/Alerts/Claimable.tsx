@@ -22,13 +22,13 @@ export default function Claimable({...props }: Props) {
 
   let title, content, baseColor = ""
 
-  if (leftTimeSecondToClaim < secondsOfDays(3) && leftTimeSecondToClaim > secondsOfDays(1)){
+  if (leftTimeSecondToClaim > secondsOfDays(1)){
     title = "ATTENTION REQUIRED"
     content = `You have unclaimed rewards. If you do not claim your rewards within ${nextClaimCountDown}, your rewards will be forfeited.`
     baseColor = COLOR.warning;
   }
 
-  if (leftTimeSecondToClaim < secondsOfDays(1) || leftTimeSecondToClaim > secondsOfDays(3)){
+  if (leftTimeSecondToClaim < secondsOfDays(1)){
     title = "URGENT ACTION REQUIRED"
     content = `You have unclaimed rewards. If you do not claim your rewards within ${nextClaimCountDown}, your rewards will be forfeited.`
     baseColor = "#FA2256";

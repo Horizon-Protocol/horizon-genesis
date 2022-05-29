@@ -17,35 +17,46 @@ import dayjs from "dayjs";
 
 interface RowsData {
   id?: string;
-  claimDate: string;
-  unlockDate: string;
-  amount: string | JSX.Element;
+  claimDate?: number;
+  unlockDate?: number;
+  amount?: number ;
 }
 
-function createData(
-  claimDate: string,
-  unlockDate: string,
-  amount: string | JSX.Element
-): RowsData {
-  return { claimDate, unlockDate, amount };
-}
+// function createData(
+//   claimDate: string,
+//   unlockDate: string,
+//   amount?: number
+// ): RowsData {
+//   return { claimDate, unlockDate, amount };
+// }
 
 export default function EscrowRecord() {
   const [page, setPage] = useState(0);
   const [rowsPerPage, setRowsPerPage] = useState(5);
 
   const rewardsEscrow = useAtomValue(rewardsEscrowAtom);
-  const rows = rewardsEscrow?.schedule
+  // const rows = rewardsEscrow?.schedule
+  //   ? rewardsEscrow?.schedule?.map((item, index) => {
+  //       return {
+  //         id: formatNumber(item.entryID),
+  //         unlockDate: dayjs(Number(item.endTime) * 1000).format(
+  //           "MMM DD, YYYY hh:mm"
+  //         ),
+  //         claimDate: dayjs(Number(item.endTime) * 1000)
+  //           .subtract(52, "w")
+  //           .format("MMM DD, YYYY hh:mm"),
+  //         // amount: formatNumber(BNWithDecimals(item.escrowAmount)),
+  //         amount: item.escrowAmount,
+  //       };
+  //     })
+  //   : [];
+    const rows = rewardsEscrow?.schedule
     ? rewardsEscrow?.schedule?.map((item, index) => {
         return {
-          id: formatNumber(item.entryID),
-          unlockDate: dayjs(Number(item.endTime) * 1000).format(
-            "MMM DD, YYYY hh:mm"
-          ),
-          claimDate: dayjs(Number(item.endTime) * 1000)
-            .subtract(52, "w")
-            .format("MMM DD, YYYY hh:mm"),
-          amount: formatNumber(BNWithDecimals(item.escrowAmount)),
+          id: item.entryID,
+          unlockDate: item.endTime,
+          claimDate: item.endTime,
+          amount: item.escrowAmount,
         };
       })
     : [];
@@ -68,7 +79,7 @@ export default function EscrowRecord() {
       width: 190,
       editable: false,
       headerAlign: "left",
-      renderCell({ value, row }) {
+      renderCell({ value }) {
         return (
           <Typography
             sx={{
@@ -77,7 +88,7 @@ export default function EscrowRecord() {
               color: COLOR.text,
             }}
           >
-            {value}
+            {dayjs(Number(value) * 1000).subtract(52, "w").format("MMM DD, YYYY hh:mm")}
           </Typography>
         );
       },
@@ -88,7 +99,7 @@ export default function EscrowRecord() {
       width: 140,
       editable: false,
       headerAlign: "left",
-      renderCell({ value, row }) {
+      renderCell({ value }) {
         return (
           <Typography
             sx={{
@@ -97,7 +108,7 @@ export default function EscrowRecord() {
               color: COLOR.safe,
             }}
           >
-            {value}
+            {dayjs(Number(value) * 1000).format("MMM DD, YYYY hh:mm")}
           </Typography>
         );
       },
@@ -107,6 +118,7 @@ export default function EscrowRecord() {
       headerName: "Amount",
       type: "number",
       width: 130,
+      sortable: true,
       editable: false,
       headerAlign: "right",
       renderCell({ value, row }) {
@@ -118,7 +130,7 @@ export default function EscrowRecord() {
               color: COLOR.text,
             }}
           >
-            {value}
+            {formatNumber(value)}
             <span
               style={{
                 marginLeft: "4px",

@@ -22,7 +22,7 @@ export type RewardEscrowV2Props = {
 export type RecordEscrowRowProps = {
     endTime: BN;
     entryID: BN;
-    escrowAmount: BN;
+    escrowAmount: number;
 }
 
 export default function useEscrowDataQuery() {
@@ -79,7 +79,8 @@ export default function useEscrowDataQuery() {
             vestingEntries.forEach((item) => {
                 const endTime = item[0]
                 const entryID = item[1]
-                const escrowAmount = item[1]
+                // const escrowAmount = item[1]
+                const escrowAmount = Number(item[1]) / 1e18
                 // if (escrowAmount?.lt(0)) {
                     unorderedSchedule.push({
                         endTime,
@@ -88,6 +89,8 @@ export default function useEscrowDataQuery() {
                     });
                 // }
             });
+
+            unorderedSchedule.sort((a, b) => a.endTime < b.endTime ? 1 : -1);
 
             const result = {
                 claimableAmount: claimableAmount,

@@ -23,7 +23,7 @@ const StyledTooltip = styled(({ tooltipWidth, className, ...props }: BaseTooltip
     boxShadow: '0px 0px 24px 5px #0B1D38',
     borderRadius: '4px',
     fontSize: 12,
-    lineHeight: "14px",
+    lineHeight: "16px",
     letterSpacing: '.5px',
     color: COLOR.text,
   },

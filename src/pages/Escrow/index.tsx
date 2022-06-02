@@ -46,15 +46,17 @@ export default function Escrow() {
                             <EscrowedCard unlockCard
                                 title={
                                     <Tooltip
-                                        title={<ToolTipContent title='AVAILABLE HZN' conetnt='AVAILABLE HZN' />}
+                                        title={<ToolTipContent title='Available HZN' conetnt='Current amount of HZN that can be unlocked from escrow.
+                                        ' />}
                                         placement='top'
                                     >
                                         <Box component='span' style={{
                                             color: COLOR.text,
                                             fontSize: "12px",
-                                            fontWeight: "normal"
+                                            fontWeight: "normal",
+                                            cursor: "help"
                                         }}>
-                                            AVAILABLE HZN
+                                            Available HZN
                                         </Box>
                                     </Tooltip>
                                 }
@@ -71,15 +73,16 @@ export default function Escrow() {
                                     <EscrowedCard
                                         title={
                                             <Tooltip
-                                                title={<ToolTipContent title='TOTAL ESCROWED' conetnt='TOTAL ESCROWED' />}
+                                                title={<ToolTipContent title='Total Escrowed' conetnt='Total amount of HZN currently in escrow. To see when they will unlock, check the table below.' />}
                                                 placement='top'
                                             >
                                                 <Box component='span' style={{
                                                     color: COLOR.text,
                                                     fontSize: "12px",
-                                                    fontWeight: "normal"
+                                                    fontWeight: "normal",
+                                                    cursor: "help"
                                                 }}>
-                                                    TOTAL ESCROWED
+                                                    Total Escrowed
                                                 </Box>
                                             </Tooltip>
                                         }
@@ -94,15 +97,16 @@ export default function Escrow() {
                                     <EscrowedCard
                                         title={
                                             <Tooltip
-                                                title={<ToolTipContent title='TOTAL UNLOCKED' conetnt='TOTAL UNLOCKED' />}
+                                                title={<ToolTipContent title='Total Unlocked' conetnt='Total amount of HZN that has already been unlocked previously from escrow.' />}
                                                 placement='top'
                                             >
                                                 <Box component='span' style={{
                                                     color: COLOR.text,
                                                     fontSize: "12px",
-                                                    fontWeight: "normal"
+                                                    fontWeight: "normal",
+                                                    cursor: "help"
                                                 }}>
-                                                    TOTAL UNLOCKED
+                                                    Total Unlocked
                                                 </Box>
                                             </Tooltip>
                                         }

@@ -141,7 +141,7 @@ export default function Dashboard({dashBoardOnClose, ...props}: DashboardProps) 
               width={150}
               flexGrow={isMobile ? 1 : 0}
               height='50px'
-              toolTipText='apy tootip'
+              toolTipText='Estimated APY for staking HZN on Horizon Genesis.'
               title='HZN STAKING APY'
               desc={<>
                 {stakingAPR * 100 && isEstimateAPR ? '≈' : null}
@@ -152,7 +152,7 @@ export default function Dashboard({dashBoardOnClose, ...props}: DashboardProps) 
             <HZNInfoPrice
               width={110}
               flexGrow={isMobile ? 1 : 0}
-              toolTipText='HZN PRICE tooltip'
+              toolTipText='Current HZN Price'
               title='HZN PRICE'
               desc={`$${formatPrice(hznRate.toNumber(), { mantissa: 4 })}`}
               bgcolor={COLOR.bgColor}

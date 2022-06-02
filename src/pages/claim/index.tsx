@@ -285,7 +285,7 @@ export default function Claim() {
             Claim Now
           </PrimaryButton>
         )}
-        {!canClaim && (
+        {(!canClaim && stakingReward > 0) && (
           <Typography sx={{
             mt: '10px',
             textAlign: 'center',

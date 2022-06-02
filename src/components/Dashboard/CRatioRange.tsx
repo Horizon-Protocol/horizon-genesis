@@ -91,11 +91,10 @@ export default function CRatioRange(props: BoxProps) {
         tooltipWidth={261}
         title={<ToolTipContent title='Current C-Ratio' conetnt={
           <>
-            This is based on{" "}
-            <code>HZN Balance * HZN Price / Debt</code>. Maintaining a C-Ratio
+            <code>C-Ratio = HZN Balance * HZN Price / Debt</code>Maintaining a C-Ratio
             of {targetCRatioPercent}% or more will allow you to claim rewards.
             If your C-ratio goes below the liquidation ratio of{" "}
-            {liquidationRatioPercent}% for more than 3 days, a liquidation penalty may incur. <ActionLink fontSize='12px !important' letterSpacing='1px' href="https://academy.horizonprotocol.com/horizon-genesis/staking-on-horizon-genesis/collaterialization-and-c-ratio" target='_blank' showArrow={false}>Learn More.</ActionLink>
+            {liquidationRatioPercent}% for more than 3 days, a liquidation penalty may incur. <ActionLink fontSize='12px !important' letterSpacing='1px' href="https://academy.horizonprotocol.com/horizon-genesis/staking-on-horizon-genesis/collaterialization-and-c-ratio" target='_blank' showArrow={false}><br></br>LEARN MORE</ActionLink>
           </>
         } />}
         placement='top'

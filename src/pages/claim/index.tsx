@@ -147,25 +147,35 @@ export default function Claim() {
       }
       href="https://academy.horizonprotocol.com/horizon-genesis/staking-on-horizon-genesis/mint-burn-and-claim#claim"
     >
-      <Typography sx={{
+      <Tooltip
+        title={<ToolTipContent title='Claimable Rewards' conetnt={
+          <>
+            These are the rewards available to be claimed now.
+          </>
+        } />}
+        placement='top'
+      >
+        <Typography sx={{
         width: "100%",
         textAlign: "center",
         fontWeight: "bold",
         fontSize: "12px",
         mb: "10px",
         color: COLOR.text,
-        letterSpacing: '1px'
+        letterSpacing: '1px',
+        cursor: "help"
       }}>
         CLAIMABLE REWARDS
       </Typography>
+      </Tooltip>
       <Box display='flex' justifyContent='space-between'>
         <RewardCard
           label={
             <Tooltip
-              title={<ToolTipContent title='STAKING REWARDS' conetnt='STAKING REWARDS content' />}
+              title={<ToolTipContent title='Staking Rewards' conetnt={<>This is the amount of escrowed HZN that is available to be claimed now.</>}/>}
               placement='top'
             >
-              <Box>STAKING REWARDS</Box>
+              <Box sx={{cursor: "help"}}>Staking Rewards</Box>
             </Tooltip>
           }
           amount={stakingReward}
@@ -175,10 +185,10 @@ export default function Claim() {
         <RewardCard
           label={
             <Tooltip
-              title={<ToolTipContent title='EXCHANGE REWARDS' conetnt='EXCHANGE REWARDS content' />}
+              title={<ToolTipContent title='Exchange Rewards' conetnt='This is the amount of zUSD that is available to be claimed now. zUSD rewards are generated from trades on Horizon Exchange' />}
               placement='top'
             >
-              <Box>EXCHANGE REWARDS</Box>
+              <Box sx={{cursor: "help"}}>Exchange Rewards</Box>
             </Tooltip>
           }
           height={{
@@ -190,7 +200,15 @@ export default function Claim() {
           svg={<IconzUSD />}
         />
       </Box>
-      <Typography sx={{
+      <Tooltip
+        title={<ToolTipContent title='Upcoming Rewards' conetnt={
+          <>
+            The estimated amount of rewards for the upcoming reward period.
+          </>
+        } />}
+        placement='top'
+      >
+        <Typography sx={{
         width: "100%",
         textAlign: "center",
         fontWeight: "bold",
@@ -198,10 +216,12 @@ export default function Claim() {
         mt: "20px",
         mb: "10px",
         color: COLOR.text,
-        letterSpacing: '1px'
-      }}>
-        UPCOMING REWARDS
-      </Typography>
+        letterSpacing: '1px',
+        cursor: "help"
+        }}>
+          UPCOMING REWARDS
+        </Typography>
+      </Tooltip>
       <Box display='flex' justifyContent='space-between'>
         <RewardCard
           height={{
@@ -211,15 +231,16 @@ export default function Claim() {
           upcoming={true}
           label={
             <Tooltip
-              title={<ToolTipContent title='ESTIMATED STAKING REWARDS' conetnt='ESTIMATED STAKING REWARDS content' />}
+              title={<ToolTipContent title='Estimated Staking Rewards' conetnt='This is the estimated amount of Escrowed HZN rewards available in the upcoming reward period. This does not factor in any unclaimed rewards from the previous week.' />}
               placement='top'
             >
-              <Box><Box
+              <Box sx={{cursor: "help"}}><Box
                 component="span"
                 sx={{
                   fontSize: 7,
                   color: COLOR.text,
-                  opacity: .5
+                  opacity: .5,
+                  cursor: "help"
                 }}>ESTIMATED</Box><br />STAKING REWARDS</Box>
             </Tooltip>
           }
@@ -232,15 +253,16 @@ export default function Claim() {
           upcoming={true}
           label={
             <Tooltip
-              title={<ToolTipContent title='ACCRUED EXCHANGE REWARDS' conetnt='ACCRUED EXCHANGE REWARDS content' />}
+              title={<ToolTipContent title='Accrued Exchange Rewards' conetnt='This is the amount of zUSD rewards earned from traders on Horizon Exchange during this period so far.' />}
               placement='top'
             >
-              <Box><Box
+              <Box sx={{cursor: "help"}}><Box
                 component="span"
                 sx={{
                   fontSize: 7,
                   color: COLOR.text,
-                  opacity: .5
+                  opacity: .5,
+                  cursor: "help"
                 }}>ACCRUED</Box><br />EXCHANGE REWARDS</Box>
             </Tooltip>
           }

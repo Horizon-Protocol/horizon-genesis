@@ -38,7 +38,9 @@ export default function DebtOverview() {
     }, [historicalDebt, debtBalance])
 
     const titles = ["ACTIVE DEBT", "ISSUED DEBT", "GLOBAL DEBT"]
-    const contents = ["ACTIVE DEBT", "ISSUED DEBT", "GLOBAL DEBT"]
+    const contents = ["Current amount of debt held, taking into account the fluctuations of Global Debt.", 
+    "Amount of debt at point of issuance (when last minted) without taking into account the fluctuations of Global Debt.", 
+    "Total amount of debt held by all of Horizon Protocol"]
 
     const activeIssuedDebtFetching = useIsFetching([GRAPH_DEBT, 'activeaissuesd'])
     const globalDebtFetching = useIsFetching([GRAPH_DEBT, 'globalDebts'])
@@ -84,7 +86,8 @@ export default function DebtOverview() {
                                     <Box component='span' style={{
                                         color: COLOR.text,
                                         fontSize: "12px",
-                                        fontWeight: "normal"
+                                        fontWeight: "normal",
+                                        cursor: "help"
                                     }}>
                                         {titles[index]}
                                     </Box>

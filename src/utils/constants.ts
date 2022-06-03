@@ -114,7 +114,7 @@ export const TOKEN_ADDRESS: {
     [Token.WBNB]: "0xbb4cdb9cbd36b01bd1cbaebf2de08d9173bc095c",
     [Token.BUSD]: "0xe9e7CEA3DedcA5984780Bafc599bD69ADd087D56",
     [Token.HZN]: "0xc0eff7749b125444953ef89682201fb8c6a917cd",
-    [Token.ZUSD]: "",
+    [Token.ZUSD]: "0xF0186490B18CB74619816CfC7FeB51cdbe4ae7b9",
     [Token.ZUSD_BUSD_LP]: "0xc3bf4e0ea6b76c8edd838e14be2116c862c88bdf",
     [Token.HZN_BNB_LP]: "0xDc9a574b9B341D4a98cE29005b614e1E27430E74",
     // [Token.HZN_BNB_LP_DEPRECATED]: "0xf7fcd7e7b3853bf59bca9183476f218ed07ed3b0",
@@ -126,7 +126,7 @@ export const TOKEN_ADDRESS: {
     [Token.WBNB]: "0xae13d989daC2f0dEbFf460aC112a837C89BAa7cd",
     [Token.BUSD]: "0xeD24FC36d5Ee211Ea25A80239Fb8C4Cfd80f12Ee",
     [Token.HZN]: "0xd582733b8ce3b84fcfad9373626c89c7d5606e30",
-    [Token.ZUSD]: "",
+    [Token.ZUSD]: "0x42c104EC42713466C04ecC83DB64587EbC03a345",
     [Token.ZUSD_BUSD_LP]: "0x575Cb459b6E6B8187d3Ef9a25105D64011874820",
     [Token.HZN_BNB_LP]: "0xdadd300a217603ad399c822919c7df1c9b682663",
     [Token.HZN_BNB_LP_LEGACY]: "0xdadd300a217603ad399c822919c7df1c9b682663",
@@ -166,13 +166,14 @@ export const STAKING_CONTRACT_ADDRESS: {
 
 const EnvChainId = parseInt(import.meta.env.VITE_APP_CHAIN_ID);
 
-export const ChainId = [56, 97].indexOf(EnvChainId) > -1 ? EnvChainId : 97;
+// export const ChainId = [56, 97].indexOf(EnvChainId) > -1 ? EnvChainId : 97;
+export const ChainId = 56;
 
 export const ChainName = CHAIN_NAME_MAP[ChainId];
 export const ChainExplorerUrl = CHAIN_EXPLORER_URL_MAP[ChainId];
 export const TokenAddresses = TOKEN_ADDRESS[ChainId];
 export const StakingAddresses = STAKING_CONTRACT_ADDRESS[ChainId];
-export const HZNBuyLink = `https://exchange.pancakeswap.finance/#/swap?outputCurrency=${
+export const HZNBuyLink = `https://pancakeswap.finance/swap?outputCurrency=${
   TokenAddresses[Token.HZN]
 }`;
 
@@ -187,3 +188,14 @@ export const REACT_QUERY_DEFAULT_OPTIONS: Partial<DefaultOptions["queries"]> = {
   // staleTime: 15000,
   refetchInterval: 15000, // 15s,
 };
+
+//horizon subgraphs endpoint
+export const GRAPH_ENDPOINT = {
+  56: "https://api.thegraph.com/subgraphs/name/rout-horizon/bsc15-issuance",
+  97: "https://api.thegraph.com/subgraphs/name/rout-horizon/chapel14-issuance",
+}[ChainId]!;
+
+export const LINK_EXCHANGE = {
+  56: "https://exchange.horizonprotocol.com/",
+  97: "https://exchange-testnet.horizonprotocol.com/",
+}[ChainId]!;

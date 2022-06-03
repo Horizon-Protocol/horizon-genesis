@@ -6,7 +6,6 @@ import { useSnackbar } from "notistack";
 import horizon from "@lib/horizon";
 import { PAGE_COLOR } from "@utils/theme/constants";
 import { Token } from "@utils/constants";
-import { zAssets } from "@utils/zAssets";
 import {
   formatCRatioToPercent,
   formatNumber,
@@ -39,6 +38,7 @@ import BalanceChange, {
 } from "@components/BalanceChange";
 import PrimaryButton from "@components/PrimaryButton";
 import useRefresh from "@hooks/useRefresh";
+import ConnectButton from "@components/ConnectButton";
 
 const THEME_COLOR = PAGE_COLOR.mint;
 
@@ -50,7 +50,7 @@ export default function Mint() {
   const hznRate = useAtomValue(hznRateAtom);
   const { currentCRatio, balance, collateral, transferable, debtBalance } =
     useAtomValue(debtAtom);
-  const { stakedCollateral, unstakedCollateral } =
+  const { stakedCollateral, unstakedCollateral, dashboardEscrowed } =
     useAtomValue(collateralDataAtom);
 
   const unstakedCollateralUSD = useMemo(
@@ -80,7 +80,7 @@ export default function Mint() {
   const toToken: TokenProps = useMemo(
     () => ({
       disabled: !connected,
-      token: zAssets.zUSD,
+      token: Token.ZUSD,
       label: "MINT",
       color: THEME_COLOR,
       bgColor: "#0A1624",
@@ -96,26 +96,26 @@ export default function Mint() {
 
   const handleSelectPresetCRatio = useCallback(
     (presetCRatio: BN) => {
-      console.log("preset c-ratio:", presetCRatio.toNumber());
+      // console.log("preset c-ratio:", presetCRatio.toNumber());
       const isMax = presetCRatio.eq(targetRatio);
       const { toPairInput, max } = fromToken;
       let inputHZN: string;
       if (isMax) {
         inputHZN = max!.toString();
       } else {
-        console.log({
-          balance: balance.toString(),
-          collateral: collateral.toString(),
-          presetCRatio: presetCRatio.toString(),
-          targetRatio: targetRatio.toString(),
-          stakedCollateral: stakedCollateral.toString(),
-        });
+        // console.log({
+        //   balance: balance.toString(),
+        //   collateral: collateral.toString(),
+        //   presetCRatio: presetCRatio.toString(),
+        //   targetRatio: targetRatio.toString(),
+        //   stakedCollateral: stakedCollateral.toString(),
+        // });
         inputHZN = collateral
           .multipliedBy(presetCRatio)
           .div(targetRatio)
           .minus(stakedCollateral)
           .toString();
-        console.log("input HZN", inputHZN.toString());
+        // console.log("input HZN", inputHZN.toString());
       }
 
       setState(() => ({
@@ -142,7 +142,7 @@ export default function Mint() {
 
     const changedTransferable = transferable.isZero()
       ? zeroBN
-      : getTransferableAmountFromMint(collateral, changedStaked);
+      : getTransferableAmountFromMint(collateral, changedStaked, dashboardEscrowed);
 
     const changedCRatio = fromAmount.gt(0)
       ? currentCRatio.isLessThan(targetRatio)
@@ -152,7 +152,12 @@ export default function Mint() {
         : changedDebt.div(changedStaked.multipliedBy(hznRate))
       : currentCRatio;
 
+    const changedEscrowed = dashboardEscrowed.isZero()
+    ? zeroBN
+    : fromAmount.gt(transferable) ? transferable.plus(dashboardEscrowed).minus(fromAmount) : dashboardEscrowed;
+
     // console.log({
+    //   fromAmount: fromAmount.toString(),
     //   balance: balance.toString(),
     //   debt: debtBalance.toString(),
     //   changedDebt: changedDebt.toString(),
@@ -166,6 +171,7 @@ export default function Mint() {
     //   changedCRatio: changedCRatio.toString(),
     //   changedTransferable: changedTransferable.toNumber(),
     // });
+
     return {
       cRatio: {
         from: currentCRatio,
@@ -182,6 +188,10 @@ export default function Mint() {
       transferrable: {
         from: transferable,
         to: changedTransferable,
+      },
+      escrowed: {
+        from: dashboardEscrowed,
+        to: changedEscrowed,
       },
       gapImg: arrowRightImg,
     };
@@ -207,14 +217,14 @@ export default function Mint() {
       setLoading(true);
       let tx: ethers.ContractTransaction;
       if (state.isMax) {
-        console.log("mint max");
+        // console.log("mint max");
         tx = await Synthetix.issueMaxSynths();
       } else {
-        console.log("mint", state.toInput);
+        // console.log("mint", state.toInput);
         tx = await Synthetix.issueSynths(utils.parseEther(state.toInput));
       }
       const res = await tx.wait(1);
-      console.log("res", res);
+      // console.log("res", res);
       setState(() => ({
         fromInput: "",
         toInput: "",
@@ -249,6 +259,7 @@ export default function Mint() {
           allowing you to earn weekly staking rewards.
         </>
       }
+      href="https://academy.horizonprotocol.com/horizon-genesis/staking-on-horizon-genesis/mint-burn-and-claim#mint"
     >
       <PresetCRatioOptions
         color={THEME_COLOR}
@@ -256,14 +267,14 @@ export default function Mint() {
         onChange={handleSelectPresetCRatio}
       />
       <TokenPair
-        mt={2}
+        mt={0}
         fromToken={fromToken}
         toToken={toToken}
         arrowImg={arrowImg}
         state={state}
         setState={setState}
       />
-      <BalanceChange my={3} changed={!!state.fromInput} {...changedBalance} />
+      <BalanceChange my={2.5} changed={!!state.fromInput} {...changedBalance} />
       <Box>
         {connected && (
           <PrimaryButton
@@ -275,6 +286,12 @@ export default function Mint() {
           >
             Mint Now
           </PrimaryButton>
+        )}
+        {!connected && (
+          <ConnectButton
+            size='large'
+            fullWidth
+          />
         )}
       </Box>
     </PageCard>

@@ -16,10 +16,10 @@ export default function EmptyStaked({ unstaked, ...props }: Props) {
     >
       {unstaked.eq(0) && (
         <ActionLink href={HZNBuyLink} target='_blank'>
-          Buy HZN
+          BUY HZN
         </ActionLink>
       )}
-      <ActionLink to='/'>Stake Now</ActionLink>
+      <ActionLink ml="20px" to='/mint'>Stake Now</ActionLink>
     </BaseAlert>
   );
 }

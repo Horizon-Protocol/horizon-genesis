@@ -95,7 +95,7 @@ export default function StakeCard({
       sx={{
         maxWidth: 340,
         flex: "0 0 340px",
-        bgcolor: "rgba(16, 38, 55, 0.3)",
+        bgcolor: COLOR.bgColor,
         backgroundRepeat: "no-repeat",
         backgroundSize: "auto 160px",
         backgroundPosition: "top -12px right -12px",

@@ -34,11 +34,13 @@ export const previousFeePeriodAtom = atom<FeePoolAtom>({
 
 export const feePeriodDatesAtom = atom((get) => {
   const { startTime, feePeriodDuration } = get(currentFeePeriodAtom);
+  
   return {
     currentFeePeriodStarts: startTime ? new Date(startTime * 1000) : undefined,
     nextFeePeriodStarts: startTime
       ? new Date((startTime + feePeriodDuration) * 1000)
       : undefined,
+    nextClaimProgress: startTime ? (Date.parse(Date()) - startTime * 1000) / (feePeriodDuration * 1000) * 100 : 0,  
   };
 });
 
@@ -47,7 +49,13 @@ export const rewardsAtom = atomWithReset({
   claimable: false,
   stakingReward: zeroBN,
   exchangeReward: zeroBN,
+  upcomingExchangeReward: zeroBN,
+  upcomingStakingReward: zeroBN,
 });
+
+//estimated staking rewards
+export const weekStakingPoolRewardsAtom = atomWithReset<number>(0)
+
 // total rewards
 export const hasRewardsAtom = selectAtom(
   rewardsAtom,
@@ -71,3 +79,5 @@ export const resetAtom = atom(null, (get, set) => {
 
 // reset user rewards
 export const nextClaimCountDownAtom = atom("n/a");
+export const nextClaimCountDownDurationAtom = atom<number>(0);
+

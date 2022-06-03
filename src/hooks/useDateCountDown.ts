@@ -55,7 +55,15 @@ export default function useDateCountDown(targetDate?: Date) {
     return res.trim();
   }, [targetDate, d, h, m, s]);
 
+  const dateCountDownDuration = useMemo(() => {
+    if (!isDate(targetDate)) {
+      return 0;
+    }
+    return s + m * 60 + h * 60 * 60 + d * 60 * 60 * 24
+  }, [targetDate, d, h, m, s]);
+
   return {
+    dateCountDownDuration,
     state,
     formatted,
     stopped,

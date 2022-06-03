@@ -6,7 +6,6 @@ import { useSnackbar } from "notistack";
 import horizon from "@lib/horizon";
 import { PAGE_COLOR } from "@utils/theme/constants";
 import { Token } from "@utils/constants";
-import { zAssets } from "@utils/zAssets";
 import {
   BNToEther,
   formatNumber,
@@ -20,9 +19,9 @@ import { hznRateAtom } from "@atoms/exchangeRates";
 import {
   debtAtom,
   collateralDataAtom,
-  zUSDBalanceAtom,
   burnAmountToFixCRatioAtom,
 } from "@atoms/debt";
+import { zUSDBalanceAtom } from "@atoms/balances";
 import useWallet from "@hooks/useWallet";
 import useRefresh from "@hooks/useRefresh";
 import useFetchBurnStatus from "@hooks/useFetchBurnStatus";
@@ -46,6 +45,8 @@ import {
   getWalletErrorMsg,
 } from "@utils/helper";
 import { toFutureDate } from "@utils/date";
+import useEscrowCalculations from "@hooks/Escrowed/useEscrowCalculations";
+import ConnectButton from "@components/ConnectButton";
 
 const THEME_COLOR = PAGE_COLOR.burn;
 
@@ -64,13 +65,14 @@ export default function Burn() {
     issuableSynths,
   } = useAtomValue(debtAtom);
   const zUSDBalance = useAtomValue(zUSDBalanceAtom);
-  const { stakedCollateral } = useAtomValue(collateralDataAtom);
+  const { stakedCollateral, dashboardEscrowed } = useAtomValue(collateralDataAtom);
   const burnAmountToFixCRatio = useAtomValue(burnAmountToFixCRatioAtom);
 
   const collateralUSD = useMemo(
     () => collateral.multipliedBy(hznRate),
     [collateral, hznRate]
   );
+  const { totalEscrowBalance } = useEscrowCalculations()
 
   const { state, setState } = useInputState();
 
@@ -92,13 +94,15 @@ export default function Burn() {
   const fromToken: TokenProps = useMemo(
     () => ({
       disabled: !connected,
-      token: zAssets.zUSD,
+      token: Token.ZUSD,
       label: "BURN",
       color: THEME_COLOR,
       bgColor: "#0A1624",
+      labelColor: THEME_COLOR,
       amount: toBN(0),
-      max: minBN(zUSDBalance, debtBalance),
-      maxButtonLabel: "Burn Max",
+      zUSDBalance: zUSDBalance,
+      max: zUSDBalance.isGreaterThanOrEqualTo(debtBalance) ? debtBalance : zUSDBalance,
+      maxButtonLabel: "Max Burn",
       inputPrefix: "$",
       toPairInput: (amount) =>
         toBN(amount)
@@ -118,26 +122,36 @@ export default function Burn() {
   );
 
   const toToken: TokenProps = useMemo(
-    () => ({
+    () => {
+      // console.log('TokenProps',{
+      //   debtBalance:formatNumber(debtBalance,{mantissa:5}),
+      //   hznRate:formatNumber(hznRate,{mantissa:5}) ,
+      //   targetRatio: formatNumber(targetRatio,{mantissa:5})
+      // })
+      var hznMaxAmount = debtBalance.dividedBy(hznRate).dividedBy(targetRatio)
+      hznMaxAmount = hznMaxAmount.gt(stakedCollateral) ? stakedCollateral : hznMaxAmount
+      return (
+      {
       disabled: !connected,
       token: Token.HZN,
       label: "UNSTAKE",
       amount: toBN(0),
       balanceLabel: `Staked: ${formatNumber(stakedCollateral)} ${Token.HZN}`,
-      max: stakedCollateral,
+      max: hznMaxAmount,
       maxButtonLabel: "Unstake Max",
       color: THEME_COLOR,
-      labelColor: THEME_COLOR,
       toPairInput: (amount) => {
         const tmpAmount = toBN(amount)
           .multipliedBy(hznRate)
           .multipliedBy(targetRatio);
-        const toAmount = burnAmountToFixCRatio.gt(zeroBN)
-          ? burnAmountToFixCRatio.minus(tmpAmount)
+          const toAmount = burnAmountToFixCRatio.gt(zeroBN)
+          ? burnAmountToFixCRatio.plus(tmpAmount)
           : tmpAmount;
         return toAmount.toString();
       },
-    }),
+    }
+      )
+  },
     [burnAmountToFixCRatio, connected, hznRate, stakedCollateral, targetRatio]
   );
 
@@ -171,7 +185,6 @@ export default function Burn() {
     const changedDebt = debtBalance.minus(fromAmount);
 
     const changedStaked = changedDebt.div(targetRatio).div(hznRate);
-
     // debtBalance + (escrowedReward * hznRate * targetRatio) - issuableSynths
     const debtEscrowBalance = maxBN(
       debtBalance
@@ -189,21 +202,28 @@ export default function Burn() {
 
     const changedCRatio = debtBalance.minus(fromAmount).div(collateralUSD);
 
-    // console.log({
-    //   balance: balance.toNumber(),
-    //   burnAmountToFixCRatio: burnAmountToFixCRatio.toNumber(),
-    //   escrowedReward: escrowedReward.toNumber(),
-    //   debt: debtBalance.toString(),
-    //   changedDebt: changedDebt.toString(),
-    //   staked: staked.toNumber(),
-    //   transferable: transferable.toNumber(),
-    //   hznRate: hznRate.toString(),
-    //   targetRatio: targetRatio.toNumber(),
-    //   currentCRatio: currentCRatio.toString(),
-    //   changedCRatio: changedCRatio.toString(),
-    //   changedStaked: changedStaked.toNumber(),
-    //   changedTransferable: changedTransferable.toNumber(),
-    // });
+    const burnHZN = toBN(state.toInput)
+    const changedEscrowed = dashboardEscrowed.isZero()
+    ? zeroBN
+    : burnHZN.lt(totalEscrowBalance.minus(dashboardEscrowed)) ? dashboardEscrowed.plus(burnHZN) : totalEscrowBalance
+
+    console.log('changedBalance',{
+      totalEscrowBalance: totalEscrowBalance.toNumber(),
+      debtEscrowBalance: debtEscrowBalance.toNumber(),
+      burnAmountToFixCRatio: burnAmountToFixCRatio.toNumber(),
+      escrowedReward: escrowedReward.toNumber(),
+      debt: debtBalance.toString(),
+      changedDebt: changedDebt.toString(),
+      // staked: staked.toNumber(),
+      transferable: transferable.toNumber(),
+      hznRate: hznRate.toString(),
+      targetRatio: targetRatio.toNumber(),
+      currentCRatio: currentCRatio.toString(),
+      changedCRatio: changedCRatio.toString(),
+      changedStaked: changedStaked.toNumber(),
+      changedTransferable: changedTransferable.toNumber(),
+    });
+
     return {
       cRatio: {
         from: currentCRatio,
@@ -220,6 +240,10 @@ export default function Burn() {
       transferrable: {
         from: transferable,
         to: changedTransferable,
+      },
+      escrowed: {
+        from: dashboardEscrowed,
+        to: changedEscrowed
       },
       gapImg: arrowRightImg,
     };
@@ -249,7 +273,7 @@ export default function Burn() {
       const isWaitingPeriod: boolean = await Synthetix.isWaitingPeriod(
         zUSDBytes
       );
-      console.log("isWaitingPeriod", isWaitingPeriod);
+      // console.log("isWaitingPeriod", isWaitingPeriod);
       if (isWaitingPeriod) {
         throw new Error("Waiting period for zUSD is still ongoing");
       }
@@ -260,17 +284,17 @@ export default function Burn() {
 
       let tx: ethers.ContractTransaction;
       if (burnToTarget) {
-        console.log("burn to target");
+        // console.log("burn to target");
         tx = await Synthetix.burnSynthsToTarget();
       } else {
         const burnAmount = state.isMax
           ? BNToEther(fromToken.max!)
           : utils.parseEther(state.fromInput);
-        console.log("burn amount:", burnAmount.toString());
+        // console.log("burn amount:", burnAmount.toString());
         tx = await Synthetix.burnSynths(burnAmount);
       }
       const res = await tx.wait(1);
-      console.log("res", res);
+      // console.log("res", res);
       setState(() => ({
         fromInput: "",
         toInput: "",
@@ -318,6 +342,7 @@ export default function Burn() {
           transfer your non-escrowed HZN.
         </>
       }
+      href="https://academy.horizonprotocol.com/horizon-genesis/staking-on-horizon-genesis/mint-burn-and-claim#burn"
     >
       <PresetCRatioOptions
         color={THEME_COLOR}
@@ -334,7 +359,7 @@ export default function Burn() {
         </Box>
       ) : null}
       <TokenPair
-        mt={2}
+        mt={0}
         fromToken={fromToken}
         toToken={toToken}
         arrowImg={arrowImg}
@@ -345,6 +370,7 @@ export default function Burn() {
       <Box>
         {connected && (
           <PrimaryButton
+            bgColor={THEME_COLOR}
             loading={loading}
             disabled={burnDisabled}
             size="large"
@@ -353,6 +379,12 @@ export default function Burn() {
           >
             Burn Now
           </PrimaryButton>
+        )}
+        {!connected && (
+          <ConnectButton 
+          size='large'
+          fullWidth
+          />
         )}
       </Box>
     </PageCard>

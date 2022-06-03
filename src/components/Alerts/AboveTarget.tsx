@@ -36,6 +36,7 @@ export default function AboveTarget({
     color,
     title = "Tip",
     content,
+    actionLink,
   } = useMemo(() => {
     if (liquidationDeadline > 0) {
       if (stopped) {
@@ -45,19 +46,28 @@ export default function AboveTarget({
           content: `Your account will be liquidated immediately if you drop below ${formatCRatioToPercent(
             targetRatio
           )}% c-ratio. Clear your liquidation flag ASAP to avoid liquidation.`,
+          actionLink: <ActionLink onClick={clearLiquidationFlag}>
+          Clear Liquidation Flag
+        </ActionLink>
         };
       }
       return {
         color: COLOR.danger,
         title: "Attention Required",
-        content: `Your account is flagged for liquidation. You have ${formatted} to clear this flag or you may be at risk of liquidation if your c-ratio drops below ${formatCRatioToPercent(
+        content: `Your account is still flagged for liquidation. You have ${formatted} to clear this flag or you may be at risk of liquidation if your c-ratio drops below ${formatCRatioToPercent(
           targetRatio
         )}%.`,
+        actionLink: <ActionLink onClick={clearLiquidationFlag}>
+          Clear Liquidation Flag
+        </ActionLink>
       };
     }
     return {
       content:
-        "Your C-Ratio is above the target. You can mint more zUSD to lower your C-ratio and earn more rewards, but increase your risk from the volatility of HZN.  Maintaining a C-Ratio higher than the target will reduce your risk from volatility.",
+        "Your C-Ratio is above the target. You may mint additional zUSD to earn more rewards, or keep your C-Ratio higher to reduce risk from volatility.",
+        actionLink: <ActionLink to="mint">
+          MINT NOW
+        </ActionLink>
     };
   }, [formatted, liquidationDeadline, stopped, targetRatio]);
 
@@ -70,7 +80,7 @@ export default function AboveTarget({
 
       const tx = await Liquidations.checkAndRemoveAccountInLiquidation(account);
       const res = await tx.wait(1);
-      console.log("res", res);
+      // console.log("res", res);
       refresh();
     } catch (e: any) {
       enqueueSnackbar(
@@ -84,11 +94,12 @@ export default function AboveTarget({
 
   return (
     <BaseAlert baseColor={color} title={title} content={content} {...props}>
-      {liquidationDeadline > 0 && (
+      {actionLink}
+      {/* {liquidationDeadline > 0 && (
         <ActionLink onClick={clearLiquidationFlag}>
           Clear Liquidation Flag
         </ActionLink>
-      )}
+      )} */}
     </BaseAlert>
   );
 }

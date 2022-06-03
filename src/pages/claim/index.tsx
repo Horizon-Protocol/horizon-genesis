@@ -1,5 +1,5 @@
 import { useCallback, useMemo, useState } from "react";
-import { Box } from "@mui/material";
+import { Box, Typography } from "@mui/material";
 import { ethers } from "ethers";
 import { useSnackbar } from "notistack";
 import { useAtomValue } from "jotai/utils";
@@ -8,19 +8,29 @@ import {
   rewardsAtom,
   nextClaimCountDownAtom,
   canClaimAtom,
+  nextClaimCountDownDurationAtom,
+  weekStakingPoolRewardsAtom,
 } from "@atoms/feePool";
 import horizon from "@lib/horizon";
 import useWallet from "@hooks/useWallet";
-import { PAGE_COLOR } from "@utils/theme/constants";
+import { COLOR, PAGE_COLOR } from "@utils/theme/constants";
 import headerBg from "@assets/images/claim.svg";
 import PageCard from "@components/PageCard";
 import RewardCard from "@components/Claim/RewardCard";
 import InfoList, { Info } from "@components/InfoList";
 import PrimaryButton from "@components/PrimaryButton";
 import useRefresh from "@hooks/useRefresh";
-import { formatNumber } from "@utils/number";
+import { formatNumber, toBN, zeroBN } from "@utils/number";
 import { getWalletErrorMsg } from "@utils/helper";
-import { zAssets } from "@utils/zAssets";
+import { globalDebtAtom, historicalClaimHZNAndZUSDAtom, historicalOperationAtom } from "@atoms/record";
+import { ratiosPercentAtom, targetRatioAtom } from "@atoms/app";
+import { secondsOfDays } from "@utils/date";
+import { ReactComponent as IconHZN } from "@assets/images/hzn.svg";
+import { ReactComponent as IconzUSD } from "@assets/images/zUSD.svg";
+import Tooltip from "@components/Tooltip";
+import ToolTipContent from "@components/Tooltip/ToolTipContent";
+import useEstimatedStakingRewards from "@hooks/useEstimatedStakingRewards";
+import { first } from "lodash";
 
 const THEME_COLOR = PAGE_COLOR.claim;
 
@@ -28,39 +38,75 @@ export default function Claim() {
   const { connected } = useWallet();
 
   const { enqueueSnackbar } = useSnackbar();
+  const historicalClaim = useAtomValue(historicalClaimHZNAndZUSDAtom)
 
-  const { escrowedReward } = useAtomValue(debtAtom);
-  const { stakingReward, exchangeReward } = useAtomValue(rewardsAtom);
+  const { stakingReward, exchangeReward, upcomingStakingReward, upcomingExchangeReward } = useAtomValue(rewardsAtom);
+  const weekStakingRewards = useAtomValue(weekStakingPoolRewardsAtom)
   const canClaim = useAtomValue(canClaimAtom);
+  const targetRatio = useAtomValue(targetRatioAtom);
 
-  const currentTotalRewards = useMemo(
-    () => stakingReward.plus(exchangeReward),
-    [stakingReward, exchangeReward]
+  const { currentCRatio, debtBalance , escrowedReward} = useAtomValue(debtAtom);
+  const globalDebt = useAtomValue(globalDebtAtom);
+
+  const { targetCRatioPercent } = useAtomValue(ratiosPercentAtom);
+  const lifeTimeClaimed = useMemo(
+    () => {
+      let ltHZN = zeroBN
+      let ltzUSD = zeroBN
+      historicalClaim.forEach(element => {
+        ltHZN = ltHZN.plus(element.rewards)
+        ltzUSD = ltzUSD.plus(element.value)
+      });
+      return ({
+        ltHZN,
+        ltzUSD
+      })
+    },
+    [historicalClaim]
   );
+
+  // const ableToClaim = useMemo(() => {
+  //   // console.log("ableToClaim", {
+  //   //   currentCRatio: formatNumber(currentCRatio),
+  //   //   targetRatio: formatNumber(targetRatio)
+  //   // })
+  //   if (currentCRatio.gt(targetRatio)) {
+  //     return false
+  //   } else {
+  //     return canClaim
+  //   }
+  // }, [canClaim, targetRatio])
+
+  // const currentTotalRewards = useMemo(
+  //   // dayjs.duration()
+  //   () => stakingReward.plus(exchangeReward),
+  //   [stakingReward, exchangeReward]
+  // );
 
   const nextClaimCountDown = useAtomValue(nextClaimCountDownAtom);
 
+  const nextClaimCountDownDuration = useAtomValue(nextClaimCountDownDurationAtom);
+  const warning = useMemo(() => {
+    if (0 < nextClaimCountDownDuration && nextClaimCountDownDuration < secondsOfDays(2) && stakingReward.isGreaterThan(zeroBN) && connected) {
+      return true
+    }
+    return false
+  }, [nextClaimCountDownDuration,stakingReward,connected])
+
   const infoList: Info[] = [
     {
-      label: "Next Reward Claim Period",
+      label: "Next Reward Claim",
       value: nextClaimCountDown,
     },
     {
-      label: "Claim Period Ends",
+      label: "Current Claim Period Ends",
       value: nextClaimCountDown,
+      warning: connected ? warning : false,
     },
     {
-      label: "Total Rewards this Period",
-      value: `${formatNumber(currentTotalRewards)} HZN`,
+      label: "Lifetime Claimed Rewards",
+      value: `${formatNumber(lifeTimeClaimed.ltHZN)} HZN / ${formatNumber(lifeTimeClaimed.ltzUSD)} zUSD`,
     },
-    {
-      label: "Total Claimed Rewards",
-      value: `${formatNumber(escrowedReward)} HZN`,
-    },
-    // {
-    //   label: "Lifetime Rewards",
-    //   value: "0.00 HZN",
-    // },
   ];
 
   const refresh = useRefresh();
@@ -82,6 +128,10 @@ export default function Claim() {
     setLoading(false);
   }, [enqueueSnackbar, refresh]);
 
+  const estimatedHZNRewards = useMemo(()=>{
+      return toBN(weekStakingRewards * Number(debtBalance) / Number(first(globalDebt)?.totalDebt))
+  },[debtBalance,globalDebt,weekStakingPoolRewardsAtom])
+
   return (
     <PageCard
       mx='auto'
@@ -95,19 +145,129 @@ export default function Claim() {
           again to compound rewards during that time.
         </>
       }
+      href="https://academy.horizonprotocol.com/horizon-genesis/staking-on-horizon-genesis/mint-burn-and-claim#claim"
     >
+      <Tooltip
+        title={<ToolTipContent title='Claimable Rewards' conetnt={
+          <>
+            These are the rewards available to be claimed now.
+          </>
+        } />}
+        placement='top'
+      >
+        <Typography sx={{
+        width: "100%",
+        textAlign: "center",
+        fontWeight: "bold",
+        fontSize: "12px",
+        mb: "10px",
+        color: COLOR.text,
+        letterSpacing: '1px',
+        cursor: "help"
+      }}>
+        CLAIMABLE REWARDS
+      </Typography>
+      </Tooltip>
       <Box display='flex' justifyContent='space-between'>
-        <RewardCard label='Staking Rewards' amount={stakingReward} />
         <RewardCard
-          label='Exchange Rewards'
-          amount={exchangeReward}
-          token={zAssets.zUSD}
-          disabled
-          help={
-            <>
-              Available when <br /> Horizon Exchange launches
-            </>
+          label={
+            <Tooltip
+              title={<ToolTipContent title='Staking Rewards' conetnt={<>This is the amount of escrowed HZN that is available to be claimed now.</>}/>}
+              placement='top'
+            >
+              <Box sx={{cursor: "help"}}>Staking Rewards</Box>
+            </Tooltip>
           }
+          amount={stakingReward}
+          token='HZN'
+          svg={<IconHZN />}
+        />
+        <RewardCard
+          label={
+            <Tooltip
+              title={<ToolTipContent title='Exchange Rewards' conetnt='This is the amount of zUSD that is available to be claimed now. zUSD rewards are generated from trades on Horizon Exchange' />}
+              placement='top'
+            >
+              <Box sx={{cursor: "help"}}>Exchange Rewards</Box>
+            </Tooltip>
+          }
+          height={{
+            xs:113,
+            md:123
+          }}
+          amount={exchangeReward}
+          token='zUSD'
+          svg={<IconzUSD />}
+        />
+      </Box>
+      <Tooltip
+        title={<ToolTipContent title='Upcoming Rewards' conetnt={
+          <>
+            The estimated amount of rewards for the upcoming reward period.
+          </>
+        } />}
+        placement='top'
+      >
+        <Typography sx={{
+        width: "100%",
+        textAlign: "center",
+        fontWeight: "bold",
+        fontSize: "12px",
+        mt: "20px",
+        mb: "10px",
+        color: COLOR.text,
+        letterSpacing: '1px',
+        cursor: "help"
+        }}>
+          UPCOMING REWARDS
+        </Typography>
+      </Tooltip>
+      <Box display='flex' justifyContent='space-between'>
+        <RewardCard
+          height={{
+            xs:83,
+            md:87
+          }}
+          upcoming={true}
+          label={
+            <Tooltip
+              title={<ToolTipContent title='Estimated Staking Rewards' conetnt='This is the estimated amount of Escrowed HZN rewards available in the upcoming reward period. This does not factor in any unclaimed rewards from the previous week.' />}
+              placement='top'
+            >
+              <Box sx={{cursor: "help"}}><Box
+                component="span"
+                sx={{
+                  fontSize: 7,
+                  color: COLOR.text,
+                  opacity: .5,
+                  cursor: "help"
+                }}>ESTIMATED</Box><br />STAKING REWARDS</Box>
+            </Tooltip>
+          }
+          amount={estimatedHZNRewards} />  
+        <RewardCard
+          height={{
+            xs:83,
+            md:87
+          }}
+          upcoming={true}
+          label={
+            <Tooltip
+              title={<ToolTipContent title='Accrued Exchange Rewards' conetnt='This is the amount of zUSD rewards earned from traders on Horizon Exchange during this period so far.' />}
+              placement='top'
+            >
+              <Box sx={{cursor: "help"}}><Box
+                component="span"
+                sx={{
+                  fontSize: 7,
+                  color: COLOR.text,
+                  opacity: .5,
+                  cursor: "help"
+                }}>ACCRUED</Box><br />EXCHANGE REWARDS</Box>
+            </Tooltip>
+          }
+          amount={upcomingExchangeReward}
+          svg={<IconzUSD />}
         />
       </Box>
       <Box mt={3}>
@@ -124,6 +284,18 @@ export default function Claim() {
           >
             Claim Now
           </PrimaryButton>
+        )}
+        {(!canClaim && stakingReward.gt(0)) && (
+          <Typography sx={{
+            mt: '10px',
+            textAlign: 'center',
+            color: '#FA2256',
+            fontSize: "12px",
+            letterSpacing: '0.5px',
+            lineHeight: "14px"
+          }}>
+            You need to restore your C-Ratio back to {targetCRatioPercent}%<br />
+            before you can claim your rewards.</Typography>
         )}
       </Box>
     </PageCard>

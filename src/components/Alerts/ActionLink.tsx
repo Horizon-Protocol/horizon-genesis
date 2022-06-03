@@ -1,6 +1,9 @@
 import { SyntheticEvent, useCallback, useMemo } from "react";
-import { Link, LinkProps } from "@mui/material";
-// import { ArrowRightAlt } from "@mui/icons-material";
+import { Box, Link, LinkProps } from "@mui/material";
+import iconRight from "@assets/wallets/right_icon.svg";
+import { ReactComponent as IconArrow } from "@assets/images/link-arrow.svg";
+import SvgIcon from "@mui/material/SvgIcon";
+
 import {
   Link as RouterLink,
   LinkProps as RouterLinkProps,
@@ -17,15 +20,18 @@ import { COLOR } from "@utils/theme/constants";
 
 type Props = {
   to?: string;
+  showArrow?: boolean;
   onClick?: () => void;
 } & Omit<RouterLinkProps, "to" | "onClick"> &
   Omit<LinkProps, "href" | "onClick">;
 
 export default function ActionLink({
   to,
+  showArrow = true,
   href,
   onClick,
   children,
+  color,
   ...props
 }: Props) {
   const handleClick = useCallback(
@@ -54,13 +60,24 @@ export default function ActionLink({
         alignItems: "center",
         fontSize: 10,
         fontWeight: 700,
-        color: COLOR.safe,
+        color: color == null ? COLOR.safe : color,
         cursor: "pointer",
       }}
       {...linkProps}
       {...props}
     >
-      {children} &#8594;
+      {children}{showArrow ? <SvgIcon
+        sx={{
+          width: '11px',
+          ml: '5px',
+          color: color == null ? COLOR.safe : color
+        }}
+      >
+        <IconArrow />
+      </SvgIcon> : <></>}
     </Link>
   );
 }
+
+
+

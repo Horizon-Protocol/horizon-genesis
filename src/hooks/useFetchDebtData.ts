@@ -1,5 +1,5 @@
 import { useCallback } from "react";
-import { BigNumber } from "ethers";
+import { BigNumber, Contract } from "ethers";
 import { useQuery } from "react-query";
 import { useResetAtom, useUpdateAtom } from "jotai/utils";
 import horizon from "@lib/horizon";
@@ -22,6 +22,7 @@ export default function useFetchDebtData() {
       contracts: { Synthetix, RewardEscrowV2, Liquidations },
       utils,
     } = horizon.js!;
+    // console.log("====contracts====",utils)
 
     const zUSDBytes = utils.formatBytes32String("zUSD");
     const [deadline, ...values] = (await Promise.all([
@@ -51,13 +52,13 @@ export default function useFetchDebtData() {
         escrowedReward,
       ],
     ]) {
-      console.log("===debtData", {
+      console.log("===debtData===", {
         currentCRatio: currentCRatio.toNumber(),
-        transferable,
-        debtBalance,
-        collateral,
-        issuableSynths,
-        balance,
+        transferable: transferable.toString(),
+        debtBalance: debtBalance.toString(),
+        collateral: collateral.toString(),
+        issuableSynths: issuableSynths.toString(),
+        balance: balance.toString(),
         escrowedReward: escrowedReward.toString(),
         liquidationDeadline,
       });

@@ -31,16 +31,16 @@ export const activeRatioAtom = atom((get) => {
   let stakersTotalDebt = 0;
   let stakersTotalCollateral = 0;
 
-  if (import.meta.env.DEV) {
-    console.log("===zAssets", {
-      holders,
-      hznPrice,
-      targetCRatio,
-      lastDebtLedgerEntry,
-      totalIssuedSynths,
-    });
-    // console.log(JSON.stringify(holders));
-  }
+  // if (import.meta.env.DEV) {
+  //   console.log("===zAssets", {
+  //     holders,
+  //     hznPrice,
+  //     targetCRatio,
+  //     lastDebtLedgerEntry,
+  //     totalIssuedSynths,
+  //   });
+  //   // console.log(JSON.stringify(holders));
+  // }
 
   for (const {
     collateral,
@@ -64,10 +64,10 @@ export const activeRatioAtom = atom((get) => {
   }
 
   if (import.meta.env.DEV) {
-    console.log({
-      stakersTotalDebt,
-      stakersTotalCollateral,
-    });
+    // console.log({
+    //   stakersTotalDebt,
+    //   stakersTotalCollateral,
+    // });
   }
 
   return stakersTotalDebt ? stakersTotalCollateral / stakersTotalDebt : null;
@@ -89,16 +89,16 @@ export const estimateAprAtom = atom((get) => {
 
   const activeRatio = get(activeRatioAtom);
 
-  if (import.meta.env.DEV) {
-    console.log("===apr:", {
-      issuedZUSDExclEth,
-      zUSDPrice,
-      hznPrice,
-      fees,
-      rewards,
-      activeRatio,
-    });
-  }
+  // if (import.meta.env.DEV) {
+  //   console.log("===apr:", {
+  //     issuedZUSDExclEth,
+  //     zUSDPrice,
+  //     hznPrice,
+  //     fees,
+  //     rewards,
+  //     activeRatio,
+  //   });
+  // }
 
   return activeRatio
     ? ((zUSDPrice * fees + hznPrice * rewards) * WEEKS_IN_YEAR) /

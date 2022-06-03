@@ -86,6 +86,12 @@ export const RegisterTokenConf: {
     decimals: 18,
     logo: "",
   },
+  [Token.ZUSD]: {
+    address: TokenAddresses[Token.ZUSD],
+    symbol: "zUSD",
+    decimals: 18,
+    logo: "",
+  },
 };
 
 /**

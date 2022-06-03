@@ -28,7 +28,7 @@ export default function useSetupHorizonLib() {
           provider,
           signer,
         });
-        console.log("signer", signer);
+        // console.log("signer", signer);
         window.horizon = horizon;
       } else if (rpcProvider) {
         horizon.setContractSettings({
@@ -44,7 +44,7 @@ export default function useSetupHorizonLib() {
       });
       setAppReady(!!horizon.js);
     } catch (e) {
-      console.log("====error", e);
+      // console.log("====error", e);
       enqueueSnackbar("Failed to initiate horizon.js sdk!", {
         variant: "error",
       });

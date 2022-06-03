@@ -7,6 +7,7 @@ declare global {
     color?: string;
     title?: string;
     description?: string | JSX.Element;
+    href?: string;
     headerBg?: string;
   }
 }
@@ -17,13 +18,17 @@ export default function PageCard({
   title,
   description,
   children,
+  href,
   ...props
 }: BoxProps & CardProps) {
   return (
     <Box
       width="100%"
       maxWidth={640}
-      border={1}
+      minWidth={{
+        md: 640,
+        sm: "100%",
+      }}
       borderRadius={2.5}
       borderColor={BORDER_COLOR}
       overflow="hidden"
@@ -35,7 +40,7 @@ export default function PageCard({
         justifyContent="center"
         overflow="hidden"
         position="relative"
-        bgcolor="#0C111D"
+        bgcolor="rgba(8,12,22,0.3)"
         sx={{
           backgroundRepeat: "no-repeat",
           backgroundSize: "auto 180px",
@@ -43,13 +48,21 @@ export default function PageCard({
         }}
       >
         <Box
+          display={headerBg ? 'block' : 'none'}
           component="img"
           src={headerBg}
           alt=""
           position="absolute"
-          height="100%"
-          left={-8}
-          top={-8}
+          height={{
+            xs: 96,
+            md: 181
+          }}
+          width={{
+            xs: 107,
+            md: 202
+          }}
+          left={-16}
+          top={-11}
           sx={{
             opacity: 0.1,
           }}
@@ -58,7 +71,12 @@ export default function PageCard({
           color={color}
           title={title}
           description={description}
-          maxWidth={420}
+          href={href}
+          //height={184}
+          width={{
+            sm: '100%',
+            md: 450
+          }}
           py={3}
         />
       </Box>
@@ -69,7 +87,7 @@ export default function PageCard({
         flexDirection="column"
         p={{
           xs: "24px 8px",
-          sm: "24px 56px 32px",
+          sm: "24px 82px 32px",
         }}
       >
         {children}

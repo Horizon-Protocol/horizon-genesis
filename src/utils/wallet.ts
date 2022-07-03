@@ -80,6 +80,12 @@ export const RegisterTokenConf: {
     decimals: 18,
     logo: "",
   },
+  [Token.ZBNB_BNB_LP]: {
+    address: TokenAddresses[Token.ZBNB_BNB_LP],
+    symbol: "zBNB-BNB",
+    decimals: 18,
+    logo: "",
+  },
   [Token.HZN]: {
     address: TokenAddresses[Token.HZN],
     symbol: "HZN",

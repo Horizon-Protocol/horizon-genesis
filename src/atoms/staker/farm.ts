@@ -35,6 +35,15 @@ export const Farms: FarmConf[] = [
     staking: StakingAddresses[Token.ZUSD_BUSD_LP],
   },
   {
+    name: Token.ZBNB_BNB_LP,
+    address: TokenAddresses[Token.ZBNB_BNB_LP],
+    token0: TokenAddresses[Token.BNB], // BNB
+    token0Name: "BNB",
+    token1: TokenAddresses[Token.ZBNB], // zBNB
+    token1Name: "zBNB",
+    staking: StakingAddresses[Token.ZBNB_BNB_LP],
+  },
+  {
     name: Token.PHB,
     address: TokenAddresses[Token.PHB],
     token0Name: "PHB",

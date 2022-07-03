@@ -7,6 +7,8 @@ declare global {
     BUSD: number;
     HZN: number;
     zUSD: number;
+    zBNB: number;
+    BNB: number;
   }>;
 }
 export const marketPricesAtom = atom<MarketPrices>({});

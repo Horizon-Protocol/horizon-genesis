@@ -9,6 +9,7 @@ import bnbBg from "@assets/bgs/bnb.png";
 import phbLogo from "@assets/tokens/phb.png";
 import bnbLogo from "@assets/tokens/bnb.png";
 import cakeLogo from "@assets/tokens/cake.png";
+import epsLogo from "@assets/tokens/eps.png";
 
 export const AllPools: StakeCardProps[] = [
   {
@@ -61,14 +62,17 @@ export const AllPools: StakeCardProps[] = [
   },
   {
     token: Token.HZN_BNB_LP,
-    bg: bnbBg,
+    bg: hznBg,
     color: "#D2884F",
     // open: false,
     // disabledActions: [Action.Stake],
     desc: (
       <>
         Stake HZN-BNB LPs to earn HZN. <br />
-        You can provide liquidity on Pancakeswap to get HZN-BNB LP tokens.
+        You can{" "}
+        <Link href={`https://pancakeswap.finance/add/BNB/${TOKEN_ADDRESS[56][Token.HZN]}`} sx={{color: COLOR.safe, textDecoration: "unset"}} target="_blank">
+        provide liquidity
+        </Link> on Pancakeswap to get HZN-BNB LP tokens.
       </>
     ),
     links: [
@@ -88,7 +92,10 @@ export const AllPools: StakeCardProps[] = [
     desc: (
       <>
         Stake zUSD-BUSD LPs to earn HZN. <br />
-        You can provide liquidity on Pancakeswap to get zUSD-BUSD LP tokens.
+        You can{" "}
+        <Link href={"https://pancakeswap.finance/add/0xe9e7CEA3DedcA5984780Bafc599bD69ADd087D56/0xF0186490B18CB74619816CfC7FeB51cdbe4ae7b9"} sx={{color: COLOR.safe, textDecoration: "unset"}} target="_blank">
+        provide liquidity
+        </Link> on Pancakeswap to get zUSD-BUSD LP tokens.
       </>
     ),
     links: [
@@ -96,6 +103,27 @@ export const AllPools: StakeCardProps[] = [
         href: "https://pancakeswap.finance/add/0xe9e7CEA3DedcA5984780Bafc599bD69ADd087D56/0xF0186490B18CB74619816CfC7FeB51cdbe4ae7b9",
         logo: cakeLogo,
         text: "GET zUSD-BUSD LP TOKENS",
+      },
+    ],
+  },
+  {
+    token: Token.ZBNB_BNB_LP,
+    bg: bnbBg,
+    color: "#D2884F",
+    desc: (
+      <>
+        Stake zBNB-BNB LPs to earn HZN. <br />
+        You can{" "}
+        <Link href={"https://ellipsis.finance/pool/0x51d5B7A71F807C950A45dD8b1400E83826Fc49F3"} sx={{color: COLOR.safe, textDecoration: "unset"}} target="_blank">
+        provide liquidity
+        </Link> on Ellipsis to get zBNB-BNB LP tokens.
+      </>
+    ),
+    links: [
+      {
+        href: "https://ellipsis.finance/pool/0x51d5B7A71F807C950A45dD8b1400E83826Fc49F3",
+        logo: epsLogo,
+        text: "GET zBNB-BNB LP TOKENS",
       },
     ],
   },

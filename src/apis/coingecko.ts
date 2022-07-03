@@ -32,6 +32,8 @@ export async function fetchMarketPrices(): Promise<MarketPrices> {
       BUSD: data["binance-usd"].usd,
       HZN: data["horizon-protocol"].usd,
       zUSD: data["zasset-zusd"].usd,
+      BNB: data["wbnb"].usd,
+      zBNB: data["wbnb"].usd
     };
   } catch (error) {
     return {};

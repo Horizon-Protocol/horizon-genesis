@@ -99,11 +99,11 @@ export default function AmountStake({
     setCurrentAction((prevAction) =>
       prevAction === action ? undefined : action
     );
-    setInput("0");
+    setInput("");
   }, []);
 
   const resetInput = useCallback(() => {
-    setInput("0");
+    setInput("");
   }, []);
 
   const handleStake = useCallback(
@@ -188,7 +188,8 @@ export default function AmountStake({
   ]);
 
   const { btnLabel, btnDisabled } = useMemo(() => {
-    const stakedNotStarted = currentAction === Action.Stake && !isRoundActive;
+    // const stakedNotStarted = currentAction === Action.Stake && !isRoundActive;
+    const stakedNotStarted = false;
     return {
       btnLabel: stakedNotStarted
         ? "Not Started"

@@ -13,7 +13,7 @@ import { useAtomValue } from "jotai/utils";
 import { detailAtom } from "@atoms/wallet";
 import { userFarmInfoFamilyAtom } from "@atoms/staker/farm";
 import defaultTheme from "@utils/theme";
-import { ConnectorNames, TokenName } from "@utils/constants";
+import { ConnectorNames, TokenName, Token, DEPLOY_DATES } from "@utils/constants";
 import { registerToken, RegisterTokenConf } from "@utils/wallet";
 import useWallet from "@hooks/useWallet";
 import ExternalLink from "@components/Staker/ExternalLink";
@@ -23,6 +23,7 @@ import Pending from "./Pending";
 import Stats from "./Stats";
 import Earned from "./Earned";
 import AmountStake from "./AmountStake";
+import dayjs from "dayjs";
 
 interface LinkProps {
   href: string;
@@ -72,6 +73,7 @@ export default function StakeCard({
       !!RegisterTokenConf[token],
     [token, wallet?.connectorId]
   );
+  const isReadyToStartBnbPool = (new Date().getTime() / 1000) > DEPLOY_DATES[Token.ZBNB_BNB_LP];
 
   useEffect(() => {
     if (finished) {
@@ -93,6 +95,7 @@ export default function StakeCard({
     <Card
       variant="outlined"
       sx={{
+        position: 'relative',
         maxWidth: 340,
         flex: "0 0 340px",
         bgcolor: COLOR.bgColor,
@@ -102,12 +105,32 @@ export default function StakeCard({
         borderRadius: 2.5,
         border: 0,
         backgroundImage: `url(${bg})`,
+        overflow: "visible",
         ...sx,
       }}
       {...props}
     >
+      {TokenName[token] === "zBNB-BNB" && !isReadyToStartBnbPool && (<Typography 
+        color={COLOR.text}
+        sx={{
+          position: "absolute",
+          top: -10,
+          left: 0,
+          borderRadius: "4px",
+          p: "2px 10px 2px 10px",
+          ml: "10px",
+          // width: "100%",
+          color: COLOR.safe,
+          fontSize: 14,
+          fontWeight: 400,
+          letterSpacing: "0.5px",
+          background: COLOR.bg,
+        }}>
+           Pool Begins: {dayjs(new Date(DEPLOY_DATES[Token.ZBNB_BNB_LP] * 1000)).format("ddd, MMM DD, YYYY ~HH:mm")}
+      </Typography>)}
+      
       <CardHeader
-        title={cardTitle || `Stake ${TokenName[token]}`}
+        title={cardTitle || `STAKE ${TokenName[token]}`}
         subheader={
           <Typography
             color={COLOR.text}
@@ -130,7 +153,7 @@ export default function StakeCard({
               sx={{
                 ml: 0.5,
                 position: "absolute",
-                top: 18,
+                top: 39,
                 right: 18,
                 display: "inline-block",
                 width: 18,
@@ -143,7 +166,7 @@ export default function StakeCard({
                 }
               }}
             />
-          )
+          ) 
         }
         sx={{
           pt: 4,
@@ -152,7 +175,6 @@ export default function StakeCard({
           ".MuiCardHeader-title": {
             mb: 1,
             letterSpacing: "1px",
-            textTransform: "uppercase",
           },
         }}
       />

@@ -59,8 +59,8 @@ export default function AmountInput({
       <Box
         display="flex"
         alignItems="center"
-        borderRadius={2.5}
-        border={1}
+        borderRadius={1.5}
+        bgcolor="rgba(16, 38, 55, 0.3)"
         borderColor="divider"
         overflow="hidden"
       >
@@ -69,11 +69,13 @@ export default function AmountInput({
           padding={1.5}
           display=" inline-flex"
           alignItems="center"
+          height="51px"
+          bgcolor="rgba(16, 38, 55, 0.3)"
         >
           {logo ? (
             <Box component="img" src={logo} alt={""} mr={1} height={22} />
           ) : null}
-          <Typography>{TokenName[token]}</Typography>
+          <Typography color={COLOR.text}>{TokenName[token]}</Typography>
         </Box>
         <NumberFormat
           value={input}
@@ -90,9 +92,11 @@ export default function AmountInput({
             flex: 1,
             px: 1,
             py: 0.5,
-            borderLeft: 1,
+            borderLeft: 0,
             borderColor: "divider",
             fontSize: 24,
+            fontWeight: 700,
+            color: "rgba(180, 224, 255, 1)"
           }}
         />
         <Button
@@ -101,6 +105,7 @@ export default function AmountInput({
             minWidth: 48,
             fontWeight: 700,
             color: COLOR.text,
+            height: "51px",
           }}
           onClick={setMax}
         >
@@ -108,14 +113,15 @@ export default function AmountInput({
         </Button>
       </Box>
       <Box display="flex" justifyContent="space-between" mb={2.5}>
-        <Typography variant="overline" color="textSecondary">
-          {lockDownTime && `Lock: ${lockDownTime}`}
+        <Typography variant="overline" fontSize={10} color="rgb(255, 165, 57)" letterSpacing={"0.5px"} fontWeight={700}>
+          {lockDownTime && btnLabel === "Stake" && `Lock: ${lockDownTime}`}
         </Typography>
         <Typography
           variant="overline"
           color={amount.gt(max) ? "error" : COLOR.text}
           fontSize={10}
           fontWeight={700}
+          letterSpacing="0.5px"
         >
           {formatNumber(max)} Available
         </Typography>

@@ -6,10 +6,11 @@ import { BigNumber } from "ethers";
 import { Call, Contract } from "@horizon-protocol/ethcall";
 import AbiErc20 from "@contracts/abis/Erc20.json";
 import AbiHZN from "@contracts/abis/HZN.json";
+import AbiVyper from "@contracts/abis/Vyper_contract.json";
 import AbiStaking from "@contracts/abis/Staking.json";
 import type { Erc20 } from "@contracts/typings/Erc20";
 import type { Staking } from "@contracts/typings/Staking";
-import { HZN } from "@contracts/typings";
+import { HZN, Vyper } from "@contracts/typings";
 import useWallet from "@hooks/useWallet";
 import { Farms, farmsAtom, FarmConf, FarmData } from "@atoms/staker/farm";
 import { CONTRACT } from "@utils/queryKeys";
@@ -138,18 +139,35 @@ function getFarmCalls(farm: FarmConf, account: string): Call[] {
   ];
 
   if (farm.token0 && farm.token1) {
-    const token0Contract = new Contract(
-      farm.token0,
-      AbiErc20
-    ) as unknown as Erc20;
-    const token1Contract = new Contract(
-      farm.token1,
-      AbiErc20
-    ) as unknown as Erc20;
-    calls.push(
-      token0Contract?.balanceOf(farm.address),
-      token1Contract?.balanceOf(farm.address)
-    );
+    let token0Contract;
+    let token1Contract;
+    if(farm.name === Token.ZBNB_BNB_LP) {
+      token0Contract = new Contract(
+        farm.token0,
+        AbiVyper
+      ) as unknown as Vyper;
+      token1Contract = new Contract(
+        farm.token0,
+        AbiVyper
+      ) as unknown as Vyper;
+      calls.push(
+        token0Contract?.balances(0),
+        token1Contract?.balances(1)
+      );
+    } else {
+      token0Contract = new Contract(
+        farm.token0,
+        AbiErc20
+      ) as unknown as Erc20;
+      token1Contract = new Contract(
+        farm.token1,
+        AbiErc20
+      ) as unknown as Erc20;
+      calls.push(
+        token0Contract?.balanceOf(farm.address),
+        token1Contract?.balanceOf(farm.address)
+      );
+    }
   }
 
   if (account) {
@@ -161,6 +179,6 @@ function getFarmCalls(farm: FarmConf, account: string): Call[] {
       stakingContract.earned(account) // user staked
     );
   }
-
+  
   return calls as unknown as Call[];
 }

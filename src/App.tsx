@@ -47,6 +47,8 @@ import useSuspensionStatus from "@hooks/useSuspensionStatus";
 import GetHZNDialog from "@components/MobileFooter/MobileMenu/GetHZNDialog";
 import useEstimatedStakingRewards from "@hooks/useEstimatedStakingRewards";
 import DevWatchTool from "@components/DevWatchTool";
+import useFetchPublicContractData from "@hooks/useFetchPublicContractData";
+import useFetchPrivateContractData from "@hooks/useFetchPrivateContractData";
 
 const AppDisabled = !!import.meta.env.VITE_APP_DISABLED;
 
@@ -70,17 +72,29 @@ function App() {
   const [expanded, setExpanded] = useState(false);
 
   useSetupHorizonLib();
-  useEstimatedStakingRewards();
-  useSuspensionStatus();
+
+  //personal
   useQueryDebt();
-  useFetchAppData();
-  useFetchDebtData();
-  useFetchZAssetsBalance();
-  useFetchFeePool();
-  useFetchRewards();
-  useFetchHorizonData();
+  useEstimatedStakingRewards();
   useEscrowDataQuery();
-  useQueryGlobalDebt();
+  useFetchZAssetsBalance();
+  // useFetchDebtData(); //combined
+  useFetchFeePool();      
+  // useFetchRewards(); //combined
+
+    //public
+    // useSuspensionStatus();  //combined
+
+    useQueryGlobalDebt();   //subgraph
+    useFetchHorizonData();  //top 1000 holders
+
+  
+    // useFetchAppData();  //combined  - some call can't be combined, parameters problem left [totalIssuedSynthsExcludeOtherCollateral]
+
+
+  //combination contract
+  useFetchPublicContractData()
+  // useFetchPrivateContractData()
 
   const refresh = useRefresh();
 

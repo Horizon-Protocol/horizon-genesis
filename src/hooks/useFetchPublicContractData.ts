@@ -153,7 +153,7 @@ export default function useFetchPublicContractData() {
             systemSuspension,
             issuanceSuspension
         ]) {
-            if (import.meta.env.DEV) {
+            // if (import.meta.env.DEV) {
                 console.log("====AppData====", {
                     lastDebtLedgerEntry: lastDebtLedgerEntry.toString(),
                     totalSupply: totalSupply.toString(),
@@ -163,7 +163,7 @@ export default function useFetchPublicContractData() {
                     systemSuspension,
                     issuanceSuspension
                 });
-            }
+            // }
 
             //AppData
             setLastDebtLedgerEntry(lastDebtLedgerEntry);

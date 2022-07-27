@@ -23,7 +23,7 @@ export default function useFetchDebtData() {
       utils,
     } = horizon.js!;
     // console.log("====contracts====",utils)
-
+    
     const zUSDBytes = utils.formatBytes32String("zUSD");
     const [deadline, ...values] = (await Promise.all([
       Liquidations.getLiquidationDeadlineForAccount(account),

@@ -78,7 +78,7 @@ function App() {
   useEstimatedStakingRewards();
   useEscrowDataQuery();
   useFetchZAssetsBalance();
-  // useFetchDebtData(); //combined
+  useFetchDebtData(); //combined
   useFetchFeePool();      
   // useFetchRewards(); //combined
 

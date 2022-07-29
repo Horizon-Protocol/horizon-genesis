@@ -52,7 +52,7 @@ export default function useFetchDebtData() {
         escrowedReward,
       ],
     ]) {
-      console.log("===debtData===", {
+      console.log("===useFetchDebtData===", {
         currentCRatio: currentCRatio.toNumber(),
         transferable: transferable.toString(),
         debtBalance: debtBalance.toString(),

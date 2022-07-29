@@ -49,6 +49,7 @@ import useEstimatedStakingRewards from "@hooks/useEstimatedStakingRewards";
 import DevWatchTool from "@components/DevWatchTool";
 import useFetchPublicContractData from "@hooks/useFetchPublicContractData";
 import useFetchPrivateContractData from "@hooks/useFetchPrivateContractData";
+import useFetchExchangeRates from "@hooks/useFetchExchangeRates";
 
 const AppDisabled = !!import.meta.env.VITE_APP_DISABLED;
 
@@ -74,27 +75,25 @@ function App() {
   useSetupHorizonLib();
 
   //personal
-  useQueryDebt();
   useEstimatedStakingRewards();
   useEscrowDataQuery();
-  useFetchZAssetsBalance();
-  useFetchDebtData(); //combined
-  useFetchFeePool();      
-  // useFetchRewards(); //combined
 
-    //public
-    // useSuspensionStatus();  //combined
+  //no need to combine
+  useQueryDebt();
+  useFetchExchangeRates();
+  useFetchFeePool(); 
+  useQueryGlobalDebt();   
+  useFetchHorizonData();  
 
-    useQueryGlobalDebt();   //subgraph
-    useFetchHorizonData();  //top 1000 holders
+  useFetchZAssetsBalance();  //combine all 22 zasset calls
 
-  
-    // useFetchAppData();  //combined  - some call can't be combined, parameters problem left [totalIssuedSynthsExcludeOtherCollateral]
-
-
-  //combination contract
+  // useSuspensionStatus();  //combined
+  // useFetchAppData();  //combined
   useFetchPublicContractData()
-  // useFetchPrivateContractData()
+
+  // useFetchRewards(); //combined
+  // useFetchDebtData(); //combined
+  useFetchPrivateContractData()
 
   const refresh = useRefresh();
 
@@ -337,7 +336,7 @@ function App() {
       </Box>
       <WalletsDialog />
       <GetHZNDialog />
-      {/* <DevWatchTool /> */}
+      <DevWatchTool />
     </>
   );
 }

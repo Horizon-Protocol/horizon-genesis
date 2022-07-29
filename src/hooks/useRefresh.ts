@@ -1,4 +1,4 @@
-import { CONTRACT, PUBLIC, EARN, WALLET } from "@utils/queryKeys";
+import { CONTRACT, PUBLIC, EARN, WALLET, CONTRACT_ALL_PUBLIC, CONTRACT_ALL_PRIVATE } from "@utils/queryKeys";
 import { useCallback, useState, useEffect } from "react";
 import { useQueryClient, useIsFetching } from "react-query";
 import useWallet from "./useWallet";
@@ -44,8 +44,10 @@ export function useIsRefrshing() {
   const isEarnFetching = useIsFetching(EARN);
   const isContractFetching = useIsFetching(CONTRACT);
   const isUserFetching = useIsFetching(WALLET);
+  const isCombinePublic = useIsFetching(CONTRACT_ALL_PUBLIC);
+  const isCombinePrivate = useIsFetching(CONTRACT_ALL_PRIVATE);
 
-  const refreshing = isEarnFetching || isContractFetching || isUserFetching;
+  const refreshing = isEarnFetching || isContractFetching || isUserFetching || isCombinePublic || isCombinePrivate;
 
   const [time, setTime] = useState(getTimeNow());
 

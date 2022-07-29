@@ -18,5 +18,8 @@ export const WALLET = "WALLET";
 export const GRAPH_DEBT = "GRAPH_DEBT"
 
 // query filters
-export const filterContract = [CONTRACT];
-export const filterPublic = [CONTRACT, PUBLIC];
+export const CONTRACT_ALL_PRIVATE = "CONTRACT_ALL_PRIVATE";
+export const CONTRACT_ALL_PUBLIC = "CONTRACT_ALL_PUBLIC";
+
+
+

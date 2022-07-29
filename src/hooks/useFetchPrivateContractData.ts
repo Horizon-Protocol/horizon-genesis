@@ -1,32 +1,32 @@
 import { useCallback, useMemo } from "react";
 import { useQuery, QueryFunction } from "react-query";
-import { useUpdateAtom } from "jotai/utils";
-import { utils, BigNumber } from "ethers";
+import { useResetAtom, useUpdateAtom } from "jotai/utils";
+import { utils, BigNumber, ethers } from "ethers";
 import { zipWith } from "lodash";
 import { CurrencyKey } from "@horizon-protocol/contracts-interface";
 import { Contract } from "@horizon-protocol/ethcall";
-import {
-    appDataReadyAtom,
-    lastDebtLedgerEntryAtom,
-    totalSupplyAtom,
-    totalIssuedZUSDExclEthAtom,
-    targetRatioAtom,
-    liquidationRatioAtom,
-    suspensionStatusAtom,
-} from "@atoms/app";
-import { CONTRACT } from "@utils/queryKeys";
-import { etherToBN, toBN } from "@utils/number";
+import { CONTRACT, CONTRACT_ALL_PRIVATE } from "@utils/queryKeys";
+import { etherToBN, toBN, zeroBN } from "@utils/number";
 import useHorizonJs from "./useHorizonJs";
 import useGetEthCallProvider from "./staker/useGetEthCallProvider";
 import horizon from "@lib/horizon";
 import useWallet from "./useWallet";
+import { debtAtom, resetDebtAtom } from "@atoms/debt";
+import useDisconnected from "./useDisconnected";
+import { rewardsAtom } from "@atoms/feePool";
 
 export default function useFetchPrivateContractData() {
     const { account } = useWallet();
-
     const horizonJs = useHorizonJs();
-
     const getProvider = useGetEthCallProvider();
+
+    const setDebtData = useUpdateAtom(debtAtom);
+    const resetDebtData = useResetAtom(debtAtom);
+    useDisconnected(resetDebtData);
+
+    const setRewards = useUpdateAtom(rewardsAtom);
+    const resetRewards = useResetAtom(rewardsAtom);
+    useDisconnected(resetRewards);
 
     const contractMap = useMemo(() => {
         if (!horizonJs) {
@@ -81,15 +81,20 @@ export default function useFetchPrivateContractData() {
         } = horizon.js!;
 
         const mixCalls = [
-            //useFetchDebtData
+            /* ----- useFetchDebtData -----*/
             contractMap!.Liquidations.getLiquidationDeadlineForAccount(account),
             contractMap!.HZN.collateral(account),
             contractMap!.HZN.collateralisationRatio(account),
             contractMap!.HZN.transferableSynthetix(account),
             contractMap!.HZN.debtBalanceOf(account, utils.formatBytes32String("zUSD")),
-            // contractMap!.HZN.maxIssuableSynths(account),
+            contractMap!.HZN.maxIssuableSynths(account),
             contractMap!.HZN.balanceOf(account),
             contractMap!.RewardEscrowV2.balanceOf(account),
+
+            /* ----- useFetchRewards -----*/
+            contractMap!.FeePool.isFeesClaimable(account),
+            contractMap!.FeePool.feesAvailable(account),
+            contractMap!.FeePool.feesByPeriod(account)
         ];
 
         const ethcallProvider = await getProvider();
@@ -97,44 +102,50 @@ export default function useFetchPrivateContractData() {
         const res = (await ethcallProvider.all(mixCalls)) as unknown[];
 
         const [
-            //AppData
-            liquidationDeadline, 
-            collateral, 
-            currentCRatio, 
-            transferable, 
-            debtBalance, 
-            // issuableSynths, 
-            balance, 
+            /* ----- useFetchDebtData -----*/
+            liquidationDeadline,
+            collateral,
+            currentCRatio,
+            transferable,
+            debtBalance,
+            issuableSynths,
+            balance,
             escrowedReward,
+            /* ----- useFetchRewards -----*/
+            claimable,
+            availableFees,
+            periodFees
         ] = res as [
+            /* ----- useFetchDebtData -----*/
+            BigNumber,
+            BigNumber,
+            BigNumber,
+            BigNumber,
+            BigNumber,
             BigNumber, 
-            BigNumber, 
-            BigNumber, 
-            BigNumber, 
-            BigNumber, 
-            // BigNumber, 
-            BigNumber, 
-            BigNumber
+            BigNumber,
+            BigNumber,
+            /* ----- useFetchRewards -----*/
+            boolean,
+            [ethers.BigNumber, ethers.BigNumber],
+            [[ethers.BigNumber, ethers.BigNumber], [ethers.BigNumber, ethers.BigNumber]]
         ];
         return [
-             //useFetchDebtData
-            //  liquidationDeadline: liquidationDeadline.toNumber(),
-            //  collateral: etherToBN(collateral),
-            //  currentCRatio: etherToBN(currentCRatio),
-            //  transferable: etherToBN(transferable),
-            //  debtBalance: etherToBN(debtBalance),
-            //  issuableSynths: etherToBN(issuableSynths),
-            //  balance: etherToBN(balance),
-            //  escrowedReward: etherToBN(escrowedReward)
-
-             liquidationDeadline.toNumber(),
-             etherToBN(collateral),
-             etherToBN(currentCRatio),
-             etherToBN(transferable),
-             etherToBN(debtBalance),
-            //  etherToBN(issuableSynths),
-             etherToBN(balance),
-             etherToBN(escrowedReward)
+            /* ----- useFetchDebtData -----*/
+            liquidationDeadline.toNumber(),
+            etherToBN(collateral),
+            etherToBN(currentCRatio),
+            etherToBN(transferable),
+            etherToBN(debtBalance),
+             etherToBN(issuableSynths),
+            etherToBN(balance),
+            etherToBN(escrowedReward),
+            /* ----- useFetchRewards -----*/
+            claimable,
+            etherToBN(availableFees[0]),
+            etherToBN(availableFees[1]),
+            etherToBN(periodFees[0][0]),
+            etherToBN(periodFees[0][1]),
         ]
     }, [
         contractMap,
@@ -142,34 +153,62 @@ export default function useFetchPrivateContractData() {
         account
     ]);
 
-    useQuery(CONTRACT, fetcher, {
+    useQuery([CONTRACT_ALL_PRIVATE], fetcher, {
         enabled: !!contractMap,
         onSuccess([
-            //AppData
-            liquidationDeadline, 
-            collateral, 
-            currentCRatio, 
-            transferable, 
-            debtBalance, 
-            // issuableSynths,
-            balance, 
+            /* ----- useFetchDebtData -----*/
+            liquidationDeadline,
+            collateral,
+            currentCRatio,
+            transferable,
+            debtBalance,
+            issuableSynths,
+            balance,
             escrowedReward,
+            /* ----- useFetchRewards -----*/
+            claimable,
+            exchangeReward,
+            stakingReward,
+            upcomingExchangeReward,
+            upcomingStakingReward,
         ]) {
-            // if (import.meta.env.DEV) {
-                console.log("====PrivateContract====", {
-                    liquidationDeadline,
-                    collateral,
-                    currentCRatio,
-                    transferable, 
-                    debtBalance, 
-                    // issuableSynths,
-                    balance, 
-                    escrowedReward: escrowedReward.toString(),
-                });
-            // }
+            // console.log("====useFetchDebtData&useFetchRewards Combine====", {
+            //     currentCRatio: currentCRatio.toNumber(),
+            //     transferable: transferable.toString(),
+            //     debtBalance: debtBalance.toString(),
+            //     collateral: collateral.toString(),
+            //     issuableSynths: issuableSynths.toString(),
+            //     balance: balance.toString(),
+            //     escrowedReward: escrowedReward.toString(),
+            //     liquidationDeadline,
+
+            //     claimable:claimable,
+            //     stakingReward:stakingReward.toNumber(),
+            //     exchangeReward:exchangeReward.toNumber(),
+            //     upcomingExchangeReward: upcomingExchangeReward.toNumber(),
+            //     upcomingStakingReward: upcomingStakingReward.toNumber()
+            // });
+
+            setDebtData({
+                currentCRatio,
+                transferable,
+                debtBalance,
+                collateral,
+                issuableSynths,
+                balance,
+                escrowedReward,
+                liquidationDeadline,
+              });
+              setRewards({
+                claimable,
+                stakingReward,
+                exchangeReward,
+                upcomingExchangeReward,
+                upcomingStakingReward
+              });
         },
         onError(err) {
-            console.log("====AppDataError====", err)
+            // console.log("====AppDataError====", err)
         },
     });
 }

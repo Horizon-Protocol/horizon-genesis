@@ -1,7 +1,7 @@
 import { useCallback, useMemo } from "react";
 import { useQuery, QueryFunction } from "react-query";
 import { useUpdateAtom } from "jotai/utils";
-import { utils, BigNumber } from "ethers";
+import { utils, BigNumber, BigNumberish } from "ethers";
 import { zipWith } from "lodash";
 import { CurrencyKey } from "@horizon-protocol/contracts-interface";
 import { Contract } from "@horizon-protocol/ethcall";
@@ -14,11 +14,23 @@ import {
     liquidationRatioAtom,
     suspensionStatusAtom,
 } from "@atoms/app";
-import { CONTRACT } from "@utils/queryKeys";
+import { CONTRACT, CONTRACT_ALL_PUBLIC } from "@utils/queryKeys";
 import { etherToBN, toBN } from "@utils/number";
 import useHorizonJs from "./useHorizonJs";
 import useGetEthCallProvider from "./staker/useGetEthCallProvider";
 import horizon from "@lib/horizon";
+import useFetchExchangeRates from "./useFetchExchangeRates";
+import { CryptoCurrency, ParitalRates, iStandardSynth, synthToAsset, RateKey } from "@utils/currencies";
+import { ratesAtom } from "@atoms/exchangeRates";
+
+
+type CurrencyRate = BigNumberish;
+type SynthRatesTuple = [string[], CurrencyRate[]];
+
+// Additional commonly used currencies to fetch, besides the one returned by the SynthUtil.synthsRates
+const additionalCurrencies = [CryptoCurrency.HZN].map(
+  utils.formatBytes32String
+);
 
 export default function useFetchPublicContractData() {
     const horizonJs = useHorizonJs();
@@ -77,12 +89,16 @@ export default function useFetchPublicContractData() {
 
     const setSuspensionStatus = useUpdateAtom(suspensionStatusAtom)
 
+    const setRates = useUpdateAtom(ratesAtom);
+
     const fetcher = useCallback<QueryFunction>(async () => {
         const {
             utils,
+            contracts: { SynthUtil, ExchangeRates },
         } = horizon.js!;
 
         const mixCalls = [
+            /*---- useFetchAppData ----*/
             contractMap!.SynthetixState.lastDebtLedgerEntry(),
             contractMap!.HZN.totalSupply(),
             contractMap!.SystemSettings.issuanceRatio(),
@@ -90,9 +106,12 @@ export default function useFetchPublicContractData() {
             contractMap!.HZN.totalIssuedSynthsExcludeOtherCollateral(utils.formatBytes32String("zUSD"),
                 // {blockTag: "latest"}
             ),
-            //suspension
+            /*---- useSuspensionStatus ----*/
             contractMap!.SystemStatus.systemSuspension(),
             contractMap!.SystemStatus.issuanceSuspension(),
+            /*----  useFetchExchangeRates ----*/
+            // SynthUtil.synthsRates(),
+            // ExchangeRates.ratesForCurrencies(additionalCurrencies),
         ];
 
         const ethcallProvider = await getProvider();
@@ -100,35 +119,45 @@ export default function useFetchPublicContractData() {
         const res = (await ethcallProvider.all(mixCalls)) as unknown[];
 
         const [
-            //AppData
+            /*---- useFetchAppData ----*/
             lastDebtLedgerEntry,
             totalSupply,
             targetRatio,
             liquidationRatio,
             totalIssuedZUSDExclEth,
-            //suspension
+            /*---- useSuspensionStatus ----*/
             systemSuspension,
-            issuanceSuspension
+            issuanceSuspension,
+            /*----  useFetchExchangeRates ----*/
+            // synthsRates, 
+            // ratesForCurrencies
         ] = res as [
+            /*---- useFetchAppData ----*/
             BigNumber,
             BigNumber,
             BigNumber,
             BigNumber,
             BigNumber,
-
+            /*---- useSuspensionStatus ----*/
             any,
-            any
+            any,
+            /*----  useFetchExchangeRates ----*/
+            // SynthRatesTuple, 
+            // CurrencyRate[]
         ];
+
         return [
-            //AppData
+            /*---- useFetchAppData ----*/
             toBN(utils.formatUnits(lastDebtLedgerEntry, 27)),
             etherToBN(totalSupply),
             etherToBN(targetRatio),
             etherToBN(liquidationRatio),
             etherToBN(totalIssuedZUSDExclEth),
-            //suspension
+            /*---- useSuspensionStatus ----*/
             systemSuspension,
-            issuanceSuspension
+            issuanceSuspension,
+            /*----  useFetchExchangeRates ----*/
+            // exchangeRates
         ]
     }, [
         contractMap,
@@ -140,43 +169,48 @@ export default function useFetchPublicContractData() {
         setLiquidationRatio
     ]);
 
-    useQuery(CONTRACT, fetcher, {
+    useQuery([CONTRACT_ALL_PUBLIC], fetcher, {
         enabled: !!contractMap,
         onSuccess([
-            //AppData
+            /*---- useFetchAppData ----*/
             lastDebtLedgerEntry,
             totalSupply,
             targetRatio,
             liquidationRatio,
             totalIssuedZUSDExclEth,
-            //suspension
+            /*---- useSuspensionStatus ----*/
             systemSuspension,
-            issuanceSuspension
+            issuanceSuspension,
+            /*----  useFetchExchangeRates ----*/
+            // exchangeRates
         ]) {
             // if (import.meta.env.DEV) {
-                console.log("====AppData====", {
-                    lastDebtLedgerEntry: lastDebtLedgerEntry.toString(),
-                    totalSupply: totalSupply.toString(),
-                    targetRatio: targetRatio.toString(),
-                    liquidationRatio: liquidationRatio.toString(),
-                    totalIssuedZUSDExclEth: totalIssuedZUSDExclEth.toString(),
-                    systemSuspension,
-                    issuanceSuspension
-                });
+                // console.log("====useFetchAppData&useSuspensionStatus Combine====", {
+                //     lastDebtLedgerEntry: lastDebtLedgerEntry.toString(),
+                //     totalSupply: totalSupply.toString(),
+                //     targetRatio: targetRatio.toString(),
+                //     liquidationRatio: liquidationRatio.toString(),
+                //     totalIssuedZUSDExclEth: totalIssuedZUSDExclEth.toString(),
+                //     systemSuspension,
+                //     issuanceSuspension,
+                //     // exchangeRates
+                // });
             // }
 
-            //AppData
+            /*---- useFetchAppData ----*/
             setLastDebtLedgerEntry(lastDebtLedgerEntry);
             setTotalSupply(totalSupply);
             setTargetCRatio(targetRatio);
             setLiquidationRatio(liquidationRatio);
             setTotalIssuedZUSDExclEth(totalIssuedZUSDExclEth);
-            //suspension
+            /*---- useSuspensionStatus ----*/
             setSuspensionStatus({
                 status: systemSuspension[0] || issuanceSuspension[0],
                 reason: systemSuspension[1] === issuanceSuspension[1] ? systemSuspension[1] : 0
             })
-
+            /*----  useFetchExchangeRates ----*/
+            // setRates(exchangeRates);
+            /*----  appready ----*/
             setAppDataReady(true);
         },
         onError(err) {

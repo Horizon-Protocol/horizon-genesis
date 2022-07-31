@@ -20,7 +20,7 @@ export default function useFetchPrivateContractData() {
     const horizonJs = useHorizonJs();
     const getProvider = useGetEthCallProvider();
 
-    const setDebtData = useUpdateAtom(debtAtom);
+    // const setDebtData = useUpdateAtom(debtAtom);
     const resetDebtData = useResetAtom(debtAtom);
     useDisconnected(resetDebtData);
 
@@ -82,15 +82,14 @@ export default function useFetchPrivateContractData() {
 
         const mixCalls = [
             /* ----- useFetchDebtData -----*/
-            contractMap!.Liquidations.getLiquidationDeadlineForAccount(account),
-            contractMap!.HZN.collateral(account),
-            contractMap!.HZN.collateralisationRatio(account),
-            contractMap!.HZN.transferableSynthetix(account),
-            contractMap!.HZN.debtBalanceOf(account, utils.formatBytes32String("zUSD")),
-            contractMap!.HZN.maxIssuableSynths(account),
-            contractMap!.HZN.balanceOf(account),
-            contractMap!.RewardEscrowV2.balanceOf(account),
-
+            // contractMap!.Liquidations.getLiquidationDeadlineForAccount(account), //useful
+            // contractMap!.HZN.collateral(account),    //useful
+            // contractMap!.HZN.collateralisationRatio(account),
+            // contractMap!.HZN.transferableSynthetix(account),
+            // contractMap!.HZN.debtBalanceOf(account, utils.formatBytes32String("zUSD")),
+            // contractMap!.HZN.maxIssuableSynths(account),
+            // contractMap!.HZN.balanceOf(account),
+            // contractMap!.RewardEscrowV2.balanceOf(account),
             /* ----- useFetchRewards -----*/
             contractMap!.FeePool.isFeesClaimable(account),
             contractMap!.FeePool.feesAvailable(account),
@@ -103,28 +102,28 @@ export default function useFetchPrivateContractData() {
 
         const [
             /* ----- useFetchDebtData -----*/
-            liquidationDeadline,
-            collateral,
-            currentCRatio,
-            transferable,
-            debtBalance,
-            issuableSynths,
-            balance,
-            escrowedReward,
+            // liquidationDeadline,
+            // collateral,
+            // currentCRatio,
+            // transferable,
+            // debtBalance,
+            // issuableSynths,
+            // balance,
+            // escrowedReward,
             /* ----- useFetchRewards -----*/
             claimable,
             availableFees,
             periodFees
         ] = res as [
             /* ----- useFetchDebtData -----*/
-            BigNumber,
-            BigNumber,
-            BigNumber,
-            BigNumber,
-            BigNumber,
-            BigNumber, 
-            BigNumber,
-            BigNumber,
+            // BigNumber,
+            // BigNumber,
+            // BigNumber,
+            // BigNumber,
+            // BigNumber,
+            // BigNumber, 
+            // BigNumber,
+            // BigNumber,
             /* ----- useFetchRewards -----*/
             boolean,
             [ethers.BigNumber, ethers.BigNumber],
@@ -132,14 +131,14 @@ export default function useFetchPrivateContractData() {
         ];
         return [
             /* ----- useFetchDebtData -----*/
-            liquidationDeadline.toNumber(),
-            etherToBN(collateral),
-            etherToBN(currentCRatio),
-            etherToBN(transferable),
-            etherToBN(debtBalance),
-             etherToBN(issuableSynths),
-            etherToBN(balance),
-            etherToBN(escrowedReward),
+            // liquidationDeadline.toNumber(),
+            // etherToBN(collateral),
+            // etherToBN(currentCRatio),
+            // etherToBN(transferable),
+            // etherToBN(debtBalance),
+            //  etherToBN(issuableSynths),
+            // etherToBN(balance),
+            // etherToBN(escrowedReward),
             /* ----- useFetchRewards -----*/
             claimable,
             etherToBN(availableFees[0]),
@@ -157,14 +156,14 @@ export default function useFetchPrivateContractData() {
         enabled: !!contractMap,
         onSuccess([
             /* ----- useFetchDebtData -----*/
-            liquidationDeadline,
-            collateral,
-            currentCRatio,
-            transferable,
-            debtBalance,
-            issuableSynths,
-            balance,
-            escrowedReward,
+            // liquidationDeadline,
+            // collateral,
+            // currentCRatio,
+            // transferable,
+            // debtBalance,
+            // issuableSynths,
+            // balance,
+            // escrowedReward,
             /* ----- useFetchRewards -----*/
             claimable,
             exchangeReward,
@@ -189,16 +188,16 @@ export default function useFetchPrivateContractData() {
             //     upcomingStakingReward: upcomingStakingReward.toNumber()
             // });
 
-            setDebtData({
-                currentCRatio,
-                transferable,
-                debtBalance,
-                collateral,
-                issuableSynths,
-                balance,
-                escrowedReward,
-                liquidationDeadline,
-              });
+            // setDebtData({
+            //     currentCRatio,
+            //     transferable,
+            //     debtBalance,
+            //     collateral,
+            //     issuableSynths,
+            //     balance,
+            //     escrowedReward,
+            //     liquidationDeadline,
+            //   });
               setRewards({
                 claimable,
                 stakingReward,

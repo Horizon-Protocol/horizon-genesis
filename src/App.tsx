@@ -50,6 +50,7 @@ import DevWatchTool from "@components/DevWatchTool";
 import useFetchPublicContractData from "@hooks/useFetchPublicContractData";
 import useFetchPrivateContractData from "@hooks/useFetchPrivateContractData";
 import useFetchExchangeRates from "@hooks/useFetchExchangeRates";
+import useFetchWalletDashBoardData from "@hooks/useFetchWalletDashBoardData";
 
 const AppDisabled = !!import.meta.env.VITE_APP_DISABLED;
 
@@ -74,26 +75,26 @@ function App() {
 
   useSetupHorizonLib();
 
-  //personal
-  useEstimatedStakingRewards();
-  useEscrowDataQuery();
+  //wallet
+  useFetchWalletDashBoardData()   //combined [TargetCRatio LiquidationRatio TotalIssued]
+  useFetchDebtData();             //make sure wallet info quick, can't combine
 
   //no need to combine
+  useEstimatedStakingRewards();
+  useEscrowDataQuery();
   useQueryDebt();
   useFetchExchangeRates();
-  useFetchFeePool(); 
-  useQueryGlobalDebt();   
-  useFetchHorizonData();  
-
-  useFetchZAssetsBalance();  //combine all 22 zasset calls
+  useFetchFeePool();
+  useQueryGlobalDebt();
+  useFetchHorizonData();
 
   // useSuspensionStatus();  //combined
   // useFetchAppData();  //combined
   useFetchPublicContractData()
 
   // useFetchRewards(); //combined
-  // useFetchDebtData(); //combined
-  useFetchPrivateContractData()
+  useFetchPrivateContractData()   //combined 3 [rewards]
+  useFetchZAssetsBalance();  //combine all 22 zasset calls
 
   const refresh = useRefresh();
 

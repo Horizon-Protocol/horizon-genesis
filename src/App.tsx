@@ -337,7 +337,7 @@ function App() {
       </Box>
       <WalletsDialog />
       <GetHZNDialog />
-      <DevWatchTool />
+      {/* <DevWatchTool /> */}
     </>
   );
 }

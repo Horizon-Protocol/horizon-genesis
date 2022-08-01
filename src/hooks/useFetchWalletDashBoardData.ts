@@ -15,7 +15,7 @@ import {
     suspensionStatusAtom,
 } from "@atoms/app";
 import { CONTRACT, CONTRACT_ALL_PUBLIC, CONTRACT_ALL_WALLETINFO } from "@utils/queryKeys";
-import { etherToBN, toBN } from "@utils/number";
+import { etherToBN, formatNumber, toBN } from "@utils/number";
 import useHorizonJs from "./useHorizonJs";
 import useGetEthCallProvider from "./staker/useGetEthCallProvider";
 import horizon from "@lib/horizon";
@@ -131,6 +131,12 @@ export default function useFetchWalletDashBoardData() {
             liquidationRatio,
             totalIssuedZUSDExclEth,
         ]) {
+            console.log('combine useFetchWalletDashBoardData',{
+                targetRatio: formatNumber(targetRatio),
+                liquidationRatio: formatNumber(liquidationRatio),
+                totalIssuedZUSDExclEth: formatNumber(totalIssuedZUSDExclEth),
+            })
+
             setTargetCRatio(targetRatio);               // - useful
             setLiquidationRatio(liquidationRatio);       // - useful
             setTotalIssuedZUSDExclEth(totalIssuedZUSDExclEth); // - useful

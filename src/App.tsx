@@ -88,8 +88,8 @@ function App() {
   useQueryGlobalDebt();
   useFetchHorizonData();
 
-  // useSuspensionStatus();  //combined
-  // useFetchAppData();  //combined
+  // useSuspensionStatus();  //combined 
+  // useFetchAppData()
   useFetchPublicContractData()
 
   // useFetchRewards(); //combined

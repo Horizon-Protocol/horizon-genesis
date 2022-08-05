@@ -47,6 +47,10 @@ import useSuspensionStatus from "@hooks/useSuspensionStatus";
 import GetHZNDialog from "@components/MobileFooter/MobileMenu/GetHZNDialog";
 import useEstimatedStakingRewards from "@hooks/useEstimatedStakingRewards";
 import DevWatchTool from "@components/DevWatchTool";
+import useFetchPublicContractData from "@hooks/useFetchPublicContractData";
+import useFetchPrivateContractData from "@hooks/useFetchPrivateContractData";
+import useFetchExchangeRates from "@hooks/useFetchExchangeRates";
+import useFetchWalletDashBoardData from "@hooks/useFetchWalletDashBoardData";
 
 const AppDisabled = !!import.meta.env.VITE_APP_DISABLED;
 
@@ -70,17 +74,27 @@ function App() {
   const [expanded, setExpanded] = useState(false);
 
   useSetupHorizonLib();
+
+  //wallet
+  useFetchWalletDashBoardData()   //combined [TargetCRatio LiquidationRatio TotalIssued]
+  useFetchDebtData();             //make sure wallet info quick, can't combine
+
+  //no need to combine
   useEstimatedStakingRewards();
-  useSuspensionStatus();
-  useQueryDebt();
-  useFetchAppData();
-  useFetchDebtData();
-  useFetchZAssetsBalance();
-  useFetchFeePool();
-  useFetchRewards();
-  useFetchHorizonData();
   useEscrowDataQuery();
+  useQueryDebt();
+  useFetchExchangeRates();
+  useFetchFeePool();
   useQueryGlobalDebt();
+  useFetchHorizonData();
+
+  // useSuspensionStatus();  //combined 
+  // useFetchAppData()
+  useFetchPublicContractData()
+
+  // useFetchRewards(); //combined
+  useFetchPrivateContractData()   //combined 3 [rewards]
+  useFetchZAssetsBalance();  //combine all 22 zasset calls
 
   const refresh = useRefresh();
 

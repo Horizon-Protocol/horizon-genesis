@@ -45,11 +45,11 @@ export default function useEscrowDataQuery() {
                 RewardEscrowV2.totalVestedAccountBalance(account),
             ]);
 
-            // console.log('useEscrowDataQuery',{
-            //     claimableAmount: formatNumber(numVestingEntries),
-            //     totalEscrowed: formatNumber(totalEscrowed),
-            //     totalVested: formatNumber(totalVested),
-            // })
+            console.log('useEscrowDataQuery',{
+                claimableAmount: formatNumber(numVestingEntries),
+                totalEscrowed: formatNumber(totalEscrowed),
+                totalVested: formatNumber(totalVested),
+            })
 
             const vestingEntriesPromise = [];
             const vestingEntriesIdPromise:Promise<any>[] = [];

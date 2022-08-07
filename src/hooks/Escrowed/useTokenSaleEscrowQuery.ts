@@ -76,8 +76,6 @@ export default function useTokenSaleEscrowQuery() {
                 }
                 : null;
             setTokenSaleEscrow(result)
-        }, onError(e) {
-
         }
     })
 }

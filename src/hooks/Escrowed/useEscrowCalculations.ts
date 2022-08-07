@@ -12,7 +12,6 @@ export default function useEscrowCalculations(){
     const { account } = useWallet();
 
 	useTokenSaleEscrowQuery()
-	useEscrowDataQuery()
 
 	const rewardsEscrow = useAtomValue(rewardsEscrowAtom)
 	const tokenSaleEscrow = useAtomValue(tokenSaleEscrowAtom)

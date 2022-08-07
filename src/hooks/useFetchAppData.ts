@@ -14,6 +14,7 @@ import horizon from "@lib/horizon";
 import useFetchExchangeRates from "./useFetchExchangeRates";
 import { etherToBN, toBN } from "@utils/number";
 import { CONTRACT, PUBLIC } from "@utils/queryKeys";
+import { REFETCH_INTERVAL } from "@utils/constants";
 
 export default function useFetchAppData() {
   const setAppDataReady = useUpdateAtom(appDataReadyAtom);
@@ -41,7 +42,6 @@ export default function useFetchAppData() {
       ),
       SystemSettings.issuanceRatio(),
       Liquidations.liquidationRatio(),
-      // Liquidations.liquidationDelay(),
     ]);
 
     return [
@@ -51,29 +51,26 @@ export default function useFetchAppData() {
   }, []);
 
   useQuery([CONTRACT, PUBLIC, "app"], fetcher, {
+    refetchInterval: REFETCH_INTERVAL,
     onSuccess([
       lastDebtLedgerEntry,
       totalSupply,
       totalIssuedZUSDExclEth,
       targetRatio,
       liquidationRatio,
-      // liquidationDelay,
     ]) {
-      // console.log("====AppData====", {
-      //   lastDebtLedgerEntry: lastDebtLedgerEntry.toString(),
-      //   totalSupply: totalSupply.toString(),
-      //   totalIssuedZUSDExclEth: totalIssuedZUSDExclEth.toString(),
-      //   targetRatio: targetRatio.toString(),
-      //   liquidationRatio: liquidationRatio.toString(),
-      //   // liquidationDelay: liquidationDelay,
-      // });
+      console.log("====useFetchAppData====", {
+        lastDebtLedgerEntry: lastDebtLedgerEntry.toString(),
+        totalSupply: totalSupply.toString(),
+        totalIssuedZUSDExclEth: totalIssuedZUSDExclEth.toString(),
+        targetRatio: targetRatio.toString(),
+        liquidationRatio: liquidationRatio.toString(),
+      });
       setLastDebtLedgerEntry(lastDebtLedgerEntry);
       setTotalSupply(totalSupply);
       setTotalIssuedZUSDExclEth(totalIssuedZUSDExclEth);
       setTargetCRatio(targetRatio);
-      // setTargetCRatio(toBN(0.05));
       setLiquidationRatio(liquidationRatio);
-      // setLiquidationDelay(liquidationDelay);
 
       setAppDataReady(true);
     },

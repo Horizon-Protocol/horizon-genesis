@@ -15,10 +15,17 @@ import { getWalletErrorMsg } from "@utils/helper";
 import { useSnackbar } from "notistack";
 import { ethers } from "ethers";
 import useIsMobile from "@hooks/useIsMobile";
+import useEscrowDataQuery from "@hooks/Escrowed/useEscrowDataQuery";
+import useFetchRewards from "@hooks/useFetchRewards";
+import useEstimatedStakingRewards from "@hooks/useEstimatedStakingRewards";
 
 export default function Escrow() {
     
     const { totalClaimableBalance, totalEscrowBalance, totalVestedBalance } = useEscrowCalculations()
+
+    useEscrowDataQuery()
+    useFetchRewards();
+    useEstimatedStakingRewards();
 
     return (
         <PageCard

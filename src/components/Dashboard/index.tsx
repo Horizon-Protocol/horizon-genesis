@@ -22,7 +22,10 @@ import Tooltip from "@components/Tooltip";
 import useIsMobile from "@hooks/useIsMobile";
 import MenuSVG from "@components/MobileFooter/MobileMenu/MenuSVG";
 import { ReactComponent as Union } from "@assets/images/Union.svg";
-
+import useFetchAppData from "@hooks/useFetchAppData";
+import useFetchDebtData from "@hooks/useFetchDebtData";
+import useFetchZAssetsBalance from "@hooks/useFetchZAssetsBalance";
+import useFetchFeePool from "@hooks/useFetchFeePool";
 interface DashboardProps extends BoxProps{
   dashBoardOnClose?: () => void
 }
@@ -40,6 +43,11 @@ export default function Dashboard({dashBoardOnClose, ...props}: DashboardProps) 
   const { stakingAPR, isEstimateAPR } = useUserStakingData();
   const othersZAssets = sumBy(useFilterZAssets({ zUSDIncluded: false }), "amountUSD")
   const zAssets = sumBy(useFilterZAssets({ zUSDIncluded: true }), "amountUSD")
+
+  useFetchAppData();
+  useFetchDebtData();
+  useFetchZAssetsBalance();
+  useFetchFeePool();
 
   const balances = useMemo(
     () => [

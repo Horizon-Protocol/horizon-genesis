@@ -10,6 +10,7 @@ import { BNWithDecimals, etherToBN, formatNumber, toBN, zeroBN } from "@utils/nu
 import { flatten, flattenDeep } from "lodash";
 import { rewardsEscrowAtom } from "@atoms/record";
 import useDisconnected from "@hooks/useDisconnected";
+import { REFETCH_INTERVAL } from "@utils/constants";
 
 export type RewardEscrowV2Props = {
     claimableAmount?: BN;
@@ -105,6 +106,7 @@ export default function useEscrowDataQuery() {
     }, [appReady, account])
 
     useQuery([CONTRACT, account, "RewardEscrowV2"], fetcher, {
+        refetchInterval: REFETCH_INTERVAL,
         enabled: !!account && !!horizon.js,
         onSuccess(data) {
             if (data){

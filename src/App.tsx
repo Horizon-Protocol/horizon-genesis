@@ -70,17 +70,17 @@ function App() {
   const [expanded, setExpanded] = useState(false);
 
   useSetupHorizonLib();
-  useEstimatedStakingRewards();
+  
   useSuspensionStatus();
-  useQueryDebt();
-  useFetchAppData();
-  useFetchDebtData();
-  useFetchZAssetsBalance();
-  useFetchFeePool();
-  useFetchRewards();
   useFetchHorizonData();
-  useEscrowDataQuery();
-  useQueryGlobalDebt();
+
+  // useEstimatedStakingRewards(); 
+  // useFetchAppData();
+  // useFetchDebtData();
+  // useFetchZAssetsBalance();
+  // useFetchFeePool();
+  // useFetchRewards();
+  // useEscrowDataQuery();
 
   const refresh = useRefresh();
 
@@ -323,7 +323,7 @@ function App() {
       </Box>
       <WalletsDialog />
       <GetHZNDialog />
-      {/* <DevWatchTool /> */}
+      <DevWatchTool />
     </>
   );
 }

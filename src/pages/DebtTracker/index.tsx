@@ -17,8 +17,8 @@ import useWallet from "@hooks/useWallet";
 import { debtAtom } from "@atoms/debt";
 import { useMemo } from "react";
 import ToolTip, { ToolTipProps } from "./DebtChartTooltip"
-import { DebtData } from "@hooks/query/useQueryDebt";
-import { GloablDebt } from "@hooks/query/useQueryGlobalDebt";
+import useQueryDebt, { DebtData } from "@hooks/query/useQueryDebt";
+import useQueryGlobalDebt, { GloablDebt } from "@hooks/query/useQueryGlobalDebt";
 
 const leftPriceConfig: Partial<LineSeriesPartialOptions> = {
     lineWidth: 2,
@@ -65,6 +65,10 @@ const rightPriceConfig: Partial<LineSeriesPartialOptions> = {
 
 export default function DebtTracker() {
     const { connected, account } = useWallet();
+
+    useQueryDebt();
+    useQueryGlobalDebt();
+
     const [toolTipProps, setToolTipProps] = useState<ToolTipProps>({
         toolTipDisplay: 'none',
         left: '0',
@@ -87,7 +91,7 @@ export default function DebtTracker() {
 
     //cause active debt hitorical data need to add the last active data, so need to check the last active debt and activehistorydebt in dep
     const EmptyActiveIsuuedDebtData = useCallback<() => LineData[]>(() => {
-        let emptyData: LineData[] = []
+        const emptyData: LineData[] = []
         for (let i = 0; i < 30; i++) {
             const temp = (new Date()).getTime()
             const today = dayjs(new Date())
@@ -161,7 +165,7 @@ export default function DebtTracker() {
     })
 
     const handleCrosshairMove = (param: MouseEventParams) => {
-        let point = param.point as Point
+        const point = param.point as Point
 
         const width = container?.clientWidth as number
         const height = container?.clientHeight as number

@@ -6,6 +6,7 @@ import horizon from "@lib/horizon";
 import { currentFeePeriodAtom, previousFeePeriodAtom } from "@atoms/feePool";
 import { etherToBN } from "@utils/number";
 import { CONTRACT, PUBLIC } from "@utils/queryKeys";
+import { REFETCH_INTERVAL } from "@utils/constants";
 
 type Period = "0" | "1"; // '0': current; '1': previous
 
@@ -57,14 +58,18 @@ export default function useFetchFeePool() {
 
   // current period
   useQuery([CONTRACT, PUBLIC, "feepool", "0"], fetchData, {
+    refetchInterval: REFETCH_INTERVAL,
     onSuccess(res) {
+      console.log("===useFetchFeePool==0==")
       setCurrentFeePeriod(res);
     },
   });
 
   // previous period
   useQuery([CONTRACT, PUBLIC, "feepool", "1"], fetchData, {
+    refetchInterval: REFETCH_INTERVAL,
     onSuccess(res) {
+      console.log("===useFetchFeePool==1==")
       setPreviousFeePeriod(res);
     },
   });

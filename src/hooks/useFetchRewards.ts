@@ -8,6 +8,7 @@ import { CONTRACT } from "@utils/queryKeys";
 import { etherToBN, formatNumber, toBN } from "@utils/number";
 import useWallet from "./useWallet";
 import useDisconnected from "./useDisconnected";
+import { REFETCH_INTERVAL } from "@utils/constants";
 
 interface Result {
   claimable: boolean;
@@ -54,6 +55,7 @@ export default function useFetchRewards() {
   }, [account]);
 
   useQuery([CONTRACT, account, "rewards"], fetcher, {
+    refetchInterval: REFETCH_INTERVAL,
     enabled: !!account && !!horizon.js,
     onSuccess({ claimable, stakingReward, exchangeReward, upcomingExchangeReward, upcomingStakingReward }) {
       console.log('===claimablestakingRewardexchangeReward',{

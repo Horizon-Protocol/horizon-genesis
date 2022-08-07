@@ -13,6 +13,7 @@ import { ratesAtom } from "@atoms/exchangeRates";
 import { useMemo } from "react";
 import horizon from "@lib/horizon";
 import { sumBy, values } from "lodash";
+import { REFETCH_INTERVAL } from "@utils/constants";
 
 export default function useFetchZAssetsBalance() {
   const { provider, account } = useWallet();
@@ -106,8 +107,9 @@ export default function useFetchZAssetsBalance() {
     },
     {
       enabled: !!provider && !!horizonJs && !!account,
+      refetchInterval: REFETCH_INTERVAL,
       onSuccess(balances) {
-        // console.log('================balances===========', balances);
+        console.log('===useFetchZAssetsBalance', balances);
         setZUSDBalances(balances["zUSD"] || zeroBN)
         setzAssetBalances(balances);
       },

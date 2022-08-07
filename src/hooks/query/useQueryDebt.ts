@@ -1,14 +1,13 @@
 import { GRAPH_DEBT } from "@utils/queryKeys";
 import { useQuery } from "react-query";
 import request, { gql } from 'graphql-request';
-import { GRAPH_ENDPOINT } from "@utils/constants";
+import { GRAPH_ENDPOINT, REFETCH_INTERVAL } from "@utils/constants";
 import { useCallback } from "react";
 import useWallet from "@hooks/useWallet";
 import { concat, last, sortBy } from "lodash";
 import { toBN } from "@utils/number";
-import { useAtomValue, useResetAtom, useUpdateAtom } from "jotai/utils";
+import { useResetAtom, useUpdateAtom } from "jotai/utils";
 import { useAtom } from "jotai";
-import { debtAtom } from "@atoms/debt";
 import useDisconnected from "@hooks/useDisconnected";
 import { historicalActualDebtAtom, historicalClaimHZNAndZUSDAtom, historicalIsLoadingAtom, historicalIssuedDebtAtom, historicalOperationAtom, HistoryType } from "@atoms/record";
 
@@ -184,12 +183,13 @@ export default function useQueryDebt() {
             debtSnapshots()
         ]);
         return res;
-    }, [account])
+    }, [burneds, claims, debtSnapshots, issueds])
 
     return useQuery(
         [GRAPH_DEBT,'activeaissuesd'],
         fetcher
         , {
+            refetchInterval: REFETCH_INTERVAL,
             enabled: !!account,
             onSuccess([
                 issues,
@@ -197,13 +197,14 @@ export default function useQueryDebt() {
                 claims,
                 debtSnapshot
             ]) {
-                console.log('active debt and issued debt request finished',{
-                    account,
-                    issues,
-                    burns,
-                    claims,
-                    debtSnapshot
-                })
+                console.log('===useQueryDebt')
+                // console.log('active debt and issued debt request finished',{
+                //     account,
+                //     issues,
+                //     burns,
+                //     claims,
+                //     debtSnapshot
+                // })
                 let issuesAndBurns = issues.issueds!.map((b: any) => ({ isBurn: false, ...b }));
                 issuesAndBurns = sortBy(
                     issuesAndBurns.concat(burns.burneds!.map((b: any) => ({ isBurn: true, ...b }))),
@@ -216,11 +217,11 @@ export default function useQueryDebt() {
                 /* abstract cliams and calculate all the claim record for HZN and zUSD(come from exchange fee) */
                 setHistoricalClaim(claims.feesClaimeds)
                 /* --------------------------- */
-                let typeMintHistory = issues.issueds.map((b: any) => ({ ...b, type: HistoryType.Mint }))
-                let typeBurnHistory = burns.burneds.map((b: any) => ({ ...b, type: HistoryType.Burn }))
-                let typeClaimHistory = claims.feesClaimeds.map((b: any) => ({ ...b, type: HistoryType.Claim }))
-                let concatData = concat(typeMintHistory, typeBurnHistory, typeClaimHistory)
-                let allTypeHistory = sortBy(concatData, "timestamp")
+                const typeMintHistory = issues.issueds.map((b: any) => ({ ...b, type: HistoryType.Mint }))
+                const typeBurnHistory = burns.burneds.map((b: any) => ({ ...b, type: HistoryType.Burn }))
+                const typeClaimHistory = claims.feesClaimeds.map((b: any) => ({ ...b, type: HistoryType.Claim }))
+                const concatData = concat(typeMintHistory, typeBurnHistory, typeClaimHistory)
+                const allTypeHistory = sortBy(concatData, "timestamp")
                 // console.log("====allTypeHistory", allTypeHistory)
 
                 //if user has data and more than 0, loading end
@@ -261,7 +262,7 @@ export default function useQueryDebt() {
 
                 // We merge both actual & issuance debt into an array ===========================================================
                 const debtHistory = debtSnapshot.debtSnapshots ?? [];
-                let historicalActualDebtRecord: DebtData[] = [];
+                const historicalActualDebtRecord: DebtData[] = [];
                 debtHistory
                     .slice()
                     .reverse()

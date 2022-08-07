@@ -30,6 +30,7 @@ import useFetchAppData from "@hooks/useFetchAppData";
 import useFetchDebtData from "@hooks/useFetchDebtData";
 import useFetchZAssetsBalance from "@hooks/useFetchZAssetsBalance";
 import useFetchFeePool from "@hooks/useFetchFeePool";
+import useQueryGlobalDebt from "@hooks/query/useQueryGlobalDebt";
 interface GetHZNProps {
     svg: JSX.Element;
     title: string;
@@ -48,6 +49,7 @@ export default function MobileFooter() {
     useFetchDebtData();
     useFetchZAssetsBalance();
     useFetchFeePool();
+    useQueryGlobalDebt()
 
     //menu and wallet info popover
     //menu popover

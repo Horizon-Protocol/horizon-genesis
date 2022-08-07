@@ -26,6 +26,7 @@ import useFetchAppData from "@hooks/useFetchAppData";
 import useFetchDebtData from "@hooks/useFetchDebtData";
 import useFetchZAssetsBalance from "@hooks/useFetchZAssetsBalance";
 import useFetchFeePool from "@hooks/useFetchFeePool";
+import useQueryGlobalDebt from "@hooks/query/useQueryGlobalDebt";
 interface DashboardProps extends BoxProps{
   dashBoardOnClose?: () => void
 }
@@ -48,6 +49,7 @@ export default function Dashboard({dashBoardOnClose, ...props}: DashboardProps) 
   useFetchDebtData();
   useFetchZAssetsBalance();
   useFetchFeePool();
+  useQueryGlobalDebt()
 
   const balances = useMemo(
     () => [

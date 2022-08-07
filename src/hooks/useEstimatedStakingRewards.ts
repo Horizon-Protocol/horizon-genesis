@@ -23,7 +23,7 @@ export default function useEstimatedStakingRewards() {
             return await SupplySchedule.weekCounter()
         }
     }, [appReady, horizonJs])
-    const weekCounter = useQuery(['fetcherWeekCounter'], fetcherWeekCounter)
+    const weekCounter = useQuery(['fetcherWeekCounter'], fetcherWeekCounter,{refetchInterval: REFETCH_INTERVAL,})
     // console.log('fetcherWeekCounter', weekCounter?.data?.toNumber())
 
     const fetcherTokenDecaySupplyForWeek = useCallback(async () => {
@@ -35,7 +35,7 @@ export default function useEstimatedStakingRewards() {
             return await SupplySchedule.tokenDecaySupplyForWeek(week)
         }
     }, [appReady, weekCounter, horizonJs])
-    const decaySupplyForWeek = useQuery(['fetcherTokenDecaySupplyForWeek'], fetcherTokenDecaySupplyForWeek, { enabled: !!weekCounter.data })
+    const decaySupplyForWeek = useQuery(['fetcherTokenDecaySupplyForWeek'], fetcherTokenDecaySupplyForWeek, { enabled: !!weekCounter.data,refetchInterval: REFETCH_INTERVAL, })
     // console.log('fetcherTokenDecaySupplyForWeek', Number(decaySupplyForWeek.data) / 1e18)
 
     const fetcherRewardsDistributionLength = useCallback(async () => {
@@ -46,7 +46,7 @@ export default function useEstimatedStakingRewards() {
             return await RewardsDistribution.distributionsLength()
         }
     }, [appReady,horizonJs])
-    const distributionsQeuryRies = useQuery(['fetcherRewardsDistributionLength'], fetcherRewardsDistributionLength)
+    const distributionsQeuryRies = useQuery(['fetcherRewardsDistributionLength'], fetcherRewardsDistributionLength, {refetchInterval: REFETCH_INTERVAL,})
     // console.log('distributionsLength',distributionsQeuryRies.data?.toNumber())
 
     const rewardsDistribution = useCallback(async () => {

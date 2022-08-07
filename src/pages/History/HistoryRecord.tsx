@@ -45,7 +45,6 @@ export default function HistoryRecord() {
   const historicalIsLoading = useAtomValue(historicalIsLoadingAtom)
 
   useQueryDebt();
-  useQueryGlobalDebt();
 
   const [page, setPage] = useState(0);
   const [rowsPerPage, setRowsPerPage] = useState(10);

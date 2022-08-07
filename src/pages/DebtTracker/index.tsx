@@ -67,7 +67,6 @@ export default function DebtTracker() {
     const { connected, account } = useWallet();
 
     useQueryDebt();
-    useQueryGlobalDebt();
 
     const [toolTipProps, setToolTipProps] = useState<ToolTipProps>({
         toolTipDisplay: 'none',

@@ -26,6 +26,10 @@ import GetHZNDialog from "./MobileMenu/GetHZNDialog";
 import MenuItem from "@components/Header/HelpMenu/MenuItem";
 import Dashboard from "@components/Dashboard";
 import MenuDialog from "./MobileMenu/MenuDialog";
+import useFetchAppData from "@hooks/useFetchAppData";
+import useFetchDebtData from "@hooks/useFetchDebtData";
+import useFetchZAssetsBalance from "@hooks/useFetchZAssetsBalance";
+import useFetchFeePool from "@hooks/useFetchFeePool";
 interface GetHZNProps {
     svg: JSX.Element;
     title: string;
@@ -39,6 +43,11 @@ export default function MobileFooter() {
     const { connected, account } = useWallet();
     const refresh = useRefresh()
     const { pathname } = useLocation();
+
+    useFetchAppData();
+    useFetchDebtData();
+    useFetchZAssetsBalance();
+    useFetchFeePool();
 
     //menu and wallet info popover
     //menu popover

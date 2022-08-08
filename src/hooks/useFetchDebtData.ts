@@ -8,7 +8,6 @@ import { CONTRACT } from "@utils/queryKeys";
 import { debtAtom, resetDebtAtom } from "@atoms/debt";
 import useWallet from "./useWallet";
 import useDisconnected from "./useDisconnected";
-import { REFETCH_INTERVAL } from "@utils/constants";
 
 export default function useFetchDebtData() {
   const { account } = useWallet();
@@ -26,6 +25,7 @@ export default function useFetchDebtData() {
     // console.log("====contracts====",utils)
 
     const zUSDBytes = utils.formatBytes32String("zUSD");
+    console.log('call useFetchDebtData')
     const [deadline, ...values] = (await Promise.all([
       Liquidations.getLiquidationDeadlineForAccount(account),
       Synthetix.collateral(account),
@@ -40,7 +40,6 @@ export default function useFetchDebtData() {
   }, [account]);
 
   useQuery([CONTRACT, account, "debt"], fetcher, {
-    refetchInterval: REFETCH_INTERVAL,
     enabled: !!account && !!horizon.js,
     onSuccess([
       liquidationDeadline,

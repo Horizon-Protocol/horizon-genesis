@@ -14,7 +14,6 @@ import horizon from "@lib/horizon";
 import useFetchExchangeRates from "./useFetchExchangeRates";
 import { etherToBN, toBN } from "@utils/number";
 import { CONTRACT, PUBLIC } from "@utils/queryKeys";
-import { REFETCH_INTERVAL } from "@utils/constants";
 
 export default function useFetchAppData() {
   const setAppDataReady = useUpdateAtom(appDataReadyAtom);
@@ -51,7 +50,6 @@ export default function useFetchAppData() {
   }, []);
 
   useQuery([CONTRACT, PUBLIC, "app"], fetcher, {
-    refetchInterval: REFETCH_INTERVAL,
     onSuccess([
       lastDebtLedgerEntry,
       totalSupply,

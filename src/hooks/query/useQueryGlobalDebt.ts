@@ -1,7 +1,7 @@
 import { GRAPH_DEBT } from "@utils/queryKeys";
 import { useQuery } from "react-query";
 import requset, { gql } from "graphql-request";
-import { GRAPH_ENDPOINT, REFETCH_INTERVAL } from "@utils/constants";
+import { GRAPH_ENDPOINT } from "@utils/constants";
 import useWallet from "@hooks/useWallet";
 import { useAtomValue, useResetAtom, useUpdateAtom } from "jotai/utils";
 import { debtAtom } from "@atoms/debt";
@@ -42,7 +42,6 @@ export default function useQueryGlobalDebt() {
   };
 
   useQuery([GRAPH_DEBT, "globalDebts"], globalDebts, {
-    refetchInterval: REFETCH_INTERVAL,
     initialData: [],
     onSuccess(debts) {
       console.log('===useQueryGlobalDebt',debts)

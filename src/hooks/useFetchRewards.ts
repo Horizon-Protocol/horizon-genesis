@@ -5,21 +5,12 @@ import { ethers } from "ethers";
 import horizon from "@lib/horizon";
 import { rewardsAtom, resetAtom } from "@atoms/feePool";
 import { CONTRACT } from "@utils/queryKeys";
-import { etherToBN, formatNumber, toBN } from "@utils/number";
+import { etherToBN } from "@utils/number";
 import useWallet from "./useWallet";
 import useDisconnected from "./useDisconnected";
-import { REFETCH_INTERVAL } from "@utils/constants";
 import useHorizonJs from "./useHorizonJs";
 import { Contract } from "@horizon-protocol/ethcall";
 import useGetEthCallProvider from "./staker/useGetEthCallProvider";
-
-interface Result {
-  claimable: boolean;
-  exchangeReward: BN;
-  stakingReward: BN;
-  upcomingExchangeReward: BN;
-  upcomingStakingReward: BN;
-}
 
 export default function useFetchRewards() {
   const { account } = useWallet();
@@ -77,7 +68,6 @@ const fetcher = useCallback<QueryFunction>(async () => {
 ]);
 
   useQuery([CONTRACT, account, "rewards"], fetcher, {
-    refetchInterval: REFETCH_INTERVAL,
     enabled: !!account && !!horizon.js,
     onSuccess([
       claimable,

@@ -2,15 +2,13 @@ import { readyAtom } from "@atoms/app";
 import horizon from "@lib/horizon";
 import { CONTRACT } from "@utils/queryKeys";
 import { useAtomValue, useResetAtom, useUpdateAtom } from "jotai/utils";
-import { useCallback, useEffect } from "react";
+import { useCallback } from "react";
 import { useQuery } from "react-query";
-import { utils, BigNumberish, ethers, BigNumber } from "ethers";
 import useWallet from "@hooks/useWallet";
-import { BNWithDecimals, etherToBN, formatNumber, toBN, zeroBN } from "@utils/number";
+import { BNWithDecimals, formatNumber, zeroBN } from "@utils/number";
 import { flatten, flattenDeep } from "lodash";
 import { rewardsEscrowAtom } from "@atoms/record";
 import useDisconnected from "@hooks/useDisconnected";
-import { REFETCH_INTERVAL } from "@utils/constants";
 
 export type RewardEscrowV2Props = {
     claimableAmount?: BN;
@@ -106,7 +104,6 @@ export default function useEscrowDataQuery() {
     }, [appReady, account])
 
     useQuery([CONTRACT, account, "RewardEscrowV2"], fetcher, {
-        refetchInterval: REFETCH_INTERVAL,
         enabled: !!account && !!horizon.js,
         onSuccess(data) {
             if (data){

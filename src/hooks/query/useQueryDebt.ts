@@ -1,7 +1,7 @@
 import { GRAPH_DEBT } from "@utils/queryKeys";
 import { useQuery } from "react-query";
 import request, { gql } from 'graphql-request';
-import { GRAPH_ENDPOINT, REFETCH_INTERVAL } from "@utils/constants";
+import { GRAPH_ENDPOINT } from "@utils/constants";
 import { useCallback } from "react";
 import useWallet from "@hooks/useWallet";
 import { concat, last, sortBy } from "lodash";
@@ -53,7 +53,7 @@ export default function useQueryDebt() {
     const resetHistoricalClaim = useResetAtom(historicalOperationAtom);
     useDisconnected(resetHistoricalClaim);
 
-    const issueds = async () => {
+    const issueds = useCallback(async () => {
         try {
             // console.log('fetch account',account)
             const issuesReponse = await request(
@@ -85,9 +85,9 @@ export default function useQueryDebt() {
             console.log("query报错issuesReponse", e)
             return [];
         }
-    }
+    },[account])
 
-    const burneds = async () => {
+    const burneds = useCallback(async () => {
         try {
             const burnedsReponse = await request(
                 GRAPH_ENDPOINT,
@@ -114,9 +114,9 @@ export default function useQueryDebt() {
             console.log("query报错burnedsReponse", e)
             return [];
         }
-    }
+    },[account])
 
-    const claims = async () => {
+    const claims = useCallback(async () => {
         try {
             const claimsReponse = await request(
                 GRAPH_ENDPOINT,
@@ -144,9 +144,9 @@ export default function useQueryDebt() {
             console.log("query报错claimsReponse", e)
             return [];
         }
-    }
+    },[account])
 
-    const debtSnapshots = async () => {
+    const debtSnapshots = useCallback(async () => {
         try {
             const debtSnapshotsReponse = await request(
                 GRAPH_ENDPOINT,
@@ -173,7 +173,7 @@ export default function useQueryDebt() {
             console.log("query报错debtSnapshotsReponse", e)
             return [];
         }
-    }
+    },[account])
 
     const fetcher = useCallback(async () => {
         const res = await Promise.all([
@@ -189,7 +189,6 @@ export default function useQueryDebt() {
         [GRAPH_DEBT,'activeaissuesd'],
         fetcher
         , {
-            refetchInterval: REFETCH_INTERVAL,
             enabled: !!account,
             onSuccess([
                 issues,

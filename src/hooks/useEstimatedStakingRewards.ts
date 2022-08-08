@@ -1,6 +1,5 @@
 import { readyAtom } from "@atoms/app";
 import { weekStakingPoolRewardsAtom } from "@atoms/feePool";
-import { REFETCH_INTERVAL } from "@utils/constants";
 import { useAtomValue } from "jotai";
 import { useUpdateAtom } from "jotai/utils";
 import { useCallback } from "react";
@@ -23,7 +22,7 @@ export default function useEstimatedStakingRewards() {
             return await SupplySchedule.weekCounter()
         }
     }, [appReady, horizonJs])
-    const weekCounter = useQuery(['fetcherWeekCounter'], fetcherWeekCounter,{refetchInterval: REFETCH_INTERVAL,})
+    const weekCounter = useQuery(['fetcherWeekCounter'], fetcherWeekCounter,{})
     // console.log('fetcherWeekCounter', weekCounter?.data?.toNumber())
 
     const fetcherTokenDecaySupplyForWeek = useCallback(async () => {
@@ -35,7 +34,7 @@ export default function useEstimatedStakingRewards() {
             return await SupplySchedule.tokenDecaySupplyForWeek(week)
         }
     }, [appReady, weekCounter, horizonJs])
-    const decaySupplyForWeek = useQuery(['fetcherTokenDecaySupplyForWeek'], fetcherTokenDecaySupplyForWeek, { enabled: !!weekCounter.data,refetchInterval: REFETCH_INTERVAL, })
+    const decaySupplyForWeek = useQuery(['fetcherTokenDecaySupplyForWeek'], fetcherTokenDecaySupplyForWeek, { enabled: !!weekCounter.data })
     // console.log('fetcherTokenDecaySupplyForWeek', Number(decaySupplyForWeek.data) / 1e18)
 
     const fetcherRewardsDistributionLength = useCallback(async () => {
@@ -46,7 +45,7 @@ export default function useEstimatedStakingRewards() {
             return await RewardsDistribution.distributionsLength()
         }
     }, [appReady,horizonJs])
-    const distributionsQeuryRies = useQuery(['fetcherRewardsDistributionLength'], fetcherRewardsDistributionLength, {refetchInterval: REFETCH_INTERVAL,})
+    const distributionsQeuryRies = useQuery(['fetcherRewardsDistributionLength'], fetcherRewardsDistributionLength)
     // console.log('distributionsLength',distributionsQeuryRies.data?.toNumber())
 
     const rewardsDistribution = useCallback(async () => {
@@ -62,7 +61,6 @@ export default function useEstimatedStakingRewards() {
         }
     }, [appReady, distributionsQeuryRies,horizonJs])
     useQuery(['distributions'], rewardsDistribution, {
-        refetchInterval: REFETCH_INTERVAL,
         onSuccess(res) {
             let distributionAmount = 0
             res?.forEach((element) => {

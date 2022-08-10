@@ -58,7 +58,7 @@ export default function EscrowRecord() {
           claimDate: item.endTime,
           amount: item.escrowAmount,
         };
-      })
+      }).filter(x => x.amount > 0)
     : [];
 
   const handleChangePage = (event: unknown, newPage: number) => {

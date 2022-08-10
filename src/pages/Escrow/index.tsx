@@ -118,7 +118,7 @@ export default function Escrow() {
                                             </Tooltip>
                                         }
                                         color={totalClaimableBalance.gt(zeroBN) ? COLOR.safe : COLOR.text}
-                                        amount={formatNumber(BNWithDecimals(totalVestedBalance))} />
+                                        amount={formatNumber(totalVestedBalance)} />
                                 </Box>
                             </Grid>
                         </Grid>

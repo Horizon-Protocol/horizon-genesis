@@ -323,7 +323,7 @@ function App() {
       </Box>
       <WalletsDialog />
       <GetHZNDialog />
-      {/* <DevWatchTool /> */}
+      {import.meta.env.DEV && <DevWatchTool />}
     </>
   );
 }

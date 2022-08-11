@@ -70,17 +70,17 @@ function App() {
   const [expanded, setExpanded] = useState(false);
 
   useSetupHorizonLib();
-  
+
+  //system data
   useSuspensionStatus();
   useFetchHorizonData();
 
-  // useEstimatedStakingRewards(); 
-  // useFetchAppData();
-  // useFetchDebtData();
-  // useFetchZAssetsBalance();
-  // useFetchFeePool();
-  // useFetchRewards();
-  // useEscrowDataQuery();
+  //dashboard data
+  useFetchAppData();
+  useFetchDebtData();
+  useFetchZAssetsBalance();
+  useFetchFeePool();
+  useQueryGlobalDebt()
 
   const refresh = useRefresh();
 

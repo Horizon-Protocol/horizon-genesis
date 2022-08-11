@@ -45,12 +45,6 @@ export default function Dashboard({dashBoardOnClose, ...props}: DashboardProps) 
   const othersZAssets = sumBy(useFilterZAssets({ zUSDIncluded: false }), "amountUSD")
   const zAssets = sumBy(useFilterZAssets({ zUSDIncluded: true }), "amountUSD")
 
-  useFetchAppData();
-  useFetchDebtData();
-  useFetchZAssetsBalance();
-  useFetchFeePool();
-  useQueryGlobalDebt()
-
   const balances = useMemo(
     () => [
       {

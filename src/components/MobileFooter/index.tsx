@@ -45,12 +45,6 @@ export default function MobileFooter() {
     const refresh = useRefresh()
     const { pathname } = useLocation();
 
-    useFetchAppData();
-    useFetchDebtData();
-    useFetchZAssetsBalance();
-    useFetchFeePool();
-    useQueryGlobalDebt()
-
     //menu and wallet info popover
     //menu popover
     const [menuOpen, setMenuOpen] = useAtom(footerMenuOpenAtom)

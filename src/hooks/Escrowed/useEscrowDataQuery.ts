@@ -2,13 +2,17 @@ import { readyAtom } from "@atoms/app";
 import horizon from "@lib/horizon";
 import { CONTRACT } from "@utils/queryKeys";
 import { useAtomValue, useResetAtom, useUpdateAtom } from "jotai/utils";
-import { useCallback } from "react";
+import { useCallback, useMemo } from "react";
 import { useQuery } from "react-query";
 import useWallet from "@hooks/useWallet";
 import { BNWithDecimals, formatNumber, zeroBN } from "@utils/number";
 import { flatten, flattenDeep } from "lodash";
 import { rewardsEscrowAtom } from "@atoms/record";
 import useDisconnected from "@hooks/useDisconnected";
+import useGetEthCallProvider from "@hooks/staker/useGetEthCallProvider";
+import useHorizonJs from "@hooks/useHorizonJs";
+import { Contract } from "@horizon-protocol/ethcall";
+import BigNumber from "bignumber.js";
 
 export type RewardEscrowV2Props = {
     claimableAmount?: BN;
@@ -28,27 +32,54 @@ export default function useEscrowDataQuery() {
 
     const appReady = useAtomValue(readyAtom);
     const { account } = useWallet(); 
+    const getProvider = useGetEthCallProvider();
+    const horizonJs = useHorizonJs();
 
     const setRewardsEscrow = useUpdateAtom(rewardsEscrowAtom)
     const resetRewardsEscrow = useResetAtom(rewardsEscrowAtom);
     useDisconnected(resetRewardsEscrow);
+
+    const contractMap = useMemo(() => {
+        if (!horizonJs) {
+            return null;
+        }
+        const { contracts } = horizonJs;
+        return {
+            RewardEscrowV2: new Contract(
+                contracts.RewardEscrowV2.address,
+                // eslint-disable-next-line @typescript-eslint/no-explicit-any
+                contracts.RewardEscrowV2.interface.fragments as any
+            ),
+        };
+    }, [horizonJs]);
 
     const fetcher = useCallback(async () => {
         if (appReady && account) {
             const {
                 contracts: { RewardEscrowV2 },
             } = horizon.js!;
+
+            /*--- promise alll ----*/
             const [numVestingEntries, totalEscrowed, totalVested] = await Promise.all([
                 RewardEscrowV2.numVestingEntries(account),
                 RewardEscrowV2.balanceOf(account),
                 RewardEscrowV2.totalVestedAccountBalance(account),
             ]);
 
-            // console.log('useEscrowDataQuery',{
-            //     claimableAmount: formatNumber(numVestingEntries),
-            //     totalEscrowed: formatNumber(totalEscrowed),
-            //     totalVested: formatNumber(totalVested),
-            // })
+            /*--- combine alll ----*/
+            // const mixCalls = [
+            //     contractMap!.RewardEscrowV2.numVestingEntries(account),
+            //     contractMap!.RewardEscrowV2.balanceOf(account),
+            //     contractMap!.RewardEscrowV2.totalVestedAccountBalance(account)
+            // ];
+            // const ethcallProvider = await getProvider();
+            // const res = (await ethcallProvider.all(mixCalls)) as unknown[];
+
+            // const [numVestingEntries,totalEscrowed,totalVested] = res as [
+            //     BigNumber,
+            //     BigNumber,
+            //     BigNumber
+            // ];
 
             const vestingEntriesPromise = [];
             const vestingEntriesIdPromise:Promise<any>[] = [];

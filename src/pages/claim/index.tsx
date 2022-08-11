@@ -31,11 +31,18 @@ import Tooltip from "@components/Tooltip";
 import ToolTipContent from "@components/Tooltip/ToolTipContent";
 import useEstimatedStakingRewards from "@hooks/useEstimatedStakingRewards";
 import { first } from "lodash";
+import useEscrowDataQuery from "@hooks/Escrowed/useEscrowDataQuery";
+import useFetchRewards from "@hooks/useFetchRewards";
 
 const THEME_COLOR = PAGE_COLOR.claim;
 
 export default function Claim() {
   const { connected } = useWallet();
+
+  //claim escrow
+  useEscrowDataQuery()  // - 0
+  useFetchRewards()
+  useEstimatedStakingRewards();  //- 0
 
   const { enqueueSnackbar } = useSnackbar();
   const historicalClaim = useAtomValue(historicalClaimHZNAndZUSDAtom)

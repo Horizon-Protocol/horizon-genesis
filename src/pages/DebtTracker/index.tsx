@@ -66,8 +66,6 @@ const rightPriceConfig: Partial<LineSeriesPartialOptions> = {
 export default function DebtTracker() {
     const { connected, account } = useWallet();
 
-    useQueryDebt();
-
     const [toolTipProps, setToolTipProps] = useState<ToolTipProps>({
         toolTipDisplay: 'none',
         left: '0',

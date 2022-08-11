@@ -71,6 +71,9 @@ function App() {
 
   useSetupHorizonLib();
 
+  //debt historycal lifetime rewards
+  useQueryDebt()
+
   //system data
   useSuspensionStatus();
   useFetchHorizonData();

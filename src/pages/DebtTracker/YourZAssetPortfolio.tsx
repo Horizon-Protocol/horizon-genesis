@@ -1,4 +1,4 @@
-import { Box, Typography } from "@mui/material";
+import { Box, Typography, SvgIcon } from "@mui/material";
 import { useState } from "react";
 import { COLOR } from "@utils/theme/constants";
 import Pagination from "@components/Pagination";
@@ -13,6 +13,7 @@ import NoRowsOverlay from "@components/NoRowsOverlay";
 import useFilterZAssets from "@hooks/useFilterZAssets";
 import { formatNumber, formatPercent } from "@utils/number";
 import useIsMobile from "@hooks/useIsMobile";
+import { ReactComponent as IconNoData } from "@assets/images/nodata.svg";
 
 const rowsPerPage = 100
 
@@ -115,14 +116,38 @@ export default function YourZAssetPortfolio() {
     <Box sx={{ mt: "15px", width: "100%" }}>
       <NoRowsOverlay
         hidden={rows.length > 0}
-        noRowsTitle={
-          <>
-            You have no escrowed HZN. Stake HZN in
-            <br />
-            order to earn staking rewards.
-          </>
-        }
-        noRowsbtnTitle="STAKE NOW"
+        // noRowsTitle={
+        //   <>
+        //     You have no escrowed HZN. Stake HZN in
+        //     <br />
+        //     order to earn staking rewards.
+        //   </>
+        // }
+        // noRowsbtnTitle="STAKE NOW"
+        noRowsRender={<Box sx={{
+          display:'flex', 
+          alignItems:'center',
+          mt: '30px',
+          opacity: 0.2,
+
+          }}>
+          <SvgIcon
+                    sx={{
+                        width: '24px',
+                        color: "text.primary",
+                      
+                    }}
+                >
+                    <IconNoData />
+                </SvgIcon>
+                <Typography sx={{
+          fontSize:'12px',
+          fontWeight:700,
+          color: COLOR.text,
+          ml: '9px'
+          }}></Typography>
+            No zAssets 
+          </Box>}
       />
       <Box
         sx={{

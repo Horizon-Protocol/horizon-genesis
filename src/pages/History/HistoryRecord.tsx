@@ -44,8 +44,6 @@ export default function HistoryRecord() {
   const { connected } = useWallet();
   const historicalIsLoading = useAtomValue(historicalIsLoadingAtom)
 
-  useQueryDebt();
-
   const [page, setPage] = useState(0);
   const [rowsPerPage, setRowsPerPage] = useState(10);
 

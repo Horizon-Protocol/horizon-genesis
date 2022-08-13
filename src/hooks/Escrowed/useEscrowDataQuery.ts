@@ -9,7 +9,6 @@ import { BNWithDecimals, formatNumber, zeroBN } from "@utils/number";
 import { flatten, flattenDeep } from "lodash";
 import { rewardsEscrowAtom } from "@atoms/record";
 import useDisconnected from "@hooks/useDisconnected";
-import useGetEthCallProvider from "@hooks/staker/useGetEthCallProvider";
 import useHorizonJs from "@hooks/useHorizonJs";
 import { Contract } from "@horizon-protocol/ethcall";
 import BigNumber from "bignumber.js";
@@ -32,7 +31,6 @@ export default function useEscrowDataQuery() {
 
     const appReady = useAtomValue(readyAtom);
     const { account } = useWallet(); 
-    const getProvider = useGetEthCallProvider();
     const horizonJs = useHorizonJs();
 
     const setRewardsEscrow = useUpdateAtom(rewardsEscrowAtom)

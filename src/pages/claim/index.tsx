@@ -40,9 +40,9 @@ export default function Claim() {
   const { connected } = useWallet();
 
   //claim escrow
-  useEscrowDataQuery()  // - 0
-  useFetchRewards()
-  useEstimatedStakingRewards();  //- 0
+  // useEscrowDataQuery()  // - 0
+  // useFetchRewards()
+  // useEstimatedStakingRewards();  //- 0
 
   const { enqueueSnackbar } = useSnackbar();
   const historicalClaim = useAtomValue(historicalClaimHZNAndZUSDAtom)

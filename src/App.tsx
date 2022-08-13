@@ -74,6 +74,11 @@ function App() {
   //debt historycal lifetime rewards
   useQueryDebt()
 
+  //claimable
+  useEscrowDataQuery()  // - 0
+  useFetchRewards()
+  useEstimatedStakingRewards();  //- 0
+
   //system data
   useSuspensionStatus();
   useFetchHorizonData();

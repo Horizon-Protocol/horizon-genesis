@@ -6,9 +6,8 @@ import { useCallback } from "react";
 import useWallet from "@hooks/useWallet";
 import { concat, last, sortBy } from "lodash";
 import { toBN } from "@utils/number";
-import { useAtomValue, useResetAtom, useUpdateAtom } from "jotai/utils";
+import { useResetAtom, useUpdateAtom } from "jotai/utils";
 import { useAtom } from "jotai";
-import { debtAtom } from "@atoms/debt";
 import useDisconnected from "@hooks/useDisconnected";
 import { historicalActualDebtAtom, historicalClaimHZNAndZUSDAtom, historicalIsLoadingAtom, historicalIssuedDebtAtom, historicalOperationAtom, HistoryType } from "@atoms/record";
 
@@ -54,7 +53,7 @@ export default function useQueryDebt() {
     const resetHistoricalClaim = useResetAtom(historicalOperationAtom);
     useDisconnected(resetHistoricalClaim);
 
-    const issueds = async () => {
+    const issueds = useCallback(async () => {
         try {
             // console.log('fetch account',account)
             const issuesReponse = await request(
@@ -86,9 +85,9 @@ export default function useQueryDebt() {
             console.log("query报错issuesReponse", e)
             return [];
         }
-    }
+    },[account])
 
-    const burneds = async () => {
+    const burneds = useCallback(async () => {
         try {
             const burnedsReponse = await request(
                 GRAPH_ENDPOINT,
@@ -115,9 +114,9 @@ export default function useQueryDebt() {
             console.log("query报错burnedsReponse", e)
             return [];
         }
-    }
+    },[account])
 
-    const claims = async () => {
+    const claims = useCallback(async () => {
         try {
             const claimsReponse = await request(
                 GRAPH_ENDPOINT,
@@ -145,9 +144,9 @@ export default function useQueryDebt() {
             console.log("query报错claimsReponse", e)
             return [];
         }
-    }
+    },[account])
 
-    const debtSnapshots = async () => {
+    const debtSnapshots = useCallback(async () => {
         try {
             const debtSnapshotsReponse = await request(
                 GRAPH_ENDPOINT,
@@ -174,7 +173,7 @@ export default function useQueryDebt() {
             console.log("query报错debtSnapshotsReponse", e)
             return [];
         }
-    }
+    },[account])
 
     const fetcher = useCallback(async () => {
         const res = await Promise.all([
@@ -184,7 +183,7 @@ export default function useQueryDebt() {
             debtSnapshots()
         ]);
         return res;
-    }, [account])
+    }, [burneds, claims, debtSnapshots, issueds])
 
     return useQuery(
         [GRAPH_DEBT,'activeaissuesd'],
@@ -197,13 +196,14 @@ export default function useQueryDebt() {
                 claims,
                 debtSnapshot
             ]) {
-                console.log('active debt and issued debt request finished',{
-                    account,
-                    issues,
-                    burns,
-                    claims,
-                    debtSnapshot
-                })
+                console.log('===useQueryDebt')
+                // console.log('active debt and issued debt request finished',{
+                //     account,
+                //     issues,
+                //     burns,
+                //     claims,
+                //     debtSnapshot
+                // })
                 let issuesAndBurns = issues.issueds!.map((b: any) => ({ isBurn: false, ...b }));
                 issuesAndBurns = sortBy(
                     issuesAndBurns.concat(burns.burneds!.map((b: any) => ({ isBurn: true, ...b }))),
@@ -216,11 +216,11 @@ export default function useQueryDebt() {
                 /* abstract cliams and calculate all the claim record for HZN and zUSD(come from exchange fee) */
                 setHistoricalClaim(claims.feesClaimeds)
                 /* --------------------------- */
-                let typeMintHistory = issues.issueds.map((b: any) => ({ ...b, type: HistoryType.Mint }))
-                let typeBurnHistory = burns.burneds.map((b: any) => ({ ...b, type: HistoryType.Burn }))
-                let typeClaimHistory = claims.feesClaimeds.map((b: any) => ({ ...b, type: HistoryType.Claim }))
-                let concatData = concat(typeMintHistory, typeBurnHistory, typeClaimHistory)
-                let allTypeHistory = sortBy(concatData, "timestamp")
+                const typeMintHistory = issues.issueds.map((b: any) => ({ ...b, type: HistoryType.Mint }))
+                const typeBurnHistory = burns.burneds.map((b: any) => ({ ...b, type: HistoryType.Burn }))
+                const typeClaimHistory = claims.feesClaimeds.map((b: any) => ({ ...b, type: HistoryType.Claim }))
+                const concatData = concat(typeMintHistory, typeBurnHistory, typeClaimHistory)
+                const allTypeHistory = sortBy(concatData, "timestamp")
                 // console.log("====allTypeHistory", allTypeHistory)
 
                 //if user has data and more than 0, loading end
@@ -261,7 +261,7 @@ export default function useQueryDebt() {
 
                 // We merge both actual & issuance debt into an array ===========================================================
                 const debtHistory = debtSnapshot.debtSnapshots ?? [];
-                let historicalActualDebtRecord: DebtData[] = [];
+                const historicalActualDebtRecord: DebtData[] = [];
                 debtHistory
                     .slice()
                     .reverse()

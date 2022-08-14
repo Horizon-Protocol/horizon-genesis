@@ -35,7 +35,6 @@ export default function useQueryGlobalDebt() {
           }
         `
       );
-      console.log('globalDebtsReponse',globalDebtsReponse)
       return globalDebtsReponse;
     } catch (e) {
       return [];
@@ -45,6 +44,7 @@ export default function useQueryGlobalDebt() {
   useQuery([GRAPH_DEBT, "globalDebts"], globalDebts, {
     initialData: [],
     onSuccess(debts) {
+      console.log('===useQueryGlobalDebt',debts)
       if (globalDebt?.length != debts.dailyIssueds.length) {
         setGlobalDebt(debts.dailyIssueds ?? []);
       }

@@ -58,6 +58,7 @@ export default function useFetchFeePool() {
   // current period
   useQuery([CONTRACT, PUBLIC, "feepool", "0"], fetchData, {
     onSuccess(res) {
+      console.log("===useFetchFeePool==0==")
       setCurrentFeePeriod(res);
     },
   });
@@ -65,6 +66,7 @@ export default function useFetchFeePool() {
   // previous period
   useQuery([CONTRACT, PUBLIC, "feepool", "1"], fetchData, {
     onSuccess(res) {
+      console.log("===useFetchFeePool==1==")
       setPreviousFeePeriod(res);
     },
   });

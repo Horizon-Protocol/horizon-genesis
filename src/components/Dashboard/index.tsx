@@ -22,7 +22,11 @@ import Tooltip from "@components/Tooltip";
 import useIsMobile from "@hooks/useIsMobile";
 import MenuSVG from "@components/MobileFooter/MobileMenu/MenuSVG";
 import { ReactComponent as Union } from "@assets/images/Union.svg";
-
+import useFetchAppData from "@hooks/useFetchAppData";
+import useFetchDebtData from "@hooks/useFetchDebtData";
+import useFetchZAssetsBalance from "@hooks/useFetchZAssetsBalance";
+import useFetchFeePool from "@hooks/useFetchFeePool";
+import useQueryGlobalDebt from "@hooks/query/useQueryGlobalDebt";
 interface DashboardProps extends BoxProps{
   dashBoardOnClose?: () => void
 }

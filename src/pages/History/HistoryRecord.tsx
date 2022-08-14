@@ -22,6 +22,8 @@ import { BlockExplorer } from "@utils/helper";
 import { hznRateAtom } from "@atoms/exchangeRates";
 import useWallet from "@hooks/useWallet";
 import { DateRange } from "@mui/x-date-pickers-pro";
+import useQueryDebt from "@hooks/query/useQueryDebt";
+import useQueryGlobalDebt from "@hooks/query/useQueryGlobalDebt";
 interface HistoryDataProps {
   id: string;
   type: HistoryType;

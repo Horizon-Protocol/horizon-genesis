@@ -25,6 +25,7 @@ export default function useFetchDebtData() {
     // console.log("====contracts====",utils)
     
     const zUSDBytes = utils.formatBytes32String("zUSD");
+    console.log('call useFetchDebtData')
     const [deadline, ...values] = (await Promise.all([
       Liquidations.getLiquidationDeadlineForAccount(account),
       Synthetix.collateral(account),

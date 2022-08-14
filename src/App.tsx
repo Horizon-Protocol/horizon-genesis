@@ -47,10 +47,6 @@ import useSuspensionStatus from "@hooks/useSuspensionStatus";
 import GetHZNDialog from "@components/MobileFooter/MobileMenu/GetHZNDialog";
 import useEstimatedStakingRewards from "@hooks/useEstimatedStakingRewards";
 import DevWatchTool from "@components/DevWatchTool";
-import useFetchPublicContractData from "@hooks/useFetchPublicContractData";
-import useFetchPrivateContractData from "@hooks/useFetchPrivateContractData";
-import useFetchExchangeRates from "@hooks/useFetchExchangeRates";
-import useFetchWalletDashBoardData from "@hooks/useFetchWalletDashBoardData";
 
 const AppDisabled = !!import.meta.env.VITE_APP_DISABLED;
 
@@ -75,26 +71,24 @@ function App() {
 
   useSetupHorizonLib();
 
-  //wallet
-  useFetchWalletDashBoardData()   //combined [TargetCRatio LiquidationRatio TotalIssued]
-  useFetchDebtData();             //make sure wallet info quick, can't combine
+  //debt historycal lifetime rewards
+  useQueryDebt()
 
-  //no need to combine
-  useEstimatedStakingRewards();
-  useEscrowDataQuery();
-  useQueryDebt();
-  useFetchExchangeRates();
-  useFetchFeePool();
-  useQueryGlobalDebt();
+  //claimable & escrow
+  useEscrowDataQuery()  // - 0
+  useFetchRewards()
+  useEstimatedStakingRewards();  //- 0
+
+  //system data
+  useSuspensionStatus();
   useFetchHorizonData();
 
-  // useSuspensionStatus();  //combined 
-  // useFetchAppData()
-  useFetchPublicContractData()
-
-  // useFetchRewards(); //combined
-  useFetchPrivateContractData()   //combined 3 [rewards]
-  useFetchZAssetsBalance();  //combine all 22 zasset calls
+  //dashboard data
+  useFetchAppData();
+  useFetchDebtData();
+  useFetchZAssetsBalance();
+  useFetchFeePool();
+  useQueryGlobalDebt()
 
   const refresh = useRefresh();
 
@@ -337,7 +331,7 @@ function App() {
       </Box>
       <WalletsDialog />
       <GetHZNDialog />
-      {/* <DevWatchTool /> */}
+      {import.meta.env.DEV && <DevWatchTool />}
     </>
   );
 }

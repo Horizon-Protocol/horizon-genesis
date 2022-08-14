@@ -17,9 +17,7 @@ export default function useSuspensionStatus(){
         if (appReady) {
             const {
                 contracts: { SystemStatus },
-                utils: { formatBytes32String },
-                synths,
-            } = horizonJs!;;
+            } = horizonJs!;
             const [systemSuspension, issuanceSuspension] = await Promise.all([
                 SystemStatus.systemSuspension(),
                 SystemStatus.issuanceSuspension(),
@@ -29,7 +27,7 @@ export default function useSuspensionStatus(){
                 issuanceSuspension
             }
         }
-    }, [appReady])
+    }, [horizonJs,appReady])
 
     useQuery([CONTRACT],fetcher, {
         onSuccess(status){

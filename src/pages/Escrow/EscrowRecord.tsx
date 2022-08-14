@@ -50,21 +50,16 @@ export default function EscrowRecord() {
   //       };
   //     })
   //   : [];
-
-    let escrowList = rewardsEscrow?.schedule?.map((item, index) => {
-      return {
-        id: item.entryID,
-        unlockDate: item.endTime,
-        claimDate: item.endTime,
-        amount: item.escrowAmount,
-      };
-    }).filter(x => x.amount > 0)
-
     const rows = rewardsEscrow?.schedule
-    ? 
-    escrowList ?? []
-    : 
-    []
+    ? rewardsEscrow?.schedule?.map((item, index) => {
+        return {
+          id: item.entryID,
+          unlockDate: item.endTime,
+          claimDate: item.endTime,
+          amount: item.escrowAmount,
+        };
+      }).filter(x => x.amount > 0)
+    : [];
 
   const handleChangePage = (event: unknown, newPage: number) => {
     setPage(newPage);

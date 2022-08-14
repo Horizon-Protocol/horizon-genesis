@@ -41,7 +41,6 @@ export default function useFetchAppData() {
       ),
       SystemSettings.issuanceRatio(),
       Liquidations.liquidationRatio(),
-      // Liquidations.liquidationDelay(),
     ]);
 
     return [
@@ -57,7 +56,6 @@ export default function useFetchAppData() {
       totalIssuedZUSDExclEth,
       targetRatio,
       liquidationRatio,
-      // liquidationDelay,
     ]) {
       console.log("====useFetchAppData====", {
         lastDebtLedgerEntry: lastDebtLedgerEntry.toString(),
@@ -65,15 +63,12 @@ export default function useFetchAppData() {
         totalIssuedZUSDExclEth: totalIssuedZUSDExclEth.toString(),
         targetRatio: targetRatio.toString(),
         liquidationRatio: liquidationRatio.toString(),
-        // liquidationDelay: liquidationDelay,
       });
       setLastDebtLedgerEntry(lastDebtLedgerEntry);
       setTotalSupply(totalSupply);
       setTotalIssuedZUSDExclEth(totalIssuedZUSDExclEth);
       setTargetCRatio(targetRatio);
-      // setTargetCRatio(toBN(0.05));
       setLiquidationRatio(liquidationRatio);
-      // setLiquidationDelay(liquidationDelay);
 
       setAppDataReady(true);
     },

@@ -187,8 +187,8 @@ export const STAKING_CONTRACT_ADDRESS: {
 
 const EnvChainId = parseInt(import.meta.env.VITE_APP_CHAIN_ID);
 
-// export const ChainId = [56, 97].indexOf(EnvChainId) > -1 ? EnvChainId : 97;
-export const ChainId = 56;
+export const ChainId = [56, 97].indexOf(EnvChainId) > -1 ? EnvChainId : 97;
+// export const ChainId = 56;
 
 export const ChainName = CHAIN_NAME_MAP[ChainId];
 export const ChainExplorerUrl = CHAIN_EXPLORER_URL_MAP[ChainId];
@@ -205,9 +205,13 @@ export const BSC_BLOCK_TIME = 3;
 export const BLOCKS_PER_YEAR = (60 / BSC_BLOCK_TIME) * 60 * 24 * 365; // 10512000
 
 // react query default options
+export const REFETCH_INTERVAL = 15000;
+
 export const REACT_QUERY_DEFAULT_OPTIONS: Partial<DefaultOptions["queries"]> = {
-  // staleTime: 15000,
-  refetchInterval: 15000, // 15s,
+  refetchInterval: REFETCH_INTERVAL, // 15s,
+  refetchIntervalInBackground: false,
+  refetchOnMount: true,
+  refetchOnWindowFocus: false
 };
 
 //horizon subgraphs endpoint

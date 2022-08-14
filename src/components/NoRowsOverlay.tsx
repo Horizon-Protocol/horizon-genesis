@@ -21,15 +21,16 @@ interface NoRowsProps {
   hidden?: boolean;
   noRowsTitle?: string | JSX.Element;
   noRowsbtnTitle?: string;
+  noRowsRender?: string | JSX.Element,
   btnClick?: () => void;
 }
 
 // interface NoRowsOverlayProps extends ;
-const NoRowsOverLay = ({ hidden, noRowsTitle, noRowsbtnTitle, btnClick }: NoRowsProps) => {
+const NoRowsOverLay = ({ hidden, noRowsTitle, noRowsbtnTitle, noRowsRender, btnClick }: NoRowsProps) => {
   return (
     <StyledGridOverlay display={hidden ? 'none' : 'flex'}>
       {noRowsTitle}
-      <PrimaryButton
+      {noRowsRender ? noRowsRender : <PrimaryButton
         sx={{
           mt: '18px',
           width: '180px',
@@ -42,7 +43,7 @@ const NoRowsOverLay = ({ hidden, noRowsTitle, noRowsbtnTitle, btnClick }: NoRows
       // {...props}
       >
         {noRowsbtnTitle}
-      </PrimaryButton>
+      </PrimaryButton>}
     </StyledGridOverlay>
   );
 }
@@ -51,6 +52,7 @@ export default function NoRowsOverlay({
   hidden,
   noRowsTitle,
   noRowsbtnTitle,
+  noRowsRender,
   ...props
 }: NoRowsProps & BoxProps) {
   const { connected } = useWallet();
@@ -60,7 +62,7 @@ export default function NoRowsOverlay({
 
   return (
     connected ?
-      <NoRowsOverLay hidden={connected ? hidden : true} noRowsTitle={noRowsTitle} noRowsbtnTitle={noRowsbtnTitle} btnClick={() => {
+      <NoRowsOverLay hidden={connected ? hidden : true} noRowsTitle={noRowsTitle} noRowsbtnTitle={noRowsbtnTitle} noRowsRender={noRowsRender} btnClick={() => {
         history.push('mint')
       }} /> :
       <NoRowsOverLay hidden={false} noRowsTitle="No wallet connected" noRowsbtnTitle="Connect wallet" btnClick={() => {

@@ -26,6 +26,11 @@ import GetHZNDialog from "./MobileMenu/GetHZNDialog";
 import MenuItem from "@components/Header/HelpMenu/MenuItem";
 import Dashboard from "@components/Dashboard";
 import MenuDialog from "./MobileMenu/MenuDialog";
+import useFetchAppData from "@hooks/useFetchAppData";
+import useFetchDebtData from "@hooks/useFetchDebtData";
+import useFetchZAssetsBalance from "@hooks/useFetchZAssetsBalance";
+import useFetchFeePool from "@hooks/useFetchFeePool";
+import useQueryGlobalDebt from "@hooks/query/useQueryGlobalDebt";
 interface GetHZNProps {
     svg: JSX.Element;
     title: string;

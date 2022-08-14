@@ -23,10 +23,6 @@ export default function Escrow() {
     
     const { totalClaimableBalance, totalEscrowBalance, totalVestedBalance } = useEscrowCalculations()
 
-    useEscrowDataQuery()  // - 0
-    useFetchRewards();    //- 6
-    useEstimatedStakingRewards();  //- 0
-
     return (
         <PageCard
             mx='auto'

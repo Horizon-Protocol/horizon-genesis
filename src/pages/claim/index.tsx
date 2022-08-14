@@ -39,11 +39,6 @@ const THEME_COLOR = PAGE_COLOR.claim;
 export default function Claim() {
   const { connected } = useWallet();
 
-  //claim escrow
-  // useEscrowDataQuery()  // - 0
-  // useFetchRewards()
-  // useEstimatedStakingRewards();  //- 0
-
   const { enqueueSnackbar } = useSnackbar();
   const historicalClaim = useAtomValue(historicalClaimHZNAndZUSDAtom)
 

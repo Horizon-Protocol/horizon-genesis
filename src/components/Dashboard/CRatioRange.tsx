@@ -7,9 +7,7 @@ import { formatNumber } from "@utils/number";
 import { COLOR } from "@utils/theme/constants";
 import Tooltip from "@components/Tooltip";
 import useWallet from "@hooks/useWallet";
-import { useIsFetching, useQueryClient } from "react-query";
-import { WALLET } from "@utils/queryKeys";
-import { useCallback } from "react";
+
 import ActionLink from "@components/Alerts/ActionLink";
 import ToolTipContent from "@components/Tooltip/ToolTipContent";
 import useCRactioProgress from "@hooks/useCRactioProgress";
@@ -26,7 +24,7 @@ const Tick = ({
   color?: string;
 }) => {
   return (
-    <Box position='absolute' top={1} left={left} color={color}>
+    <Box position="absolute" top={1} left={left} color={color}>
       <Box height={24} borderLeft={`1px solid ${COLOR.border}`} />
       <Typography
         mt={0.5}
@@ -44,66 +42,82 @@ const Tick = ({
 };
 
 export default function CRatioRange(props: BoxProps) {
-
   const { targetCRatioPercent, liquidationRatioPercent } =
     useAtomValue(ratiosPercentAtom);
   const currentCRatioPercent = useAtomValue(currentCRatioPercentAtom);
 
-  const { account, connected } = useWallet()
-  const queryClient = useQueryClient()
-  const balacneRefreshing = useIsFetching(WALLET)
+  const { connected } = useWallet();
 
-  const { progress, color } = useCRactioProgress()
-
-  const refreshBalance = useCallback(() => {
-    queryClient.refetchQueries([WALLET, account, "balances"], {
-      fetching: false,
-    });
-  }, [queryClient, account])
+  const { progress, color } = useCRactioProgress();
 
   const { collateral, debtBalance } = useAtomValue(debtAtom);
 
   const { liquidationPrice, targetPrice } = useMemo(() => {
-    let liquidationPrice = (liquidationRatioPercent * debtBalance.toNumber()) / (collateral.toNumber() * 100)
-    let targetPrice = (targetCRatioPercent * debtBalance.toNumber()) / (collateral.toNumber() * 100)
-    return ({
+    const liquidationPrice =
+      (liquidationRatioPercent * debtBalance.toNumber()) /
+      (collateral.toNumber() * 100);
+    const targetPrice =
+      (targetCRatioPercent * debtBalance.toNumber()) /
+      (collateral.toNumber() * 100);
+    return {
       liquidationPrice,
-      targetPrice
-    })
-  }, [liquidationRatioPercent, targetCRatioPercent, debtBalance, collateral])
+      targetPrice,
+    };
+  }, [liquidationRatioPercent, targetCRatioPercent, debtBalance, collateral]);
 
   return (
-    <Box pt={3.5} pb={2.25} textAlign='center' {...props} sx={{
-      position: "relative"
-    }}>
+    <Box
+      pt={3.5}
+      pb={2.25}
+      textAlign="center"
+      {...props}
+      sx={{
+        position: "relative",
+      }}
+    >
       <Typography
-        variant='h6'
+        variant="h6"
         fontSize={26}
-        letterSpacing='1px'
-        lineHeight='26px'
-        textAlign='center'
-        fontWeight='bold'
+        letterSpacing="1px"
+        lineHeight="26px"
+        textAlign="center"
+        fontWeight="bold"
         color={currentCRatioPercent ? color : undefined}
       >
         {currentCRatioPercent ? formatNumber(currentCRatioPercent) : "--"}%
       </Typography>
       <Tooltip
         tooltipWidth={261}
-        title={<ToolTipContent title='Current C-Ratio' conetnt={
-          <>
-            <code>C-Ratio = HZN Balance * HZN Price / Debt</code>Maintaining a C-Ratio
-            of {targetCRatioPercent}% or more will allow you to claim rewards.
-            If your C-ratio goes below the liquidation ratio of{" "}
-            {liquidationRatioPercent}% for more than 3 days, a liquidation penalty may incur. <ActionLink fontSize='12px !important' letterSpacing='1px' href="https://academy.horizonprotocol.com/horizon-genesis/staking-on-horizon-genesis/collaterialization-and-c-ratio" target='_blank' showArrow={false}><br></br>LEARN MORE</ActionLink>
-          </>
-        } />}
-        placement='top'
+        title={
+          <ToolTipContent
+            title="Current C-Ratio"
+            conetnt={
+              <>
+                <code>C-Ratio = HZN Balance * HZN Price / Debt</code>Maintaining
+                a C-Ratio of {targetCRatioPercent}% or more will allow you to
+                claim rewards. If your C-ratio goes below the liquidation ratio
+                of {liquidationRatioPercent}% for more than 3 days, a
+                liquidation penalty may incur.{" "}
+                <ActionLink
+                  fontSize="12px !important"
+                  letterSpacing="1px"
+                  href="https://academy.horizonprotocol.com/horizon-genesis/staking-on-horizon-genesis/collaterialization-and-c-ratio"
+                  target="_blank"
+                  showArrow={false}
+                >
+                  <br></br>LEARN MORE
+                </ActionLink>
+              </>
+            }
+          />
+        }
+        placement="top"
       >
         <Typography
-          variant='subtitle2'
-          m='8px 0 0px'
-          lineHeight='14px'
-          letterSpacing='0.5px'
+          variant="subtitle2"
+          m="8px 0 0px"
+          lineHeight="14px"
+          letterSpacing="0.5px"
           color="#B4E0FF"
           fontSize="14px"
           fontWeight="400"
@@ -114,20 +128,28 @@ export default function CRatioRange(props: BoxProps) {
       </Tooltip>
       {[liquidationPrice, targetPrice].map((item, index) => {
         return (
-          <Typography key={index} sx={{
-            opacity: .5,
-            color: COLOR.text,
-            fontSize: '8px',
-            letterSpacing: '0.5px',
-            width: "40%",
-            ml: index == 0 ? "25%" : "75%",
-            transform: index == 0 ? "translateX(-50%) translateY(100%)" : "translateX(-50%)",
-          }}>${connected ? formatNumber(item, { mantissa: 3 }) : "--"}</Typography>
-        )
+          <Typography
+            key={index}
+            sx={{
+              opacity: 0.5,
+              color: COLOR.text,
+              fontSize: "8px",
+              letterSpacing: "0.5px",
+              width: "40%",
+              ml: index == 0 ? "25%" : "75%",
+              transform:
+                index == 0
+                  ? "translateX(-50%) translateY(100%)"
+                  : "translateX(-50%)",
+            }}
+          >
+            ${connected ? formatNumber(item, { mantissa: 3 }) : "--"}
+          </Typography>
+        );
       })}
-      <Box position='relative' pb={4}>
+      <Box position="relative" pb={4}>
         <LinearProgress
-          variant='determinate'
+          variant="determinate"
           value={progress}
           valueBuffer={currentCRatioPercent}
           sx={{
@@ -146,16 +168,16 @@ export default function CRatioRange(props: BoxProps) {
         {liquidationRatioPercent > 0 && (
           <Tick
             percent={liquidationRatioPercent}
-            left='25%'
-            label='Liquidation'
+            left="25%"
+            label="Liquidation"
             color={COLOR.danger}
           />
         )}
         {targetCRatioPercent > 0 && (
           <Tick
             percent={targetCRatioPercent}
-            left='75%'
-            label='Target'
+            left="75%"
+            label="Target"
             color={COLOR.safe}
           />
         )}

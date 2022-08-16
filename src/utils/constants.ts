@@ -185,6 +185,8 @@ export const STAKING_CONTRACT_ADDRESS: {
   },
 };
 
+const VERSION = import.meta.env.VITE_APP_COMMIT_VERSION;
+console.log("GENESIS", VERSION);
 const EnvChainId = parseInt(import.meta.env.VITE_APP_CHAIN_ID);
 
 export const ChainId = [56, 97].indexOf(EnvChainId) > -1 ? EnvChainId : 97;
@@ -211,7 +213,7 @@ export const REACT_QUERY_DEFAULT_OPTIONS: Partial<DefaultOptions["queries"]> = {
   refetchInterval: REFETCH_INTERVAL, // 15s,
   refetchIntervalInBackground: false,
   refetchOnMount: true,
-  refetchOnWindowFocus: false
+  refetchOnWindowFocus: false,
 };
 
 //horizon subgraphs endpoint
@@ -226,5 +228,5 @@ export const LINK_EXCHANGE = {
 }[ChainId]!;
 
 export const DEPLOY_DATES = {
-  [Token.ZBNB_BNB_LP]: 1656986400 // Official Launch Timestamp 1656993600 (-2hours: 1656986400) - Test timestamp 1656716364
-} 
+  [Token.ZBNB_BNB_LP]: 1656986400, // Official Launch Timestamp 1656993600 (-2hours: 1656986400) - Test timestamp 1656716364
+};

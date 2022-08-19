@@ -64,21 +64,6 @@ export default function useEscrowDataQuery() {
                 RewardEscrowV2.totalVestedAccountBalance(account),
             ]);
 
-            /*--- combine alll ----*/
-            // const mixCalls = [
-            //     contractMap!.RewardEscrowV2.numVestingEntries(account),
-            //     contractMap!.RewardEscrowV2.balanceOf(account),
-            //     contractMap!.RewardEscrowV2.totalVestedAccountBalance(account)
-            // ];
-            // const ethcallProvider = await getProvider();
-            // const res = (await ethcallProvider.all(mixCalls)) as unknown[];
-
-            // const [numVestingEntries,totalEscrowed,totalVested] = res as [
-            //     BigNumber,
-            //     BigNumber,
-            //     BigNumber
-            // ];
-
             const vestingEntriesPromise = [];
             const vestingEntriesIdPromise:Promise<any>[] = [];
             const totalVestingEntries = Number(numVestingEntries);

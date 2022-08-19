@@ -1,6 +1,6 @@
-import { QueryFunction, useQuery } from "react-query";
+import { useQuery } from "react-query";
 import { useAtomValue, useResetAtom, useUpdateAtom } from "jotai/utils";
-import { BigNumber, BigNumberish, ethers } from "ethers";
+import { BigNumber, ethers } from "ethers";
 import erc20Abi from "@contracts/abis/Erc20.json";
 import useWallet from "@hooks/useWallet";
 import { toBN, zeroBN } from "@utils/number";
@@ -10,11 +10,9 @@ import useHorizonJs from "@hooks/useHorizonJs";
 import { WALLET } from "@utils/queryKeys";
 import { formatNumber } from "@utils/number";
 import { ratesAtom } from "@atoms/exchangeRates";
-import { useCallback, useMemo } from "react";
+import { useMemo } from "react";
 import horizon from "@lib/horizon";
 import { sumBy, values } from "lodash";
-import useGetEthCallProvider from "./staker/useGetEthCallProvider";
-import { Call, Contract } from "@horizon-protocol/ethcall";
 
 export default function useFetchZAssetsBalance() {
   const { provider, account } = useWallet();
@@ -34,52 +32,82 @@ export default function useFetchZAssetsBalance() {
   useDisconnected(resetZAssetsBlanceInfos);
 
   //=========== generate balance extra infomation ===============
-  const getProvider = useGetEthCallProvider();
-
-
   const zAssetsBalance = useAtomValue(zAssetsBalanceAtom)
   const rates = useAtomValue(ratesAtom);
   const zAssets = values(horizon.synthsMap) || [];
 
-  const fetcher = useCallback(async () => {
-    const { tokens, contracts } = horizonJs!;
-
-
-    let zAssetsCalls: Call[] = []
-    tokens.forEach(token => {
-      const { address, symbol, name } = token
-
-      if (!provider || !account) {
-        return
+  const othersZAssetsBalance = useMemo(()=>{
+    const noZeroZAssets = zAssets.filter(({name}) => zAssetsBalance[name]?.gt(0) && rates[name])
+    .map((item, index) => {
+      return {
+        ...item,
+        id: item.name,
+        amount: zAssetsBalance[item.name]!.toNumber(),
+        amountUSD: zAssetsBalance[item.name]!.multipliedBy(
+          rates[item.name]!
+        ).toNumber(),
       }
+    })
+    const totalUSD = sumBy(noZeroZAssets, "amountUSD");
+    const fulInfoZAssetBalance = noZeroZAssets.map((item,index) => {
+      return {
+        ...item,
+        percent: item.amountUSD / totalUSD,
+      }
+    })
+    // console.log("========fulInfoZAssetBalance======",fulInfoZAssetBalance)
+    // console.log("========rates======",rates)
 
-      const tokenContract = new Contract(
-        address,
-        erc20Abi,
-      );
-      zAssetsCalls.push(tokenContract.balanceOf(account))
-    });
-
-    const ethcallProvider = await getProvider();
-    const data = (await ethcallProvider.all(zAssetsCalls)) as BigNumber[];
-
-    return data.reduce((acc: ZAssetsBalance, amount, index, arr) => {
-      const token = tokens[index]
-      //去除没有值的zAsset
-      if (amount.lte(0)) return acc;
-      acc[token.symbol as CurrencyKey] = toBN(ethers.utils.formatUnits(amount, token.decimals));
-      return acc;
-    }, {});
-
-  }, [horizonJs])
+    setZAssetsBalanceInfo(fulInfoZAssetBalance)
+  },[zAssetsBalance,rates])
 
   useQuery<ZAssetsBalance>(
     [WALLET, account, "balances"],
-    fetcher
-    ,
+    async () => {
+      const { tokens } = horizonJs!;
+     
+      const getBalance = ({
+        address,
+        symbol,
+      }: Token): Promise<BigNumber> => {
+        if (!provider || !account) {
+          return Promise.resolve(BigNumber.from(0));
+        }
+        if (symbol === "BNB") {
+          return provider.getBalance(account);
+        } else {
+          const tokenContract = new ethers.Contract(
+            address,
+            erc20Abi,
+            provider
+          );
+          return tokenContract.balanceOf(account);
+        }
+      };
+
+      // console.log('==========tokens=========',tokens)
+      const promises = tokens.map(async (token) => {
+        if (!provider || !account) return { amount: toBN(0), token };
+        const balance = await getBalance(token);
+        return {
+          amount: toBN(ethers.utils.formatUnits(balance, token.decimals)),
+          token,
+        };
+      });
+
+      const data = await Promise.all(promises);
+
+      return data.reduce((acc: ZAssetsBalance, { amount, token }, index, arr) => {
+        //去除没有值的zAsset
+        if (amount.lte(0)) return acc;
+        acc[token.symbol as CurrencyKey] = amount;
+        return acc;
+      }, {});
+    },
     {
       enabled: !!provider && !!horizonJs && !!account,
       onSuccess(balances) {
+        // console.log('================balances===========', balances);
         setZUSDBalances(balances["zUSD"] || zeroBN)
         setzAssetBalances(balances);
       },

@@ -29,10 +29,10 @@ letter-spacing: 0.5px;
 }
 .MuiDataGrid-row {
   &:nth-of-type(2n+1) {
-    background: ${COLOR_BG_30};
+    background: rgba(16, 38, 55, 0.0001);
   }
   &:hover {
-    background: ${COLOR_BG};
+    background: rgba(16, 38, 55, 0.3);
   }
 }
 .MuiDataGrid-cell {

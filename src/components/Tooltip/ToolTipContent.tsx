@@ -1,7 +1,7 @@
 import { Box } from "@mui/material";
 
 interface ToolTipContentProps {
-    title: string | JSX.Element;
+    title?: string | JSX.Element;
     conetnt: string | JSX.Element;
 }
 

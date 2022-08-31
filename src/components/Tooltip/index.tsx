@@ -7,6 +7,7 @@ import theme from "@utils/theme";
 import { useCallback, useState } from "react";
 import useIsMobile from "@hooks/useIsMobile";
 interface BaseTooltipProps {
+  clickAble?: boolean,
   tooltipWidth?: number
 }
 
@@ -29,16 +30,18 @@ const StyledTooltip = styled(({ tooltipWidth, className, ...props }: BaseTooltip
   },
 }));
 
-const BaseTooltip = ({ tooltipWidth, children, ...props }: BaseTooltipProps & TooltipProps) => {
+const BaseTooltip = ({ clickAble, tooltipWidth, children, ...props }: BaseTooltipProps & TooltipProps) => {
 
   const isMobile = useIsMobile()
 
   const [open, setOpen] = useState(false)
   return (
-    isMobile ?
+    (isMobile || clickAble) ?
       <ClickAwayListener onClickAway={() => {
+        // alert('close')
         setOpen(false)
       }}>
+        <div>
         <StyledTooltip tooltipWidth={tooltipWidth} sx={{
           cursor: 'help',
           innerWidth: 12,
@@ -56,12 +59,18 @@ const BaseTooltip = ({ tooltipWidth, children, ...props }: BaseTooltipProps & To
           arrow
           {...props}
         >
-          <Box onClick={() => {
+          <Box 
+          style={{display:'flex', justifyContent:'center', alignItems:'center'}} 
+          onClick={() => {
             setOpen(true)
+            setTimeout(() => {
+              setOpen(false)
+            }, 3000);
           }}>
             {children}
           </Box>
         </StyledTooltip>
+        </div>
       </ClickAwayListener>
       :
       <StyledTooltip tooltipWidth={tooltipWidth} sx={{

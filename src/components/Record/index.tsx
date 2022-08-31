@@ -61,6 +61,13 @@ export default function Record(props: BoxProps) {
         to: "escrow",
       },
       {
+        img: <IconEscrow />,
+        selectedImg: <IconEscrowSelected />,
+        selected: "/authorize" === pathname,
+        title: "Authorize",
+        to: "authorize",
+      },
+      {
         img: <IconHistory />,
         selectedImg: <IconHistorySelected />,
         selected: "/history" === pathname,

@@ -16,6 +16,8 @@ export const LP = "LP";
 export const WALLET = "WALLET";
 
 export const GRAPH_DEBT = "GRAPH_DEBT"
+export const GRAPH_AUTHORIZATION = "GRAPH_AUTHORIZATION"
+
 
 // query filters
 export const CONTRACT_ALL_PRIVATE = "CONTRACT_ALL_PRIVATE";

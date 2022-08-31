@@ -57,7 +57,7 @@ export default function useQueryDebt() {
         try {
             // console.log('fetch account',account)
             const issuesReponse = await request(
-                GRAPH_ENDPOINT,
+                GRAPH_ENDPOINT(),
                 gql
                     `
                     query{
@@ -79,6 +79,7 @@ export default function useQueryDebt() {
                     }
                 `
             )
+            console.log('debt account',account)
             // console.log("issuesReponse",issuesReponse.issueds)
             return issuesReponse
         } catch (e) {
@@ -90,7 +91,7 @@ export default function useQueryDebt() {
     const burneds = useCallback(async () => {
         try {
             const burnedsReponse = await request(
-                GRAPH_ENDPOINT,
+                GRAPH_ENDPOINT(),
                 gql
                     `
                     query{
@@ -119,7 +120,7 @@ export default function useQueryDebt() {
     const claims = useCallback(async () => {
         try {
             const claimsReponse = await request(
-                GRAPH_ENDPOINT,
+                GRAPH_ENDPOINT(),
                 gql
                     `
                     query{
@@ -149,7 +150,7 @@ export default function useQueryDebt() {
     const debtSnapshots = useCallback(async () => {
         try {
             const debtSnapshotsReponse = await request(
-                GRAPH_ENDPOINT,
+                GRAPH_ENDPOINT(),
                 gql
                     `
                     query{

@@ -59,7 +59,7 @@ export default function MenuPageList({ onMenuClick }: Props) {
   );
 
   useEffect(()=>{
-    setWalletOpen(['/debtTracker', '/escrow', '/history'].indexOf(pathname) > -1)
+    setWalletOpen(['/debtTracker', '/escrow', '/history', '/authorize'].indexOf(pathname) > -1)
   },[pathname])
 
   const ListItem = useCallback(({
@@ -165,6 +165,7 @@ export default function MenuPageList({ onMenuClick }: Props) {
           <ListItem {...{ menu: 'Debt Tracker', path: '/debtTracker', symbol: 'debtTracker', subItem: true }} />
           <ListItem {...{ menu: 'Escrow', path: '/escrow', symbol: 'escrow', subItem: true }} />
           <ListItem {...{ menu: 'History', path: '/history', symbol: 'history', subItem: true }} />
+          <ListItem {...{ menu: 'Authorize', path: '/authorize', symbol: 'authorize', subItem: true }} />
         </List>
       </Collapse>
       <ListItem {...{ menu: 'Earn', path: '/earn', symbol: 'earn'}} />

@@ -4,11 +4,14 @@ import { nextClaimCountDownAtom, feePeriodDatesAtom } from "@atoms/feePool";
 import useNextClaimCountDown from "@hooks/useNextClaimTimer";
 import { COLOR } from "@utils/theme/constants";
 import dayjs from "dayjs";
+import utc from "dayjs/plugin/utc";
 import Tooltip from "@components/Tooltip";
 import ToolTipContent from "@components/Tooltip/ToolTipContent";
+dayjs.extend(utc);
 
 export default function ClaimCountDown(props: BoxProps) {
   useNextClaimCountDown();
+  
 
   const nextClaimCountDown = useAtomValue(nextClaimCountDownAtom);
   const { nextClaimProgress, nextFeePeriodStarts } = useAtomValue(feePeriodDatesAtom);
@@ -82,7 +85,7 @@ export default function ClaimCountDown(props: BoxProps) {
           fontSize='12px'
           letterSpacing='0.5px'
         >
-          {nextFeePeriodStarts ? dayjs(nextFeePeriodStarts).format('DD/MM/YYYY hh:mm') + 'UTC' : ""}
+          {nextFeePeriodStarts ? dayjs(nextFeePeriodStarts).format('DD/MM/YYYY HH:mm (Z)') + '' : ""}
           {/* {nextFeePeriodStarts} */}
         </Typography>
       </Box>

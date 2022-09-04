@@ -27,6 +27,7 @@ import { cloneDeep, remove } from "lodash";
 import Tooltip from "@components/Tooltip";
 import ToolTipContent from "@components/Tooltip/ToolTipContent";
 import copy from 'copy-to-clipboard';
+import { ReactComponent as IconNoData } from "@assets/images/nodata.svg";
 
 const COLUMN_WIDTH = 70
 
@@ -45,6 +46,7 @@ export default function AuthorizationRecord({ onCheckBoxClick }: AuthorizationRe
   const authorizationRecord = useAtomValue(authorizationRecordAtom);
 
   const dataRows = useMemo(() => {
+    // return [];
     if (authorizationRecord) {
       authorizationRecord.forEach(auth => {
         if (auth.canBurn && auth.canClaim && auth.canExchange && auth.canMint) {
@@ -211,17 +213,39 @@ export default function AuthorizationRecord({ onCheckBoxClick }: AuthorizationRe
   return (
     <Box>
       {/* <NoRowsOverlay
-        hidden={
-          isFetching ? true : authorizationRecord != null && authorizationRecord?.length > 0
-        }
-        noRowsTitle={
-          <>
-            You have no transactions. Start by staking
-            <br />
-            HZN and minting zUSD.
-          </>
-        }
-        noRowsbtnTitle="STAKE NOW"
+        hidden={dataRows.length > 0}
+        // noRowsTitle={
+        //   <>
+        //     You have no escrowed HZN. Stake HZN in
+        //     <br />
+        //     order to earn staking rewards.
+        //   </>
+        // }
+        // noRowsbtnTitle="STAKE NOW"
+        noRowsRender={<Box sx={{
+          display:'flex', 
+          alignItems:'center',
+          mt: '30px',
+          opacity: 0.2,
+
+          }}>
+          <SvgIcon
+                    sx={{
+                        width: '24px',
+                        color: "text.primary",
+                      
+                    }}
+                >
+                    <IconNoData />
+                </SvgIcon>
+                <Typography sx={{
+          fontSize:'12px',
+          fontWeight:700,
+          color: COLOR.text,
+          ml: '9px'
+          }}></Typography>
+            No zAssets 
+          </Box>}
       /> */}
       <Box
         sx={{
@@ -258,15 +282,26 @@ export default function AuthorizationRecord({ onCheckBoxClick }: AuthorizationRe
               ColumnSortedAscendingIcon: SortedAscendingIcon,
               ColumnUnsortedIcon: ColumnSelectorIcon,
               NoRowsOverlay: () => <Box sx={{
-                mt: '50px',
+                mt: '75px',
+                display:'flex',
+                justifyContent:'center',
+                alignItems:'center',
                 textAlign: 'center',
                 width: "100%",
                 fontSize: '14px',
                 letterSpacing: '.5px',
                 fontWeight: 'bold',
                 color: COLOR.text,
-                opacity: .2,
-              }}>No Data Found</Box>
+                opacity: .2
+              }}><SvgIcon
+              sx={{
+                  width: '24px',
+                  color: "text.primary",
+                  mr: '8px'
+              }}
+          >
+              <IconNoData />
+          </SvgIcon>No Authorized Addresses </Box>
             }}
           />
         </Box>

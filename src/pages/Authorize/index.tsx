@@ -12,6 +12,7 @@ import AuthorizationRecord from "./AuthorizationRecord";
 import { useQueryClient } from "react-query";
 import { GRAPH_AUTHORIZATION } from "@utils/queryKeys";
 import useQueryAuthorization from "./useQueryAuthorization";
+import { utils } from "ethers";
 
 const useStyles = makeStyles(() => ({
     noBorder: {
@@ -31,23 +32,6 @@ export default function Authorize() {
     const [loading, setLoading] = useState(false)
 
     const queryClient = useQueryClient();
-
-    const buttonEnable = useMemo(() => {
-        // 0xCcf5b4dfB76faaCCAe3C6F36D095B55736Aa705c  myaddress
-
-        // 0xc1b8bf285772b9eb24a2ec9475cdb1baa5c19e44  delegate
-        // 0x6b695d244fbf8ddd16f86237f4decff4c0e43b91
-        // 0x2ebfbf20fc54c7f64c8924c95ee596a7081576e8
-        // 0x9da8f103b9a489b447bc3e536497961e99fdcead
-        // 0xad4ceba3d9c4b09788b76d3b07ea4ac044e2660d
-        // 0x21f59def0180705e3a4ddedbd64a84c377068bf8
-
-        if (address == '' || !connected || address == account) {
-            return false
-        } else {
-            return true
-        }
-    }, [connected, address, account])
     
     const handleAuthorize = useCallback(async (name:string, selectd:boolean, address: string) => {
         try {
@@ -114,7 +98,7 @@ export default function Authorize() {
 
     const errrMsg = useMemo(()=>{
         let msg = ''
-        if (address.length < 0) {
+        if (!utils.isAddress(address)) {
             msg = 'Invalid Address'
         }
         if (address == account){
@@ -125,6 +109,23 @@ export default function Authorize() {
         }
         return msg
     },[address, account, connected])
+
+        const buttonEnable = useMemo(() => {
+        // 0xCcf5b4dfB76faaCCAe3C6F36D095B55736Aa705c  myaddress
+
+        // 0xc1b8bf285772b9eb24a2ec9475cdb1baa5c19e44  delegate
+        // 0x6b695d244fbf8ddd16f86237f4decff4c0e43b91
+        // 0x2ebfbf20fc54c7f64c8924c95ee596a7081576e8
+        // 0x9da8f103b9a489b447bc3e536497961e99fdcead
+        // 0xad4ceba3d9c4b09788b76d3b07ea4ac044e2660d
+        // 0x21f59def0180705e3a4ddedbd64a84c377068bf8
+
+        if (address == '' || !connected || address == account || errrMsg != '') {
+            return false
+        } else {
+            return true
+        }
+    }, [errrMsg, connected, address, account])
 
     useEffect(()=>{
         if (account){

@@ -10,7 +10,7 @@ import {
 } from "@components/TableSortIcon";
 import Pagination from "@components/Pagination";
 import NoRowsOverlay from "@components/NoRowsOverlay";
-import { useAtomValue } from "jotai/utils";
+import { useAtomValue, useResetAtom } from "jotai/utils";
 import { BlockExplorer } from "@utils/helper";
 import useWallet from "@hooks/useWallet";
 import ActionLink from "@components/Alerts/ActionLink";
@@ -28,6 +28,7 @@ import Tooltip from "@components/Tooltip";
 import ToolTipContent from "@components/Tooltip/ToolTipContent";
 import copy from 'copy-to-clipboard';
 import { ReactComponent as IconNoData } from "@assets/images/nodata.svg";
+import useDisconnected from "@hooks/useDisconnected";
 
 const COLUMN_WIDTH = 70
 
@@ -43,10 +44,10 @@ export default function AuthorizationRecord({ onCheckBoxClick }: AuthorizationRe
 
   const [loading, setLoading] = useState<boolean>(true);
   const isFetching = useIsFetching([GRAPH_AUTHORIZATION]);
+
   const authorizationRecord = useAtomValue(authorizationRecordAtom);
 
   const dataRows = useMemo(() => {
-    // return [];
     if (authorizationRecord) {
       authorizationRecord.forEach(auth => {
         if (auth.canBurn && auth.canClaim && auth.canExchange && auth.canMint) {
@@ -55,6 +56,7 @@ export default function AuthorizationRecord({ onCheckBoxClick }: AuthorizationRe
       });
       let deep = cloneDeep(authorizationRecord)
       remove(deep, (item) => !item.canMint && !item.canBurn && !item.canClaim && !item.canExchange)
+      console.log('authorizationRecord',deep)
       return deep;
     } else {
       return [];
@@ -254,7 +256,7 @@ export default function AuthorizationRecord({ onCheckBoxClick }: AuthorizationRe
 
               isFetching ? "block" :
                 authorizationRecord != null &&
-                  authorizationRecord.length > 0 ? "block" : "none"
+                  authorizationRecord.length > 0 ? "block" : "block"
 
               : "none"
         }}

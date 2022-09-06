@@ -84,21 +84,20 @@ export default function Authorize() {
                     await tx.wait(1);
                 }
             }
+            queryClient.refetchQueries([GRAPH_AUTHORIZATION, account], {
+                fetching: false,
+            });
         } catch (e: any) {
-            console.log(e)
             enqueueSnackbar(e.message, {
                 variant: "error",
             });
         }
-        queryClient.refetchQueries([GRAPH_AUTHORIZATION], {
-            fetching: false,
-          });
         setLoading(false);
     }, [address])
 
     const errrMsg = useMemo(()=>{
         let msg = ''
-        if (!utils.isAddress(address)) {
+        if (!utils.isAddress(address) && address != '') {
             msg = 'Invalid Address'
         }
         if (address == account){

@@ -1,11 +1,13 @@
-import { GRAPH_AUTHORIZATION, GRAPH_DEBT } from "@utils/queryKeys";
+import { CONTRACT, GRAPH_AUTHORIZATION, GRAPH_DEBT } from "@utils/queryKeys";
 import { useQuery } from "react-query";
 import requset, { gql } from "graphql-request";
 import { GRAPH_ENDPOINT } from "@utils/constants";
 import useWallet from "@hooks/useWallet";
-import { atomWithReset } from "jotai/utils";
+import { atomWithReset, useResetAtom, useUpdateAtom } from "jotai/utils";
 import { useAtom } from "jotai";
 import { useCallback } from "react";
+import useDisconnected from "@hooks/useDisconnected";
+import horizon from "@lib/horizon";
 
 export type Authorization = {
   id: string,
@@ -24,7 +26,9 @@ export default function useQueryAuthorization() {
   console.log('request')
   const { account } = useWallet();
 
-  const [authorizationRecord, setAuthorizationRecord] = useAtom(authorizationRecordAtom);
+  const updateAuthorizationRecord = useUpdateAtom(authorizationRecordAtom);
+  const resetRewards = useResetAtom(authorizationRecordAtom);
+  useDisconnected(resetRewards);
 
   const authorization = useCallback(async () => {
     try {
@@ -46,17 +50,15 @@ export default function useQueryAuthorization() {
       console.log('account',account)
       return authorizationReponse;
     } catch (e) {
-      // console.log('===useQueryAuthorization Error',e)
       return [];
     }
   },[account]);
 
-  useQuery([GRAPH_AUTHORIZATION], authorization, {
+  useQuery([CONTRACT, account], authorization, {
     initialData: [],
-    enabled: !!account,
+    enabled: !!account && !!horizon.js,
     onSuccess(authorization) {
-      // console.log('===useQueryAuthorization',authorization.delegatedWallets)
-      setAuthorizationRecord(authorization.delegatedWallets)
+      updateAuthorizationRecord(authorization.delegatedWallets)
     },
   });
 }

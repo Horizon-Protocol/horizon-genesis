@@ -73,6 +73,7 @@ declare global {
 }
 
 export enum ConnectorNames {
+  MetaMask = 'metaMask',
   Injected = "injected",
   BSC = "bsc",
 }
@@ -82,7 +83,7 @@ export const SUPPORTED_WALLETS: WalletDetail[] = [
     key: SupportedWallet.Metamask,
     label: "Metamask",
     logo: MetamaskLogo,
-    connectorId: ConnectorNames.Injected,
+    connectorId: ConnectorNames.MetaMask,
   },
   {
     key: SupportedWallet.Binance,

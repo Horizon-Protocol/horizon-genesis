@@ -11,6 +11,7 @@ import { bsc, bscTest } from './chains'
 import { BinanceWalletConnector } from './binanceWallet'
 import { SafeConnector } from '@gnosis.pm/safe-apps-wagmi'
 import useRpcProvider from '@hooks/useRpcProvider'
+import { useEffect } from 'react'
 
 const CHAINS = [
   bsc,
@@ -54,7 +55,6 @@ const CHAINS = [
 //   }
 // }
 
-
 // const rpcProvider = useRpcProvider();
 
 export const { provider, chains } = configureChains(CHAINS, [
@@ -64,6 +64,13 @@ export const { provider, chains } = configureChains(CHAINS, [
     },
   }),
 ])
+
+
+// useEffect(()=>{
+  console.log('=====provider',provider)
+  console.log('=====chains',chains)
+
+// },[provider])
 
 export const injectedConnector = new InjectedConnector({
   chains,

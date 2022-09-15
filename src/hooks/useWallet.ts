@@ -9,7 +9,7 @@ import {
 } from "@web3-react/injected-connector";
 import { useUpdateAtom, useAtomValue } from "jotai/utils";
 import { prevWalletNameAtom } from "@atoms/wallet";
-// import { connectorsByName } from "@utils/web3React";
+import { connectorsByName } from "@utils/web3React";
 import { ChainName, ConnectorNames } from "@utils/constants";
 import { formatAddress } from "@utils/formatters";
 import { setupNetwork } from "@utils/wallet";
@@ -28,6 +28,8 @@ export default function useWallet() {
     const { chain } = useNetwork()
     const { disconnectAsync } = useDisconnect()
     const { address, connector, isConnected, isConnecting} = useAccount()
+    
+    // connector:ethers.providers.Provider
 
     // const { toastError } = useToast()
     // const { chainId } = useActiveChainId()
@@ -48,6 +50,7 @@ export default function useWallet() {
 
     async ({ key, connectorId }: WalletDetail) => {
       const findConnector = connectors.find((c) => c.id === connectorId)
+      console.log('keyinfo',{key,connectorId,findConnector})
       try {
         const connected = await connectAsync({ connector: findConnector, chainId: ChainId })
         if (!connected.chain.unsupported && connected.chain.id !== ChainId) {
@@ -72,6 +75,7 @@ export default function useWallet() {
           return
         }
         if (error instanceof UserRejectedRequestError) {
+          alert('error678')
           return
         }
         if (error instanceof Error) {

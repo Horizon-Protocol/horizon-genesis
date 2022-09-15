@@ -15,6 +15,8 @@ import { getLibrary } from "@utils/web3React";
 import { REACT_QUERY_DEFAULT_OPTIONS } from "@utils/constants";
 import "./index.css";
 import App from "./App";
+import { WagmiProvider } from "@utils/wagmi/provider";
+import { client } from "@utils/wagmi/wagmi";
 
 // Create a client
 const queryClient = new QueryClient({
@@ -33,7 +35,8 @@ render(
   <StrictMode>
     <JotaiProvider>
       <QueryClientProvider client={queryClient}>
-        <Web3ReactProvider getLibrary={getLibrary}>
+      <WagmiProvider client={client}>
+        {/* <Web3ReactProvider getLibrary={getLibrary}> */}
           <StyledEngineProvider injectFirst>
             <CssBaseline />
             <ThemeProvider theme={theme}>
@@ -50,7 +53,8 @@ render(
               </SnackbarProvider>
             </ThemeProvider>
           </StyledEngineProvider>
-        </Web3ReactProvider>
+          </WagmiProvider>
+        {/* </Web3ReactProvider> */}
         {/* The rest of your application */}
         <ReactQueryDevtools position="bottom-right" />
       </QueryClientProvider>

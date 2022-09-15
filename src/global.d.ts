@@ -9,4 +9,7 @@ interface Window {
     isMetaMask?: true;
     request?: (...args: any[]) => void;
   };
+  BinanceChain?: {
+    bnbSign?: (address: string, message: string) => Promise<{ publicKey: string; signature: string }>;
+  };
 }

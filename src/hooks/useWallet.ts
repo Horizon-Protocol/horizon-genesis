@@ -27,7 +27,7 @@ export default function useWallet() {
     const { connectAsync, connectors } = useConnect()
     const { chain } = useNetwork()
     const { disconnectAsync } = useDisconnect()
-    const { address, connector, isConnected, isConnecting } = useAccount()
+    const { address, connector, isConnected, isConnecting} = useAccount()
 
     // const { toastError } = useToast()
     // const { chainId } = useActiveChainId()
@@ -164,13 +164,13 @@ export default function useWallet() {
 
   return {
     account: accountAddress,
-    activate,
+    // activate,
     chainId: chain?.id,
     deactivate: logout,
     connecting,
-    connected: active,
+    connected: isConnected,
     shortAccount,
-    provider: library,
+    provider: connector,
     ChainName,
     connectWallet,
   };

@@ -10,6 +10,7 @@ interface Window {
     request?: (...args: any[]) => void;
   };
   BinanceChain?: {
-    bnbSign?: (address: string, message: string) => Promise<{ publicKey: string; signature: string }>;
-  };
+    bnbSign?: (address: string, message: string) => Promise<{ publicKey: string; signature: string }>
+    switchNetwork?: (networkId: string) => Promise<string>
+  } & Ethereum
 }

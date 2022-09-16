@@ -75,6 +75,7 @@ export default function WalletsDialog(
         deactivate();
         setDetail(wallet);
         setTimeout(() => {
+          console.log('============wallet.connectorId',wallet.connectorId)
           const injectorName = injectorByName[wallet.connectorId];
           waitForGlobal(injectorName, () => {
             connectWallet(wallet);

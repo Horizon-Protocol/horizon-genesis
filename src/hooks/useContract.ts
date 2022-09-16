@@ -10,14 +10,14 @@ const useContract = <T>(
   abi: ContractInterface,
   writable = false
 ) => {
-  const { provider } = useWallet();
+  const { provider, signer } = useWallet();
 
   const [contract, setContract] = useState<Contract>();
 
   useEffect(() => {
     if (address && provider) {
-      if (writable) {
-        setContract(new Contract(address, abi, provider.getSigner()));
+      if (writable && signer) {
+        setContract(new Contract(address, abi, signer));
       } else {
         setContract(new Contract(address, abi, provider));
       }

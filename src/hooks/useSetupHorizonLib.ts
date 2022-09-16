@@ -15,14 +15,14 @@ export default function useSetupHorizonLib() {
 
   const rpcProvider = useRpcProvider();
 
-  const { connected, chainId, provider } = useWallet();
+  const { connected, chainId, provider, signer } = useWallet();
 
   const queryClient = useQueryClient();
 
   useEffect(() => {
     try {
-      if (connected && provider) {
-        const signer = provider.getSigner();
+      if (connected && provider && signer) {
+        // const signer = provider.getSigner();
         horizon.setContractSettings({
           networkId: chainId as NetworkId,
           provider,
@@ -54,6 +54,7 @@ export default function useSetupHorizonLib() {
     provider,
     chainId,
     rpcProvider,
+    signer,
     enqueueSnackbar,
     queryClient,
     setAppReady,

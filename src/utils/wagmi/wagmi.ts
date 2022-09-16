@@ -8,10 +8,10 @@ import { MetaMaskConnector } from 'wagmi/connectors/metaMask'
 import { WalletConnectConnector } from 'wagmi/connectors/walletConnect'
 import { jsonRpcProvider } from 'wagmi/providers/jsonRpc'
 import { bsc, bscTest } from './chains'
-import { BinanceWalletConnector } from './binanceWallet'
 import { SafeConnector } from '@gnosis.pm/safe-apps-wagmi'
 import useRpcProvider from '@hooks/useRpcProvider'
 import { useEffect } from 'react'
+import { BinanceWalletConnector } from './binanceWallet'
 
 const CHAINS = [
   bsc,
@@ -103,7 +103,7 @@ export const metaMaskConnector = new MetaMaskConnector({
   },
 })
 
-// export const bscConnector = new BinanceWalletConnector({ chains })
+export const bscConnector = new BinanceWalletConnector({ chains })
 
 export const client = createClient({
   autoConnect: false,
@@ -114,7 +114,7 @@ export const client = createClient({
     injectedConnector,
     // coinbaseConnector,
     walletConnectConnector,
-    // bscConnector,
+    bscConnector,
   ],
 })
 

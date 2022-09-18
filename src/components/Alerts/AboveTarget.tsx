@@ -76,7 +76,7 @@ export default function AboveTarget({
     try {
       const {
         contracts: { Liquidations },
-      } = horizon.js!;
+      } = horizon.js2!;
 
       const tx = await Liquidations.checkAndRemoveAccountInLiquidation(account);
       const res = await tx.wait(1);

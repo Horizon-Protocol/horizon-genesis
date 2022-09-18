@@ -213,7 +213,7 @@ export default function Mint() {
     try {
       const {
         contracts: { Synthetix },
-      } = horizon.js!;
+      } = horizon.js2!;
       setLoading(true);
       let tx: ethers.ContractTransaction;
       if (state.isMax) {

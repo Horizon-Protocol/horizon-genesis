@@ -120,7 +120,7 @@ export default function Claim() {
     try {
       const {
         contracts: { FeePool },
-      } = horizon.js!;
+      } = horizon.js2!;
       setLoading(true);
       const tx: ethers.ContractTransaction = await FeePool.claimFees();
       await tx.wait(1);

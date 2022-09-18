@@ -25,6 +25,7 @@ export type TokensMap = Record<string, Token>;
 
 type ContractSettings = {
   networkId: NetworkId;
+  jsonRpcProvider?: ethers.providers.Provider;
   provider?: ethers.providers.Provider;
   signer?: Signer;
   useOvm?: boolean;
@@ -32,6 +33,7 @@ type ContractSettings = {
 
 export type Horizon = {
   js: HorizonJS | null;
+  js2: HorizonJS | null; //only write data with using wallet provider
   setContractSettings: (contractSettings: ContractSettings) => void;
   synthsMap: SynthsMap | null;
   tokensMap: TokensMap | null;
@@ -41,17 +43,24 @@ export type Horizon = {
 
 const horizon: Horizon = {
   js: null,
+  js2: null,
   synthSummaryUtil: null,
   synthsMap: null,
   tokensMap: null,
   chainIdToNetwork: null,
 
-  setContractSettings({ networkId, provider, signer }: ContractSettings) {
+  setContractSettings({ networkId, jsonRpcProvider, provider, signer }: ContractSettings) {
     this.js = initHorizonJS({
+      networkId,
+      provider: jsonRpcProvider
+    });
+
+    this.js2 = initHorizonJS({
       networkId,
       provider,
       signer,
     });
+    console.log('initHorizonJS',this.js,this.js2)
 
     this.synthsMap = keyBy(this.js.synths, "name");
     this.tokensMap = keyBy(this.js.tokens, "symbol");

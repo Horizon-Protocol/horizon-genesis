@@ -146,7 +146,7 @@ const EscrowedCard = ({ unlockCard, title, color, amount }: EscrowedCardProps) =
         try {
           const {
             contracts: { RewardEscrowV2 },
-          } = horizon.js!;
+          } = horizon.js2!;
           console.log('RewardEscrowV2',RewardEscrowV2)
           setLoading(true);
           const tx: ethers.ContractTransaction = await RewardEscrowV2.vest(vestingEntriesId);

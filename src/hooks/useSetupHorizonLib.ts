@@ -25,14 +25,16 @@ export default function useSetupHorizonLib() {
         const signer = provider.getSigner();
         horizon.setContractSettings({
           networkId: chainId as NetworkId,
+          jsonRpcProvider: rpcProvider,
           provider,
           signer,
         });
-        // console.log("signer", signer);
+        console.log("walletprovidersigner", {provider,signer});
         window.horizon = horizon;
       } else if (rpcProvider) {
         horizon.setContractSettings({
           networkId: ChainId as NetworkId,
+          jsonRpcProvider: rpcProvider,
           provider: rpcProvider,
         });
       }

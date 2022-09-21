@@ -3,7 +3,7 @@ name: Deploy 2.0
 on:
   push:
     branches:
-      - replace_horizonjs_to_rpcprovider
+      - Genesis2.0
     paths-ignore:
       - ".github/workflows/main.yml"
 

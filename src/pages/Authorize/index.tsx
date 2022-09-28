@@ -13,6 +13,7 @@ import { useQueryClient } from "react-query";
 import { GRAPH_AUTHORIZATION } from "@utils/queryKeys";
 import useQueryAuthorization from "./useQueryAuthorization";
 import { utils } from "ethers";
+import ConnectButton from "@components/ConnectButton";
 
 const useStyles = makeStyles(() => ({
     noBorder: {
@@ -23,63 +24,63 @@ const useStyles = makeStyles(() => ({
 
 export default function Authorize() {
     const { enqueueSnackbar } = useSnackbar();
-    
+
     const classes = useStyles();
     const { connected, account } = useWallet()
-    
+
     const [authOperationSelectIndex, setAuthOperationSelectIndex] = useState<number>(0)
     const [address, setAddress] = useState('')
     const [loading, setLoading] = useState(false)
 
     const queryClient = useQueryClient();
-    
-    const handleAuthorize = useCallback(async (name:string, selectd:boolean, address: string) => {
+
+    const handleAuthorize = useCallback(async (name: string, selectd: boolean, address: string) => {
         try {
             const {
                 contracts: { DelegateApprovals },
             } = horizon.js!;
             setLoading(true);
-            if (name == 'all'){
-                if (selectd){
+            if (name == 'all') {
+                if (selectd) {
                     const tx: ethers.ContractTransaction = await DelegateApprovals.removeAllDelegatePowers(address)
                     await tx.wait(1);
-                }else{
+                } else {
                     const tx: ethers.ContractTransaction = await DelegateApprovals.approveAllDelegatePowers(address)
                     await tx.wait(1);
                 }
             }
-            if (name == 'canMint'){
-                if (selectd){
+            if (name == 'canMint') {
+                if (selectd) {
                     const tx: ethers.ContractTransaction = await DelegateApprovals.removeIssueOnBehalf(address)
                     await tx.wait(1);
-                }else{
+                } else {
                     const tx: ethers.ContractTransaction = await DelegateApprovals.approveIssueOnBehalf(address)
                     await tx.wait(1);
                 }
             }
-            if (name == 'canBurn'){
-                if (selectd){
+            if (name == 'canBurn') {
+                if (selectd) {
                     const tx: ethers.ContractTransaction = await DelegateApprovals.removeBurnOnBehalf(address)
                     await tx.wait(1);
-                }else{
+                } else {
                     const tx: ethers.ContractTransaction = await DelegateApprovals.approveBurnOnBehalf(address)
                     await tx.wait(1);
                 }
             }
-            if (name == 'canClaim'){
-                if (selectd){
+            if (name == 'canClaim') {
+                if (selectd) {
                     const tx: ethers.ContractTransaction = await DelegateApprovals.removeClaimOnBehalf(address)
                     await tx.wait(1);
-                }else{
+                } else {
                     const tx: ethers.ContractTransaction = await DelegateApprovals.approveClaimOnBehalf(address)
                     await tx.wait(1);
                 }
             }
-            if (name == 'canExchange'){
-                if (selectd){
+            if (name == 'canExchange') {
+                if (selectd) {
                     const tx: ethers.ContractTransaction = await DelegateApprovals.removeExchangeOnBehalf(address)
                     await tx.wait(1);
-                }else{
+                } else {
                     const tx: ethers.ContractTransaction = await DelegateApprovals.approveExchangeOnBehalf(address)
                     await tx.wait(1);
                 }
@@ -95,21 +96,21 @@ export default function Authorize() {
         setLoading(false);
     }, [address])
 
-    const errrMsg = useMemo(()=>{
+    const errrMsg = useMemo(() => {
         let msg = ''
         if (!utils.isAddress(address) && address != '') {
             msg = 'Invalid Address'
         }
-        if (address == account){
+        if (address == account) {
             msg = 'Cannot Authorize Yourself'
         }
-        if (!connected){
+        if (!connected) {
             msg = ''
         }
         return msg
-    },[address, account, connected])
+    }, [address, account, connected])
 
-        const buttonEnable = useMemo(() => {
+    const buttonEnable = useMemo(() => {
         // 0xCcf5b4dfB76faaCCAe3C6F36D095B55736Aa705c  myaddress
 
         // 0xc1b8bf285772b9eb24a2ec9475cdb1baa5c19e44  delegate
@@ -126,11 +127,11 @@ export default function Authorize() {
         }
     }, [errrMsg, connected, address, account])
 
-    useEffect(()=>{
-        if (account){
-            
+    useEffect(() => {
+        if (account) {
+
         }
-    },[account])
+    }, [account])
 
     return (
         <PageCard
@@ -188,39 +189,53 @@ export default function Authorize() {
                                 backgroundColor: selected ? COLOR.safe : COLOR.bgColor,
                                 color: selected ? BORDER_COLOR : COLOR.text,
                                 opacity: connected ? 1 : .5,
-                                lineHeight: '28px', width: '19.5%'
+                                lineHeight: '28px', width: '18.5%',
+                                fontSize: 14
                             }}>
                                 {value}
                             </Box>
                         )
                     })}
                 </Box>
-                <PrimaryButton
-                    loading={loading}
-                    onClick={()=>{
-                        handleAuthorize(['all','canMint','canBurn','canClaim','canExchange'][authOperationSelectIndex], false, address)
-                    }}
-                    // disabled={Number(amount) <= 0}
-                    disabled={!buttonEnable}
-                    sx={{
-                        mt: '25px',
-                        width: '100%',
-                        height: '45px'
-                    }}
-                >
-                    AUTHORIZE
-                </PrimaryButton>
-                <Typography sx={{ mt: '5px', lineHeight: '17px', letterSpacing: '1px', fontSize: "12px", color: COLOR.danger, textAlign: "center" }}>
-                {errrMsg}
-                </Typography>
-                <Typography sx={{ mt: '8px', lineHeight: '22px', letterSpacing: '1px', fontWeight: 'bold', fontSize: "12px", color: COLOR.text, textAlign: "center" }}>
-                MANAGE AUTHORIZATIONS
+
+                {
+                connected ? 
+                
+                <Box>
+                    <PrimaryButton
+                        loading={loading}
+                        onClick={() => {
+                            handleAuthorize(['all', 'canMint', 'canBurn', 'canClaim', 'canExchange'][authOperationSelectIndex], false, address)
+                        }}
+                        // disabled={Number(amount) <= 0}
+                        disabled={!buttonEnable}
+                        sx={{
+                            mt: '25px',
+                            width: '100%',
+                            height: '45px'
+                        }}
+                    >
+                        AUTHORIZE
+                    </PrimaryButton>
+                    <Typography sx={{ mt: '5px', lineHeight: '17px', letterSpacing: '1px', fontSize: "12px", color: COLOR.danger, textAlign: "center" }}>
+                       {errrMsg}
                     </Typography>
+                    <Typography sx={{ mt: '8px', lineHeight: '22px', letterSpacing: '1px', fontWeight: 'bold', fontSize: "12px", color: COLOR.text, textAlign: "center" }}>
+                        MANAGE AUTHORIZATIONS
+                    </Typography>
+                </Box>
+                :
+                 <ConnectButton sx={{
+                    mt: '25px',
+                    width: '100%',
+                    height: '45px'
+                }}/>
+                }
 
             </Box>
             <AuthorizationRecord onCheckBoxClick={(name, selected, delegate) => {
-                handleAuthorize(name,selected,delegate)
-            }}/>
+                handleAuthorize(name, selected, delegate)
+            }} />
         </PageCard>
     )
 }

@@ -1,26 +1,32 @@
 import { useQuery } from "react-query";
-import { useAtomValue, useResetAtom, useUpdateAtom } from "jotai/utils";
+import { useResetAtom, useUpdateAtom } from "jotai/utils";
 import { BigNumber, ethers } from "ethers";
 import erc20Abi from "@contracts/abis/Erc20.json";
 import useWallet from "@hooks/useWallet";
 import { toBN, zeroBN } from "@utils/number";
-import { zAssetsBalanceAtom, ZAssetsBalance, zUSDBalanceAtom, zAssetsBalanceInfoAtom } from "@atoms/balances";
+import {
+  zAssetsBalanceAtom,
+  ZAssetsBalance,
+  zUSDBalanceAtom,
+  zAssetsBalanceInfoAtom,
+} from "@atoms/balances";
 import useDisconnected from "@hooks/useDisconnected";
 import useHorizonJs from "@hooks/useHorizonJs";
 import { WALLET } from "@utils/queryKeys";
-import { formatNumber } from "@utils/number";
-import { ratesAtom } from "@atoms/exchangeRates";
-import { useMemo } from "react";
-import horizon from "@lib/horizon";
-import { sumBy, values } from "lodash";
+// import { ratesAtom } from "@atoms/exchangeRates";
+// import { useMemo } from "react";
+// import horizon from "@lib/horizon";
+// import { sumBy, values } from "lodash";
+import useRpcProvider from "./useRpcProvider";
 
 export default function useFetchZAssetsBalance() {
-  const { provider, account } = useWallet();
+  const { account } = useWallet();
+  const provider = useRpcProvider();
   const horizonJs = useHorizonJs();
 
   const setzAssetBalances = useUpdateAtom(zAssetsBalanceAtom);
   const setZUSDBalances = useUpdateAtom(zUSDBalanceAtom);
-  const setZAssetsBalanceInfo = useUpdateAtom(zAssetsBalanceInfoAtom);
+  // const setZAssetsBalanceInfo = useUpdateAtom(zAssetsBalanceInfoAtom);
 
   const resetBalances = useResetAtom(zAssetsBalanceAtom);
   useDisconnected(resetBalances);
@@ -28,48 +34,46 @@ export default function useFetchZAssetsBalance() {
   const resetZUSDBalances = useResetAtom(zUSDBalanceAtom);
   useDisconnected(resetZUSDBalances);
 
-  const resetZAssetsBlanceInfos = useResetAtom(zAssetsBalanceInfoAtom)
+  const resetZAssetsBlanceInfos = useResetAtom(zAssetsBalanceInfoAtom);
   useDisconnected(resetZAssetsBlanceInfos);
 
   //=========== generate balance extra infomation ===============
-  const zAssetsBalance = useAtomValue(zAssetsBalanceAtom)
-  const rates = useAtomValue(ratesAtom);
-  const zAssets = values(horizon.synthsMap) || [];
+  // const zAssetsBalance = useAtomValue(zAssetsBalanceAtom);
+  // const rates = useAtomValue(ratesAtom);
+  // const zAssets = values(horizon.synthsMap) || [];
 
-  const othersZAssetsBalance = useMemo(()=>{
-    const noZeroZAssets = zAssets.filter(({name}) => zAssetsBalance[name]?.gt(0) && rates[name])
-    .map((item, index) => {
-      return {
-        ...item,
-        id: item.name,
-        amount: zAssetsBalance[item.name]!.toNumber(),
-        amountUSD: zAssetsBalance[item.name]!.multipliedBy(
-          rates[item.name]!
-        ).toNumber(),
-      }
-    })
-    const totalUSD = sumBy(noZeroZAssets, "amountUSD");
-    const fulInfoZAssetBalance = noZeroZAssets.map((item,index) => {
-      return {
-        ...item,
-        percent: item.amountUSD / totalUSD,
-      }
-    })
-    // console.log("========fulInfoZAssetBalance======",fulInfoZAssetBalance)
-    // console.log("========rates======",rates)
+  // const othersZAssetsBalance = useMemo(() => {
+  //   const noZeroZAssets = zAssets
+  //     .filter(({ name }) => zAssetsBalance[name]?.gt(0) && rates[name])
+  //     .map((item, index) => {
+  //       return {
+  //         ...item,
+  //         id: item.name,
+  //         amount: zAssetsBalance[item.name]!.toNumber(),
+  //         amountUSD: zAssetsBalance[item.name]!.multipliedBy(
+  //           rates[item.name]!
+  //         ).toNumber(),
+  //       };
+  //     });
+  //   const totalUSD = sumBy(noZeroZAssets, "amountUSD");
+  //   const fulInfoZAssetBalance = noZeroZAssets.map((item, index) => {
+  //     return {
+  //       ...item,
+  //       percent: item.amountUSD / totalUSD,
+  //     };
+  //   });
+  //   // console.log("========fulInfoZAssetBalance======",fulInfoZAssetBalance)
+  //   // console.log("========rates======",rates)
 
-    setZAssetsBalanceInfo(fulInfoZAssetBalance)
-  },[zAssetsBalance,rates])
+  //   setZAssetsBalanceInfo(fulInfoZAssetBalance);
+  // }, [zAssets, setZAssetsBalanceInfo, zAssetsBalance, rates]);
 
   useQuery<ZAssetsBalance>(
     [WALLET, account, "balances"],
     async () => {
       const { tokens } = horizonJs!;
-     
-      const getBalance = ({
-        address,
-        symbol,
-      }: Token): Promise<BigNumber> => {
+
+      const getBalance = ({ address, symbol }: Token): Promise<BigNumber> => {
         if (!provider || !account) {
           return Promise.resolve(BigNumber.from(0));
         }
@@ -97,18 +101,21 @@ export default function useFetchZAssetsBalance() {
 
       const data = await Promise.all(promises);
 
-      return data.reduce((acc: ZAssetsBalance, { amount, token }, index, arr) => {
-        //去除没有值的zAsset
-        if (amount.lte(0)) return acc;
-        acc[token.symbol as CurrencyKey] = amount;
-        return acc;
-      }, {});
+      return data.reduce(
+        (acc: ZAssetsBalance, { amount, token }, index, arr) => {
+          //去除没有值的zAsset
+          if (amount.lte(0)) return acc;
+          acc[token.symbol as CurrencyKey] = amount;
+          return acc;
+        },
+        {}
+      );
     },
     {
       enabled: !!provider && !!horizonJs && !!account,
       onSuccess(balances) {
         // console.log('================balances===========', balances);
-        setZUSDBalances(balances["zUSD"] || zeroBN)
+        setZUSDBalances(balances["zUSD"] || zeroBN);
         setzAssetBalances(balances);
       },
     }

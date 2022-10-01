@@ -3,7 +3,7 @@ name: Deploy Public Testnet
 on:
   push:
     branches:
-      - testnet
+      - replace_horizonjs_to_rpcprovider
     paths-ignore:
       - ".github/workflows/main.yml"
 
@@ -62,7 +62,7 @@ jobs:
         if: steps.build-cache.outputs.cache-hit != 'true'
         run: yarn build
         env:
-          VITE_APP_CHAIN_ID: 97
+          VITE_APP_CHAIN_ID: 56
           VITE_APP_COMMIT_VERSION: ${{ steps.get-commit-time.outputs.commitTime }}
       - name: Upload to S3
         uses: jakejarvis/s3-sync-action@master
@@ -71,7 +71,7 @@ jobs:
         env:
           AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
           AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
-          AWS_S3_BUCKET: horizon-genesis-v2
+          AWS_S3_BUCKET: horizon-genesis-test
           AWS_REGION: ap-southeast-1
           SOURCE_DIR: dist
 

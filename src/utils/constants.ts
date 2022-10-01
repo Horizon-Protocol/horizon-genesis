@@ -190,7 +190,6 @@ console.log("GENESIS", VERSION);
 const EnvChainId = parseInt(import.meta.env.VITE_APP_CHAIN_ID);
 
 export const ChainId = [56, 97].indexOf(EnvChainId) > -1 ? EnvChainId : 97;
-// export const ChainId = 56;
 
 export const ChainName = CHAIN_NAME_MAP[ChainId];
 export const ChainExplorerUrl = CHAIN_EXPLORER_URL_MAP[ChainId];

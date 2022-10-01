@@ -266,7 +266,7 @@ export default function Burn() {
       const {
         contracts: { Synthetix, Issuer },
         utils,
-      } = horizon.js!;
+      } = horizon.js2!;
       setLoading(true);
       const burnToTarget = changedBalance.cRatio.to.eq(targetRatio);
       const zUSDBytes = utils.formatBytes32String("zUSD");

@@ -14,6 +14,8 @@ import { useAtomValue } from "jotai/utils";
 import { rewardsEscrowAtom } from "@atoms/record";
 import { BNWithDecimals, formatNumber } from "@utils/number";
 import dayjs from "dayjs";
+import utc from "dayjs/plugin/utc";
+dayjs.extend(utc);
 
 interface RowsData {
   id?: string;
@@ -88,7 +90,7 @@ export default function EscrowRecord() {
               color: COLOR.text,
             }}
           >
-            {dayjs(Number(value) * 1000).subtract(52, "w").format("MMM DD, YYYY hh:mm")}
+            {dayjs.utc(Number(value) * 1000).subtract(52, "w").format("MMM DD, YYYY hh:mm")}
           </Typography>
         );
       },
@@ -108,7 +110,7 @@ export default function EscrowRecord() {
               color: COLOR.safe,
             }}
           >
-            {dayjs(Number(value) * 1000).format("MMM DD, YYYY hh:mm")}
+            {dayjs.utc(Number(value) * 1000).format("MMM DD, YYYY hh:mm")}
           </Typography>
         );
       },

@@ -324,6 +324,7 @@ export default function Claim() {
               </Box>
             </Tooltip>
           }
+          token={'zUSD'}
           amount={upcomingExchangeReward}
           svg={<IconzUSD />}
         />

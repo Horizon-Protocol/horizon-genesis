@@ -98,8 +98,8 @@ export default function AuthorizationRecord({ onCheckBoxClick }: AuthorizationRe
       renderCell({ value, row }) {
         return (
           <AuthCheckBox
-            tooltipContent=""
-            checkedTooltipContent=""
+            tooltipContent="Authorize All operations"
+            checkedTooltipContent="Withraw All operations"
             onClick={() => {
               onCheckBoxClick('all', value, row.delegate)
             }} isAll={true} checked={value} />
@@ -116,8 +116,8 @@ export default function AuthorizationRecord({ onCheckBoxClick }: AuthorizationRe
       renderCell({ value, row }) {
         return (
           <AuthCheckBox
-            tooltipContent=""
-            checkedTooltipContent=""
+            tooltipContent="Authorize the Mint operation"
+            checkedTooltipContent="Withdraw the Mint operation"
             onClick={() => {
               if (value && row.all) return
               onCheckBoxClick('canMint', value, row.delegate)
@@ -135,8 +135,8 @@ export default function AuthorizationRecord({ onCheckBoxClick }: AuthorizationRe
       renderCell({ value, row }) {
         return (
           <AuthCheckBox
-            tooltipContent=""
-            checkedTooltipContent=""
+            tooltipContent="Authorize the Burn operation"
+            checkedTooltipContent="Withdraw the Burn operation"
             onClick={() => {
               if (value && row.all) return
               onCheckBoxClick('canBurn', value, row.delegate)
@@ -154,8 +154,8 @@ export default function AuthorizationRecord({ onCheckBoxClick }: AuthorizationRe
       renderCell({ value, row }) {
         return (
           <AuthCheckBox
-            tooltipContent=""
-            checkedTooltipContent=""
+            tooltipContent="Authorize the Claim operation"
+            checkedTooltipContent="Withdraw the Claim operation"
             onClick={() => {
               if (value && row.all) return
               onCheckBoxClick('canClaim', value, row.delegate)
@@ -173,8 +173,8 @@ export default function AuthorizationRecord({ onCheckBoxClick }: AuthorizationRe
       renderCell({ value, row }) {
         return (
           <AuthCheckBox
-            tooltipContent=""
-            checkedTooltipContent=""
+            tooltipContent="Authorize the Trade operation"
+            checkedTooltipContent="Withdraw the Trade operation"
             onClick={() => {
               if (value && row.all) return
               onCheckBoxClick('canExchange', value, row.delegate)
@@ -192,7 +192,7 @@ export default function AuthorizationRecord({ onCheckBoxClick }: AuthorizationRe
       renderCell({ value, row }) {
         return (
           <Tooltip
-            title={<ToolTipContent conetnt={'dsds'} />}
+            title={<ToolTipContent conetnt={'Withraw All operations'} />}
             placement='top'
           >
             <Box onClick={()=>{

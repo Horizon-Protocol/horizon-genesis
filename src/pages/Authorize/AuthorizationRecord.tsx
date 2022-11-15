@@ -71,15 +71,17 @@ export default function AuthorizationRecord({ onCheckBoxClick }: AuthorizationRe
       sortable: false,
       editable: false,
       headerAlign: "left",
-      renderCell({ value, row }) {
+      renderCell(data) {
+        const { value, row } = data
+        console.log(data)
         return <Box sx={{ w: 110, display: 'flex', alignItems: 'center' }}>{formatAddress(value, 5, 4)}
           <Tooltip
             clickAble
-            tooltipWidth={130}
+            // tooltipWidth={10}
             title={
               <ToolTipContent title='Address Copied' conetnt={''} />
             }
-            placement='top'
+            placement='right'
           >
             <SvgIcon onClick={()=>{
               copy(value)

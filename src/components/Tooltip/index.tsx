@@ -13,7 +13,7 @@ interface BaseTooltipProps {
 
 const StyledTooltip = styled(({ tooltipWidth, className, ...props }: BaseTooltipProps & TooltipProps) => (
   <Tooltip {...props} arrow classes={{ popper: className }} />
-))(({ tooltipWidth = 217, theme }) => ({
+))(({ tooltipWidth, theme }) => ({
   [`& .${tooltipClasses.arrow}`]: {
     color: '#0A283D'
   },
@@ -21,6 +21,7 @@ const StyledTooltip = styled(({ tooltipWidth, className, ...props }: BaseTooltip
     padding: '12px',
     background: 'radial-gradient(79.72% 484.78% at 16.59% 25%, #092B43 0%, #0B2435 100%)',
     width: tooltipWidth,
+    maxWidth: 217,
     boxShadow: '0px 0px 24px 5px #0B1D38',
     borderRadius: '4px',
     fontSize: 12,

@@ -190,6 +190,8 @@ console.log("GENESIS", VERSION);
 const EnvChainId = parseInt(import.meta.env.VITE_APP_CHAIN_ID);
 
 export const ChainId = [56, 97].indexOf(EnvChainId) > -1 ? EnvChainId : 97;
+// export const ChainId = [56, 97].indexOf(EnvChainId) > -1 ? EnvChainId : 97;
+// export const ChainId = 56;
 
 export const ChainName = CHAIN_NAME_MAP[ChainId];
 export const ChainExplorerUrl = CHAIN_EXPLORER_URL_MAP[ChainId];
@@ -216,10 +218,12 @@ export const REACT_QUERY_DEFAULT_OPTIONS: Partial<DefaultOptions["queries"]> = {
 };
 
 //horizon subgraphs endpoint
-export const GRAPH_ENDPOINT = {
-  56: "https://api.thegraph.com/subgraphs/name/rout-horizon/bsc15-issuance",
-  97: "https://api.thegraph.com/subgraphs/name/rout-horizon/chapel14-issuance",
-}[ChainId]!;
+export const GRAPH_ENDPOINT = (path:string = 'bsc15-issuance') => {
+  return {
+    56: `https://api.thegraph.com/subgraphs/name/rout-horizon/${path}`,
+    97: "https://api.thegraph.com/subgraphs/name/rout-horizon/chapel14-issuance",
+  }[ChainId]!
+};
 
 export const LINK_EXCHANGE = {
   56: "https://exchange.horizonprotocol.com/",

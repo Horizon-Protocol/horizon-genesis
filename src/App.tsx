@@ -47,6 +47,8 @@ import useSuspensionStatus from "@hooks/useSuspensionStatus";
 import GetHZNDialog from "@components/MobileFooter/MobileMenu/GetHZNDialog";
 import useEstimatedStakingRewards from "@hooks/useEstimatedStakingRewards";
 import DevWatchTool from "@components/DevWatchTool";
+import Authorize from "@pages/Authorize";
+import useQueryAuthorization from "@pages/Authorize/useQueryAuthorization";
 
 const AppDisabled = !!import.meta.env.VITE_APP_DISABLED;
 
@@ -89,6 +91,7 @@ function App() {
   useFetchZAssetsBalance();
   useFetchFeePool();
   useQueryGlobalDebt()
+  useQueryAuthorization()
 
   const refresh = useRefresh();
 
@@ -257,6 +260,9 @@ function App() {
               </Route>
               <Route path="/escrow">
                 <Escrow />
+              </Route>
+              <Route path="/authorize">
+                <Authorize />
               </Route>
               <Route path="/history">
                 <History />

@@ -9,6 +9,8 @@ import { ReactComponent as IconEscrow } from "@assets/images/escrow.svg";
 import { ReactComponent as IconEscrowSelected } from "@assets/images/escrow-selected.svg";
 import { ReactComponent as IconHistory } from "@assets/images/history.svg";
 import { ReactComponent as IconHistorySelected } from "@assets/images/history-selected.svg";
+import { ReactComponent as IconAuthorize } from "@assets/images/authorize.svg";
+import { ReactComponent as IconAuthorizeSelected } from "@assets/images/authorize-selected.svg";
 
 const Img = styled("img")``;
 
@@ -59,6 +61,13 @@ export default function Record(props: BoxProps) {
         selected: "/escrow" === pathname,
         title: "Escrow",
         to: "escrow",
+      },
+      {
+        img: <IconAuthorize />,
+        selectedImg: <IconAuthorizeSelected />,
+        selected: "/authorize" === pathname,
+        title: "Authorize",
+        to: "authorize",
       },
       {
         img: <IconHistory />,

@@ -24,7 +24,7 @@ export default function useQueryGlobalDebt() {
   const globalDebts = async () => {
     try {
       const globalDebtsReponse = await requset(
-        GRAPH_ENDPOINT,
+        GRAPH_ENDPOINT(),
         gql`
           query {
             dailyIssueds(first: 1000, orderBy: id, orderDirection: desc) {

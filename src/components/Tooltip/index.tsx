@@ -7,12 +7,13 @@ import theme from "@utils/theme";
 import { useCallback, useState } from "react";
 import useIsMobile from "@hooks/useIsMobile";
 interface BaseTooltipProps {
+  clickAble?: boolean,
   tooltipWidth?: number
 }
 
 const StyledTooltip = styled(({ tooltipWidth, className, ...props }: BaseTooltipProps & TooltipProps) => (
   <Tooltip {...props} arrow classes={{ popper: className }} />
-))(({ tooltipWidth = 217, theme }) => ({
+))(({ tooltipWidth, theme }) => ({
   [`& .${tooltipClasses.arrow}`]: {
     color: '#0A283D'
   },
@@ -20,6 +21,7 @@ const StyledTooltip = styled(({ tooltipWidth, className, ...props }: BaseTooltip
     padding: '12px',
     background: 'radial-gradient(79.72% 484.78% at 16.59% 25%, #092B43 0%, #0B2435 100%)',
     width: tooltipWidth,
+    maxWidth: 217,
     boxShadow: '0px 0px 24px 5px #0B1D38',
     borderRadius: '4px',
     fontSize: 12,
@@ -29,16 +31,18 @@ const StyledTooltip = styled(({ tooltipWidth, className, ...props }: BaseTooltip
   },
 }));
 
-const BaseTooltip = ({ tooltipWidth, children, ...props }: BaseTooltipProps & TooltipProps) => {
+const BaseTooltip = ({ clickAble, tooltipWidth, children, ...props }: BaseTooltipProps & TooltipProps) => {
 
   const isMobile = useIsMobile()
 
   const [open, setOpen] = useState(false)
   return (
-    isMobile ?
+    (isMobile || clickAble) ?
       <ClickAwayListener onClickAway={() => {
+        // alert('close')
         setOpen(false)
       }}>
+        <div>
         <StyledTooltip tooltipWidth={tooltipWidth} sx={{
           cursor: 'help',
           innerWidth: 12,
@@ -56,12 +60,18 @@ const BaseTooltip = ({ tooltipWidth, children, ...props }: BaseTooltipProps & To
           arrow
           {...props}
         >
-          <Box onClick={() => {
+          <Box 
+          style={{display:'flex', justifyContent:'center', alignItems:'center'}} 
+          onClick={() => {
             setOpen(true)
+            setTimeout(() => {
+              setOpen(false)
+            }, 3000);
           }}>
             {children}
           </Box>
         </StyledTooltip>
+        </div>
       </ClickAwayListener>
       :
       <StyledTooltip tooltipWidth={tooltipWidth} sx={{

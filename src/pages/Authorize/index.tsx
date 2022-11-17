@@ -138,6 +138,7 @@ export default function Authorize() {
             mx='auto'
             title='Authorize'
             color={COLOR.text}
+            href="https://academy.horizonprotocol.com/horizon-genesis/guides/setting-up-chainlink-automation"
             description={
                 <>
                     Authorize permission for another wallet to conduct operations

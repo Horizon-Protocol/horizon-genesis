@@ -38,7 +38,7 @@ export default function Authorize() {
         try {
             const {
                 contracts: { DelegateApprovals },
-            } = horizon.js!;
+            } = horizon.js2!;
             setLoading(true);
             if (name == 'all') {
                 if (selectd) {

@@ -20,11 +20,7 @@ const GetHZNs = [
     {
         svg: <MexcHzn />,
         title: 'MEXC Global', href: 'https://www.mexc.com/exchange/HZN_USDT'
-    },
-    {
-        svg: <HooHzn />,
-        title: 'Hoo.com', href: 'https://hoo.com/innovation/hzn-usdt'
-    },
+    }
 ]
 
 export default function GetHZNDialog(){

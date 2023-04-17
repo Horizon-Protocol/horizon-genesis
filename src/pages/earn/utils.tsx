@@ -70,14 +70,14 @@ export const AllPools: StakeCardProps[] = [
       <>
         Stake HZN-BNB LPs to earn HZN. <br />
         You can{" "}
-        <Link href={`https://pancakeswap.finance/add/BNB/${TOKEN_ADDRESS[56][Token.HZN]}`} sx={{color: COLOR.safe, textDecoration: "unset"}} target="_blank">
+        <Link href={`https://pancakeswap.finance/v2/add/BNB/${TOKEN_ADDRESS[56][Token.HZN]}`} sx={{color: COLOR.safe, textDecoration: "unset"}} target="_blank">
         provide liquidity
         </Link> on Pancakeswap to get HZN-BNB LP tokens.
       </>
     ),
     links: [
       {
-        href: `https://pancakeswap.finance/add/BNB/${
+        href: `https://pancakeswap.finance/v2/add/BNB/${
           TOKEN_ADDRESS[56][Token.HZN]
         }`,
         logo: cakeLogo,
@@ -93,14 +93,14 @@ export const AllPools: StakeCardProps[] = [
       <>
         Stake zUSD-BUSD LPs to earn HZN. <br />
         You can{" "}
-        <Link href={"https://pancakeswap.finance/add/0xe9e7CEA3DedcA5984780Bafc599bD69ADd087D56/0xF0186490B18CB74619816CfC7FeB51cdbe4ae7b9"} sx={{color: COLOR.safe, textDecoration: "unset"}} target="_blank">
+        <Link href={"https://pancakeswap.finance/v2/add/0xe9e7CEA3DedcA5984780Bafc599bD69ADd087D56/0xF0186490B18CB74619816CfC7FeB51cdbe4ae7b9"} sx={{color: COLOR.safe, textDecoration: "unset"}} target="_blank">
         provide liquidity
         </Link> on Pancakeswap to get zUSD-BUSD LP tokens.
       </>
     ),
     links: [
       {
-        href: "https://pancakeswap.finance/add/0xe9e7CEA3DedcA5984780Bafc599bD69ADd087D56/0xF0186490B18CB74619816CfC7FeB51cdbe4ae7b9",
+        href: "https://pancakeswap.finance/v2/add/0xe9e7CEA3DedcA5984780Bafc599bD69ADd087D56/0xF0186490B18CB74619816CfC7FeB51cdbe4ae7b9",
         logo: cakeLogo,
         text: "GET zUSD-BUSD LP TOKENS",
       },

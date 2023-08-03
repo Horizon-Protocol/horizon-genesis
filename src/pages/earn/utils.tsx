@@ -108,6 +108,7 @@ export const AllPools: StakeCardProps[] = [
   },
   {
     token: Token.ZBNB_BNB_LP,
+    finished: true,
     bg: bnbBg,
     color: "#D2884F",
     desc: (

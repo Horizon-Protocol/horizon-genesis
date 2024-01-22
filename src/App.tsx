@@ -49,6 +49,7 @@ import useEstimatedStakingRewards from "@hooks/useEstimatedStakingRewards";
 import DevWatchTool from "@components/DevWatchTool";
 import Authorize from "@pages/Authorize";
 import useQueryAuthorization from "@pages/Authorize/useQueryAuthorization";
+import SystemStatus from "@components/SystemStatus";
 
 const AppDisabled = !!import.meta.env.VITE_APP_DISABLED;
 
@@ -167,174 +168,176 @@ function App() {
           </Typography>
         </Box>
       )}
-      <Box
-        sx={{
-          filter: AppDisabled ? "blur(2px)" : undefined,
-        }}
-      >
-        {!isMobile && <Header />}
-        {!isEarnPage && isMobile && (
-          <>
-            <Alerts {...alertProps} />
-          </>
-        )}
-        {!isEarnPage && downLG && !isMobile && <Record {...recordProps} />}
+      <SystemStatus>
         <Box
-          my={isMobile ? '1px' : '44px'}
-          display="flex"
-          justifyContent="center"
-          flexWrap={{
-            xs: "wrap",
-            md: "nowrap",
+          sx={{
+            filter: AppDisabled ? "blur(2px)" : undefined,
           }}
         >
-          {!isEarnPage && (
-            <Hidden lgDown>
-              <Box
-                position="relative"
-                width="100%"
-                maxWidth={{
-                  xs: 0,
-                  sm: 220,
-                  lg: 320,
-                }}
-                flexShrink={1}
-              >
-                <Record {...recordProps} />
-              </Box>
-            </Hidden>
+          {!isMobile && <Header />}
+          {!isEarnPage && isMobile && (
+            <>
+              <Alerts {...alertProps} />
+            </>
           )}
+          {!isEarnPage && downLG && !isMobile && <Record {...recordProps} />}
           <Box
-            m={{
-              md: "0 30px 0 30px",
+            my={isMobile ? '1px' : '44px'}
+            display="flex"
+            justifyContent="center"
+            flexWrap={{
+              xs: "wrap",
+              md: "nowrap",
             }}
-            mb={isMobile ? '50px' : '2px'}
-            flexGrow={
-              isEarnPage
-                ? undefined
-                : {
-                  xs: 1,
-                  md: 0,
-                }
-            }
-            flexShrink={
-              isEarnPage
-                ? undefined
-                : {
-                  xs: 1,
-                  md: 0,
-                }
-            }
-            flexBasis={
-              isEarnPage
-                ? undefined
-                : {
-                  xs: 480,
-                  sm: 640,
-                }
-            }
           >
-            <Switch>
-              <Route
-                exact
-                path="/"
-                render={() => <Redirect to="/home" push />}
-              />
-              <Route path="/home">
-                <Home />
-              </Route>
-              <Route path="/burn">
-                <Burn />
-              </Route>
-              <Route path="/claim">
-                <Claim />
-              </Route>
-              <Route path="/earn">
-                <Earn />
-              </Route>
-              <Route path="/mint">
-                <Mint />
-              </Route>
-              <Route path="/debtTracker">
-                <DebtTracker />
-              </Route>
-              <Route path="/escrow">
-                <Escrow />
-              </Route>
-              <Route path="/authorize">
-                <Authorize />
-              </Route>
-              <Route path="/history">
-                <History />
-              </Route>
-            </Switch>
-          </Box>
-          {isMobile && <MobileMenu />}
-          {!(isEarnPage && !isMobile) && (
+            {!isEarnPage && (
+              <Hidden lgDown>
+                <Box
+                  position="relative"
+                  width="100%"
+                  maxWidth={{
+                    xs: 0,
+                    sm: 220,
+                    lg: 320,
+                  }}
+                  flexShrink={1}
+                >
+                  <Record {...recordProps} />
+                </Box>
+              </Hidden>
+            )}
             <Box
-              pr={
-                {
-                  // xs: 0,
-                  // sm: 0,
-                  // md: 1,
-                  // lg: 2,
-                }
+              m={{
+                md: "0 30px 0 30px",
+              }}
+              mb={isMobile ? '50px' : '2px'}
+              flexGrow={
+                isEarnPage
+                  ? undefined
+                  : {
+                    xs: 1,
+                    md: 0,
+                  }
               }
-              position={{
-                // xs: "fixed",
-                // sm: "fixed",
-                md: "static",
-              }}
-              left={0}
-              right={0}
-              // bottom={{
-              //   xs: "2.75rem",
-              //   sm: "2.75rem",
-              // }}
-              zIndex={3}
-              width={{
-                // xs: "100%",
-                // sm: "100%",
-                md: 300,
-              }}
-              minWidth={{
-                // xs: "100%",
-                // sm: "100%",
-                md: 300,
-              }}
-              maxHeight={{
-                // xs: walletInfoOpen ? '100%' : '0px',
-                // sm: walletInfoOpen ? '100%' : '0px',
-                md: '100%',
-              }}
-              bgcolor={{
-                // xs: "#102637",
-                md: "initial",
-              }}
-              borderTop={({ palette }) => ({
-                // xs: `2px solid ${palette.divider}`,
-                md: 0,
-              })}
-              overflow="hidden"
-              display={{
-                xs: 'none',
-                sm: 'none',
-                md: 'block'
-              }}
-              sx={{
-                transition: "max-height 0.25s ease-in",
-              }}
+              flexShrink={
+                isEarnPage
+                  ? undefined
+                  : {
+                    xs: 1,
+                    md: 0,
+                  }
+              }
+              flexBasis={
+                isEarnPage
+                  ? undefined
+                  : {
+                    xs: 480,
+                    sm: 640,
+                  }
+              }
             >
-              {!isMobile && (
-                <>
-                  <Alerts {...alertProps} />
-                </>
-              )}
-              <Dashboard />
+              <Switch>
+                <Route
+                  exact
+                  path="/"
+                  render={() => <Redirect to="/home" push />}
+                />
+                <Route path="/home">
+                  <Home />
+                </Route>
+                <Route path="/burn">
+                  <Burn />
+                </Route>
+                <Route path="/claim">
+                  <Claim />
+                </Route>
+                <Route path="/earn">
+                  <Earn />
+                </Route>
+                <Route path="/mint">
+                  <Mint />
+                </Route>
+                <Route path="/debtTracker">
+                  <DebtTracker />
+                </Route>
+                <Route path="/escrow">
+                  <Escrow />
+                </Route>
+                <Route path="/authorize">
+                  <Authorize />
+                </Route>
+                <Route path="/history">
+                  <History />
+                </Route>
+              </Switch>
             </Box>
-          )}
+            {isMobile && <MobileMenu />}
+            {!(isEarnPage && !isMobile) && (
+              <Box
+                pr={
+                  {
+                    // xs: 0,
+                    // sm: 0,
+                    // md: 1,
+                    // lg: 2,
+                  }
+                }
+                position={{
+                  // xs: "fixed",
+                  // sm: "fixed",
+                  md: "static",
+                }}
+                left={0}
+                right={0}
+                // bottom={{
+                //   xs: "2.75rem",
+                //   sm: "2.75rem",
+                // }}
+                zIndex={3}
+                width={{
+                  // xs: "100%",
+                  // sm: "100%",
+                  md: 300,
+                }}
+                minWidth={{
+                  // xs: "100%",
+                  // sm: "100%",
+                  md: 300,
+                }}
+                maxHeight={{
+                  // xs: walletInfoOpen ? '100%' : '0px',
+                  // sm: walletInfoOpen ? '100%' : '0px',
+                  md: '100%',
+                }}
+                bgcolor={{
+                  // xs: "#102637",
+                  md: "initial",
+                }}
+                borderTop={({ palette }) => ({
+                  // xs: `2px solid ${palette.divider}`,
+                  md: 0,
+                })}
+                overflow="hidden"
+                display={{
+                  xs: 'none',
+                  sm: 'none',
+                  md: 'block'
+                }}
+                sx={{
+                  transition: "max-height 0.25s ease-in",
+                }}
+              >
+                {!isMobile && (
+                  <>
+                    <Alerts {...alertProps} />
+                  </>
+                )}
+                <Dashboard />
+              </Box>
+            )}
+          </Box>
         </Box>
-      </Box>
+      </SystemStatus>
       <WalletsDialog />
       <GetHZNDialog />
       {import.meta.env.DEV && <DevWatchTool />}
